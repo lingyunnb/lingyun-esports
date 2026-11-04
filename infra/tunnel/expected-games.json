@@ -1,0 +1,13 @@
+{
+  "_comment": "Proof-of-identity list for enable-ngrok.ps1. These are the three FISH games that must appear in /api/v1/public/games. Kept in a UTF-8 JSON data file ON PURPOSE: enable-ngrok.ps1 must stay pure ASCII, because Windows PowerShell 5.1 reads .ps1 files as ANSI (GBK on this machine) unless a BOM is present, and a Chinese literal inside the script becomes a PARSE ERROR (verified 2026-10-04). Read here with an explicit UTF-8 reader instead. 'codes' is the decisive check: it comes from the game table, so it cannot be spoofed by an ngrok browser-warning page (which is plain text and never passes the JSON/field assertions in the first place).",
+  "games": [
+    "\u548c\u5e73\u7cbe\u82f1",
+    "\u4e09\u89d2\u6d32\u884c\u52a8\uff08\u624b\u6e38\uff09",
+    "\u4e09\u89d2\u6d32\u884c\u52a8\uff08\u7aef\u6e38\uff09"
+  ],
+  "codes": [
+    "peace",
+    "delta_mobile",
+    "delta_pc"
+  ]
+}

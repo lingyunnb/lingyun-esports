@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>05 规范对照页 · 4dp 网格 / 6 档灰阶 / 高度档 / 改造前对比</title>
+<style>
+:root{
+  /* 品牌（点缀） */
+  --brand:#1D5FA8;          /* 主交互：按钮 / 选中 / 链接 */
+  --brand-ink:#0F2440;      /* 品牌锚墨蓝：只给极小面积（字标底 / 徽章边） */
+  --brand-tint:#E8EEF7;     /* 主色浅底（选中态 / 图标底） */
+  --celadon:#0E7C7B;        /* 强调青瓷 */
+  --celadon-tint:#E3F0EF;
+  --amber:#B4732A;          /* 价格 / 等级：全站唯一金 */
+  --amber-tint:#F7EDE0;
+  --warn:#B45309;
+  --danger:#B42318;
+  --danger-tint:#FBECEA;
+  /* 6 档灰阶（docs/38 §1.2 结论 3） */
+  --g1:#14202E;             /* 1 正文 */
+  --g2:#4A5A6E;             /* 2 次要 */
+  --g3:#8A99AB;             /* 3 弱化 */
+  --g4:#CDD6E2;             /* 4 描边 */
+  --g5:#E3E8EF;             /* 5 分割 */
+  --g6:#F4F6F9;             /* 6 页底 */
+  --card:#FFFFFF;
+  --hair:#E3E8EF;
+  --sk:#EAEEF4;
+  --r-chip:6px;             /* 小片 */
+  --r-ctl:10px;             /* 控件 */
+  --r-card:14px;            /* 卡片 */
+  --font:"Microsoft YaHei","PingFang SC",-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--g1);background:#FFFFFF;-webkit-font-smoothing:antialiased}
+svg.ic{display:block;flex:0 0 auto}
+.num{font-variant-numeric:tabular-nums}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- 手机壳（390×844 逻辑像素，docs/32 §十） ---------- */
+.phone{width:390px;height:844px;background:var(--g6);position:relative;overflow:hidden;
+  border:1px solid var(--g4);border-radius:18px;display:flex;flex-direction:column;
+  color:var(--g1);flex:0 0 auto}
+.phone.r0{border-radius:0}
+.statusbar{flex:0 0 48px;height:48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;font-size:12px;font-weight:600;color:var(--g1);background:var(--card)}
+.sb-r{display:flex;align-items:center;gap:8px}
+.sb-bars{display:flex;align-items:flex-end;gap:4px;height:12px}
+.sb-bars i{display:block;width:4px;background:var(--g1);border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:12px}
+.sb-batt{width:24px;height:12px;border:1px solid var(--g4);border-radius:3px;position:relative}
+.sb-batt i{position:absolute;left:2px;top:2px;bottom:2px;width:14px;background:var(--g1);border-radius:1px}
+.scroll{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.inner{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+
+/* ---------- 页头 56dp ---------- */
+.h56{flex:0 0 56px;height:56px;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--card);
+  border-bottom:1px solid var(--g5)}
+.h56 .tt{font-size:18px;font-weight:700;letter-spacing:.2px}
+.h56 .sp{flex:1 1 auto}
+.h56 .act{display:flex;align-items:center;gap:16px;color:var(--g2)}
+.navpills{display:flex;align-items:center;gap:16px}
+.navpill{font-size:13px;font-weight:600;color:var(--g2);color:var(--g2)}
+.navpill.on{color:var(--brand)}
+.sbtn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--g2)}
+
+/* ---------- 品牌区（白卡 + 发丝线 + 小面积品牌色，无深色块） ---------- */
+.brandrow{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--card);
+  border-bottom:1px solid var(--g5)}
+.logo-mark{width:40px;height:40px;flex:0 0 40px;border-radius:var(--r-chip);background:var(--brand-ink);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;
+  letter-spacing:0;position:relative}
+.logo-mark i{position:absolute;right:0;top:0;width:8px;height:8px;background:var(--brand);border-radius:0 var(--r-chip) 0 6px}
+.brandname{font-size:15px;font-weight:700;letter-spacing:.4px}
+.brandsub{font-size:12px;color:var(--g2);margin-top:4px}
+.brandstamp{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--brand);
+  border:1px solid var(--brand-tint);background:var(--brand-tint);border-radius:var(--r-chip);padding:4px}
+/* 事实条：真实业务数字，非"并排三个大数字" */
+.factrow{display:flex;align-items:center;background:var(--card);border-bottom:1px solid var(--g5);padding:8px 16px}
+.fact{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:0}
+.fact .fv{font-size:13px;font-weight:700;color:var(--g1)}
+.fact .fk{font-size:11px;color:var(--g3);margin-top:4px}
+.fact+.fact{border-left:1px solid var(--g5);padding-left:12px}
+.fact:first-child{padding-right:12px}.gridtex{position:absolute;inset:0;pointer-events:none;opacity:1}
+
+/* ---------- 宣传图：通栏直角 + 紧贴上一块（0 间距） ---------- */
+.banner{flex:0 0 152px;height:152px;width:390px;border-radius:0;background:#EEF2F7;position:relative;
+  overflow:hidden;padding:20px 16px;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;background-image:
+   repeating-linear-gradient(90deg,#DCE3EC 0 1px,rgba(0,0,0,0) 1px 32px);}
+/* 通栏体的左侧标识条：绝对定位 + inset-block 0，不占布局宽度（保证宽=390、左=0） */
+.banner::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--brand)}
+.banner .bn-t{font-size:18px;font-weight:700;color:var(--g1)}
+.banner .bn-s{font-size:12px;color:var(--g2);line-height:1.6}
+.banner .bn-a{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:4px;
+  font-size:13px;font-weight:600;color:var(--brand)}
+.banner .bn-dots{position:absolute;right:16px;bottom:12px;display:flex;gap:4px}.banner .bn-dots i{width:6px;height:6px;border-radius:999px;background:var(--g4)}
+.banner .bn-dots i.on{background:var(--brand);width:12px}
+
+/* ---------- 2 宫格快捷入口（4dp 网格：16 页边距 / 12 组间距） ---------- */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px 0}
+.gcard{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-card);height:64px;
+  display:flex;align-items:center;gap:12px;padding:12px;overflow:hidden}
+.gcard .gi{width:32px;height:32px;flex:0 0 32px;border-radius:var(--r-ctl);display:flex;align-items:center;
+  justify-content:center;background:var(--brand-tint);color:var(--brand)}
+.gcard .gi.cel{background:var(--celadon-tint);color:var(--celadon)}
+.gt{font-size:13px;font-weight:700;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs{font-size:11px;color:var(--g3);margin-top:4px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- 区块头 ---------- */
+.sec{padding:20px 16px 0}
+.sech{display:flex;align-items:baseline;gap:8px;padding:0 0 8px}
+.sech .st{font-size:15px;font-weight:700}
+.sech .ss{font-size:11px;color:var(--g3)}
+.sech .sp{flex:1 1 auto}
+.sech .sa{font-size:12px;font-weight:600;color:var(--brand)}
+
+/* ---------- 游戏分类磁贴（占位方块 + 游戏名） ---------- */
+.tiles{display:flex;gap:12px;padding:0 16px}
+.tile{width:84px;flex:0 0 84px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.tile .lg{width:56px;height:56px;border-radius:var(--r-ctl);display:flex;align-items:center;
+  justify-content:center;font-size:15px;font-weight:800;letter-spacing:1px;position:relative;overflow:hidden}
+.tile .tn{font-size:12px;font-weight:600;color:var(--g2);text-align:center;line-height:1.35}
+.tile.on .tn{color:var(--brand);font-weight:700}
+.tile.on .lg{box-shadow:none;outline:2px solid var(--brand);outline-offset:2px}
+.lg-a{background:var(--brand-tint);color:var(--brand)}
+.lg-b{background:var(--celadon-tint);color:var(--celadon)}
+.lg-c{background:var(--amber-tint);color:var(--amber)}
+
+/* ---------- 卡片（三档；深色 HeroCard 本次全面取消） ---------- */
+.card{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-card)}
+.cardpad{padding:16px}
+.pad0{padding:0}
+.ch{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--g5)}
+.ch .ct{font-size:15px;font-weight:700}
+.ch .cs{font-size:11px;color:var(--g3)}
+.ch .sp{flex:1 1 auto}
+.ch .ca{font-size:12px;font-weight:600;color:var(--brand)}
+.cb{padding:16px}
+.cf{border-top:1px solid var(--g5);padding:12px 16px;display:flex;align-items:center;gap:8px}
+
+/* 主推商品：白底 + 品牌色描边（不定深色块） */
+.cardfeat{border:2px solid var(--brand);border-radius:var(--r-card);background:var(--card);position:relative}
+.badge-feat{position:absolute;right:0;top:0;height:24px;display:flex;align-items:center;
+  padding:0 12px;background:var(--brand);color:#fff;font-size:11px;font-weight:700;
+  border-radius:0 var(--r-card) 0 10px}
+
+/* ---------- 列表行（高度档 48 / 56 / 64） ---------- */
+.lrow{display:flex;align-items:center;gap:12px;min-height:48px;height:48px;padding:0 16px}
+.lrow.r56{min-height:56px;height:56px}
+.lrow.r64{min-height:64px;height:64px}
+.lk{font-size:13px;color:var(--g2);flex:0 0 80px}
+.lv{font-size:13px;font-weight:600;flex:1 1 auto;min-width:0;width:100%;text-align:left}
+.lv.r{text-align:right}
+.hair{height:1px;background:var(--g5)}
+.hl{margin-left:16px}
+.lead{width:32px;height:32px;flex:0 0 32px;border-radius:var(--r-ctl);background:var(--brand-tint);
+  color:var(--brand);display:flex;align-items:center;justify-content:center}
+.lead.plain{background:transparent;color:var(--g2)}
+
+/* ---------- 按钮（高度档 44 / 32 / 28） ---------- */
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;
+  border-radius:var(--r-ctl);font-size:15px;font-weight:700;border:1px solid transparent}
+.btn-pri{background:var(--brand);color:#fff}
+.btn-gho{background:var(--card);color:var(--brand);border-color:var(--brand)}
+.btn-quiet{background:var(--card);color:var(--g2);border-color:var(--g4)}
+.btn-s{height:32px;padding:0 12px;font-size:13px;font-weight:600;border-radius:var(--r-ctl)}
+.btn-m{height:28px;padding:0 12px;font-size:12px;font-weight:600;border-radius:var(--r-ctl)}
+.btn-block{display:flex;width:100%}
+.bbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);
+  border-top:1px solid var(--g5)}
+.bbar .bt{display:flex;flex-direction:column;gap:4px}
+.bbar .bk{font-size:11px;color:var(--g3)}
+.bbar .bv{font-size:18px;font-weight:700;color:var(--amber)}
+.bbar .sp{flex:1 1 auto}
+
+/* ---------- 价格 / 标签 ---------- */
+.price{font-size:18px;font-weight:700;color:var(--amber)}
+.price.sml{font-size:15px}
+.price.lg{font-size:22px}
+.price .cur{font-size:12px;font-weight:600;margin-right:4px}
+.tag{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:var(--r-chip);
+  font-size:11px;font-weight:600;border:1px solid transparent}
+.tag-soft{background:var(--brand-tint);color:var(--brand);border-color:var(--brand-tint)}
+.tag-cel{background:var(--celadon-tint);color:var(--celadon);border-color:var(--celadon-tint)}
+.tag-amb{background:var(--amber-tint);color:var(--warn);border-color:var(--amber-tint)}
+.tag-line{background:var(--card);color:var(--g2);border-color:var(--g4)}
+.tag-brandline{background:var(--card);color:var(--brand);border-color:var(--brand)}
+/* 选中态（品牌色只做点缀：选中/按钮/链接/少量标签） */
+.chip{height:32px;display:inline-flex;align-items:center;gap:4px;padding:0 12px;border-radius:999px;
+  border:1px solid var(--g4);background:var(--card);font-size:13px;color:var(--g2);font-weight:600}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip-line.on{background:var(--brand-tint);border-color:var(--brand);color:var(--brand)}
+.chips{display:flex;gap:8px;padding:12px 16px;overflow:hidden}
+
+/* ---------- 商品卡 ---------- */
+.plist{padding:12px 16px 0;display:flex;flex-direction:column;gap:12px}
+.pcard{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-card);padding:0 16px;
+  display:flex;align-items:center;gap:12px;height:64px;overflow:hidden}
+.pcard .pcol{flex:1 1 auto;min-width:0}
+.pcard .pnm{font-size:13px;font-weight:700;line-height:1.35;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcard .pmeta{font-size:11px;color:var(--g3);margin-top:4px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcard .sp{flex:1 1 auto}
+
+/* ---------- 订单卡 ---------- */
+.ocard{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-card);padding:16px}
+.ohead{display:flex;align-items:center;gap:8px}
+.ohead .on{font-size:11px;color:var(--g3)}
+.otitle{font-size:15px;font-weight:700;line-height:1.35;margin-top:8px}
+.ometa{font-size:12px;color:var(--g2);margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dotsep{width:3px;height:3px;border-radius:999px;background:var(--g4)}
+.ofoot{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--g5)}
+.ofoot .sp{flex:1 1 auto}
+.ava{width:24px;height:24px;flex:0 0 24px;border-radius:999px;background:var(--brand-tint);color:var(--brand);
+  display:flex;align-items:center;justify-content:center}
+
+/* ---------- 状态标签（形状 + 字重 + 图标；去色也能分辨，见 docs/35 §四） ---------- */
+.stag{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;font-size:11px;font-weight:600;
+  border-radius:var(--r-chip);border:1px solid transparent;position:relative;overflow:hidden;white-space:nowrap;flex:0 0 auto}
+.stag .notch{position:absolute;right:0;top:0;width:6px;height:6px;background:var(--card);border-left:1px solid var(--g4);border-bottom:1px solid var(--g4)}
+.s-wait{background:var(--amber-tint);border-color:#E6CFAE;color:var(--warn);font-weight:700}
+.s-live{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
+.s-ok{background:var(--celadon-tint);border-color:#BCD9D7;color:var(--celadon);font-weight:700}
+.s-off{background:#F0F2F5;border-color:#D8DEE6;color:var(--g2);font-weight:600}
+.s-bad{background:var(--danger-tint);border-color:#E7C6C2;color:var(--danger);font-weight:700}
+.s-bad.hi{border-width:2px;border-color:#D8A9A3;font-weight:800}
+
+/* ---------- 状态时间线 ---------- */
+.tline{padding:4px 16px 8px}
+.tli{display:flex;gap:12px;min-height:48px;position:relative}
+.tli .knobcol{width:24px;flex:0 0 24px;display:flex;flex-direction:column;align-items:center}
+.tli .knob{width:20px;height:20px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+  background:var(--brand-tint);color:var(--brand);border:1px solid var(--brand-tint)}
+.tli.done .knob{background:var(--celadon);color:#fff;border-color:var(--celadon)}
+.tli.now .knob{background:var(--celadon);color:#fff;border-color:var(--celadon);box-shadow:0 0 0 3px var(--celadon-tint)}
+.tli .line{flex:1 1 auto;width:1px;background:var(--g5);margin:4px 0}
+.tli:last-child .line{background:transparent}
+.tli .body{padding-bottom:16px;flex:1 1 auto;min-width:0}
+.tli .tt{font-size:13px;font-weight:600;color:var(--g2)}
+.tli.done .tt{font-weight:700;color:var(--g1)}
+.tli.now .tt{font-weight:800;color:var(--g1)}
+.tli .tm{font-size:11px;color:var(--g3);margin-top:4px}
+.tli .tnote{font-size:11px;color:var(--g2);margin-top:4px;line-height:1.5}
+.tli.todo .tt{color:var(--g3)}
+
+/* ---------- 我的页 ---------- */
+.uname{font-size:18px;font-weight:800}
+.uid{font-size:12px;color:var(--g3);margin-top:4px}
+.taga{display:inline-flex;align-items:center;height:20px;padding:0 4px;border-radius:var(--r-chip);
+  background:var(--card);border:1px solid var(--brand-ink);color:var(--brand-ink);font-size:11px;font-weight:600}
+.bal{font-size:22px;font-weight:700;color:var(--amber)}
+.grid3{display:flex;align-items:stretch}
+.cell{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0}
+.csep{width:1px;background:var(--g5);margin:8px 0}
+.cn{font-size:15px;font-weight:700}
+.cl{font-size:11px;color:var(--g3)}
+.bar{height:6px;border-radius:999px;background:var(--g5);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--celadon)}
+.gi32{width:32px;height:32px;flex:0 0 32px;border-radius:var(--r-ctl);background:var(--g6);color:var(--g2);
+  display:flex;align-items:center;justify-content:center}
+.ls{font-size:11px;color:var(--g3);display:block;margin-top:4px;white-space:nowrap;align-self:flex-start;min-width:0}
+.lt2{font-size:13px;font-weight:600}
+
+/* ---------- 底部导航（服务·订单·＋下单·消息·我的） ---------- */
+.tabbar{flex:0 0 56px;height:56px;display:flex;align-items:flex-start;background:var(--card);
+  border-top:1px solid var(--g5);padding:4px 0 0}
+.tb-c{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--g3);position:relative}
+.tb-c.on{color:var(--brand)}
+.tb-label{font-size:11px;font-weight:600;line-height:16px}
+/* 中间凸起位：实心 + 1px 品牌色圆环（非发光 / 非渐变），靠负边距收进 56dp 底栏 */
+.tb-c.raised{color:var(--brand)}
+.tb-c.raised svg{position:relative;width:32px;height:32px;padding:4px;border-radius:999px;background:var(--card)}
+.tb-c.raised svg::after{content:"";position:absolute;inset:0;border-radius:999px;border:1px solid var(--brand)}
+.tb-c.raised .tb-label{margin-top:-4px}
+
+/* ---------- 加载骨架 ---------- */
+.sk{background:var(--sk)!important;border-color:var(--sk)!important;color:transparent!important;position:relative}
+.sk svg{opacity:0}
+.sk .notch,.sk .lg i{background:transparent!important}
+.sk-bar{height:12px;border-radius:4px;background:var(--sk)}
+.sk-legend{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--card);
+  border-bottom:1px solid var(--g5);font-size:11px;color:var(--g3)}
+
+/* ---------- 评审页外壳 ---------- */
+.wrapdoc{max-width:1560px;margin:0 auto;padding:32px 24px 64px}
+.doch{display:flex;align-items:flex-start;gap:24px;padding-bottom:16px;border-bottom:1px solid #E3E8EF}
+.doch h1{font-size:22px;font-weight:800;letter-spacing:.2px}
+.doch .sub{font-size:13px;color:#4A5A6E;margin-top:8px;line-height:1.8;max-width:1180px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:#4A5A6E;margin-top:16px}
+.metarow b{color:#14202E}
+.shot{margin-top:32px}
+.shot h2{font-size:18px;font-weight:700;display:flex;align-items:baseline;gap:12px}
+.shot h2 em{font-style:normal;font-size:12px;font-weight:400;color:#8A99AB}
+.shot .cap{font-size:12px;color:#4A5A6E;margin:8px 0 16px;line-height:1.8}
+.screens{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.fig{display:flex;flex-direction:column;gap:8px}
+.figcap{font-size:12px;font-weight:600;color:#14202E}
+.figcap em{font-style:normal;font-weight:400;color:#8A99AB}
+.figcap2{font-size:11px;color:#8A99AB}
+.notes{margin-top:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px}
+.note{background:#FFFFFF;border:1px solid #E3E8EF;border-radius:14px;padding:16px}
+.note h3{font-size:13px;font-weight:700;margin-bottom:8px}
+.note p{font-size:12px;color:#4A5A6E;line-height:1.8}
+.note ul{margin:0;padding-left:16px}
+.note li{font-size:12px;color:#4A5A6E;line-height:1.9}
+table.tb{width:100%;border-collapse:collapse;font-size:12px;color:#14202E;margin-top:8px}
+table.tb th,table.tb td{border:1px solid #E3E8EF;padding:8px 12px;text-align:left;vertical-align:top;line-height:1.7;font-size:12px}
+table.tb th{background:#F4F6F9;font-weight:700}
+table.tb td.num{font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+.lg-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#4A5A6E}
+.lg-swatch{width:28px;height:28px;border-radius:6px;border:1px solid #CDD6E2}.scale{display:flex;flex-wrap:wrap;gap:16px;margin-top:8px}
+.scale-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.scale-box{background:#E8EEF7;border:1px solid #CDD6E2;height:24px;border-radius:2px}
+.scale-cap{font-size:11px;color:#4A5A6E;font-variant-numeric:tabular-nums}
+.grid-demo{padding:16px;background:#FFFFFF;border:1px solid #E3E8EF;border-radius:14px}
+.grid-demo .gline{display:flex;gap:4px}
+.grid-demo .u{width:4px;height:24px;background:#E8EEF7;border-radius:1px}
+.strip{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.strip .st{display:flex;align-items:center;gap:12px;font-size:12px;color:#4A5A6E}
+code{font-family:ui-monospace,Consolas,monospace;font-size:11px;background:#F4F6F9;padding:2px 4px;border-radius:4px}
+.worker-note{font-size:12px;color:#4A5A6E;line-height:1.9}
+</style></head>
+<body><div class="wrapdoc">
+<div class="doch"><div>
+  <h1>05 · 规范对照页（本次重点）</h1>
+  <p class="sub">把 <code>docs/38</code> 第四节「学什么」逐条换成可验收的尺子：① 4dp 网格 ② 6 档灰阶 ③ 组件高度档 ④ 与我们改造前的对比（旧间距散写 vs 新 4dp 网格）⑤ 东东电竞 vs 我们的差距表。
+  本页是审批时的<b>对照尺</b>：01–04 四页里的每个间距/色值/高度都应当能在本页找到刻度。</p>
+  <div class="metarow"><span><b>尺寸</b> 并排宽 ≥1200（本页实测 1420）</span><span><b>来源</b> docs/38 §一/§二/§四/§五 · docs/32 · docs/21</span><span><b>状态</b> 待审批 · 只出图与方案</span></div>
+</div></div>
+
+<div class="shot"><h2>① 4dp 网格示意<em>间距只用 4/8/12/16/20/24/32/48/64</em></h2>
+<div class="cap">竞品实测维度（<code>docs/38 §2.1</code>）：16dp×54 · 8dp×42 · 4dp×40 · 24dp×37 · 12dp×35 —— 密集段全在 4 的倍数上。我们改造后同样只允许下列 9 个值。</div>
+<div class="grid-demo">
+  <div class="scale" style="align-items:flex-end"><div class="scale-item"><div class="scale-box" style="width:4px"></div><span class="scale-cap">4</span></div><div class="scale-item"><div class="scale-box" style="width:8px"></div><span class="scale-cap">8</span></div><div class="scale-item"><div class="scale-box" style="width:12px"></div><span class="scale-cap">12</span></div><div class="scale-item"><div class="scale-box" style="width:16px"></div><span class="scale-cap">16</span></div><div class="scale-item"><div class="scale-box" style="width:20px"></div><span class="scale-cap">20</span></div><div class="scale-item"><div class="scale-box" style="width:24px"></div><span class="scale-cap">24</span></div><div class="scale-item"><div class="scale-box" style="width:32px"></div><span class="scale-cap">32</span></div><div class="scale-item"><div class="scale-box" style="width:48px"></div><span class="scale-cap">48</span></div><div class="scale-item"><div class="scale-box" style="width:64px"></div><span class="scale-cap">64</span></div></div>
+  <div class="hair" style="margin:16px 0"></div>
+  <div class="strip">
+    <div class="st"><div class="u" style="width:16px"></div><span>16 = 页边距（每页左右）</span></div>
+    <div class="st"><div class="u" style="width:12px"></div><span>12 = 组间距（同组元素之间）</span></div>
+    <div class="st"><div class="u" style="width:20px"></div><span>20 = 区块间距（不同语义组之间）—— 组内紧、组间松</span></div>
+    <div class="st"><div class="u" style="width:32px"></div><span>32 = 并排手机壳间距（评审图专用）</span></div>
+  </div>
+</div></div>
+
+<div class="shot"><h2>② 6 档灰阶实色块对照<em>正文 → 次要 → 弱化 → 描边 → 分割 → 页底</em></h2>
+<div class="cap">竞品有完整 6 档（<code>docs/38 §1.2</code> 结论 3），我们原来只有 3 档 —— 这是本轮补得最实的一块。</div>
+<div class="legend">
+  <div class="lg-item"><span class="lg-swatch" style="background:#14202E"></span><span><b>1 正文</b> <span class="num">#14202E</span><br>主要文字 · 商品名 · 金额旁标题</span></div><div class="lg-item"><span class="lg-swatch" style="background:#4A5A6E"></span><span><b>2 次要</b> <span class="num">#4A5A6E</span><br>辅助文字 · 键名 · 图标默认色</span></div><div class="lg-item"><span class="lg-swatch" style="background:#8A99AB"></span><span><b>3 弱化</b> <span class="num">#8A99AB</span><br>占位 · 时间 · 说明小字</span></div><div class="lg-item"><span class="lg-swatch" style="background:#CDD6E2"></span><span><b>4 描边</b> <span class="num">#CDD6E2</span><br>卡外描边 · 胶囊边 · 手机壳边</span></div><div class="lg-item"><span class="lg-swatch" style="background:#E3E8EF"></span><span><b>5 分割</b> <span class="num">#E3E8EF</span><br>1px 发丝线 · 行分隔 · 区块分隔</span></div><div class="lg-item"><span class="lg-swatch" style="background:#F4F6F9"></span><span><b>6 页底</b> <span class="num">#F4F6F9</span><br>页面背景 · 骨架底 · 灰底块</span></div>
+</div>
+<div class="hair" style="margin:16px 0"></div>
+<table class="tb"><tr><th>档</th><th>变量</th><th>色值</th><th>白底对比度（WCAG）</th><th>用在哪</th></tr>
+<tr><td>1 正文</td><td><code>--g1</code></td><td class="num">#14202E</td><td class="num">14.8 : 1</td><td>商品名 · 金额 · 标题</td></tr>
+<tr><td>2 次要</td><td><code>--g2</code></td><td class="num">#4A5A6E</td><td class="num">7.5 : 1</td><td>键名 · 元信息 · 图标默认</td></tr>
+<tr><td>3 弱化</td><td><code>--g3</code></td><td class="num">#8A99AB</td><td class="num">3.1 : 1</td><td>占位 / 时间 / 说明（非关键信息）</td></tr>
+<tr><td>4 描边</td><td><code>--g4</code></td><td class="num">#CDD6E2</td><td class="num">1.5 : 1</td><td>非文字元素</td></tr>
+<tr><td>5 分割</td><td><code>--g5</code></td><td class="num">#E3E8EF</td><td class="num">1.2 : 1</td><td>非文字元素（1px 发丝线）</td></tr>
+<tr><td>6 页底</td><td><code>--g6</code></td><td class="num">#F4F6F9</td><td class="num">1.1 : 1</td><td>非文字元素</td></tr></table></div>
+
+<div class="shot"><h2>③ 组件高度档尺子<em>44 按钮 · 48 列表行 · 56/64 大卡 · 56 页头</em></h2>
+<div class="cap">竞品实测（<code>docs/38 §2.2</code> 结论 4）：<code>44dp</code> 按钮 · <code>48dp</code> 列表行 · <code>56dp / 64dp</code> 大卡 · <code>96/120dp</code> Hero 区。我们只取前四档（Hero 区本轮取消）。</div>
+<div class="grid-demo">
+  <div class="st" style="margin-top:8px"><span class="num" style="width:28px;font-weight:700">44</span>
+    <span class="scale-box" style="width:88px"></span>
+    <span style="flex:1 1 auto"><b>按钮</b> —— 主按钮 / 次按钮 / 吸底操作条</span></div><div class="st" style="margin-top:8px"><span class="num" style="width:28px;font-weight:700">48</span>
+    <span class="scale-box" style="width:96px"></span>
+    <span style="flex:1 1 auto"><b>列表行</b> —— 规格行 · 订单信息行 · 状态码行</span></div><div class="st" style="margin-top:8px"><span class="num" style="width:28px;font-weight:700">56</span>
+    <span class="scale-box" style="width:112px"></span>
+    <span style="flex:1 1 auto"><b>大卡</b> —— 分部行 · 服务项 · 状态行</span></div><div class="st" style="margin-top:8px"><span class="num" style="width:28px;font-weight:700">64</span>
+    <span class="scale-box" style="width:128px"></span>
+    <span style="flex:1 1 auto"><b>大卡</b> —— 商品卡 · 官方自营馆行</span></div><div class="st" style="margin-top:8px"><span class="num" style="width:28px;font-weight:700">72</span>
+    <span class="scale-box" style="width:144px"></span>
+    <span style="flex:1 1 auto"><b>卡片</b> —— 主推商品卡（多一行标签）</span></div><div class="st" style="margin-top:8px"><span class="num" style="width:28px;font-weight:700">56</span>
+    <span class="scale-box" style="width:112px"></span>
+    <span style="flex:1 1 auto"><b>页头</b> —— 一级页 / 二级页页头</span></div><div class="st" style="margin-top:8px"><span class="num" style="width:28px;font-weight:700">56</span>
+    <span class="scale-box" style="width:112px"></span>
+    <span style="flex:1 1 auto"><b>底栏</b> —— 底部导航（含凸起 ＋ 下单）</span></div>
+</div></div>
+
+<div class="shot"><h2>④ 与我们改造前的对比<em>旧间距散写 vs 新 4dp 网格</em></h2>
+<div class="cap">行号取自当前代码（只读抽样，未改一行）。判据：属性值必须是 4 的倍数；<code>0</code> 与 <code>auto</code> 不计入分母。</div>
+<table class="tb"><tr><th>位置</th><th>改造前</th><th>新值（4dp 网格）</th><th>为什么</th></tr>
+<tr><td><code>services_page.dart:470</code></td><td class="num">EdgeInsets.symmetric(vertical: 9)</td><td class="num">vertical: 8</td><td>胶囊内上下 9 → 8</td></tr><tr><td><code>services_page.dart:322</code></td><td class="num">SizedBox(height: 10)</td><td class="num">height: 12</td><td>三宫格前 10 → 12</td></tr><tr><td><code>services_page.dart:475 / 780 / 850</code></td><td class="num">SizedBox(width: 5 / 5 / 3)</td><td class="num">width: 4</td><td>图标与文字 5/3 → 4</td></tr><tr><td><code>services_page.dart:642</code></td><td class="num">EdgeInsets.symmetric(horizontal: 5, vertical: 1)</td><td class="num">horizontal: 4, vertical: 4</td><td>细分部标签内距</td></tr><tr><td><code>services_page.dart:336</code></td><td class="num">AppSectionHeader(padding: fromLTRB(16, 16, 16, 8))</td><td class="num">保持 16/16/16/8</td><td>已落格（示例：落格写法）</td></tr><tr><td><code>orders_page.dart:390</code></td><td class="num">EdgeInsets.symmetric(vertical: 5)</td><td class="num">vertical: 4</td><td>状态胶囊内上下 5 → 4</td></tr><tr><td><code>orders_page.dart:534</code></td><td class="num">EdgeInsets.fromLTRB(14, 12, 14, 0)</td><td class="num">fromLTRB(16, 12, 16, 0)</td><td>卡内左右 14 → 16</td></tr><tr><td><code>orders_page.dart:573</code></td><td class="num">SizedBox(width: 3)</td><td class="num">width: 4</td><td>圆点与文字 3 → 4</td></tr><tr><td><code>orders_page.dart:592</code></td><td class="num">EdgeInsets.fromLTRB(14, 10, 14, 12)</td><td class="num">fromLTRB(16, 12, 16, 12)</td><td>卡脚内距 14/10 → 16/12</td></tr><tr><td><code>orders_page.dart:660</code></td><td class="num">EdgeInsets.symmetric(horizontal: 15, vertical: 8)</td><td class="num">horizontal: 16, vertical: 8</td><td>按钮内左右 15 → 16</td></tr><tr><td><code>profile_page.dart:45</code></td><td class="num">_cardGap = 22</td><td class="num">24（AppSpacing.xl）</td><td>卡间距 22 → 24</td></tr><tr><td><code>profile_page.dart:197 / 827 / 829</code></td><td class="num">SizedBox(height: 5 / 9 / 9)</td><td class="num">height: 8</td><td>组内小间距 5/9 → 8</td></tr><tr><td><code>profile_page.dart:238 / 304 / 348</code></td><td class="num">fromLTRB(14, 12, 12, 13) 等</td><td class="num">fromLTRB(16, 12, 16, 12)</td><td>卡内距统一 16/12</td></tr><tr><td><code>profile_page.dart:507 / 873</code></td><td class="num">SizedBox(width: 11) / height: 11</td><td class="num">12</td><td>11 → 12</td></tr>
+</table>
+<div class="note" style="margin-top:16px"><h3>落格率口径</h3><p>出图脚本会数出 01–04 四页全部 CSS 里带 px 的 <code>padding / margin / gap</code> 声明：属于 4 的倍数（且非 0）计入分子，分母为全部非 0 数值。零散值（5/7/9/11/13/15）一律为 0 处 —— 这就是"间距落格率"。</p></div>
+</div>
+
+<div class="shot"><h2>⑤ 东东电竞 vs 我们的差距表<em>引 docs/38 §五</em></h2>
+<table class="tb"><tr><th>维度</th><th>东东电竞</th><th>我们（改造前）</th><th>差距</th><th>本轮处置</th></tr>
+<tr><td><b>间距刻度</b></td><td>严格 4dp 网格（2161 dimen / 910 值）</td><td>散写 5/7/9/11/13/15 等（3 页 14 处样本）</td><td>差距明显</td><td>收敛到 4dp 网格（本页左表）</td></tr><tr><td><b>灰阶</b></td><td>6 档完整（#2F2F2F→#EEEEEE）</td><td>3 档（正文/次要/弱化）</td><td>差距明显</td><td>补到 6 档（本页第②块）</td></tr><tr><td><b>组件高度</b></td><td>44 / 48 / 56 / 64 固定档</td><td>多处硬编码（按钮 44 未抽 token）</td><td>有差距</td><td>抽高度档 token（第③块）</td></tr><tr><td><b>颜色</b></td><td>蓝紫双色系（#1D9AFF / #815CFF）</td><td>墨蓝 × 青瓷（已定案）</td><td>已定案</td><td>不动；本轮进一步改为白底为主</td></tr><tr><td><b>页底</b></td><td>#F8F8F8 极浅灰</td><td>#F4F6F9 冷灰蓝</td><td>接近</td><td>不动</td></tr><tr><td><b>深色块</b></td><td>深浅均衡（有深色区）</td><td>有 HeroCard 墨蓝深色大块</td><td>要减少</td><td>本轮全面取消深色块（品牌锚只给字标底 / 徽章边）</td></tr><tr><td><b>设计系统分层</b></td><td>M3 + 品牌层（style 1508）</td><td>token 有，页面仍有硬编码</td><td>有差距</td><td>逐步收口（本轮给落地表）</td></tr>
+</table>
+<div class="notes" style="margin-top:16px">
+  <div class="note"><h3>学的（docs/38 §四）</h3><ul>
+    <li>4dp 网格 → 本页第①块 + 01–04 四页全部间距</li>
+    <li>6 档灰阶 → 本页第②块 + 全站文字/描边/分割</li>
+    <li>组件高度档 44/48/56/64 → 本页第③块</li>
+    <li>组件拆细 → 状态标签 / 时间线 / 列表行 / 卡片各自成组件，四页复用</li>
+    <li>品牌层叠在系统之上 → 白底 + 品牌点缀（不是裸用 M3）</li>
+    <li>交易密度 → 商品卡 64 高放满「名 + 分部区服 + 销量 + 价格」</li>
+  </ul></div>
+  <div class="note"><h3>明确不学（docs/38 §四 + CLAUDE.md 禁令）</h3><ul>
+    <li>它的蓝紫配色（<span class="num">#1D9AFF</span> / <span class="num">#815CFF</span>）—— 我们用墨蓝 × 青瓷，且白底为主</li>
+    <li>它的图片 / 插画 / 吉祥物 / 动效素材（法律风险）</li>
+    <li>它的文案与独特页面结构</li>
+    <li>它的 227 页体量（我们只画 4 页 + 1 张规范页）</li>
+    <li>它的 59 条权限堆叠（与本业务无关）</li>
+  </ul></div>
+</div></div>
+
+<div class="shot"><h2>⑥ 品牌锚的"极小面积"约束<em>本套图唯一使用墨蓝的位置</em></h2>
+<div class="grid-demo">
+  <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+    <div class="fig" style="gap:8px"><div class="logo-mark"><i></i>祁</div><span class="figcap2">40×40 字标底（1600px²）<br>占首屏 390×844 的 0.49%</span></div>
+    <div class="fig" style="gap:8px"><span class="taga">老板</span><span class="figcap2">徽章 1dp 墨蓝描边<br>面积 ≈ 0</span></div>
+    <div class="fig" style="gap:8px;align-items:flex-start"><span class="price lg num"><span class="cur">¥</span>36.60</span><span class="figcap2">金额用铜牌金 <span class="num">#B4732A</span>，不用墨蓝</span></div>
+  </div>
+  <div class="hair" style="margin:16px 0"></div>
+  <p class="worker-note">整屏深色面积 ≈ 0：01–04 四页中 <code>#0F2440</code> 只出现在字标底（40×40）与身份徽章描边；<code>#1D5FA8</code> 只出现在按钮、选中胶囊、链接文字、官方自营徽章底、2dp 主推描边。</p>
+</div></div>
+
+</div></body></html>

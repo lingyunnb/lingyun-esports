@@ -1,0 +1,119 @@
+===== 一、在线（① 本机 3100 + health 200 + 登录 + 侧栏 8 项 + 浅色）=====  
+[回归账号] 管理端账号 = opsadmin（来自 D:\fish\server\.env 的 REGRESSION_ADMIN_USER，专用测试超管）
+
+===== 准备：拉起桌面壳 =====
+     [账号] opsadmin（来源 dotenv-test）—— 仅在线模式用得到；--offline 不登录
+     [模式] 打包产物 exe
+     [目标] D:\fish\dist-desktop\祁连山电竞-管理端-1.0.0.exe
+     [参数] --remote-debugging-port=9222
+     [CDP] 3.7s 后拿到 page target：http://127.0.0.1:3100/dashboard
+     [CDP] 当时全部 target：http://127.0.0.1:3100/dashboard
+
+===== ① 地址解析走第 ① 档（本机 3100）且真探活过 /api/v1/health =====
+PASS ① 地址解析 = ① 本机（health 200 才加载）
+     地址：http://127.0.0.1:3100
+     档位：① 本机
+     首条探活：✓ http://127.0.0.1:3100 —— HTTP 200 · code=0 · database=up redis=up（60ms）
+
+===== ② 窗口标题（自家）/ 页面 URL / 页面标题 =====
+PASS ② 标题 + URL
+     页面URL：http://127.0.0.1:3100/dashboard
+     壳标题：祁连山电竞 · 管理端
+     页面标题：管理后台
+     系统窗口标题：祁连山电竞-管理端 ⇒ 祁连山电竞 · 管理端
+
+===== ③ 浅色：body 底色逐字比对 =====
+     [SHOT] 01-管理端exe-登录页-浅色.png (153 KB)
+PASS ③ 浅色 = body rgb(245, 247, 251) + data-theme=light
+     底色：rgb(245, 247, 251)
+     主题：light
+     主题偏好：null
+
+===== ④ 登录（专用测试超管）→ 工作台 → 侧栏 8 个顶层项 =====
+     [SHOT] 02-管理端exe-工作台-浅色.png (107 KB)
+PASS ④ 工作台 + 侧栏 8 个顶层项 + 浅色白底侧栏
+     地址：/dashboard
+     顶层项：工作台 · 订单与售后 · 用户与身份 · 资金与抽成 · 商品与内容 · 客服与消息 · 排行榜 · 系统管理
+     侧栏底色：rgb(255, 255, 255)
+     主区底色：rgb(245, 247, 251)
+     侧栏宽：220px
+
+===== ⑤ 渲染进程无未捕获异常 =====
+PASS ⑤ 无未捕获异常
+     异常数：0
+
+===== ⑥ 截图 =====
+PASS ⑥ 截图 2 张（登录页 / 工作台）
+     目录：D:\fish\docs\验收素材\2026-10-11-管理端exe
+     清单：01-管理端exe-登录页-浅色.png(153KB) 02-管理端exe-工作台-浅色.png(107KB)
+     [系统截图] OK 1568x1000 → 03-管理端exe-窗口截图-含标题栏.png(128KB)
+
+===== ⑦ 收尾：关掉本次拉起的桌面壳 =====
+     关闭后仍存在的壳进程：0
+PASS ⑦ 关闭桌面壳（无残留）
+
+===== 结论 =====
+GREEN：全部断言通过（FAIL 0 组）
+exe：D:\fish\dist-desktop\祁连山电竞-管理端-1.0.0.exe
+截图：D:\fish\docs\验收素材\2026-10-11-管理端exe
+ONLINE_EXIT=0  
+  
+===== 二、离线（QLS_SHELL_FORCE_OFFLINE=1 → 三档全灭 → 自家错误页 + 重试真的又跑一轮）=====  
+[回归账号] 管理端账号 = opsadmin（来自 D:\fish\server\.env 的 REGRESSION_ADMIN_USER，专用测试超管）
+
+===== 准备：拉起桌面壳 =====
+     [账号] opsadmin（来源 dotenv-test）—— 仅在线模式用得到；--offline 不登录
+     [模式] 打包产物 exe + QLS_SHELL_FORCE_OFFLINE=1
+     [目标] D:\fish\dist-desktop\祁连山电竞-管理端-1.0.0.exe
+     [参数] --remote-debugging-port=9223
+     [CDP] 3.7s 后拿到 page target：file:///C:/Users/LingYun/AppData/Local/Temp/qls-admin-shell/resources/app.asar/src/error.html
+     [CDP] 当时全部 target：file:///C:/Users/LingYun/AppData/Local/Temp/qls-admin-shell/resources/app.asar/src/error.html
+
+===== ① 三档全灭 → 自家浅色错误页（不白屏） =====
+     [SHOT] 04-管理端exe-错误页-三档全灭.png (70 KB)
+PASS ① 错误页（浅色 / 标题 / 启动步骤 / 探活记录 / 重试按钮 / 不白屏）
+     地址：file:///C:/Users/LingYun/AppData/Local/Temp/qls-admin-shell/resources/app.asar/src/error.html
+     底色：rgb(245, 247, 251)
+     标题：连不上服务端，请先启动服务
+     探活记录：4 条
+     首条：✗ ① 本机 http://127.0.0.1:3100 模拟离线（QLS_SHELL_FORCE_OFFLINE=1）
+
+===== ② 「重试」真的又跑了一轮寻址（不是假刷新） =====
+PASS ② 重试 → 新一轮寻址（bootCount+1）→ 仍离线则回到错误页
+     轮次：1 → 2
+     当前页：file:///C:/Users/LingYun/AppData/Local/Temp/qls-admin-shell/resources/app.asar/src/error.html
+
+===== 结论（--offline） =====
+GREEN：全部断言通过（FAIL 0 组）
+
+===== 收尾：关掉本次拉起的桌面壳 =====
+     关闭后仍存在的壳进程：0
+OFFLINE_EXIT=0  
+  
+===== 三、公网回退链（QLS_SHELL_SKIP_LOCAL=1 → ① 跳过 → ② Gitee 引导 → ③ 内置候选）=====  
+[回归账号] 管理端账号 = opsadmin（来自 D:\fish\server\.env 的 REGRESSION_ADMIN_USER，专用测试超管）
+
+===== 准备：拉起桌面壳 =====
+     [账号] opsadmin（来源 dotenv-test）—— 仅在线模式用得到；--offline 不登录
+     [模式] 打包产物 exe
+     [目标] D:\fish\dist-desktop\祁连山电竞-管理端-1.0.0.exe
+     [参数] --remote-debugging-port=9224
+     [CDP] 8.0s 后拿到 page target：https://immediate-assign-nor-bike.trycloudflare.com/
+     [CDP] 当时全部 target：https://immediate-assign-nor-bike.trycloudflare.com/
+
+===== ① 跳过 ① 本机 → ② Gitee 引导 → ③ 内置候选（公网回退链） =====
+     [挂载] 1.2s 后页面已挂载（底色 rgb(245, 247, 251)）
+     [SHOT] 05-管理端exe-公网回退链.png (152 KB)
+PASS ① 公网回退链：① 跳过 → ② 引导 → ③ 内置候选（命中则真加载公网页面）
+     结果：公网命中 https://immediate-assign-nor-bike.trycloudflare.com
+     页面URL：https://immediate-assign-nor-bike.trycloudflare.com/
+     页面标题：管理后台
+     底色：rgb(245, 247, 251)
+     探活链：✗① http://127.0.0.1:3100（跳过（QLS_SHELL_SKIP_LOCAL=1，强制走公网回退链））  →  ✗② https://vista-bind-archives-components.trycloudflare.com（HTTP 530）  →  ✗② https://handful-antarctic-recoil.ngrok-free.dev（HTTP 403）  →  ✓③ https://immediate-assign-nor-bike.trycloudflare.com（HTTP 200 · code=0 · database=up redis=up）
+
+===== 结论（--no-local） =====
+GREEN：全部断言通过（FAIL 0 组）
+
+===== 收尾：关掉本次拉起的桌面壳 =====
+     关闭后仍存在的壳进程：0
+NOLOCAL_EXIT=0 

@@ -1,0 +1,11 @@
+﻿{
+    "_comment":  "FISH service address dispatch file (single source of truth). Fields: api = current API base (/api/v1) - the safe single answer; ws = Socket.IO base; candidates = probed in parallel; preferred = wins whenever it probes OK. 2026-10-13 云迁移：生产已固定在云服务器（香港 YOUR_SERVER_HOST，固定 IP），本机隧道与 ngrok 已从候选中移除 —— 它们指向本机开发环境（版本/数据可能与生产不一致，且负责人关机后即失效），留着只会拖慢冷启动并造成「看不到更新」这类假象。updatedAt = dispatch time; source = origin. Never put secrets here.",
+    "api":  "http://YOUR_SERVER_HOST:3100/api/v1",
+    "ws":  "http://YOUR_SERVER_HOST:3100",
+    "preferred":  "http://YOUR_SERVER_HOST:3100",
+    "candidates":  [
+                       "http://YOUR_SERVER_HOST:3100"
+                   ],
+    "updatedAt":  "2026-10-13T23:50:00Z",
+    "source":  "cloud-server-hk-YOUR_SERVER_HOST"
+}

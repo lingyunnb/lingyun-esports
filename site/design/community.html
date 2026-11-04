@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>祁连山电竞 · 频道社区设计稿（浅色 C / 深色 D 对照）</title>
+<style>
+  :root{ --ink:#0c0e12; --ink2:#565c68; --ink3:#8a909c; --line:#e9ecf2; --accent:#3d5afe;
+         --bg:#f6f7fa; --card:#fff; --sh:0 4px 14px rgba(15,20,35,.06), 0 12px 32px rgba(15,20,35,.05); }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:"PingFang SC","Microsoft YaHei UI","Microsoft YaHei",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  header{padding:38px 32px 6px;max-width:1560px;margin:0 auto}
+  .badge{display:inline-block;background:#e8f5ec;color:#14663a;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:14px}
+  h1{margin:0 0 10px;font-size:30px;font-weight:800}
+  .sub{color:var(--ink2);font-size:14px;line-height:1.8;max-width:1180px}
+  main{max-width:1560px;margin:0 auto;padding:10px 32px 90px}
+  .sec{margin:44px 0 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .sec h2{margin:0;font-size:20px;font-weight:800}
+  .sec span{font-size:13px;color:var(--ink3)}
+  .grid{display:grid;gap:24px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid.one{grid-template-columns:minmax(0,1fr)}
+  .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--sh)}
+  .card h3{margin:0 0 4px;font-size:15.5px;font-weight:800}
+  .card p{margin:0 0 12px;font-size:12.5px;color:var(--ink2);line-height:1.65}
+  .shot{display:block;width:100%;border-radius:14px;border:1px solid var(--line);cursor:zoom-in;background:#fff}
+  .dark-wrap{background:#0b0e14;border-radius:16px;padding:8px}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px;background:#fff;border:1px solid var(--line);
+        border-radius:20px;overflow:hidden;box-shadow:var(--sh)}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+  th{color:var(--ink3);font-weight:700;font-size:12px;background:#fbfcfe}
+  td b{color:var(--ink)}
+  code{background:#f2f4f8;border-radius:6px;padding:2px 6px;font-size:12.5px;font-family:Consolas,Monaco,monospace;color:#2b3fd0}
+  .tools{display:flex;gap:10px;align-items:center;margin:18px 0 4px;flex-wrap:wrap}
+  .tools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;
+                font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2)}
+  .tools button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tools .hint{font-size:12.5px;color:var(--ink3)}
+  .pickrow{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:22px 0 4px}
+  .pick{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px 22px;box-shadow:var(--sh)}
+  .pick.dark{background:#0b0e14;border-color:#1e2637}
+  .pick.dark h2,.pick.dark p{color:#fff}
+  .pick.dark p{color:#a6b0c4}
+  .pick h2{margin:0 0 6px;font-size:19px;font-weight:800}
+  .pick p{margin:0 0 14px;font-size:12.5px;line-height:1.7;color:var(--ink2)}
+  .sw-row{display:flex;gap:8px}
+  .sw{width:26px;height:26px;border-radius:8px;border:1px solid rgba(0,0,0,.12)}
+  @media (max-width:980px){ .grid,.grid.three,.pickrow{grid-template-columns:1fr} header,main{padding-left:16px;padding-right:16px} }
+</style>
+</head>
+<body>
+<header>
+  <div class="badge">待审批 · 语聊房已暂停，本页只做频道社区（浅色 / 深色两版对照）</div>
+  <h1>祁连山电竞 · 频道社区设计稿</h1>
+  <p class="sub">
+    形态：<b>服务器 → 分区 → 频道（文字/公告/语音占位）→ 消息流 + 成员</b>，信息架构参考移动端 Discord 的成熟做法。
+    同一套结构出了两版皮肤：<b>C 案浅色</b>（配合 A 案）与 <b>D 案深色</b>（配合 B 案）—— 你们选哪套，我就按哪套实施。
+    <br><a href="./" style="color:var(--accent);font-weight:700">← 返回 A/B 总体方案投票页</a>
+  </p>
+  <div class="pickrow">
+    <div class="pick">
+      <h2>C 案 · 浅色（纯白克制）</h2>
+      <p>纯白卡 + 近黑文字 + 单强调色 #3D5AFE，与 A 案主体语言一致；白天可读性最好。</p>
+      <div class="sw-row">
+        <span class="sw" style="background:#ffffff"></span><span class="sw" style="background:#0c0e12"></span>
+        <span class="sw" style="background:#3d5afe"></span><span class="sw" style="background:#ecf0ff"></span>
+      </div>
+    </div>
+    <div class="pick dark">
+      <h2>D 案 · 深色（电竞氛围）</h2>
+      <p>底色 #0B0E14 + 卡面 #141926 + 电竞蓝 #3B82F6 + 会员金 #F5C24B，与 B 案主体语言一致；氛围更"游戏"。</p>
+      <div class="sw-row">
+        <span class="sw" style="background:#0b0e14"></span><span class="sw" style="background:#141926"></span>
+        <span class="sw" style="background:#3b82f6"></span><span class="sw" style="background:#f5c24b"></span>
+      </div>
+    </div>
+  </div>
+  <div class="tools">
+    <button data-cols="one" class="on">单列看细节</button>
+    <button data-cols="two">双列</button>
+    <button data-cols="three">三列总览</button>
+    <span class="hint">点任意图片可开原始尺寸</span>
+  </div>
+</header>
+
+<main>
+  <div class="sec"><h2>两版总览对照</h2><span>同一信息架构，只换皮肤</span></div>
+  <div class="grid">
+    <div class="card">
+      <h3>C 案 · 浅色四屏</h3>
+      <p>频道消息 / 频道抽屉 / 消息页社区入口 / 发现服务器</p>
+      <a href="C0-频道社区总览.png" target="_blank"><img class="shot" src="C0-频道社区总览.png" alt="C 浅色总览" /></a>
+    </div>
+    <div class="card">
+      <h3>D 案 · 深色四屏</h3>
+      <p>同结构深色皮肤：顶部氛围光 + 深色卡面 + 蓝色选中态 + 金色身份</p>
+      <div class="dark-wrap"><a href="D0-频道社区总览-深色.png" target="_blank"><img class="shot" style="border:0" src="D0-频道社区总览-深色.png" alt="D 深色总览" /></a></div>
+    </div>
+  </div>
+
+  <div class="sec"><h2>逐屏对照</h2><span>左浅色 C / 右深色 D</span></div>
+  <div class="grid">
+    <div class="card">
+      <h3>C1 频道消息（浅色）</h3>
+      <p>顶栏服务器名 + <code># 频道名</code> + 在线数；管理员金色身份 + 「管理员」标签。</p>
+      <a href="C1-频道消息.png" target="_blank"><img class="shot" src="C1-频道消息.png" alt="C1" /></a>
+    </div>
+    <div class="card">
+      <h3>D1 频道消息（深色）</h3>
+      <p>同结构深色：气泡对比更强，管理员标签用金色深底。</p>
+      <div class="dark-wrap"><a href="D1-频道消息.png" target="_blank"><img class="shot" style="border:0" src="D1-频道消息.png" alt="D1" /></a></div>
+    </div>
+    <div class="card">
+      <h3>C2 频道抽屉（浅色）</h3>
+      <p>292pt 抽屉：服务器横滑 + 分区频道 + 未读气泡 + 身份卡。</p>
+      <a href="C2-频道抽屉.png" target="_blank"><img class="shot" src="C2-频道抽屉.png" alt="C2" /></a>
+    </div>
+    <div class="card">
+      <h3>D2 频道抽屉（深色）</h3>
+      <p>同结构：选中的服务器带左侧蓝色指示条，未读用蓝色气泡。</p>
+      <div class="dark-wrap"><a href="D2-频道抽屉.png" target="_blank"><img class="shot" style="border:0" src="D2-频道抽屉.png" alt="D2" /></a></div>
+    </div>
+    <div class="card">
+      <h3>C3 消息页社区入口（浅色）</h3>
+      <p>聊天 / 好友 / 社区三段；服务器卡（图标/成员/最后消息/未读）+ 发现入口。</p>
+      <a href="C3-消息页社区入口.png" target="_blank"><img class="shot" src="C3-消息页社区入口.png" alt="C3" /></a>
+    </div>
+    <div class="card">
+      <h3>D3 消息页社区入口（深色）</h3>
+      <p>深色版增加满宽搜索条（B 案首页语言），社区分段用蓝色实底。</p>
+      <div class="dark-wrap"><a href="D3-消息页社区入口.png" target="_blank"><img class="shot" style="border:0" src="D3-消息页社区入口.png" alt="D3" /></a></div>
+    </div>
+    <div class="card">
+      <h3>C4 发现服务器（浅色）</h3>
+      <p>搜索 + 分类胶囊 + 服务器卡；已加入为金色标签。</p>
+      <a href="C4-发现服务器.png" target="_blank"><img class="shot" src="C4-发现服务器.png" alt="C4" /></a>
+    </div>
+    <div class="card">
+      <h3>D4 发现服务器（深色）</h3>
+      <p>深色版卡片左侧加服务器色条，加入按钮为实底蓝色。</p>
+      <div class="dark-wrap"><a href="D4-发现服务器.png" target="_blank"><img class="shot" style="border:0" src="D4-发现服务器.png" alt="D4" /></a></div>
+    </div>
+    <div class="card">
+      <h3>C5 频道管理（管理端浅色）</h3>
+      <p>服务器 / 频道 / 成员 / 角色权限 / 违规记录；语音标注「预留（未上线）」。</p>
+      <a href="C5-频道管理.png" target="_blank"><img class="shot" src="C5-频道管理.png" alt="C5" /></a>
+    </div>
+    <div class="card">
+      <h3>D5 频道管理（管理端深色）</h3>
+      <p>同结构深色后台，状态标签用低饱和底色 + 高饱和文字。</p>
+      <div class="dark-wrap"><a href="D5-频道管理.png" target="_blank"><img class="shot" style="border:0" src="D5-频道管理.png" alt="D5" /></a></div>
+    </div>
+  </div>
+
+  <div class="sec"><h2>数据模型草案（两版通用，与皮肤无关）</h2><span>新增 5 张表，不动现有表</span></div>
+  <table>
+    <tr><th>表</th><th>关键字段</th><th>说明</th></tr>
+    <tr><td><b>community_server</b></td><td>id · name · icon_media_id · owner_user_id · description · member_count · status · created_at</td><td>服务器（社区）</td></tr>
+    <tr><td><b>community_channel</b></td><td>id · server_id · name · type(text/announce/voice) · category · sort_order · status · read_only</td><td>频道；语音本版预留</td></tr>
+    <tr><td><b>community_member</b></td><td>id · server_id · user_id · role(owner/admin/mod/member) · joined_at · muted_until · banned_until</td><td>成员与身份；唯一约束 (server_id,user_id)</td></tr>
+    <tr><td><b>community_message</b></td><td>id · channel_id · sender_id · msg_type · content · media_id · seq · reply_to · created_at · recalled</td><td>频道内 <code>seq</code> 递增，沿用现有会话方案</td></tr>
+    <tr><td><b>community_read</b></td><td>id · channel_id · user_id · last_seq</td><td>已读位点算未读</td></tr>
+  </table>
+  <p class="sub" style="margin-top:14px">
+    <b>规则沿用现有铁律：</b>发送限流（20 条/分/主体）、消息不物理删除（撤回=软状态）、图片走受保护通道并鉴权成员身份、
+    禁言/踢出/封禁实时查库、管理动作写 operation_log；WebSocket 复用 <code>/ws/chat</code>，新增 <code>channel:join</code> / <code>channel:msg</code>。
+  </p>
+
+  <div class="sec"><h2>请确认</h2><span>确认后并入 UI 改版一起实施</span></div>
+  <table>
+    <tr><th>问题</th><th>建议</th></tr>
+    <tr><td>皮肤选哪版？</td><td>跟着 A/B 总体方案走：选 A 用 <b>C 浅色</b>，选 B 用 <b>D 深色</b>（也可以主体浅色、社区深色，我按你说的配）</td></tr>
+    <tr><td>服务器谁能创建？</td><td>先仅管理员建官方服务器，玩家自建后续开</td></tr>
+    <tr><td>频道类型</td><td>先文字 + 公告；语音按你的要求只占位、不实现</td></tr>
+    <tr><td>谁能发言</td><td>全员可发；公告频道可设「仅管理员发言」</td></tr>
+    <tr><td>入口位置</td><td>消息页第三段「社区」，不打乱现有五导航</td></tr>
+  </table>
+</main>
+
+<script>
+  document.querySelectorAll('.tools button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.tools button').forEach(function(b){ b.classList.remove('on'); });
+      btn.classList.add('on');
+      document.querySelectorAll('.grid').forEach(function(g){
+        g.classList.remove('one','two','three'); g.classList.add(btn.dataset.cols);
+      });
+    });
+  });
+</script>
+</body>
+</html>

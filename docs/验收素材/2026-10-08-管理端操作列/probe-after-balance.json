@@ -1,0 +1,530 @@
+[
+  {
+    "width": 1280,
+    "page": "/users",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-users.png",
+    "viewWidth": 1015,
+    "contentWidth": 1465,
+    "hasHScroll": true,
+    "contentArea": 1065,
+    "cols": "ID:115 | 账号:130 | 昵称:110 | 角色:80 | 身份绑定:240 | 等级:60 | 余额:110 | 状态:170 | 最近登录:150 | 注册时间:150 | 操作:150(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "封号",
+        "w": 48,
+        "h": 28,
+        "left": 1102,
+        "right": 1150,
+        "top": 199,
+        "insideClip": true
+      },
+      {
+        "text": "删除",
+        "w": 48,
+        "h": 28,
+        "left": 1158,
+        "right": 1206,
+        "top": 199,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 150,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/wallets",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-wallets.png",
+    "viewWidth": 1015,
+    "contentWidth": 1015,
+    "hasHScroll": false,
+    "contentArea": 1065,
+    "cols": "账号:140 | ID:130 | 昵称:130 | 等级:119 | 累计消费:119 | 余额:119 | 操作:259(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "发放",
+        "w": 48,
+        "h": 28,
+        "left": 993,
+        "right": 1041,
+        "top": 244,
+        "insideClip": true
+      },
+      {
+        "text": "回收",
+        "w": 48,
+        "h": 28,
+        "left": 1049,
+        "right": 1097,
+        "top": 244,
+        "insideClip": true
+      },
+      {
+        "text": "调级",
+        "w": 48,
+        "h": 28,
+        "left": 1105,
+        "right": 1153,
+        "top": 244,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 259,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/orders",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-orders.png",
+    "viewWidth": 1015,
+    "contentWidth": 1015,
+    "hasHScroll": false,
+    "contentArea": 1065,
+    "cols": "订单号:192 | 用户:124 | 金额:124 | 状态:124 | 创建时间:180 | 操作:271(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "详情",
+        "w": 48,
+        "h": 28,
+        "left": 981,
+        "right": 1029,
+        "top": 190,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 271,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/catalog",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-catalog.png",
+    "viewWidth": 1030,
+    "contentWidth": 1030,
+    "hasHScroll": false,
+    "contentArea": 1080,
+    "cols": "Code:203 | 名称:236 | 排序:118 | 状态:135 | 操作:338(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "编辑",
+        "w": 48,
+        "h": 28,
+        "left": 929,
+        "right": 977,
+        "top": 244,
+        "insideClip": true
+      },
+      {
+        "text": "下架",
+        "w": 48,
+        "h": 28,
+        "left": 985,
+        "right": 1033,
+        "top": 244,
+        "insideClip": true
+      },
+      {
+        "text": "删除",
+        "w": 48,
+        "h": 28,
+        "left": 1041,
+        "right": 1089,
+        "top": 244,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 338,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/commission",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-commission.png",
+    "viewWidth": 1015,
+    "contentWidth": 1015,
+    "hasHScroll": false,
+    "contentArea": 1065,
+    "cols": "结算ID:190 | 订单号:190 | 订单金额:123 | 打手收益（当前 75%）:167 | 平台抽成:156 | 结算时间:190",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/refunds",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-refunds.png",
+    "viewWidth": 1030,
+    "contentWidth": 1235,
+    "hasHScroll": true,
+    "contentArea": 1080,
+    "cols": "申请单号:150 | 订单号:170 | 订单状态:100 | 申请人:130 | 退款金额:120 | 退款原因:200 | 状态:90 | 申请时间:165 | 操作:110(fixedR)",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/tips",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-tips.png",
+    "viewWidth": 1030,
+    "contentWidth": 1060,
+    "hasHScroll": true,
+    "contentArea": 1080,
+    "cols": "ID:70 | 订单号:170 | 打赏老板:150 | 收款打手:150 | 打赏金额:120 | 状态:90 | 备注:140 | 时间:170",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/appeals",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-appeals.png",
+    "viewWidth": 1030,
+    "contentWidth": 1030,
+    "hasHScroll": false,
+    "contentArea": 1080,
+    "cols": "订单号:170 | 用户:110 | 金额:110 | 申诉原因:260 | 状态:90 | 申诉时间:160 | 操作:130(fixedR)",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/leaderboard",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-leaderboard.png",
+    "viewWidth": 1030,
+    "contentWidth": 1030,
+    "hasHScroll": false,
+    "contentArea": 1080,
+    "cols": "排名:103 | 打手:235 | 完成单数:132 | 真实金额:191 | 人工调整:177 | 有效金额:191",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/recharge",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1280-recharge.png",
+    "viewWidth": 998,
+    "contentWidth": 1070,
+    "hasHScroll": true,
+    "contentArea": 1080,
+    "cols": "用户:150 | 金额:110 | 应得余额:120 | 付款凭证:96 | 提交时间:150 | 状态:96 | 审核人 / 时间:168 | 操作:180(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "发放",
+        "w": 48,
+        "h": 28,
+        "left": 1067,
+        "right": 1115,
+        "top": 343,
+        "insideClip": true
+      },
+      {
+        "text": "驳回",
+        "w": 48,
+        "h": 28,
+        "left": 1123,
+        "right": 1171,
+        "top": 343,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 180,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/users",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-users.png",
+    "viewWidth": 1335,
+    "contentWidth": 1465,
+    "hasHScroll": true,
+    "contentArea": 1385,
+    "cols": "ID:115 | 账号:130 | 昵称:110 | 角色:80 | 身份绑定:240 | 等级:60 | 余额:110 | 状态:170 | 最近登录:150 | 注册时间:150 | 操作:150(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "封号",
+        "w": 48,
+        "h": 28,
+        "left": 1422,
+        "right": 1470,
+        "top": 199,
+        "insideClip": true
+      },
+      {
+        "text": "删除",
+        "w": 48,
+        "h": 28,
+        "left": 1478,
+        "right": 1526,
+        "top": 199,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 150,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/wallets",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-wallets.png",
+    "viewWidth": 1335,
+    "contentWidth": 1335,
+    "hasHScroll": false,
+    "contentArea": 1385,
+    "cols": "账号:185 | ID:170 | 昵称:170 | 等级:156 | 累计消费:156 | 余额:156 | 操作:341(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "发放",
+        "w": 48,
+        "h": 28,
+        "left": 1231,
+        "right": 1279,
+        "top": 244,
+        "insideClip": true
+      },
+      {
+        "text": "回收",
+        "w": 48,
+        "h": 28,
+        "left": 1287,
+        "right": 1335,
+        "top": 244,
+        "insideClip": true
+      },
+      {
+        "text": "调级",
+        "w": 48,
+        "h": 28,
+        "left": 1343,
+        "right": 1391,
+        "top": 244,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 341,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/orders",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-orders.png",
+    "viewWidth": 1335,
+    "contentWidth": 1335,
+    "hasHScroll": false,
+    "contentArea": 1385,
+    "cols": "订单号:252 | 用户:163 | 金额:163 | 状态:163 | 创建时间:237 | 操作:356(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "详情",
+        "w": 48,
+        "h": 28,
+        "left": 1216,
+        "right": 1264,
+        "top": 190,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 356,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/catalog",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-catalog.png",
+    "viewWidth": 1350,
+    "contentWidth": 1350,
+    "hasHScroll": false,
+    "contentArea": 1400,
+    "cols": "Code:266 | 名称:310 | 排序:155 | 状态:177 | 操作:443(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "编辑",
+        "w": 48,
+        "h": 28,
+        "left": 1144,
+        "right": 1192,
+        "top": 244,
+        "insideClip": true
+      },
+      {
+        "text": "下架",
+        "w": 48,
+        "h": 28,
+        "left": 1200,
+        "right": 1248,
+        "top": 244,
+        "insideClip": true
+      },
+      {
+        "text": "删除",
+        "w": 48,
+        "h": 28,
+        "left": 1256,
+        "right": 1304,
+        "top": 244,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 443,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/commission",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-commission.png",
+    "viewWidth": 1335,
+    "contentWidth": 1335,
+    "hasHScroll": false,
+    "contentArea": 1385,
+    "cols": "结算ID:249 | 订单号:249 | 订单金额:161 | 打手收益（当前 75%）:220 | 平台抽成:205 | 结算时间:249",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/refunds",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-refunds.png",
+    "viewWidth": 1350,
+    "contentWidth": 1350,
+    "hasHScroll": false,
+    "contentArea": 1400,
+    "cols": "申请单号:150 | 订单号:170 | 订单状态:100 | 申请人:130 | 退款金额:120 | 退款原因:315 | 状态:90 | 申请时间:165 | 操作:110(fixedR)",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/tips",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-tips.png",
+    "viewWidth": 1350,
+    "contentWidth": 1350,
+    "hasHScroll": false,
+    "contentArea": 1400,
+    "cols": "ID:89 | 订单号:217 | 打赏老板:191 | 收款打手:191 | 打赏金额:153 | 状态:115 | 备注:178 | 时间:217",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/appeals",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-appeals.png",
+    "viewWidth": 1350,
+    "contentWidth": 1350,
+    "hasHScroll": false,
+    "contentArea": 1400,
+    "cols": "订单号:170 | 用户:110 | 金额:110 | 申诉原因:580 | 状态:90 | 申诉时间:160 | 操作:130(fixedR)",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/leaderboard",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-leaderboard.png",
+    "viewWidth": 1350,
+    "contentWidth": 1350,
+    "hasHScroll": false,
+    "contentArea": 1400,
+    "cols": "排名:135 | 打手:309 | 完成单数:174 | 真实金额:251 | 人工调整:231 | 有效金额:251",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/recharge",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-balance-1600-recharge.png",
+    "viewWidth": 1318,
+    "contentWidth": 1318,
+    "hasHScroll": false,
+    "contentArea": 1400,
+    "cols": "用户:398 | 金额:110 | 应得余额:120 | 付款凭证:96 | 提交时间:150 | 状态:96 | 审核人 / 时间:168 | 操作:180(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "发放",
+        "w": 48,
+        "h": 28,
+        "left": 1387,
+        "right": 1435,
+        "top": 343,
+        "insideClip": true
+      },
+      {
+        "text": "驳回",
+        "w": 48,
+        "h": 28,
+        "left": 1443,
+        "right": 1491,
+        "top": 343,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 180,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  }
+]

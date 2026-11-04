@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>A 套 · 放宽版（名字下方一排小胶囊 · 主推）· 祁连山电竞</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#EDF1F6}
+body{font-family:"MiSans","Microsoft YaHei","PingFang SC",Helvetica,Arial,sans-serif;color:#14202E;
+     padding:24px;display:flex;flex-direction:column;gap:20px}
+h1{font-size:22px;font-weight:800;letter-spacing:.2px}
+h2{font-size:18px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+.lead{font-size:13px;line-height:1.75;color:#4A5A6E;max-width:1258px}
+.lead b{color:#1D5FA8;font-weight:700}
+.lead .sep{color:#CDD6E2;padding:0 8px}
+.lead .ok2{color:#0E7C7B;font-weight:700}
+.panel{background:#fff;border:1px solid #CDD6E2;border-radius:14px;padding:16px 20px}
+.row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;gap:8px;width:390px}
+.cap{font-size:12px;line-height:1.7;color:#4A5A6E}
+.cap b{display:block;font-size:13px;font-weight:700;color:#14202E;margin-bottom:4px}
+.cap i{font-style:normal;color:#1D5FA8;font-weight:700}
+.warn{font-size:11px;line-height:1.7;color:#4A5A6E;background:#fff;border:1px solid #E3E8EF;border-radius:10px;padding:8px 12px}
+.warn b{color:#14202E}
+
+/* ---------- 手机壳 ---------- */
+.phone{width:390px;flex:0 0 auto;position:relative;overflow:hidden;background:#F4F6F9;
+       border-radius:14px;outline:1px solid #CDD6E2;outline-offset:-1px}
+.phone.fixed{height:844px}
+.phone.auto{height:auto}
+.phone .page{position:absolute;left:0;right:0;top:44px;bottom:0;overflow:hidden}
+.phone.auto .page{position:relative;top:0;bottom:0;overflow:visible}
+.phone .homebar{position:absolute;left:0;right:0;bottom:0;height:24px;display:flex;align-items:center;justify-content:center}
+.phone.auto .homebar{position:static}
+.homebar i{width:96px;height:4px;border-radius:999px;background:#CDD6E2}
+
+/* ---------- 系统状态栏 ---------- */
+.sb{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.sb .t{font-size:12px;font-weight:600}
+.sb .r{display:flex;align-items:center;gap:4px;color:#14202E}
+
+/* ---------- 页头 ---------- */
+.appbar{height:48px;background:#fff;border-bottom:1px solid #E3E8EF;display:flex;align-items:center;padding:0 16px;gap:12px}
+.appbar .bk{color:#14202E;display:flex}
+.appbar .ab-t{font-size:22px;font-weight:800}
+.appbar .ab-s{font-size:11px;color:#8A99AB}
+
+/* ---------- 筛选胶囊行 / 计数行 ---------- */
+/* 分部宫格（学参考图 ③ 的骨架：每行 4 格 / 格高 44 / 选中格浅底主色字；多分部时自动折行） */
+.gridrow{height:64px;padding:0 16px;background:#fff;border-bottom:1px solid #E3E8EF;display:flex;align-items:center;gap:8px}
+.gc{width:80px;height:44px;border-radius:4px;border:1px solid #E3E8EF;background:#F4F6F9;color:#4A5A6E;
+  font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.gc.on{background:#E8EEF7;border-color:#E8EEF7;color:#1D5FA8;font-weight:700}
+.meta{height:32px;display:flex;align-items:center;padding:0 16px;background:#F4F6F9}
+.meta .c{font-size:11px;color:#8A99AB}
+.meta .f{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13px;color:#4A5A6E}
+
+/* ---------- 陪玩卡（ListCard 无圆角 + 发丝线；高度恒定 148dp） ---------- */
+.list{background:#fff;border-top:1px solid #E3E8EF}
+.pcard{height:148px;display:flex;align-items:flex-start;gap:12px;padding:16px;border-bottom:1px solid #E3E8EF;background:#fff}
+.av{width:44px;height:44px;flex:0 0 44px;border-radius:999px;background:#E8EEF7;color:#1D5FA8;
+  display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600}
+.card-l{flex:1;min-width:0}
+.nmrow{height:20px;display:flex;align-items:center;gap:8px}
+.nm{flex:0 1 auto;min-width:0;font-size:15px;font-weight:700;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 等级位：只存在于设计稿的「预留位」虚线框；等级名称/形态定案前实现里此处不渲染任何元素 */
+.lvl{flex:0 0 auto;height:20px;padding:0 8px;border-radius:4px;border:1px dashed #CDD6E2;color:#8A99AB;
+  font-size:11px;font-weight:600;display:flex;align-items:center;white-space:nowrap}
+.tagrow{margin-top:8px;height:20px;display:flex;align-items:center;gap:8px}
+.tgd{height:20px;padding:0 8px;border-radius:4px;background:#E8EEF7;color:#1D5FA8;font-size:11px;font-weight:600;display:flex;align-items:center;white-space:nowrap}
+.tgt{height:20px;padding:0 8px;border-radius:4px;background:#F4F6F9;border:1px solid #E3E8EF;color:#4A5A6E;font-size:11px;font-weight:400;display:flex;align-items:center;white-space:nowrap}
+.ds{margin-top:8px;font-size:12px;line-height:17px;height:34px;color:#4A5A6E;
+  display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ds.muted{color:#8A99AB}
+.mrow{margin-top:8px;height:16px;font-size:11px;line-height:16px;color:#8A99AB;
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.foot{height:48px;display:flex;align-items:center;justify-content:center;background:#fff;border-bottom:1px solid #E3E8EF;font-size:11px;color:#8A99AB}
+
+/* ---------- 骨架态（静态块，不引 shimmer 依赖） ---------- */
+.sk{background:#E3E8EF;border-radius:4px}
+.sk.av{width:44px;height:44px;flex:0 0 44px;border-radius:999px}
+.sk.lvl{width:56px;border:0;background:#E3E8EF}
+
+/* ---------- 空态（细网格只用于品牌区与空态，docs/32 §二） ---------- */
+.empty{position:relative;overflow:hidden;padding:48px 32px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.empty .mesh{position:absolute;left:0;top:0;right:0;height:160px;
+  background-image:repeating-linear-gradient(0deg,rgba(15,36,64,.04) 0px,rgba(15,36,64,.04) 1px,rgba(0,0,0,0) 1px,rgba(0,0,0,0) 8px),
+                   repeating-linear-gradient(90deg,rgba(15,36,64,.04) 0px,rgba(15,36,64,.04) 1px,rgba(0,0,0,0) 1px,rgba(0,0,0,0) 8px)}
+.empty .ic,.empty .et,.empty .es,.empty .btns{position:relative}
+.empty .ic{color:#8A99AB}
+.empty .et{font-size:15px;font-weight:600}
+.empty .es{font-size:12px;line-height:1.7;color:#8A99AB;text-align:center;max-width:280px}
+.btns{display:flex;gap:8px;margin-top:12px}
+.bto{height:44px;padding:0 20px;border-radius:10px;border:1px solid #1D5FA8;color:#1D5FA8;
+  font-size:13px;font-weight:700;display:flex;align-items:center}
+.bts{height:44px;padding:0 20px;border-radius:10px;border:1px solid #CDD6E2;color:#4A5A6E;
+  font-size:13px;font-weight:600;display:flex;align-items:center}
+
+/* ---------- 对照标签行 ---------- */
+.vlabel{height:32px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#F4F6F9;font-size:11px;color:#8A99AB}
+.vlabel b{color:#14202E;font-weight:700}
+.chipx{height:20px;padding:0 8px;border-radius:4px;background:#F7EDE0;color:#B4732A;font-size:11px;font-weight:600;display:flex;align-items:center}
+
+/* ---------- 说明面板 ---------- */
+.two{display:flex;gap:20px;align-items:flex-start}
+.two .bx{flex:1;min-width:0}
+.bx .bt{font-size:15px;font-weight:700;margin-bottom:8px}
+.bx .bd{font-size:12px;line-height:1.8;color:#4A5A6E}
+.bx .bd b{color:#14202E}
+.bx .bd code{font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;color:#1D5FA8}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #CDD6E2;border-radius:14px;overflow:hidden}
+th,td{border-bottom:1px solid #E3E8EF;padding:8px 12px;text-align:left;vertical-align:top;font-size:12px;line-height:1.7}
+th{background:#F4F6F9;font-weight:700}
+td.p{color:#1D5FA8;font-weight:700}
+td.y{color:#0E7C7B;font-weight:700}
+td.no{color:#B42318;font-weight:700}
+tr:last-child td{border-bottom:0}
+code{font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;color:#1D5FA8}
+</style>
+</head>
+<body>
+
+<h1>A 套 · 放宽版（名字下方一排小胶囊 · 主推）</h1>
+
+<div class="lead">
+  <b>A 套 = 放宽版（主推）</b>：负责人 2026-10-15「<b>暂时放宽 我看图之后决定</b>」→
+  「标签胶囊 / 分部副标」<b>本版画出来</b>（名字下方一排小胶囊），<span class="ok2">此项待负责人看图后最终确认</span>。
+  <span class="sep">|</span>
+  <b>卡片字段</b>：头像（字标兜底）· 名字 · <b>等级预留位</b>（<b>名称未定</b>，等负责人定案）· <b>小胶囊一排</b> · 介绍 · 接单次数 · 好评率。
+  <span class="sep">|</span>
+  <b>仍然不放</b>：空闲 / 忙碌 · 评分（满意-不满意二元，无 5 星）· 单价 · 下单人数 · 语音时长 · 明星 / 大神 / 单考 / 双考 · 年龄性别 · 大竖图。
+  <span class="sep">|</span>
+  <b>对照版</b> = <code>B-list.html</code>（B 套 · 严守原规则 · 无胶囊），两版并排供负责人拍板。
+  <span class="sep">|</span>
+  <b>五屏</b>：① 首屏 ② 滚动到底 ③ 骨架态 ④ 空态 ⑤ <b>卡片取值三种对照</b>。
+</div>
+
+<div class="row">
+
+  <!-- ① 首屏 -->
+  <div class="col">
+    <div class="cap"><b>① 首屏（不滚动）</b>页头 48 + <b>分部宫格 64</b> + 计数行 32 = <i>144dp</i>；余下 656dp 装 <i>4 张卡</i>（每张恒定 148dp）+ 第 5 张露出一截。</div>
+    <div class="phone fixed">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="gridrow">
+          <div class="gc on"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>全部</div>
+          <div class="gc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4zM8 12h3M9.5 10.5v3M15 11h.01M17 13h.01"/></svg>和平精英</div>
+        </div>
+        <div class="meta"><div class="c">共 14 位陪玩</div>
+          <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+        </div>
+        <div class="list">
+          <div class="pcard tags"><div class="av">凌</div><div class="card-l">
+            <div class="nmrow"><span class="nm">凌云</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">上分</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">反</div><div class="card-l">
+            <div class="nmrow"><span class="nm">反悔</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">陪练</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">清</div><div class="card-l">
+            <div class="nmrow"><span class="nm">清水</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">全程闭麦</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">E</div><div class="card-l">
+            <div class="nmrow"><span class="nm">E2E打手</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgd">和平精英·手游</span><span class="tgt">上分</span></div>
+            <div class="ds">E2E 测试账号：和平精英手游，只跑验收流程。</div>
+            <div class="mrow">接单 30 次 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">打</div><div class="card-l">
+            <div class="nmrow"><span class="nm">打赏测试打手</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">新人</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">演</div><div class="card-l">
+            <div class="nmrow"><span class="nm">演示工作端</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">陪练</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+        </div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>本屏不出现</b>：空闲 / 忙碌 · 评分 · 单价 · 下单人数 · 语音时长 · 年龄 · 性别 · 大竖图 · 价格行。参考图右上角那枚绿色「空闲」胶囊与价格行<b>一律不学</b>（理由见 <code>compare.html</code>）；<b>标签胶囊 / 分部副标本版放宽、已画</b>。</div>
+  </div>
+
+  <!-- ② 完整页 -->
+  <div class="col">
+    <div class="cap"><b>② 滚动后（完整页）</b>高度随内容自然增长；末尾一行「共 14 位陪玩 · 已到底」。</div>
+    <div class="phone auto">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="gridrow">
+          <div class="gc on"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>全部</div>
+          <div class="gc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4zM8 12h3M9.5 10.5v3M15 11h.01M17 13h.01"/></svg>和平精英</div>
+        </div>
+        <div class="meta"><div class="c">共 14 位陪玩</div>
+          <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+        </div>
+        <div class="list">
+          <div class="pcard tags"><div class="av">凌</div><div class="card-l">
+            <div class="nmrow"><span class="nm">凌云</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">上分</span></div>
+            <div class="ds muted">介绍待补充</div><div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">反</div><div class="card-l">
+            <div class="nmrow"><span class="nm">反悔</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">陪练</span></div>
+            <div class="ds muted">介绍待补充</div><div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">清</div><div class="card-l">
+            <div class="nmrow"><span class="nm">清水</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">全程闭麦</span></div>
+            <div class="ds muted">介绍待补充</div><div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">E</div><div class="card-l">
+            <div class="nmrow"><span class="nm">E2E打手</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgd">和平精英·手游</span><span class="tgt">上分</span></div>
+            <div class="ds">E2E 测试账号：和平精英手游，只跑验收流程。</div>
+            <div class="mrow">接单 30 次 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">打</div><div class="card-l">
+            <div class="nmrow"><span class="nm">打赏测试打手</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">新人</span></div>
+            <div class="ds muted">介绍待补充</div><div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard tags"><div class="av">演</div><div class="card-l">
+            <div class="nmrow"><span class="nm">演示工作端</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">陪练</span></div>
+            <div class="ds muted">介绍待补充</div><div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="foot">共 14 位陪玩 · 已到底</div>
+        </div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>绘制说明</b>：线上 <code>total=14</code> 里另外 8 条是回归测试账号（<code>wtest_*</code>），画面上呈现 6 条代表性数据 + 底部计数行 —— <b>计数行取真实总数 14</b>，不缩数。</div>
+  </div>
+
+  <!-- ③ 骨架态 -->
+  <div class="col">
+    <div class="cap"><b>③ 加载骨架态</b>骨架块与真卡片<b>同高同宽</b>（行高 148 / 字标 44 / 等级位 56 / 胶囊行 20 / 宫格 80×44），数据回来不跳版。静态灰块，不引 <code>shimmer</code> 依赖。</div>
+    <div class="phone fixed">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="gridrow">
+          <div class="sk" style="width:80px;height:44px;border-radius:4px"></div>
+          <div class="sk" style="width:80px;height:44px;border-radius:4px"></div>
+        </div>
+        <div class="meta"><div class="c">正在加载…</div>
+          <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+        </div>
+        <div class="list">
+          <div class="pcard tags"><div class="sk av"></div><div class="card-l">
+            <div class="nmrow"><div class="sk" style="width:72px;height:16px"></div><div class="sk lvl" style="height:20px"></div></div>
+            <div class="tagrow"><div class="sk" style="width:88px;height:20px"></div><div class="sk" style="width:40px;height:20px"></div></div>
+            <div class="sk" style="width:100%;height:11px;margin-top:12px"></div>
+            <div class="sk" style="width:60%;height:11px;margin-top:8px"></div>
+            <div class="sk" style="width:44%;height:11px;margin-top:8px"></div></div></div>
+          <div class="pcard tags"><div class="sk av"></div><div class="card-l">
+            <div class="nmrow"><div class="sk" style="width:56px;height:16px"></div><div class="sk lvl" style="height:20px"></div></div>
+            <div class="tagrow"><div class="sk" style="width:40px;height:20px"></div></div>
+            <div class="sk" style="width:84%;height:11px;margin-top:12px"></div>
+            <div class="sk" style="width:48%;height:11px;margin-top:8px"></div>
+            <div class="sk" style="width:60%;height:11px;margin-top:8px"></div></div></div>
+          <div class="pcard tags"><div class="sk av"></div><div class="card-l">
+            <div class="nmrow"><div class="sk" style="width:88px;height:16px"></div><div class="sk lvl" style="height:20px"></div></div>
+            <div class="tagrow"><div class="sk" style="width:56px;height:20px"></div></div>
+            <div class="sk" style="width:92%;height:11px;margin-top:12px"></div>
+            <div class="sk" style="width:68%;height:11px;margin-top:8px"></div>
+            <div class="sk" style="width:38%;height:11px;margin-top:8px"></div></div></div>
+          <div class="pcard tags"><div class="sk av"></div><div class="card-l">
+            <div class="nmrow"><div class="sk" style="width:64px;height:16px"></div><div class="sk lvl" style="height:20px"></div></div>
+            <div class="tagrow"><div class="sk" style="width:64px;height:20px"></div><div class="sk" style="width:36px;height:20px"></div></div>
+            <div class="sk" style="width:100%;height:11px;margin-top:12px"></div>
+            <div class="sk" style="width:52%;height:11px;margin-top:8px"></div>
+            <div class="sk" style="width:52%;height:11px;margin-top:8px"></div></div></div>
+          <div class="pcard tags"><div class="sk av"></div><div class="card-l">
+            <div class="nmrow"><div class="sk" style="width:80px;height:16px"></div><div class="sk lvl" style="height:20px"></div></div>
+            <div class="tagrow"><div class="sk" style="width:40px;height:20px"></div></div>
+            <div class="sk" style="width:76%;height:11px;margin-top:12px"></div>
+            <div class="sk" style="width:40%;height:11px;margin-top:8px"></div>
+            <div class="sk" style="width:44%;height:11px;margin-top:8px"></div></div></div>
+        </div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>骨架条宽度刻意不等长</b>（72 / 56 / 88 / 64 / 80dp）—— 等长方块是「机器味」信号（<code>docs/21</code> §二）。等级位骨架固定 56dp（= 一枚 2 字等级标识的预期宽度）。</div>
+  </div>
+
+  <!-- ④ 空态 -->
+  <div class="col">
+    <div class="cap"><b>④ 空态</b>说清<b>为什么空</b> + 给<b>下一步动作</b>（<code>docs/21</code> §五）。细网格是品牌辅助图形之二，<b>只允许用在品牌区与空态</b>（<code>docs/32</code> §二）。</div>
+    <div class="phone fixed">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="gridrow">
+          <div class="gc on"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>全部</div>
+          <div class="gc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4zM8 12h3M9.5 10.5v3M15 11h.01M17 13h.01"/></svg>和平精英</div>
+        </div>
+        <div class="meta"><div class="c">共 0 位陪玩</div>
+          <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+        </div>
+        <div class="empty">
+          <div class="mesh"></div>
+          <div class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 15h6M9.5 10h.01M14.5 10h.01"/></svg></div>
+          <div class="et">和平精英分部还没有陪玩</div>
+          <div class="es">打手介绍由官方审核后填写，新打手入驻后会出现在这里；也可以不选人，直接下单由平台派单。</div>
+          <div class="btns"><div class="bto">直接去下单</div><div class="bts">问祁小山</div></div>
+        </div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>为什么不是「换个分部看看」</b>：线上 <code>GET /divisions</code> 只有 <b>1 个分部</b>（和平精英 手游），把用户导向一个不存在的动作 = 死入口（结构规则 2）。</div>
+  </div>
+
+  <!-- ⑤ 卡片取值四种对照 -->
+  <div class="col">
+    <div class="cap"><b>⑤ 卡片取值三种对照</b>线上 14 人里 <b>13 人介绍为空</b>、<b>14 人全无评价</b> —— 右下两种是「以后会有」的样子，<b>标注为示例</b>。三种情况下行高都恒为 <i>148dp</i>。</div>
+    <div class="phone fixed">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="vlabel"><b>① 线上常态</b>·介绍空 · 无接单 · 无评价（13/14 人如此）·116dp</div>
+        <div class="list">
+          <div class="pcard tags"><div class="av">凌</div><div class="card-l">
+            <div class="nmrow"><span class="nm">凌云</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">上分</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+        </div>
+        <div class="vlabel"><b>② 介绍已填 · 仍无接单无评价</b><span class="chipx">示例文案</span></div>
+        <div class="list">
+          <div class="pcard tags"><div class="av">凌</div><div class="card-l">
+            <div class="nmrow"><span class="nm">凌云</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">上分</span></div>
+            <div class="ds">和平精英手游，主玩地铁逃生与团队竞技。9:00-次日 2:00 在线，不接急单；上车前先聊两句，不合适直接说。</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+        </div>
+        <div class="vlabel"><b>③ 有接单 · 有评价</b><span class="chipx">示例数据</span></div>
+        <div class="list">
+          <div class="pcard tags"><div class="av">凌</div><div class="card-l">
+            <div class="nmrow"><span class="nm">凌云</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgt">上分</span></div>
+            <div class="ds">和平精英手游，主玩地铁逃生与团队竞技。9:00-次日 2:00 在线，不接急单；上车前先聊两句，不合适直接说。</div>
+            <div class="mrow">接单 128 次 · 好评率 96.5%</div></div></div>
+        </div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>好评率这一格的线上实况</b>：<code>GET /public/workers/:id</code> 实测 凌云 / 反悔 / 清水 / E2E打手 的 <code>reviewCount</code> <b>全为 0</b>、<code>satisfiedRate</code> <b>全为 null</b> → <b>现在这一格线上必然显示「暂无评价」</b>。设计稿按既有口径画（<code>review_models.dart:126</code>），<b>绝不编 100%</b>。</div>
+  </div>
+
+</div>
+
+<div class="panel">
+  <div class="two">
+    <div class="bx">
+      <div class="bt">规则 6 逐条核对（A 套 · 放宽版）</div>
+      <div class="bd">
+        <b>「允许的字段只有两个：名字 + 介绍」</b> → 本次按负责人 2026-10-15 指示，<b>明确追加两项真实字段</b>：<b>接单次数</b>（<code>worker_stats.completed_orders</code>）+ <b>好评率</b>（<code>GET /public/workers/:id</code> 的 <code>satisfiedRate</code>），并<b>为等级预留一个位置</b>（不画形态、不起名字）。<br>
+        <b>「禁止出现」逐条</b>：明星陪玩 / 大神 → 不出现；单考 / 双考 → 不出现；空闲 / 忙碌 → 不出现；等级 → <b>只有虚线预留位</b>，无名称无形态；评分 → 不出现（我方是满意-不满意二元，无星级）；单价 → 不出现（价格只在下单链路）；下单人数 → 不出现；语音时长 → 不出现；标签胶囊 / 分部副标 → <b>本版放宽，出现</b>（负责人 2026-10-15「暂时放宽 我看图之后决定」）→ 名字下方一排小胶囊，极浅底深字、<b>不上主色实底</b>；⚠️ <b>分部副标线上 13/14 为 <code>null</code></b> → 实际只有 E2E打手 那一张卡会有它（图里已如实照画）。<br>
+        <b>「需要这些属性时一律进详情页」</b> → 点行内任一处进打手信息页（<code>worker_profile_page.dart</code>）；<b>头像可点进打手信息页</b>沿既有实现（<code>players_page.dart:732-737</code>）。
+      </div>
+    </div>
+    <div class="bx">
+      <div class="bt">等级预留位：现在怎么做、以后怎么接</div>
+      <div class="bd">
+        <b>位置</b>：名字<b>右侧同一行</b>（<code>.nmrow</code>，行高 20dp），等级位不挤压名字 —— 名字 <code>flex:0 1 auto; min-width:0</code> + 单行省略，等级位 <code>flex:0 0 auto</code>。<br>
+        <b>现在</b>：<b>实现里此处不渲染任何元素</b>（虚线框只存在于本设计稿，用来向负责人展示「位置在这里、宽度约 56dp」）。<br>
+        <b>以后</b>：等级名称/形态定案后，把虚线框换成真组件即可 —— <b>布局不动、卡片高度不动、骨架屏不动</b>。<br>
+        <b>骨架屏同步</b>：本稿的骨架屏<b>已经画了等级位的 56dp 灰块与胶囊行</b>。若负责人决定等级要等更久才上，骨架屏这一块要一并去掉（<b>否则骨架比真卡多一块</b>）。<br>
+        <b>需要的数据能力</b>：等级规则本身（累计消费 / 接单量 / 人工授予）—— 名称与口径由负责人定，<b>本稿不预设</b>。
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="bt" style="font-size:15px;font-weight:700;margin-bottom:8px">数据来源（2026-10-15 本机 curl 复核，逐字未改）</div>
+  <table>
+    <tr><th style="width:320px">接口 / 字段</th><th style="width:150px">实测</th><th>本图怎么用</th></tr>
+    <tr><td><code>GET /public/players?divisionId=1&amp;page=1&amp;pageSize=50</code></td><td class="p">total = 14</td><td>计数行「共 14 位陪玩」+ 名单顺序（凌云 · 反悔 · 清水 · 演示工作端 · wtest_* ×8 · E2E打手 · 打赏测试打手）</td></tr>
+    <tr><td><code>…list[].intro</code></td><td class="p">13/14 为空串</td><td>空 → 弱化占位「介绍待补充」；非空 → 12 号正文（仅 E2E打手 一条真实非空）</td></tr>
+    <tr><td><code>…list[].avatarMediaId</code></td><td class="p">14/14 为 null</td><td><b>不画空框</b>（规则 2），一律 44dp 首字字标兜底</td></tr>
+    <tr><td><code>…list[].divisionId</code></td><td class="p">13/14 为 null，仅 E2E打手 = 1</td><td><b>分部副标只有 E2E打手 一张卡有据</b>（其余 13 人 divisionId 为 null → 该位置留空，不画空格子）</td></tr>
+    <tr><td><code>GET /public/workers/:id</code>（凌云 167 / 反悔 374 / 清水 375 / E2E打手 413）</td><td class="p">completedOrders 0/0/0/30 · reviewCount 全 0 · satisfiedRate 全 null</td><td><b>接单次数</b>与<b>好评率</b>两项的唯一来源；<code>satisfiedRate=null</code> → 「暂无评价」</td></tr>
+    <tr><td><code>GET /divisions</code></td><td class="p">1 个（和平精英 手游）</td><td>分部宫格「全部 / 和平精英」；<b>不画平台筛选</b>（单平台，规则 2）</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390,initial-scale=1">
+<title>C1 老板态 · 我的（顶部身份切换器）</title>
+<style>
+:root{
+  --primary:#2563EB; --primary-strong:#1D4ED8; --primary-soft:#E7EEFE; --ice:#EFF6FF;
+  --cyan:#06B6D4; --gold:#D97706; --gold-soft:#FEF3C7;
+  --bg-page:#F5F7FB; --surface:#FFFFFF; --surface-2:#FAFBFD;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8; --muted:#5B6B80;
+  --hair:#E5E9F0; --hair-2:#EEF1F6; --line-field:#CFD8E6;
+  --error:#DC2626; --error-soft:#FDECEC; --error-hair:#F3C4C4;
+  --warn:#EA580C; --warn-soft:#FFF4EC; --warn-hair:#F6D3B8;
+  --success:#16A34A; --success-soft:#DCFCE7;
+  --r-xs:4px; --r-sm:6px; --r-ctl:10px; --r-card:14px;
+  --pad:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--ink);background:#DDE3EC;font-size:14px;line-height:1.4}
+.ic{width:18px;height:18px;flex:0 0 18px;display:block}
+
+/* ---- 手机壳 390×844 ---- */
+.phone{width:390px;height:844px;margin:0 auto;background:var(--bg-page);position:relative;overflow:hidden;
+  display:flex;flex-direction:column}
+.statusbar{height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px 0 var(--pad);font-size:12.5px;font-weight:600;letter-spacing:.2px;color:var(--ink);
+  background:var(--surface)}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:11px}
+.sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6.5px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:11px}
+.sb-batt{width:20px;height:10.5px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;opacity:.85}
+.sb-batt::after{content:"";position:absolute;right:-3.2px;top:3px;width:1.8px;height:4px;background:currentColor;border-radius:0 1px 1px 0}
+.sb-batt i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:62%;background:currentColor;border-radius:1px}
+
+.scroll{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ---- 排版：组内紧 8–10 / 组间松 20–24 ---- */
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec + .sec{margin-top:22px}
+.row{display:flex;align-items:center}
+.between{justify-content:space-between}
+.grow{flex:1 1 auto;min-width:0}
+.h1{font-size:19px;font-weight:700;letter-spacing:-.15px}
+.h2{font-size:15px;font-weight:700;letter-spacing:-.1px}
+.h3{font-size:14px;font-weight:600}
+.note{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+.sub{font-size:11.5px;line-height:1.5;color:var(--muted)}
+.tiny{font-size:10.5px;line-height:1.45;color:var(--ink-3)}
+.hair{height:1px;background:var(--hair-2);border:0}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---- 页头 ---- */
+.phead{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--hair);padding:6px var(--pad) 12px}
+.phead.tight{padding-bottom:9px}
+.phead .ttl{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.icbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--ink-2);
+  border:1px solid var(--hair);border-radius:var(--r-sm);background:var(--surface)}
+.icbtn .ic{width:16px;height:16px;flex:0 0 16px}
+
+/* ---- 卡片 / 列表 ---- */
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card)}
+.cardflat{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);overflow:hidden}
+.lrow{display:flex;align-items:center;gap:11px;padding:13px 14px;background:var(--surface)}
+.lrow + .lrow{border-top:1px solid var(--hair-2)}
+.lrow .lt{font-size:14px;font-weight:600;color:var(--ink)}
+.lrow .ls{font-size:11.5px;color:var(--muted);margin-top:2px}
+.lrow .lv{font-size:13px;color:var(--ink-2)}
+.gi{width:30px;height:30px;flex:0 0 30px;border-radius:var(--r-sm);display:flex;align-items:center;
+  justify-content:center;background:var(--ice);color:var(--primary)}
+.gi .ic{width:16px;height:16px;flex:0 0 16px}
+
+/* ---- 按钮 ---- */
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;height:44px;border:0;border-radius:var(--r-sm);
+  font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:.2px;cursor:pointer;width:100%;white-space:nowrap}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary[disabled]{background:#E9EDF4;color:var(--ink-3)}
+.btn-ghost{background:var(--surface);color:var(--primary);border:1px solid var(--hair)}
+.btn-danger{background:var(--surface);color:var(--error);border:1px solid var(--error-hair)}
+.btn-sm{height:32px;font-size:13px;width:auto;padding:0 15px;border-radius:var(--r-sm);font-weight:600}
+.btn-txt{background:transparent;border:0;font-family:var(--font);font-size:13.5px;font-weight:600;color:var(--primary);
+  cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+
+/* ---- 输入 ---- */
+.field>label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.control{display:flex;align-items:center;gap:8px;height:46px;padding:0 12px;background:var(--surface);
+  border:1px solid var(--line-field);border-radius:var(--r-sm)}
+.control input{flex:1 1 auto;min-width:0;border:0;outline:0;background:transparent;font-family:var(--font);
+  font-size:15px;color:var(--ink);height:100%}
+.control input::placeholder{color:var(--ink-3)}
+.control .ic{width:17px;height:17px;flex:0 0 17px;color:var(--ink-3)}
+.control.focus{border-color:var(--primary)}
+.control.err{border-color:var(--error);background:var(--error-soft)}
+.errline{display:flex;gap:5px;align-items:flex-start;margin-top:7px;font-size:11.5px;line-height:1.45;font-weight:500;color:var(--error)}
+.errline .ic{width:13px;height:13px;flex:0 0 13px;margin-top:1.5px}
+.errline b{font-weight:700}
+
+/* ---- 提示条（发丝线描边，无阴影） ---- */
+.banner{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--error-soft);border:1px solid var(--error-hair)}
+.banner .ic{width:15px;height:15px;flex:0 0 15px;margin-top:1.5px;color:var(--error)}
+.banner .t{font-size:12.5px;font-weight:600;color:var(--error);line-height:1.45}
+.banner .d{font-size:11.5px;color:#8C3A3A;line-height:1.5;margin-top:3px}
+.banner.info{background:var(--ice);border-color:#CCE0FB}
+.banner.info .ic,.banner.info .t{color:var(--primary)}
+.banner.info .d{color:#3A5A99}
+.banner.warn{background:var(--warn-soft);border-color:var(--warn-hair)}
+.banner.warn .ic,.banner.warn .t{color:var(--warn)}
+.banner.warn .d{color:#8A4A21}
+.banner.ok{background:#F1FBF4;border-color:#BFE7CC}
+.banner.ok .ic,.banner.ok .t{color:#15803D}
+.banner.ok .d{color:#3D6B4C}
+
+/* ---- 胶囊 / 小标签 ---- */
+.chips{display:flex;gap:8px;padding:0 var(--pad);overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;height:30px;padding:0 13px;display:flex;align-items:center;gap:6px;border-radius:999px;
+  border:1px solid var(--hair);background:var(--surface);font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.chip .n{font-size:11px;font-weight:600;opacity:.75}
+.tag{display:inline-flex;align-items:center;height:17px;padding:0 6px;border-radius:var(--r-xs);
+  font-size:10.5px;font-weight:700;letter-spacing:.2px;border:1px solid transparent}
+.tag-p{background:var(--primary-soft);color:var(--primary);border-color:#C7D8FB}
+.tag-g{background:var(--gold-soft);color:#92400E;border-color:#F5D08A}
+.tag-m{background:#F1F5F9;color:var(--muted);border-color:var(--hair)}
+.tag-e{background:var(--error-soft);color:var(--error);border-color:var(--error-hair)}
+.tag-ok{background:var(--success-soft);color:#15803D;border-color:#BFE7CC}
+.zone{display:inline-flex;align-items:center;height:17px;padding:0 6px;border-radius:var(--r-xs);
+  font-size:10.5px;font-weight:600;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--hair)}
+
+/* ---- 分段控件（实色，无玻璃） ---- */
+.seg{display:flex;gap:3px;background:#EDF1F7;border-radius:var(--r-ctl);padding:3px}
+.seg-i{flex:1 1 0;height:31px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:13px;
+  font-weight:600;color:var(--ink-2);border-radius:var(--r-sm);border:1px solid transparent}
+.seg-i.on{background:var(--surface);color:var(--primary);border-color:var(--hair)}
+.seg-i .badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--error);color:#fff;
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* ---- 公告条 ---- */
+.anno{display:flex;align-items:center;gap:8px;height:36px;padding:0 11px;background:var(--ice);
+  border:1px solid #CCE0FB;border-radius:var(--r-sm)}
+.anno .lb{flex:0 0 auto;font-size:10.5px;font-weight:700;color:var(--primary);background:var(--surface);
+  border:1px solid #BBD3FA;border-radius:var(--r-xs);padding:1px 5px}
+.anno .tx{flex:1 1 auto;min-width:0;font-size:12px;color:var(--ink-2)}
+.fact{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted)}
+.fact .dot{width:5px;height:5px;border-radius:50%;background:var(--success);flex:0 0 5px}
+
+/* ---- 接单大厅订单卡（A / C 用） ---- */
+.ord{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);padding:12px 13px}
+.ord-h{display:flex;align-items:flex-start;gap:10px}
+.ord-t{flex:1 1 auto;min-width:0;font-size:14.5px;font-weight:600;line-height:1.38;color:var(--ink);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ord-a{flex:0 0 auto;text-align:right}
+.ord-a b{font-size:19px;font-weight:700;color:var(--gold);letter-spacing:-.3px}
+.ord-a span{font-size:11px;color:var(--muted);font-weight:600}
+.ord-m{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;color:var(--muted)}
+.ord-f{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding-top:10px;
+  border-top:1px solid var(--hair-2)}
+
+/* ---- 高密度工作区行（B 用） ---- */
+.wrow{display:flex;align-items:center;gap:10px;padding:9px var(--pad);background:var(--surface);
+  border-bottom:1px solid var(--hair-2)}
+.wrow .wt{flex:1 1 auto;min-width:0}
+.wrow .wt b{display:block;font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.3}
+.wrow .wt i{display:block;font-style:normal;font-size:11px;color:var(--muted);margin-top:3px}
+.wrow .wa{flex:0 0 auto;text-align:right;margin-right:2px}
+.wrow .wa b{display:block;font-size:15px;font-weight:700;color:var(--gold);letter-spacing:-.2px}
+.wrow .wa i{display:block;font-style:normal;font-size:10px;color:var(--ink-3);margin-top:2px}
+.wrow .btn{flex:0 0 auto;width:auto}
+
+/* ---- 消息会话行 ---- */
+.mrow{display:flex;align-items:center;gap:11px;padding:12px 14px;background:var(--surface)}
+.mrow + .mrow{border-top:1px solid var(--hair-2)}
+.avt{width:40px;height:40px;flex:0 0 40px;border-radius:var(--r-sm);background:var(--ice);color:var(--primary);
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;letter-spacing:.3px}
+.avt.g{background:var(--gold-soft);color:#92400E}
+.mrow .mt{flex:1 1 auto;min-width:0}
+.mrow .mt b{display:block;font-size:14px;font-weight:600}
+.mrow .mt i{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:3px}
+.mrow .mr{flex:0 0 auto;text-align:right}
+.mrow .mr em{display:block;font-style:normal;font-size:10.5px;color:var(--ink-3)}
+.mrow .mr .badge{display:inline-flex;min-width:17px;height:17px;padding:0 5px;margin-top:5px;border-radius:9px;
+  background:var(--error);color:#fff;font-size:10.5px;font-weight:700;align-items:center;justify-content:center}
+
+/* ---- 底部导航（老板态：服务·订单·＋·消息·我的） ---- */
+.tabbar{flex:0 0 62px;display:flex;align-items:flex-start;background:var(--surface);border-top:1px solid var(--hair);
+  padding:7px 0 0;position:relative}
+.tb-item{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-3);
+  padding-top:2px}
+.tb-item.on{color:var(--primary)}
+.tb-item .ic{width:21px;height:21px;flex:0 0 21px}
+.tb-label{font-size:10.5px;font-weight:600;letter-spacing:.1px}
+.tb-c{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tb-cbtn{width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;
+  align-items:center;justify-content:center;margin-top:-15px;border:3px solid var(--surface)}
+.tb-cbtn .ic{width:22px;height:22px;flex:0 0 22px}
+/* 打手态：仅 3 项，等距，无凸起位 */
+.tabbar3{flex:0 0 60px;display:flex;align-items:center;background:var(--surface);border-top:1px solid var(--hair);
+  padding-bottom:2px}
+.tabbar3 .tb-item{padding-top:0}
+
+/* ---- 打手态身份细带（C 用） ---- */
+.idstrip{flex:0 0 30px;display:flex;align-items:center;gap:8px;padding:0 var(--pad);background:var(--primary-soft);
+  border-bottom:1px solid #CFDCFA;font-size:11.5px;font-weight:600;color:var(--primary)}
+.idstrip .ic{width:14px;height:14px;flex:0 0 14px}
+.idstrip .sp{flex:1 1 auto}
+.idstrip .act{color:var(--primary);font-weight:700;display:inline-flex;align-items:center;gap:4px}
+
+/* ================= A+ 稿专用（A 套 + 当前身份显示；A 套原稿零改动） ================= */
+
+/* 老板态「当前身份」标签：与 .tag 同几何（17 高 / r4 / 10.5sp w700），灰底不抢色 */
+.tag-cur{background:#F1F5F9;color:var(--ink-2);border-color:var(--line-field)}
+
+/* 身份细带（打手态在营状态，28dp 实色浅底 + 发丝线；无阴影、无渐变） */
+.idbar{flex:0 0 28px;display:flex;align-items:center;gap:6px;padding:0 var(--pad);
+  background:var(--primary-soft);border-bottom:1px solid var(--hair);color:var(--primary)}
+.idbar .ic{width:13px;height:13px;flex:0 0 13px}
+.idbar .lb{font-size:10.5px;font-weight:600;color:#5A76AE;letter-spacing:.1px}
+.idbar .id{font-size:11.5px;font-weight:700;color:var(--primary);letter-spacing:.1px}
+.idbar .sp{flex:1 1 auto}
+.idbar .act{display:inline-flex;align-items:center;gap:2px;font-size:11.5px;font-weight:700;color:var(--primary)}
+.idbar .arr{width:12px;height:12px;flex:0 0 12px}
+/* 停用（已被别的设备顶下线）：同一几何换红系，不换位置 */
+.idbar.off{background:var(--error-soft);border-bottom-color:var(--error-hair);color:var(--error)}
+.idbar.off .lb{color:#9B4A4A}
+.idbar.off .id,.idbar.off .act{color:var(--error)}
+
+/* 切换中过渡提示（= core AppToast 的静态示意：13sp w700 白字，r14，300ms emphasized） */
+.toastwrap{position:absolute;left:24px;right:24px;top:108px;display:flex;justify-content:center;z-index:5}
+.toast{display:inline-flex;align-items:center;gap:7px;padding:10px 15px;border-radius:var(--r-card);
+  background:var(--primary);color:#fff;font-size:13px;font-weight:700;letter-spacing:.2px}
+.toast .ic{width:16px;height:16px;flex:0 0 16px}
+
+/* ---- 打手工作台顶栏（B 用） ---- */
+.ws-top{flex:0 0 48px;display:flex;align-items:center;gap:9px;padding:0 12px;background:var(--surface);
+  border-bottom:1px solid var(--hair)}
+.ws-top .bk{display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.ws-top .bk .ic{width:16px;height:16px;flex:0 0 16px}
+.ws-top .wt{flex:1 1 auto;min-width:0;text-align:center;font-size:14.5px;font-weight:700;letter-spacing:-.1px}
+.ws-top .wc{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 7px;border-radius:var(--r-xs);
+  background:var(--ice);border:1px solid #CCE0FB;font-size:10.5px;font-weight:700;color:var(--primary)}
+.ws-bar{flex:0 0 34px;display:flex;align-items:center;gap:9px;padding:0 var(--pad);background:var(--surface-2);
+  border-bottom:1px solid var(--hair-2);font-size:11.5px;color:var(--muted)}
+.ws-bar .sp{flex:1 1 auto}
+.ws-bar b{color:var(--ink-2);font-weight:600}
+
+/* ---- 头像 ---- */
+.ava{width:52px;height:52px;flex:0 0 52px;border-radius:var(--r-card);background:var(--primary-soft);
+  color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;
+  border:1px solid #CFDCFA}
+.ava .ic{width:24px;height:24px;flex:0 0 24px}
+
+/* ---- 弹层（唯一允许阴影的地方） ---- */
+.mask{position:absolute;inset:0;background:rgba(15,23,42,.42)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:var(--r-card) var(--r-card) 0 0;
+  box-shadow:0 -10px 30px rgba(15,23,42,.18);padding:15px var(--pad) 0;max-height:760px;
+  display:flex;flex-direction:column}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:11px}
+.sheet-h .st{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.sheet-b{overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:14px;padding-bottom:14px}
+.sheet-b::-webkit-scrollbar{display:none}
+.sheet-f{flex:0 0 auto;display:flex;flex-direction:column;gap:9px;padding:12px 0 20px;border-top:1px solid var(--hair-2)}
+.grab{width:34px;height:4px;border-radius:2px;background:#DDE3EC;margin:0 auto 9px}
+
+/* ---- 单选卡片（切换身份） ---- */
+.opt{display:flex;gap:11px;align-items:flex-start;padding:13px 14px;border:1px solid var(--hair);
+  border-radius:var(--r-card);background:var(--surface)}
+.opt.on{border-color:var(--primary);background:var(--primary-soft)}
+.radio{width:19px;height:19px;flex:0 0 19px;margin-top:1px;border:1.5px solid var(--line-field);border-radius:50%;
+  background:var(--surface)}
+.opt.on .radio{border-color:var(--primary);background:var(--primary)}
+.opt.on .radio::after{content:"";display:block;width:7px;height:7px;margin:4.5px 0 0 4.5px;border-radius:50%;background:#fff}
+.opt .ot{flex:1 1 auto;min-width:0}
+.opt .ot b{display:block;font-size:14.5px;font-weight:700}
+.opt .ot i{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+.opt.on .ot i{color:#3C5488}
+.optgrid{display:flex;gap:10px}
+.optgrid .opt{flex:1 1 0;flex-direction:column;gap:9px;align-items:stretch}
+
+/* ---- 空态 ---- */
+.empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:64px 30px 0;text-align:center}
+.empty .ec{width:44px;height:44px;border-radius:var(--r-card);background:var(--surface);border:1px solid var(--hair);
+  display:flex;align-items:center;justify-content:center;color:var(--ink-3)}
+.empty .ec .ic{width:21px;height:21px;flex:0 0 21px}
+.empty .et{font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.empty .ed{font-size:11.5px;color:var(--muted);line-height:1.55}
+
+/* ---- 审批说明（在手机壳外，截图裁剪不到，不污染稿面） ---- */
+.spec{width:390px;margin:16px auto 44px;background:#0F172A;color:#D7DEEA;border-radius:var(--r-ctl);
+  padding:14px 15px;font-size:12px;line-height:1.65}
+.spec h4{font-size:12.5px;color:#fff;margin-bottom:7px;font-weight:700}
+.spec ul{margin:0 0 11px 16px}
+.spec li{margin-bottom:5px}
+.spec b{color:#93C5FD;font-weight:700}
+.spec code{background:#1E293B;border-radius:3px;padding:1px 4px;font-size:11px;color:#E2E8F0}
+.spec .warnb{color:#FCD34D;font-weight:700}
+
+/* ---- 状态面板（?state= 变体）：整屏叠在手机壳内 ---- */
+.phone > [data-pane]{position:absolute;inset:0;display:flex;flex-direction:column;min-height:0}
+.wrap{padding:0 var(--pad)}
+.pt{padding-top:14px}
+.pb{padding-bottom:22px}
+.cgap{display:flex;flex-direction:column;gap:10px}
+
+/* ---- B：工作台入口条 ---- */
+.workentry{display:flex;align-items:center;gap:11px;padding:13px 14px;background:var(--surface);
+  border:1px solid var(--primary);border-radius:var(--r-card)}
+.workentry.on{background:var(--primary-soft)}
+.workentry .we-ic{width:32px;height:32px;flex:0 0 32px;border-radius:var(--r-sm);background:var(--primary);
+  color:#fff;display:flex;align-items:center;justify-content:center}
+.workentry .we-ic .ic{width:17px;height:17px;flex:0 0 17px}
+.workentry .we-t{display:block;font-size:14.5px;font-weight:700;color:var(--primary)}
+.workentry .we-s{display:block;font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+.workentry .we-b{flex:0 0 auto;height:30px;padding:0 14px;display:flex;align-items:center;border-radius:var(--r-sm);
+  background:var(--primary);color:#fff;font-size:12.5px;font-weight:700}
+
+/* ---- B：工作区文字 tab ---- */
+.wstabs{flex:0 0 40px;display:flex;align-items:stretch;gap:18px;padding:0 var(--pad);background:var(--surface);
+  border-bottom:1px solid var(--hair)}
+.wstab{display:flex;align-items:center;gap:5px;font-size:13.5px;font-weight:600;color:var(--ink-2);
+  border-bottom:2px solid transparent;padding-top:1px}
+.wstab.on{color:var(--primary);border-bottom-color:var(--primary)}
+.wbadge{display:inline-flex;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--error);
+  color:#fff;font-size:10px;font-weight:700;align-items:center;justify-content:center}
+
+/* ---- B：工作区窄胶囊 ---- */
+.wchips{display:flex;gap:7px;padding:9px var(--pad) 10px;background:var(--surface);overflow-x:auto;
+  scrollbar-width:none}
+.wchips::-webkit-scrollbar{display:none}
+.wchip{flex:0 0 auto;height:26px;padding:0 11px;display:flex;align-items:center;gap:5px;border-radius:999px;
+  border:1px solid var(--hair);background:var(--surface-2);font-size:12px;font-weight:600;color:var(--ink-2)}
+.wchip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.wchip .n{font-size:10.5px;opacity:.7}
+.wmrow{display:flex;align-items:center;gap:10px;padding:10px var(--pad);background:var(--surface);
+  border-bottom:1px solid var(--hair-2)}
+
+/* ---- C：身份切换器 / 身份选择卡 ---- */
+.idsw{display:flex;gap:8px}
+.idsw-i{flex:1 1 0;height:40px;display:flex;align-items:center;justify-content:center;gap:7px;
+  border:1px solid var(--hair);border-radius:var(--r-ctl);background:var(--surface-2);
+  font-size:13.5px;font-weight:700;color:var(--ink-2)}
+.idsw-i .ic{width:17px;height:17px;flex:0 0 17px}
+.idsw-i.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.idpick{margin-left:auto;display:flex;color:var(--primary)}
+.idpick .ic{width:17px;height:17px;flex:0 0 17px}
+</style>
+</head>
+<body class="">
+<div class="phone" data-screen="C"><div class="statusbar"><span>21:34</span>
+<span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span>
+<span class="sb-batt"><i></i></span></span></div>
+<div class="phead"><div class="row between" style="height:34px"><span class="ttl">我的</span>
+<span class="icbtn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.4v2.2M12 18.4v2.2M4.6 12H6.8M17.2 12h2.2M6.8 6.8l1.6 1.6M15.6 15.6l1.6 1.6M6.8 17.2l1.6-1.6M15.6 8.4l1.6-1.6"/></svg></span></div></div>
+<div class="scroll pb"><div class="wrap">
+  <div class="row" style="gap:13px;padding:14px 0 15px">
+    <div class="ava"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg></div>
+    <div class="grow">
+      <div class="row" style="gap:7px"><span style="font-size:17px;font-weight:700">阿远</span>
+      <span class="tag tag-g">新星会员</span></div>
+      <div class="sub" style="margin-top:4px">U 8471209365</div>
+    </div>
+    <span class="btn-txt">编辑资料<span style="color:var(--ink-3);display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></span>
+  </div>
+
+  <div class="card" style="padding:13px 13px">
+    <div class="row between"><span class="sub">当前身份</span>
+    <span class="tiny">两个身份各自登录一次，之后一键切换</span></div>
+    <div style="margin-top:10px"><div class="idsw">
+  <span class="idsw-i on"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg>老板</span>
+  <span class="idsw-i"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l7 2.6v5c0 4.3-2.8 7.6-7 9.4-4.2-1.8-7-5.1-7-9.4v-5z"/></svg>打手</span>
+</div></div>
+    <div class="hair" style="margin:12px 0 10px"></div>
+    <div class="fact"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.8v5M12 15.8v.1"/></svg>
+      <span>切到打手后只显示接单大厅、消息、我的；打手账号：<b style="color:var(--ink-2)">未绑定</b></span></div>
+  </div>
+
+  <div class="card" style="padding:14px 14px 4px;margin-top:20px">
+    <div class="row between"><span class="sub">我的积分</span>
+    <span class="tiny">由管理员发放 · 仅用于平台下单</span></div>
+    <div class="row" style="gap:6px;align-items:baseline;margin-top:6px">
+      <span class="num" style="font-size:27px;font-weight:700;color:var(--gold);letter-spacing:-.6px">1,286</span>
+      <span class="sub" style="font-weight:600">积分</span></div>
+    <div class="hair" style="margin-top:13px"></div>
+    <div class="row" style="padding:11px 0 12px">
+      <div class="grow" style="text-align:center"><div class="num h3">0</div><div class="tiny" style="margin-top:3px">待付款</div></div>
+      <div style="width:1px;height:24px;background:var(--hair-2)"></div>
+      <div class="grow" style="text-align:center"><div class="num h3">1</div><div class="tiny" style="margin-top:3px">待接单</div></div>
+      <div style="width:1px;height:24px;background:var(--hair-2)"></div>
+      <div class="grow" style="text-align:center"><div class="num h3">0</div><div class="tiny" style="margin-top:3px">服务中</div></div>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:22px">
+    <span class="h2" style="padding:0 2px">常用</span>
+    <div class="cardflat">
+      <div class="lrow"><span class="gi"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg></span><span class="grow"><span class="lt">我的订单</span></span><span style="color:var(--ink-3);display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></div>
+      <div class="lrow"><span class="gi"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.6h13.2A2.8 2.8 0 0120 10.4v7A2.8 2.8 0 0117.2 20H6.8A2.8 2.8 0 014 17.2z"/><path d="M4 7.6V6.4A1.6 1.6 0 015.6 4.8h10"/><circle cx="16.2" cy="13.9" r="1.2"/></svg></span><span class="grow"><span class="lt">我的积分</span>
+      <span class="ls" style="display:block">余额与流水明细</span></span><span style="color:var(--ink-3);display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></div>
+      <div class="lrow"><span class="gi"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0114 0v1.4"/><rect x="3.4" y="13.2" width="3.6" height="5.2" rx="1.6"/><rect x="17" y="13.2" width="3.6" height="5.2" rx="1.6"/><path d="M19 18.4v.6a2.4 2.4 0 01-2.4 2.4H13"/></svg></span><span class="grow"><span class="lt">联系客服</span>
+      <span class="ls" style="display:block">客服 9:00-次日 2:00 在线</span></span><span style="color:var(--ink-3);display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></div>
+      <div class="lrow"><span class="gi"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.4v2.2M12 18.4v2.2M4.6 12H6.8M17.2 12h2.2M6.8 6.8l1.6 1.6M15.6 15.6l1.6 1.6M6.8 17.2l1.6-1.6M15.6 8.4l1.6-1.6"/></svg></span><span class="grow"><span class="lt">设置</span></span><span style="color:var(--ink-3);display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></div>
+    </div>
+  </div>
+</div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div><div class="tb-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div><div class="tb-item on"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div>
+<div class="spec"><h4>C1 审批说明</h4><ul><li>与 A 的差别：身份不是藏在列表里的一行入口，而是<b>页头下方的常驻切换器</b>（两枚胶囊 + 一行状态说明），随时可见、一键可切。</li><li>切换器在<b>两个身份下都出现</b>（C3/C5 打手态顶部也有），保证用户任何时刻都知道"我现在是谁"。</li><li>切换器下方一行事实说明当前绑定状态（未绑定 / 已绑定 · 王野 W20260118），避免"以为切了其实没绑"。</li><li><b>代价</b>：老板态「我的」页比 A 多了一个常驻板块（约 92px），把「常用」往下推；对只用老板身份的用户是无用信息。这是 C 最需要负责人权衡的一点。</li></ul></div>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-10-13T17:10:21.790Z",
+  "viewportWidth": 1820,
+  "manifest": [
+    {
+      "file": "A.png",
+      "sheet": "A",
+      "bytes": 558157,
+      "width": 1820,
+      "height": 3210
+    },
+    {
+      "file": "B.png",
+      "sheet": "B",
+      "bytes": 446503,
+      "width": 1820,
+      "height": 2641
+    },
+    {
+      "file": "C.png",
+      "sheet": "C",
+      "bytes": 462866,
+      "width": 1820,
+      "height": 3045
+    },
+    {
+      "file": "recommended.png",
+      "sheet": "recommended",
+      "bytes": 656690,
+      "width": 1820,
+      "height": 3663
+    }
+  ]
+}

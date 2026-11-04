@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body { background:#E9EDF3; font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    padding:36px 28px; display:flex; gap:30px; align-items:flex-start; }
+  .col { display:flex; flex-direction:column; gap:12px; }
+  .cap { font-size:14px; font-weight:700; color:#0F2440; }
+  .cap span { font-weight:500; color:#6B7A8D; font-size:12px; margin-left:6px; }
+  .phone { width:360px; height:790px; background:#F6F7F9; border-radius:32px; overflow:hidden;
+    box-shadow:0 16px 44px rgba(15,36,64,.15); display:flex; flex-direction:column; }
+  .bar { padding:13px 15px 9px; display:flex; align-items:center; gap:11px; }
+  .back { width:21px; height:21px; color:#0F2440; }
+  .title { font-size:18px; font-weight:700; color:#0F2440; }
+  .search { margin:0 15px 9px; height:36px; background:#fff; border:1px solid #E8ECF2; border-radius:999px;
+    display:flex; align-items:center; padding:0 13px; gap:7px; }
+  .search svg { width:14px; height:14px; color:#98A6B8; }
+  .search .ph { font-size:12.5px; color:#A8B4C4; }
+  .chips { display:flex; gap:7px; padding:0 15px 9px; overflow:hidden; }
+  .chip { height:33px; padding:0 12px 0 7px; border-radius:999px; background:#fff; border:1px solid #E8ECF2;
+    display:flex; align-items:center; gap:6px; font-size:12px; color:#4A5A6E; white-space:nowrap; font-weight:500; }
+  .chip.plain { padding:0 13px; }
+  .chip.on { background:#111827; border-color:#111827; color:#fff; font-weight:600; }
+  .gicon { width:19px; height:19px; border-radius:6px; object-fit:cover; flex:none;
+    box-shadow:0 0 0 1px rgba(15,36,64,.06); }
+  .sortrow { display:flex; align-items:center; justify-content:space-between; padding:0 15px 9px; }
+  .count { font-size:11.5px; color:#8492A4; }
+  .filter { height:29px; padding:0 11px; border-radius:999px; background:#fff; border:1px solid #E8ECF2;
+    display:flex; align-items:center; gap:4px; font-size:11.5px; color:#4A5A6E; font-weight:500; }
+  .list { flex:1; overflow:hidden; padding:0 15px; display:flex; flex-direction:column; gap:9px; }
+
+  /* 卡片：无左侧色条（统一色时它没意义） */
+  .row { background:#fff; border:1px solid #E8ECF2; border-radius:14px; padding:11px;
+    display:flex; gap:11px; align-items:center; }
+  .av { width:60px; height:60px; border-radius:19px; flex:none; display:flex; align-items:center;
+    justify-content:center; font-size:25px; font-weight:700; position:relative; }
+  .a1 { background:#E8F0FE; color:#1E4FA8; }
+  .a2 { background:#E6F7F2; color:#0E7A5F; }
+  .a3 { background:#FEF3E2; color:#935F06; }
+  .a4 { background:#F1EAFE; color:#5B2FA8; }
+  .a5 { background:#FDEAF3; color:#9C2A63; }
+  .dot { position:absolute; right:-1px; bottom:-1px; width:13px; height:13px; border-radius:50%;
+    background:#22C55E; border:2.5px solid #fff; }
+  .dot.off { background:#C7D0DC; }
+  .info { flex:1; min-width:0; }
+  .nameRow { display:flex; align-items:center; gap:5px; margin-bottom:4px; }
+  .name { font-size:14.5px; font-weight:700; color:#0F2440; }
+  .badge { height:19px; padding:0 6px; border-radius:999px; display:flex; align-items:center; gap:3px;
+    font-size:10px; font-weight:700; }
+  .badge i { width:8px; height:8px; border-radius:50%; background:currentColor; opacity:.75; display:block; }
+  .b1 { background:#F1F3F7; color:#5A6879; }
+  .b3 { background:#E8F0FE; color:#1E4FA8; }
+  .b4 { background:#F1EAFE; color:#5B2FA8; }
+  .b5 { background:#FDF3E0; color:#935F06; border:1px solid #E8C07A; }
+  .intro { font-size:12px; color:#6B7A8D; line-height:1.42; display:-webkit-box; -webkit-line-clamp:2;
+    -webkit-box-orient:vertical; overflow:hidden; }
+  .meta { margin-top:5px; font-size:10.5px; color:#98A6B8; }
+  .meta b { color:#4A5A6E; font-weight:600; }
+  .r-hi { color:#0E7A5F; font-weight:700; }
+  .r-mid { color:#1E4FA8; font-weight:700; }
+  .r-na { color:#98A6B8; }
+  .btn { width:53px; height:53px; border-radius:15px; flex:none; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1px; color:#fff; font-size:10.5px; font-weight:700; }
+  .btn svg { width:15px; height:15px; }
+  .btn.off { background:#C7D0DC; }
+  .nav { height:56px; background:#fff; border-top:1px solid #EDF1F6; display:flex; align-items:center;
+    justify-content:space-around; flex:none; }
+  .nav .it { display:flex; flex-direction:column; align-items:center; gap:2px; font-size:9.5px; color:#98A6B8; }
+  .nav .it.on { font-weight:700; }
+  .nav svg { width:20px; height:20px; }
+  .note { width:360px; font-size:12px; color:#4A5A6E; line-height:1.75; background:#fff;
+    border:1px solid #E8ECF2; border-radius:11px; padding:11px 13px; }
+  .note b { color:#0F2440; }
+  .note code { background:#F1F4F8; padding:1px 5px; border-radius:4px; font-size:11px; }
+  .sw { display:inline-block; width:10px; height:10px; border-radius:3px; vertical-align:-1px; margin-right:4px; }
+
+  /* 主题变量 */
+  .tgt { } /* 由各版覆盖 */
+</style>
+</head>
+<body>
+
+<!-- ============ A · 品牌蓝 ============ -->
+<div class="col">
+  <div class="cap">A · 品牌蓝<span>#2563EB（项目主色）</span></div>
+  <div class="phone">
+    <div class="bar"><svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><div class="title">选择陪玩</div></div>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="ph">搜名字或介绍</span></div>
+    <div class="chips">
+      <div class="chip on plain">全部</div>
+      <div class="chip"><img class="gicon" src="div-peace.png" />和平精英</div>
+    </div>
+    <div class="sortrow"><span class="count">共 4 位陪玩</span><div class="filter">接单量</div></div>
+    <div class="list">
+      <div class="row">
+        <div class="av a3">凌<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">凌云</span><span class="badge b5"><i></i>LV5 宗师</span></div>
+          <div class="intro">和平精英双排老手，稳定上分不墨迹。工作日 20:00 - 次日 1:00 在线。</div>
+          <div class="meta">接单 <b>2,847</b> 次 · 好评 <span class="r-hi">98.6%</span></div>
+        </div>
+        <div class="btn" style="background:#2563EB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选TA</div>
+      </div>
+      <div class="row">
+        <div class="av a2">反<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">反悔</span><span class="badge b3"><i></i>LV3 扬名</span></div>
+          <div class="intro">和平精英护航，带打不墨迹，全场录屏。</div>
+          <div class="meta">接单 <b>1,204</b> 次 · 好评 <span class="r-mid">97.2%</span></div>
+        </div>
+        <div class="btn" style="background:#2563EB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选TA</div>
+      </div>
+      <div class="row">
+        <div class="av a4">夜<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">夜行者</span><span class="badge b4"><i></i>LV4 称雄</span></div>
+          <div class="intro">和平精英，凌晨场专精，能带新手。</div>
+          <div class="meta">接单 <b>2,031</b> 次 · 好评 <span class="r-hi">98.1%</span></div>
+        </div>
+        <div class="btn" style="background:#2563EB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选TA</div>
+      </div>
+      <div class="row" style="opacity:.7">
+        <div class="av a5">清<span class="dot off"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">清水</span><span class="badge b1"><i></i>LV1 初出</span></div>
+          <div class="intro">新人陪玩，声音好听，听话能配合。</div>
+          <div class="meta">接单 <b>18</b> 次 · 好评 <span class="r-na">暂无评价</span></div>
+        </div>
+        <div class="btn off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>离线</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>首页</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.4a2 2 0 002 1.6h8.4a2 2 0 002-1.6L22 7H6"/></svg>下单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>订单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/></svg>祁小山</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>消息</div>
+      <div class="it on" style="color:#2563EB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>我的</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>去掉左侧色条</b>（单色时它没意义，也违反反 AI 味规范）。<br>
+    分部色不再决定按钮，<b>主色只给"要你点的东西"</b>：选 TA + 底栏选中。<br>
+    颜色靠<b>头像 5 色轮转 + 等级徽章 5 档 + 好评率色阶</b>撑，够用不乱。
+  </div>
+</div>
+
+<!-- ============ B · 琥珀金 ============ -->
+<div class="col">
+  <div class="cap">B · 琥珀金<span>#D97706（项目金，电竞暖调）</span></div>
+  <div class="phone">
+    <div class="bar"><svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><div class="title">选择陪玩</div></div>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="ph">搜名字或介绍</span></div>
+    <div class="chips">
+      <div class="chip on plain">全部</div>
+      <div class="chip"><img class="gicon" src="div-peace.png" />和平精英</div>
+    </div>
+    <div class="sortrow"><span class="count">共 4 位陪玩</span><div class="filter">接单量</div></div>
+    <div class="list">
+      <div class="row">
+        <div class="av a3">凌<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">凌云</span><span class="badge b5"><i></i>LV5 宗师</span></div>
+          <div class="intro">和平精英双排老手，稳定上分不墨迹。工作日 20:00 - 次日 1:00 在线。</div>
+          <div class="meta">接单 <b>2,847</b> 次 · 好评 <span class="r-hi">98.6%</span></div>
+        </div>
+        <div class="btn" style="background:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选TA</div>
+      </div>
+      <div class="row">
+        <div class="av a2">反<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">反悔</span><span class="badge b3"><i></i>LV3 扬名</span></div>
+          <div class="intro">和平精英护航，带打不墨迹，全场录屏。</div>
+          <div class="meta">接单 <b>1,204</b> 次 · 好评 <span class="r-mid">97.2%</span></div>
+        </div>
+        <div class="btn" style="background:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选TA</div>
+      </div>
+      <div class="row">
+        <div class="av a4">夜<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">夜行者</span><span class="badge b4"><i></i>LV4 称雄</span></div>
+          <div class="intro">和平精英，凌晨场专精，能带新手。</div>
+          <div class="meta">接单 <b>2,031</b> 次 · 好评 <span class="r-hi">98.1%</span></div>
+        </div>
+        <div class="btn" style="background:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选TA</div>
+      </div>
+      <div class="row" style="opacity:.7">
+        <div class="av a5">清<span class="dot off"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">清水</span><span class="badge b1"><i></i>LV1 初出</span></div>
+          <div class="intro">新人陪玩，声音好听，听话能配合。</div>
+          <div class="meta">接单 <b>18</b> 次 · 好评 <span class="r-na">暂无评价</span></div>
+        </div>
+        <div class="btn off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>离线</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>首页</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.4a2 2 0 002 1.6h8.4a2 2 0 002-1.6L22 7H6"/></svg>下单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>订单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/></svg>祁小山</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>消息</div>
+      <div class="it on" style="color:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>我的</div>
+    </div>
+  </div>
+  <div class="note">
+    金色更贴电竞/代练的暖调，也和<b>价格、等级</b>同族（项目里金本来就表价值）。<br>
+    缺点：金色面积大了容易显"土"，所以只给按钮和底栏选中，其余保持中性。
+  </div>
+</div>
+
+<!-- ============ C · 深墨蓝（最稳） ============ -->
+<div class="col">
+  <div class="cap">C · 深墨蓝<span>#1E3A8A（沉稳，不刺眼）</span></div>
+  <div class="phone">
+    <div class="bar"><svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><div class="title">选择陪玩</div></div>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="ph">搜名字或介绍</span></div>
+    <div class="chips">
+      <div class="chip on plain">全部</div>
+      <div class="chip"><img class="gicon" src="div-peace.png" />和平精英</div>
+    </div>
+    <div class="sortrow"><span class="count">共 4 位陪玩</span><div class="filter">接单量</div></div>
+    <div class="list">
+      <div class="row">
+        <div class="av a3">凌<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">凌云</span><span class="badge b5"><i></i>LV5 宗师</span></div>
+          <div class="intro">和平精英双排老手，稳定上分不墨迹。工作日 20:00 - 次日 1:00 在线。</div>
+          <div class="meta">接单 <b>2,847</b> 次 · 好评 <span class="r-hi">98.6%</span></div>
+        </div>
+        <div class="btn" style="background:#1E3A8A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选TA</div>
+      </div>
+      <div class="row">
+        <div class="av a2">反<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">反悔</span><span class="badge b3"><i></i>LV3 扬名</span></div>
+          <div class="intro">和平精英护航，带打不墨迹，全场录屏。</div>
+          <div class="meta">接单 <b>1,204</b> 次 · 好评 <span class="r-mid">97.2%</span></div>
+        </div>
+        <div class="btn" style="background:#1E3A8A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选TA</div>
+      </div>
+      <div class="row">
+        <div class="av a4">夜<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">夜行者</span><span class="badge b4"><i></i>LV4 称雄</span></div>
+          <div class="intro">和平精英，凌晨场专精，能带新手。</div>
+          <div class="meta">接单 <b>2,031</b> 次 · 好评 <span class="r-hi">98.1%</span></div>
+        </div>
+        <div class="btn" style="background:#1E3A8A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选TA</div>
+      </div>
+      <div class="row" style="opacity:.7">
+        <div class="av a5">清<span class="dot off"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">清水</span><span class="badge b1"><i></i>LV1 初出</span></div>
+          <div class="intro">新人陪玩，声音好听，听话能配合。</div>
+          <div class="meta">接单 <b>18</b> 次 · 好评 <span class="r-na">暂无评价</span></div>
+        </div>
+        <div class="btn off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>离线</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>首页</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.4a2 2 0 002 1.6h8.4a2 2 0 002-1.6L22 7H6"/></svg>下单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>订单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/></svg>祁小山</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>消息</div>
+      <div class="it on" style="color:#1E3A8A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>我的</div>
+    </div>
+  </div>
+  <div class="note">
+    比品牌蓝更沉，<b>不会跟头像的彩色抢</b>；适合"卡片已经很多颜色"的页面。<br>
+    缺点：偏冷、偏商务，电竞感弱一点。
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+    "_howto":  "python scripts/tools/subset-font.py --write --used-from-db   （PYTHONPATH 指向 fontTools；见 docs/26-公网入口与地址发现.md 与开发日志 2026-10-06）",
+    "fonts":  {
+                  "MiSans-Normal.ttf":  {
+                                            "baselineSha256":  "fe0adb56147299e53d5b208a561d6ca7fe4ce5c727a5ead38ad9827b26024f3a",
+                                            "baselineSize":  7943504,
+                                            "builtAt":  "2026-10-06T09:12:09Z",
+                                            "charsetCodePoints":  10096,
+                                            "charsetSha256":  "0f2262a7bcb0c4fc7822345210003f4d04450d60af02ed599ae4ea0de7469e7d",
+                                            "coveredCodePoints":  8091,
+                                            "fingerprint":  "e0b7e51f5160e272-0f2262a7bcb0c4fc-8091",
+                                            "outSha256":  "e0b7e51f5160e272090022389aadc8702e1e75f45c411ca56fc5c472003e27be",
+                                            "outSize":  1743692,
+                                            "source":  "apps/boss-app/assets/fonts/MiSans-Normal.ttf",
+                                            "sourceSha256":  "e0b7e51f5160e272090022389aadc8702e1e75f45c411ca56fc5c472003e27be",
+                                            "sourceSize":  1743692
+                                        }
+              }
+}

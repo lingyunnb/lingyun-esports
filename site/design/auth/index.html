@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=1200">
+<title>登录 / 注册页设计稿 · 三套方案对比（祁连山电竞）</title>
+<style>
+body{background:#EEF1F6;color:#0F172A}
+.wrap{max-width:1320px;margin:0 auto;padding:36px 28px 72px}
+h1.top{font-size:26px;font-weight:700;letter-spacing:-.3px}
+.lede{font-size:14px;color:#475569;margin-top:10px;max-width:900px;line-height:1.65}
+.crumb{font-size:12px;color:#94A3B8;margin-bottom:14px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:26px}
+.scheme{background:#fff;border:1px solid #E5E9F0;border-radius:14px;padding:20px 20px 22px}
+.scheme h2{font-size:18px;font-weight:700}
+.scheme .one{font-size:13px;color:#475569;margin-top:8px;line-height:1.6}
+.shots{display:flex;gap:12px;overflow-x:auto;margin-top:16px;padding-bottom:6px}
+.shot{flex:0 0 auto;width:166px;margin:0}
+.shot img{width:166px;height:360px;object-fit:cover;object-position:top;border:1px solid #E5E9F0;
+  border-radius:10px;background:#fff;display:block}
+.shot figcaption{font-size:11.5px;color:#64748B;text-align:center;margin-top:6px}
+h3.blk{font-size:12.5px;font-weight:700;letter-spacing:.4px;color:#94A3B8;margin:18px 0 8px}
+ul.tight{margin:0;padding-left:18px;font-size:12.5px;color:#334155;line-height:1.7}
+ul.tight li::marker{color:#94A3B8}
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin-top:8px}
+th,td{border-bottom:1px solid #EEF1F6;padding:7px 8px;text-align:left;vertical-align:top;color:#334155}
+th{font-size:11.5px;color:#94A3B8;font-weight:700;letter-spacing:.4px}
+td.k{color:#0F172A;font-weight:600;width:38%}
+.pass{color:#16A34A;font-weight:600}
+.card-wide{grid-column:1/-1}
+.feat td:first-child{font-weight:600;color:#0F172A}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:6px}
+.b-has{background:#E7EEFE;color:#2563EB}
+.b-no{background:#FDECEC;color:#DC2626}
+.b-new{background:#FEF3C7;color:#92400E}
+.rec{background:#F7FBF8;border-color:#BBE3C8}
+.rec h2::after{content:"推荐";font-size:11px;font-weight:700;color:#166534;background:#DCFCE7;
+  border:1px solid #BBE3C8;border-radius:4px;padding:2px 7px;margin-left:8px;vertical-align:2px}
+footer{margin-top:34px;font-size:12px;color:#64748B;line-height:1.8}
+</style></head>
+<body><div class="wrap">
+<div class="crumb">site/design/auth/index.html · 设计审批用 · 未改任何 App 代码</div>
+<h1 class="top">登录 / 注册页 · 三套方案对比</h1>
+<p class="lede">三套方案都在 <b>390×844</b>（iPhone 逻辑像素）下出图，每套 5 个状态：登录 / 注册 /
+错误态·行内 / 错误态·顶部提示 / 键盘弹起。全部字段与流程逐条来自仓库盘点（下方「功能覆盖清单」），
+<b>不存在的东西一律不出现</b>：没有手机号 + 验证码、没有第三方登录、没有邀请码、没有独立注册页 / 闪屏页。
+视觉硬约束逐条对照 <b>docs/21-反AI味设计规范.md</b>。</p>
+
+<div class="cols">
+<section class="scheme">
+<h2>方案 A · 极简留白</h2>
+<p class="one">大留白 + 单一主操作；输入框只留一条发丝下划线，无卡片、无阴影、无图标色块。</p>
+<div class="shots">
+<figure class="shot">
+<a href="a-login.html"><img src="p-a-login.png" alt="a 登录"></a>
+<figcaption>登录</figcaption></figure>
+<figure class="shot">
+<a href="a-register.html"><img src="p-a-register.png" alt="a 注册"></a>
+<figcaption>注册</figcaption></figure>
+<figure class="shot">
+<a href="a-err-inline.html"><img src="p-a-err-inline.png" alt="a 错误 · 行内"></a>
+<figcaption>错误 · 行内</figcaption></figure>
+<figure class="shot">
+<a href="a-err-top.html"><img src="p-a-err-top.png" alt="a 错误 · 顶部"></a>
+<figcaption>错误 · 顶部</figcaption></figure>
+<figure class="shot">
+<a href="a-keyboard.html"><img src="p-a-keyboard.png" alt="a 键盘弹起"></a>
+<figcaption>键盘弹起</figcaption></figure>
+</div>
+<h3 class="blk">参考来源（项目 / 许可）</h3><ul class="tight"><li>shadcn/ui 认证块（MIT）——表单即页面，标题 + 说明 + 字段纵向排列，不做容器</li><li>Refactoring UI（书籍，思路参考）——层级靠字号/灰度，不靠颜色块</li><li>Vercel / Linear 登录页范式——单一主色实心按钮，其余全为文字级操作</li></ul>
+<h3 class="blk">具体抄了什么</h3><ul class="tight"><li>字段纵向单列 + 分组间距（组内 10 / 组间 20）</li><li>主按钮唯一实色，切换与找回降级为文字链接</li><li>错误信息贴在字段下方，不用红色整框</li></ul>
+<h3 class="blk">优点</h3><ul class="tight"><li>改造成本最低：字段没变，只换视觉与间距；老板端/工作端同一版式即可</li><li>最不容易出 AI 味（无渐变、无卡片阵、无阴影），长期耐看</li><li>输入框纵向对齐一致，键盘弹起时布局不跳动</li></ul>
+<h3 class="blk">缺点 / 代价</h3><ul class="tight"><li>品牌识别弱：登录页与其他工具类 App 区分度低</li><li>注册页字段一多（昵称 + 协议）就是一条长表单，缺少节奏</li><li>协议勾选与「忘记密码」在极简风格里难安置（本稿用按钮下方一行处理）</li></ul>
+<h3 class="blk">对照 docs/21 反 AI 味规范</h3><table><tr><td class="k">禁渐变做主视觉</td><td>通过：全页零渐变，主色仅出现在主按钮与文字链接</td></tr><tr><td class="k">禁每卡左侧彩色竖条</td><td>通过：没有卡片</td></tr><tr><td class="k">禁一律大圆角 ≥16</td><td>通过：按钮 6 / 输入框 0（下划线）/ 勾选框 4；上限定在 6</td></tr><tr><td class="k">禁阴影铺满</td><td>通过：零阴影，仅 focus 时 3px 主色浅底圈</td></tr><tr><td class="k">禁 emoji 当图标</td><td>通过：仅 1 处 12px 行内错误图标（Material outlined 同体系路径）</td></tr><tr><td class="k">组内紧 8-10 / 组间松 20-24</td><td>通过：组内 10，组间 20</td></tr></table>
+<p class="one" style="margin-top:14px">HTML：
+<a class="link" href="a-login.html">a-login.html</a> ·
+<a class="link" href="a-register.html">a-register.html</a> ·
+<a class="link" href="a-err-inline.html">a-err-inline.html</a> ·
+<a class="link" href="a-err-top.html">a-err-top.html</a> ·
+<a class="link" href="a-keyboard.html">a-keyboard.html</a></p>
+</section><section class="scheme rec">
+<h2>方案 B · 品牌主视觉</h2>
+<p class="one">顶部一块实色主色品牌区（祁山标 + 品牌名 + 真实业务信息），表单以 14 圆角白卡压边接入。</p>
+<div class="shots">
+<figure class="shot">
+<a href="b-login.html"><img src="p-b-login.png" alt="b 登录"></a>
+<figcaption>登录</figcaption></figure>
+<figure class="shot">
+<a href="b-register.html"><img src="p-b-register.png" alt="b 注册"></a>
+<figcaption>注册</figcaption></figure>
+<figure class="shot">
+<a href="b-err-inline.html"><img src="p-b-err-inline.png" alt="b 错误 · 行内"></a>
+<figcaption>错误 · 行内</figcaption></figure>
+<figure class="shot">
+<a href="b-err-top.html"><img src="p-b-err-top.png" alt="b 错误 · 顶部"></a>
+<figcaption>错误 · 顶部</figcaption></figure>
+<figure class="shot">
+<a href="b-keyboard.html"><img src="p-b-keyboard.png" alt="b 键盘弹起"></a>
+<figcaption>键盘弹起</figcaption></figure>
+</div>
+<h3 class="blk">参考来源（项目 / 许可）</h3><ul class="tight"><li>Supabase Auth UI（Apache-2.0）——表单放进一张白卡，卡内只放字段与主操作</li><li>Material 3（Apache-2.0）——filled 输入框（浅底 + 圆角），聚焦时才描边</li><li>国内手机号 + 验证码登录页的**信息层级**范式（只学层级与动线，不抄插画/吉祥物/文案）</li></ul>
+<h3 class="blk">具体抄了什么</h3><ul class="tight"><li>filled 输入框（浅底 → focus 变白底 + 主色描边）</li><li>主操作在卡底通栏，次操作降为卡内文字链接</li><li>错误条放在卡内首行，滚动时随卡可见</li></ul>
+<h3 class="blk">优点</h3><ul class="tight"><li>品牌识别最强：一眼知道是祁连山电竞，且与 docs/19/21 的实色主色方向一致</li><li>登录页承担了「3 个分部 / 客服时段」的真实信息，不是装饰</li><li>注册页把协议放进卡片，结构与登录页共用一套骨架</li></ul>
+<h3 class="blk">缺点 / 代价</h3><ul class="tight"><li>品牌区占掉约 176px，小屏（<640 逻辑高）时表单会被压到折线以下</li><li>实色大块对配色变化敏感，换主色时要重新验对比度</li><li>比 A 多一点实现量：需要新增品牌头组件（约 1 个 widget）</li></ul>
+<h3 class="blk">对照 docs/21 反 AI 味规范</h3><table><tr><td class="k">禁渐变做主视觉</td><td>通过：品牌区是**纯实色** #2563EB，无渐变（docs/21 明确要求实色主色）</td></tr><tr><td class="k">禁每卡左侧彩色竖条</td><td>通过：无竖条，靠留白与圆角分隔</td></tr><tr><td class="k">禁一律大圆角 ≥16</td><td>通过：卡片 14 / 输入框 10 / 按钮 6 / 勾选 4</td></tr><tr><td class="k">禁阴影铺满</td><td>通过：全页零 box-shadow 投影，白卡压边用负 margin 叠色实现</td></tr><tr><td class="k">禁装饰性插画</td><td>通过：品牌区只有祁山标线稿（现有 AppQishanMark 逐值复刻）+ 两行真实数据</td></tr><tr><td class="k">组内紧 8-10 / 组间松 20-24</td><td>通过：组内 10，组间 20</td></tr></table>
+<p class="one" style="margin-top:14px">HTML：
+<a class="link" href="b-login.html">b-login.html</a> ·
+<a class="link" href="b-register.html">b-register.html</a> ·
+<a class="link" href="b-err-inline.html">b-err-inline.html</a> ·
+<a class="link" href="b-err-top.html">b-err-top.html</a> ·
+<a class="link" href="b-keyboard.html">b-keyboard.html</a></p>
+</section><section class="scheme">
+<h2>方案 C · 卡片分区</h2>
+<p class="one">把表单切成「账号 / 协议(或找回密码)」两段卡片，段标题带序号，顶部用分段控件切换登录↔注册。</p>
+<div class="shots">
+<figure class="shot">
+<a href="c-login.html"><img src="p-c-login.png" alt="c 登录"></a>
+<figcaption>登录</figcaption></figure>
+<figure class="shot">
+<a href="c-register.html"><img src="p-c-register.png" alt="c 注册"></a>
+<figcaption>注册</figcaption></figure>
+<figure class="shot">
+<a href="c-err-inline.html"><img src="p-c-err-inline.png" alt="c 错误 · 行内"></a>
+<figcaption>错误 · 行内</figcaption></figure>
+<figure class="shot">
+<a href="c-err-top.html"><img src="p-c-err-top.png" alt="c 错误 · 顶部"></a>
+<figcaption>错误 · 顶部</figcaption></figure>
+<figure class="shot">
+<a href="c-keyboard.html"><img src="p-c-keyboard.png" alt="c 键盘弹起"></a>
+<figcaption>键盘弹起</figcaption></figure>
+</div>
+<h3 class="blk">参考来源（项目 / 许可）</h3><ul class="tight"><li>Material 3（Apache-2.0）——分段按钮（segmented button）表达同页互斥状态</li><li>shadcn/ui Form + Card 结构（MIT）——字段成组、组有标题，错误落在组内</li><li>flutter_login（MIT）——登录/注册同一路由下的形态切换，注册只是多一段</li></ul>
+<h3 class="blk">具体抄了什么</h3><ul class="tight"><li>分段控件切换登录/注册（替代一行小字按钮）</li><li>字段成组 + 组标题，错误定位到组</li><li>卡内行与行之间用发丝线分隔</li></ul>
+<h3 class="blk">优点</h3><ul class="tight"><li>信息层级最清晰：每段只做一件事，注册多出来的「协议段」有明确归属</li><li>表单类体验最好：错误落在所属分区，用户知道要改哪一段</li><li>工作端差异最好表达（登录态只剩「账号」一段 + 找回密码说明段）</li></ul>
+<h3 class="blk">缺点 / 代价</h3><ul class="tight"><li>卡片数量多，视觉上比 A 重；段标题（账号/协议）有轻微冗余感</li><li>分段控件 + 段标题 + 卡片三层结构，实现时组件最多（约 2-3 个新 widget）</li><li>短屏时第二段容易被键盘遮挡，需要滚动</li></ul>
+<h3 class="blk">对照 docs/21 反 AI 味规范</h3><table><tr><td class="k">禁渐变做主视觉</td><td>通过：零渐变，主色只在选中段与主按钮</td></tr><tr><td class="k">禁每卡左侧彩色竖条</td><td>通过：段标题用 16px 圆形序号 + 文字，不是竖条</td></tr><tr><td class="k">禁一律大圆角 ≥16</td><td>通过：卡片 14 / 输入框 10 / 分段 6 / 段内圆 4</td></tr><tr><td class="k">禁阴影铺满</td><td>通过：零阴影，卡片一律 1px 发丝描边 #E5E9F0</td></tr><tr><td class="k">禁每条信息配彩色小标签</td><td>通过：段标题用灰度小字 + 序号，没有彩色标签</td></tr><tr><td class="k">组内紧 8-10 / 组间松 20-24</td><td>通过：组内 10，段间 18-20</td></tr></table>
+<p class="one" style="margin-top:14px">HTML：
+<a class="link" href="c-login.html">c-login.html</a> ·
+<a class="link" href="c-register.html">c-register.html</a> ·
+<a class="link" href="c-err-inline.html">c-err-inline.html</a> ·
+<a class="link" href="c-err-top.html">c-err-top.html</a> ·
+<a class="link" href="c-keyboard.html">c-keyboard.html</a></p>
+</section>
+<section class="scheme card-wide">
+<h2>功能覆盖清单（来自仓库只读盘点）</h2>
+<p class="one">字段来源：<code>apps/boss-app/lib/pages/login_page.dart</code>、
+<code>apps/worker-app/lib/pages/login_page.dart</code>、<code>server/src/modules/auth/*</code>、
+<code>apps/packages/core/lib/src/widgets/form_errors.dart</code>。
+「待新增」两项是设计稿按负责人要求出图、实现时才需要引入的（协议勾选、自助找回密码），审批时请一并确认。</p>
+<table class="feat"><thead><tr><th>元素 / 字段</th><th>现状</th><th>来源</th><th>说明</th></tr></thead>
+<tbody><tr><td>账号输入框<code style="font-weight:400;color:#94A3B8">username</code></td><td><span class='badge b-has'>已有</span></td><td>boss login_page.dart:154 / worker login_page.dart:105</td><td>账号 = 用户名（非手机号），注册时 6-20 位字母数字下划线</td></tr><tr><td>密码输入框（可切换明文）<code style="font-weight:400;color:#94A3B8">password</code></td><td><span class='badge b-has'>已有</span></td><td>boss login_page.dart:168-186</td><td>8-64 位；右侧眼睛图标切换明文</td></tr><tr><td>昵称输入框（仅注册）<code style="font-weight:400;color:#94A3B8">nickname</code></td><td><span class='badge b-has'>已有</span></td><td>boss login_page.dart:190-197</td><td>标注「昵称（可选）」，留空则用账号作昵称（auth.service.ts:79）</td></tr><tr><td>登录 / 注册同页切换<code style="font-weight:400;color:#94A3B8">isRegister</code></td><td><span class='badge b-has'>已有</span></td><td>boss login_page.dart:28,210-218</td><td>一个 TextButton 切换，不跳新页面</td></tr><tr><td>行内字段错误<code style="font-weight:400;color:#94A3B8">FormErrors</code></td><td><span class='badge b-has'>已有</span></td><td>form_errors.dart:316 AppFieldError</td><td>输入框下方红字 11.5px #DC2626 + error_outline 12px</td></tr><tr><td>表单汇总条<code style="font-weight:400;color:#94A3B8">FormErrors.summaryLines</code></td><td><span class='badge b-has'>已有</span></td><td>form_errors.dart:372 AppFormErrorSummary</td><td>按钮上方浅红底条，文案「账号、密码还需修改」（指路，不重复红字）</td></tr><tr><td>顶部浮层提示（Toast）<code style="font-weight:400;color:#94A3B8">AppToast.error</code></td><td><span class='badge b-has'>已有</span></td><td>form_errors.dart:14-15 / login_page.dart:76</td><td>定位不到字段的失败（网络异常 / 账号或密码错误 / 限流）</td></tr><tr><td>账号封禁弹窗<code style="font-weight:400;color:#94A3B8">ACCOUNT_BANNED</code></td><td><span class='badge b-has'>已有</span></td><td>login_page.dart:90-103 / auth.service.ts:124-132</td><td>标题「账号已被封禁」+ 结束时间文案，单按钮「知道了」</td></tr><tr><td>注册成功提示<code style="font-weight:400;color:#94A3B8">AppToast.success</code></td><td><span class='badge b-has'>已有</span></td><td>login_page.dart:60</td><td>「注册成功，请登录」→ 自动切回登录态</td></tr><tr><td>协议勾选<code style="font-weight:400;color:#94A3B8">—</code></td><td><span class='badge b-new'>待新增</span></td><td>全仓库无「用户协议/同意」组件（仅 about_privacy_page 阅读页）</td><td>设计稿按负责人要求出，标注「新增·待审批」，实现时才引入</td></tr><tr><td>忘记密码入口<code style="font-weight:400;color:#94A3B8">—</code></td><td><span class='badge b-new'>待新增</span></td><td>无 /auth/forgot、无验证码接口；改密走登录后 /auth/password（security_page.dart:61）</td><td>设计稿只出入口形态，标注后端缺口</td></tr><tr><td>手机号 + 验证码登录<code style="font-weight:400;color:#94A3B8">—</code></td><td><span class='badge b-no'>不存在</span></td><td>server/src/modules/auth 无 sms/code 接口</td><td>设计稿严禁出现（不存在的东西不出现）</td></tr><tr><td>第三方登录（微信/QQ/Apple）<code style="font-weight:400;color:#94A3B8">—</code></td><td><span class='badge b-no'>不存在</span></td><td>全仓库无</td><td>设计稿严禁出现</td></tr><tr><td>邀请码 / 推荐码<code style="font-weight:400;color:#94A3B8">—</code></td><td><span class='badge b-no'>不存在</span></td><td>全仓库无 inviteCode</td><td>设计稿严禁出现</td></tr><tr><td>独立注册页 / 启动闪屏页<code style="font-weight:400;color:#94A3B8">—</code></td><td><span class='badge b-no'>不存在</span></td><td>无 register_page.dart / splash_page.dart；RootGate 直接 LoginPage</td><td>不做独立页面</td></tr><tr><td>工作端注册<code style="font-weight:400;color:#94A3B8">—</code></td><td><span class='badge b-no'>不存在</span></td><td>worker login_page.dart 无 isRegister；页脚「工作账号由管理员创建分配」</td><td>工作端只有登录，设计稿需标注差异</td></tr></tbody></table>
+</section>
+
+<section class="scheme card-wide">
+<h2>两端差异（老板端 vs 工作端）</h2>
+<table><thead><tr><th>项</th><th>老板端 boss-app</th><th>工作端 worker-app</th><th>设计稿如何覆盖</th></tr></thead><tbody>
+<tr><td class="k">页面文件</td><td>lib/pages/login_page.dart（登录 + 注册同页切换）</td><td>lib/pages/login_page.dart（仅登录）</td><td>同一套版式，工作端不出现「注册」入口</td></tr>
+<tr><td class="k">注册能力</td><td>有：账号 + 密码 + 昵称（可选）</td><td>无：账号由管理员创建分配</td><td>工作端页脚文案「工作账号由管理员创建分配」（现网已有）</td></tr>
+<tr><td class="k">当前视觉</td><td><b>液态玻璃 + 紫蓝渐变</b>（#2B4BD7→#5B4BE0→#9B6EFF）</td><td>原生 Material，主色 #2563EB，无卡片</td><td>两端统一到本次定稿方案（工作端只取登录态）</td></tr>
+<tr><td class="k">错误呈现</td><td>行内红字 + 汇总条 + AppToast（已整改）</td><td>行内红字 + 汇总条，无 AppToast</td><td>三套方案都画了「行内」与「顶部提示」两种</td></tr>
+</tbody></table>
+<p class="one" style="margin-top:12px"><b>不一致点（需要负责人定）</b>：老板端登录页仍是旧液态玻璃紫蓝渐变，
+与全站青蓝 token（#2563EB / #06B6D4）不是一套；工作端是原生 Material 风格。也就是说现在两端登录页<b>互不相同、且都与全站不一致</b>。</p>
+</section>
+
+<section class="scheme card-wide">
+<h2>三套方案的取舍对照</h2>
+<table><thead><tr><th>维度</th><th>方案 A 极简留白</th><th>方案 B 品牌主视觉</th><th>方案 C 卡片分区</th></tr></thead><tbody>
+<tr><td class="k">第一眼看到</td><td>「登录」两个大字 + 一列下划线输入框</td><td>实色品牌区（祁山标 + 3 个分部 / 客服时段）</td><td>分段控件「登录 | 注册」+ 带序号的字段分区</td></tr>
+<tr><td class="k">设计参照</td><td>shadcn/ui 认证块、Refactoring UI、Vercel/Linear</td><td>Supabase Auth UI、Material 3 filled 输入框</td><td>Material 3 segmented button、flutter_login</td></tr>
+<tr><td class="k">圆角档位</td><td>0 / 4 / 6</td><td>4 / 6 / 10 / 14</td><td>4 / 6 / 10 / 14</td></tr>
+<tr><td class="k">品牌感</td><td>弱</td><td><b>强</b></td><td>中</td></tr>
+<tr><td class="k">表单可读性</td><td>中（字段多时像长表单）</td><td>中上</td><td><b>强</b>（错误定位到分区）</td></tr>
+<tr><td class="k">实现量（估算）</td><td><b>最小</b>：改 2 个文件 + 0 个新组件</td><td>中：改 2 个文件 + 1 个新组件（品牌头）</td><td>较大：改 2 个文件 + 2-3 个新组件（分段控件 / 分区卡）</td></tr>
+<tr><td class="k">适合的偏好</td><td>要克制、不想再动结构</td><td>要品牌识别、能接受首屏少 176px</td><td>要把注册与协议讲清楚、字段以后还会加</td></tr>
+</tbody></table>
+</section>
+</div>
+
+<footer>
+出图流程：<code>python scripts/tmp/make-mockups-auth.py</code>（生成 15 个 HTML）→
+<code>node scripts/tmp/auth-design-shot.mjs</code>（本机 Edge + CDP 截图 PNG）→
+<code>node scripts/tmp/auth-design-check.mjs</code>（覆盖自检 + 中文/溢出核验）。<br>
+说明：本页所有 PNG 均为 390×844 手机视口原尺寸截图；<code>*-full.png</code> 为整页版（含键盘示意）。
+源文件与 PNG 均放在 <code>site/design/auth/</code>，未修改 <code>apps/**</code>、<code>server/**</code>。
+</footer>
+</div></body></html>

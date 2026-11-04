@@ -1,0 +1,72 @@
+[
+  {
+    "width": 1600,
+    "page": "/users",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\dbg-1600-users.png",
+    "viewWidth": 1335,
+    "contentWidth": 1430,
+    "hasHScroll": true,
+    "contentArea": 1385,
+    "cols": "ID:100 | 账号:130 | 昵称:110 | 角色:80 | 身份绑定:220 | 等级:60 | 积分:90 | 状态:170 | 最近登录:150 | 注册时间:150 | 操作:170(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "封号",
+        "w": 48,
+        "h": 28,
+        "left": 1402,
+        "right": 1450,
+        "top": 210,
+        "insideClip": true
+      },
+      {
+        "text": "删除",
+        "w": 48,
+        "h": 28,
+        "left": 1458,
+        "right": 1506,
+        "top": 210,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 170,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1600,
+    "page": "/admins",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\dbg-1600-admins.png",
+    "viewWidth": 1350,
+    "contentWidth": 1350,
+    "hasHScroll": false,
+    "contentArea": 1400,
+    "cols": "账号:201 | 昵称:201 | 角色:201 | 状态:129 | 创建时间:244 | 操作:373(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "编辑",
+        "w": 48,
+        "h": 28,
+        "left": 1214,
+        "right": 1262,
+        "top": 254,
+        "insideClip": true
+      },
+      {
+        "text": "重置密码",
+        "w": 76,
+        "h": 28,
+        "left": 1270,
+        "right": 1346,
+        "top": 254,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 373,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  }
+]

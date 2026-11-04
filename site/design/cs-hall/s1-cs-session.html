@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390,initial-scale=1">
+<title>S1 接入后的会话页（客服视角）· 两处差异 + 退回池子（待定）</title>
+<style>
+:root{
+  --primary:#2563EB; --primary-strong:#1D4ED8; --primary-soft:#E7EEFE; --ice:#EFF6FF;
+  --cyan:#06B6D4; --gold:#D97706; --gold-soft:#FEF3C7;
+  --bg-page:#F5F7FB; --surface:#FFFFFF; --surface-2:#FAFBFD;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8; --muted:#5B6B80;
+  --hair:#E5E9F0; --hair-2:#EEF1F6; --line-field:#CFD8E6;
+  --error:#DC2626; --error-soft:#FDECEC; --error-hair:#F3C4C4;
+  --warn:#EA580C; --warn-soft:#FFF4EC; --warn-hair:#F6D3B8;
+  --success:#16A34A; --success-soft:#DCFCE7;
+  --r-xs:4px; --r-sm:6px; --r-ctl:10px; --r-card:14px; --pad:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--ink);background:#DDE3EC;font-size:14px;line-height:1.4}
+.ic{width:18px;height:18px;flex:0 0 18px;display:block}
+
+/* ---- 手机壳 390×844（2× 出图 = 780×1688） ---- */
+.phone{width:390px;height:844px;margin:0 auto;background:var(--bg-page);position:relative;overflow:hidden;
+  display:flex;flex-direction:column}
+.statusbar{height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px 0 var(--pad);font-size:12.5px;font-weight:600;letter-spacing:.2px;color:var(--ink);background:var(--surface)}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:11px}
+.sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6.5px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:11px}
+.sb-batt{width:20px;height:10.5px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;opacity:.85}
+.sb-batt::after{content:"";position:absolute;right:-3.2px;top:3px;width:1.8px;height:4px;background:currentColor;border-radius:0 1px 1px 0}
+.sb-batt i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:62%;background:currentColor;border-radius:1px}
+
+.scroll{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ---- 排版：组内紧 8–10 / 组间松 20–24 ---- */
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec + .sec{margin-top:22px}
+.row{display:flex;align-items:center}
+.between{justify-content:space-between}
+.grow{flex:1 1 auto;min-width:0}
+.h1{font-size:19px;font-weight:700;letter-spacing:-.15px}
+.h2{font-size:15px;font-weight:700;letter-spacing:-.1px}
+.h3{font-size:14px;font-weight:600}
+.note{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+.sub{font-size:11.5px;line-height:1.5;color:var(--muted)}
+.tiny{font-size:10.5px;line-height:1.45;color:var(--ink-3)}
+.hair{height:1px;background:var(--hair-2);border:0}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---- 页头 ---- */
+.phead{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--hair);padding:6px var(--pad) 12px}
+.phead.tight{padding-bottom:9px}
+.phead .ttl{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.icbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--ink-2);
+  border:1px solid var(--hair);border-radius:var(--r-sm);background:var(--surface)}
+.icbtn .ic{width:16px;height:16px;flex:0 0 16px}
+
+/* ---- 卡片 / 列表 ---- */
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card)}
+.cardflat{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);overflow:hidden}
+.lrow{display:flex;align-items:center;gap:11px;padding:13px 14px;background:var(--surface)}
+.lrow + .lrow{border-top:1px solid var(--hair-2)}
+.lrow .lt{font-size:14px;font-weight:600;color:var(--ink)}
+.lrow .ls{font-size:11.5px;color:var(--muted);margin-top:2px}
+.gi{width:30px;height:30px;flex:0 0 30px;border-radius:var(--r-sm);display:flex;align-items:center;
+  justify-content:center;background:var(--ice);color:var(--primary)}
+.gi .ic{width:16px;height:16px;flex:0 0 16px}
+
+/* ---- 按钮 ---- */
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;height:44px;border:0;border-radius:var(--r-sm);
+  font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:.2px;cursor:pointer;width:100%;white-space:nowrap}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary[disabled]{background:#E9EDF4;color:var(--ink-3)}
+.btn-ghost{background:var(--surface);color:var(--primary);border:1px solid var(--hair)}
+.btn-sm{height:32px;font-size:13px;width:auto;padding:0 15px;border-radius:var(--r-sm);font-weight:600}
+.btn-txt{background:transparent;border:0;font-family:var(--font);font-size:13.5px;font-weight:600;color:var(--primary);
+  cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+
+/* ---- 提示条（发丝线描边，无阴影） ---- */
+.banner{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--error-soft);border:1px solid var(--error-hair)}
+.banner .ic{width:15px;height:15px;flex:0 0 15px;margin-top:1.5px;color:var(--error)}
+.banner .t{font-size:12.5px;font-weight:600;color:var(--error);line-height:1.45}
+.banner .d{font-size:11.5px;color:#8C3A3A;line-height:1.5;margin-top:3px}
+.banner.info{background:var(--ice);border-color:#CCE0FB}
+.banner.info .ic,.banner.info .t{color:var(--primary)}
+.banner.info .d{color:#3A5A99}
+.banner.warn{background:var(--warn-soft);border-color:var(--warn-hair)}
+.banner.warn .ic,.banner.warn .t{color:var(--warn)}
+.banner.warn .d{color:#8A4A21}
+.banner.ok{background:#F1FBF4;border-color:#BFE7CC}
+.banner.ok .ic,.banner.ok .t{color:#15803D}
+.banner.ok .d{color:#3D6B4C}
+.banner.plain{background:var(--surface-2);border-color:var(--hair)}
+.banner.plain .ic{color:var(--ink-3)}
+.banner.plain .t{color:var(--ink-2)}
+.banner.plain .d{color:var(--muted)}
+
+/* ---- 胶囊 / 小标签 ---- */
+.chips{display:flex;gap:8px;padding:0 var(--pad);overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;height:30px;padding:0 13px;display:flex;align-items:center;gap:6px;border-radius:999px;
+  border:1px solid var(--hair);background:var(--surface);font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.chip .n{font-size:11px;font-weight:600;opacity:.75}
+.chip.dim{background:var(--surface-2);color:var(--ink-3)}
+.chip.seg{background:var(--surface);border-color:var(--primary);color:var(--primary)}
+.chip.seg.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.tag{display:inline-flex;align-items:center;height:17px;padding:0 6px;border-radius:var(--r-xs);
+  font-size:10.5px;font-weight:700;letter-spacing:.2px;border:1px solid transparent}
+.tag-p{background:var(--primary-soft);color:var(--primary);border-color:#C7D8FB}
+.tag-g{background:var(--gold-soft);color:#92400E;border-color:#F5D08A}
+.tag-m{background:#F1F5F9;color:var(--muted);border-color:var(--hair)}
+.tag-e{background:var(--error-soft);color:var(--error);border-color:var(--error-hair)}
+.tag-ok{background:var(--success-soft);color:#15803D;border-color:#BFE7CC}
+.zone{display:inline-flex;align-items:center;height:17px;padding:0 6px;border-radius:var(--r-xs);
+  font-size:10.5px;font-weight:600;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--hair)}
+.tag-tbd{background:var(--surface-2);color:var(--muted);border:1px dashed var(--line-field)}
+
+/* ---- 分段控件 ---- */
+.seg{display:flex;gap:3px;background:#EDF1F7;border-radius:var(--r-ctl);padding:3px}
+.seg-i{flex:1 1 0;height:31px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:13px;
+  font-weight:600;color:var(--ink-2);border-radius:var(--r-sm);border:1px solid transparent}
+.seg-i.on{background:var(--surface);color:var(--primary);border-color:var(--hair)}
+.seg-i .badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--error);color:#fff;
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* ---- 公告条 / 事实行 ---- */
+.anno{display:flex;align-items:center;gap:8px;height:36px;padding:0 11px;background:var(--ice);
+  border:1px solid #CCE0FB;border-radius:var(--r-sm)}
+.anno .lb{flex:0 0 auto;font-size:10.5px;font-weight:700;color:var(--primary);background:var(--surface);
+  border:1px solid #BBD3FA;border-radius:var(--r-xs);padding:1px 5px}
+.anno .tx{flex:1 1 auto;min-width:0;font-size:12px;color:var(--ink-2)}
+.fact{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted)}
+.fact .dot{width:5px;height:5px;border-radius:50%;background:var(--success);flex:0 0 5px}
+.fact .sep{color:var(--hair)}
+
+/* ---- 接单大厅订单卡（C 方案沿用） ---- */
+.ord{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);padding:12px 13px}
+.ord-h{display:flex;align-items:flex-start;gap:10px}
+.ord-t{flex:1 1 auto;min-width:0;font-size:14.5px;font-weight:600;line-height:1.38;color:var(--ink);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ord-a{flex:0 0 auto;text-align:right}
+.ord-a b{font-size:19px;font-weight:700;color:var(--gold);letter-spacing:-.3px}
+.ord-a span{font-size:11px;color:var(--muted);font-weight:600}
+.ord-m{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;color:var(--muted)}
+.ord-f{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding-top:10px;
+  border-top:1px solid var(--hair-2)}
+
+/* ---- 消息会话行（B 方案沿用） ---- */
+.mrow{display:flex;align-items:center;gap:11px;padding:12px 14px;background:var(--surface)}
+.mrow + .mrow{border-top:1px solid var(--hair-2)}
+.avt{width:40px;height:40px;flex:0 0 40px;border-radius:var(--r-sm);background:var(--ice);color:var(--primary);
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;letter-spacing:.3px}
+.avt.g{background:var(--gold-soft);color:#92400E}
+.mrow .mt{flex:1 1 auto;min-width:0}
+.mrow .mt b{display:block;font-size:14px;font-weight:600}
+.mrow .mt i{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:3px}
+.mrow .mr{flex:0 0 auto;text-align:right}
+.mrow .mr em{display:block;font-style:normal;font-size:10.5px;color:var(--ink-3)}
+.mrow .mr .badge{display:inline-flex;min-width:17px;height:17px;padding:0 5px;margin-top:5px;border-radius:9px;
+  background:var(--error);color:#fff;font-size:10.5px;font-weight:700;align-items:center;justify-content:center}
+
+/* ---- 底部导航（打手态 3 项 / 4 项；无凸起位、无浮标） ---- */
+.tabbar3,.tabbar4{flex:0 0 60px;display:flex;align-items:center;background:var(--surface);border-top:1px solid var(--hair);
+  padding-bottom:2px}
+.tb-item{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-3);position:relative}
+.tb-item.on{color:var(--primary)}
+.tb-item .ic{width:21px;height:21px;flex:0 0 21px}
+.tb-label{font-size:10.5px;font-weight:600;letter-spacing:.1px}
+.tbbadge{position:absolute;top:-3px;left:50%;margin-left:3px;min-width:15px;height:15px;padding:0 4px;border-radius:8px;
+  background:var(--error);color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* ---- 打手态身份细带（28dp，沿用 2026-10-06 定案 A+ 稿，一字不改） ---- */
+.idbar{flex:0 0 28px;display:flex;align-items:center;gap:6px;padding:0 var(--pad);
+  background:var(--primary-soft);border-bottom:1px solid var(--hair);color:var(--primary)}
+.idbar .ic{width:13px;height:13px;flex:0 0 13px}
+.idbar .lb{font-size:10.5px;font-weight:600;color:#5A76AE;letter-spacing:.1px}
+.idbar .id{font-size:11.5px;font-weight:700;color:var(--primary);letter-spacing:.1px}
+.idbar .sp{flex:1 1 auto}
+.idbar .act{display:inline-flex;align-items:center;gap:2px;font-size:11.5px;font-weight:700;color:var(--primary)}
+.idbar .arr{width:12px;height:12px;flex:0 0 12px}
+
+/* ---- 客服大厅列表行 ---- */.csrow{display:flex;align-items:center;gap:11px;padding:12px 13px;background:var(--surface);
+  border:1px solid var(--hair);border-radius:var(--r-card)}
+.csrow.taken{opacity:.42}
+.csmain{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:3px}
+.csmain b{font-size:14.5px;font-weight:600;letter-spacing:-.1px}
+.cssum{font-size:12px;color:var(--muted)}
+.cswait{font-size:11.5px;color:var(--ink-3);display:flex;align-items:center;gap:5px}
+.cswait .ic{width:12px;height:12px;flex:0 0 12px}
+.cswait.long{color:var(--gold);font-weight:600}
+.csrow .btn{flex:0 0 auto}
+
+/* ---- 骨架（加载态：静态，不做无限循环动画） ---- */
+.sk{background:#EEF1F6;border-radius:var(--r-xs)}
+.sk.sq{width:40px;height:40px;flex:0 0 40px;border-radius:var(--r-sm)}
+.sk.l1{height:12px;width:64px}
+.sk.l2{height:11px;width:196px;margin-top:7px}
+.sk.l3{height:10px;width:88px;margin-top:7px}
+.sk.btn{width:56px;height:32px;flex:0 0 56px;border-radius:var(--r-sm)}
+.sk.card{display:flex;align-items:center;gap:11px;padding:12px 13px;background:var(--surface);
+  border:1px solid var(--hair);border-radius:var(--r-card);height:88px}
+.sk .col{flex:1 1 auto;min-width:0}
+
+/* ---- 空态 ---- */
+.empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:56px 30px 0;text-align:center}
+.empty .ec{width:44px;height:44px;border-radius:var(--r-card);background:var(--surface);border:1px solid var(--hair);
+  display:flex;align-items:center;justify-content:center;color:var(--ink-3)}
+.empty .ec .ic{width:21px;height:21px;flex:0 0 21px}
+.empty .et{font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.empty .ed{font-size:11.5px;color:var(--muted);line-height:1.55}
+
+/* ---- toast（= core AppToast 静态示意：实色主色 + 白字，r14，无渐变） ---- */
+.toastwrap{position:absolute;left:22px;right:22px;display:flex;justify-content:center;z-index:6}
+.toast{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:var(--r-card);
+  background:var(--primary);color:#fff;font-size:12.5px;font-weight:700;letter-spacing:.2px}
+.toast .ic{width:15px;height:15px;flex:0 0 15px}
+
+/* ---- 待接入通栏条（方案 B 用：消息页最上方一条；无待接入时整条不渲染） ---- */
+.csbanner{display:flex;align-items:center;gap:8px;height:40px;margin:10px 0 0;padding:0 11px;
+  background:var(--ice);border:1px solid #CCE0FB;border-radius:var(--r-ctl);color:var(--primary)}
+.csbanner .ic{width:16px;height:16px;flex:0 0 16px}
+.csbanner .tx{flex:1 1 auto;min-width:0;font-size:13px;font-weight:600;color:var(--primary)}
+.csbanner .tx b{font-weight:700}
+.csbanner .arr{width:14px;height:14px;flex:0 0 14px;color:var(--primary)}
+
+/* ---- 弹层（唯一允许阴影的地方） ---- */
+.mask{position:absolute;inset:0;background:rgba(15,23,42,.42)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:var(--r-card) var(--r-card) 0 0;
+  box-shadow:0 -10px 30px rgba(15,23,42,.18);padding:15px var(--pad) 0;display:flex;flex-direction:column}
+.sheet-h{display:flex;align-items:center;gap:8px;padding-bottom:11px}
+.sheet-h .st{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.sheet-b{display:flex;flex-direction:column;gap:12px;padding-bottom:14px}
+.sheet-f{flex:0 0 auto;display:flex;gap:9px;padding:12px 0 20px;border-top:1px solid var(--hair-2)}
+.grab{width:34px;height:4px;border-radius:2px;background:#DDE3EC;margin:0 auto 9px}
+.qlist{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.qlist span{display:flex;gap:7px;font-size:12px;color:var(--muted);line-height:1.5}
+.qlist span::before{content:"—";color:var(--ink-3);flex:0 0 auto}
+
+/* ---- 标注框（审批用：虚线 + 角标，出货时会去掉） ---- */
+.mark{position:absolute;border:1.5px dashed var(--primary);border-radius:var(--r-ctl);pointer-events:none;z-index:7}
+.mark.tbd{border-color:var(--ink-3);border-style:dashed}
+.mklb{position:absolute;left:8px;top:-12px;background:var(--primary);color:#fff;font-size:10.5px;font-weight:700;
+  letter-spacing:.2px;padding:2px 7px;border-radius:var(--r-xs);white-space:nowrap}
+.mark.tbd .mklb{background:#64748B}
+.mklb.below{top:auto;bottom:-12px}
+.mklb.right{left:auto;right:8px}
+
+/* ---- 聊天页（沿用 core ChatV4 硬参数：页底 #EFF2F7 / 页头 56 / 气泡圆角 14 / 输入框圆角 18） ---- */
+.chat{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;background:#EFF2F7}
+.chathead{flex:0 0 56px;display:flex;align-items:center;gap:9px;padding:0 12px 0 8px;background:var(--surface);
+  border-bottom:1px solid var(--hair-2)}
+.chathead .bk{width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.chathead .bk .ic{width:21px;height:21px;flex:0 0 21px}
+.chava{width:32px;height:32px;flex:0 0 32px;border-radius:var(--r-sm);background:var(--ice);color:var(--primary);
+  display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;border:2px solid var(--surface)}
+.chathead .who{flex:1 1 auto;min-width:0}
+.chathead .who b{display:block;font-size:15.5px;font-weight:600;color:#111827;letter-spacing:-.1px}
+.chathead .who i{display:flex;align-items:center;gap:5px;font-style:normal;font-size:11px;color:#98A2B3;margin-top:2px}
+.chathead .who i .dt{width:6px;height:6px;border-radius:50%;background:var(--success);flex:0 0 6px}
+.chathead .who i .dt.off{background:var(--ink-3)}
+.chathead .dot3{width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--ink-3)}
+.chatbody{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:6px;padding:14px 14px 8px}
+.chatbody .gap18{margin-top:12px}
+.chipmsg{align-self:center;max-width:290px;text-align:center;background:#E7EBF1;color:#5B6B80;font-size:11px;
+  line-height:1.5;padding:6px 11px;border-radius:var(--r-ctl)}
+.chipmsg.sub{background:transparent;color:var(--ink-3);padding:0 6px;font-size:11px}
+.bwrap{display:flex;gap:9px;align-items:flex-end}
+.bwrap.mine{flex-direction:row-reverse}
+.bavt{width:34px;height:34px;flex:0 0 34px;border-radius:var(--r-sm);background:var(--ice);color:var(--primary);
+  display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;border:2px solid var(--surface)}
+.bavt.g{background:var(--gold-soft);color:#92400E}
+.bub{max-width:236px;padding:12px 14px;border-radius:var(--r-card);font-size:14px;line-height:1.57;color:var(--ink);
+  background:var(--surface);border:1px solid var(--hair)}
+.bwrap.mine .bub{background:var(--primary);border-color:var(--primary);color:#fff}
+.btime{font-size:10.5px;color:var(--ink-3);align-self:flex-end;margin:0 4px 2px}
+.composer{flex:0 0 56px;display:flex;align-items:center;gap:9px;padding:0 12px;background:var(--surface);
+  border-top:1px solid var(--hair-2)}
+.composer .plus{width:30px;height:30px;flex:0 0 30px;border-radius:50%;border:1px solid var(--hair);color:var(--ink-2);
+  display:flex;align-items:center;justify-content:center}
+.composer .plus .ic{width:17px;height:17px;flex:0 0 17px}
+.composer .inp{flex:1 1 auto;min-width:0;height:36px;display:flex;align-items:center;padding:0 13px;background:#EFF2F7;
+  border-radius:18px;font-size:13.5px;color:var(--ink-3)}
+.composer .send{font-size:14px;font-weight:600;color:var(--primary);padding:0 4px}
+/* 客服操作条（客服视角差异 ②） */
+.csbar{flex:0 0 38px;display:flex;align-items:center;gap:10px;padding:0 var(--pad);background:var(--surface);
+  border-top:1px solid var(--hair-2);font-size:12.5px}
+.csbar .act{display:inline-flex;align-items:center;gap:5px;color:var(--ink-2);font-weight:600}
+.csbar .act .ic{width:14px;height:14px;flex:0 0 14px}
+.csbar .sp{flex:1 1 auto}
+.csbar .tbdact{display:inline-flex;align-items:center;gap:5px;color:var(--ink-3);font-weight:600;
+  border:1px dashed var(--line-field);border-radius:var(--r-sm);padding:3px 8px}
+.csbar .tbdact .ic{width:14px;height:14px;flex:0 0 14px}
+.csbar .tbdact .tag{margin-left:2px}
+
+/* ---- 客服信息条（聊天页内，老板视角） ---- */
+.csbar-info{display:flex;align-items:center;gap:9px;margin:10px 14px 0;padding:10px 8px 10px 10px;background:var(--surface);
+  border:1px solid var(--hair);border-radius:12px}
+.csbar-info .who{flex:1 1 auto;min-width:0}
+.csbar-info .who b{display:block;font-size:13.5px;font-weight:600}
+.csbar-info .who i{display:flex;align-items:center;gap:5px;font-style:normal;font-size:10.5px;color:var(--ink-3);margin-top:3px}
+.csbar-info .who i .dt{width:6px;height:6px;border-radius:50%;background:var(--ink-3);flex:0 0 6px}
+.csbar-info .who i .dt.on{background:var(--success)}
+.csbar-info .fin{font-size:11.5px;font-weight:500;color:var(--ink-2);padding:8px}
+
+/* ---- 审批说明（手机壳外，截图裁剪不到，不污染稿面） ---- */
+.spec{width:390px;margin:16px auto 44px;background:#0F172A;color:#D7DEEA;border-radius:var(--r-ctl);
+  padding:14px 15px;font-size:12px;line-height:1.65}
+.spec h4{font-size:12.5px;color:#fff;margin-bottom:7px;font-weight:700}
+.spec ul{margin:0 0 11px 16px}
+.spec li{margin-bottom:5px}
+.spec b{color:#93C5FD;font-weight:700}
+.spec code{background:#1E293B;border-radius:3px;padding:1px 4px;font-size:11px;color:#E2E8F0}
+.spec .warnb{color:#FCD34D;font-weight:700}
+
+/* ---- 状态面板（?state= 变体） ---- */
+.phone > [data-pane]{position:absolute;inset:0;display:flex;flex-direction:column;min-height:0}
+.wrap{padding:0 var(--pad)}
+.pt{padding-top:14px}
+.pb{padding-bottom:22px}
+.cgap{display:flex;flex-direction:column;gap:10px}
+</style>
+</head>
+<body>
+<div class="phone"><div data-pane="view"><div class="statusbar"><span>21:34</span>
+<span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span>
+<span class="sb-batt"><i></i></span></span></div><div class="idbar">
+  <span class="lb">当前身份</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l7 2.6v5c0 4.3-2.8 7.6-7 9.4-4.2-1.8-7-5.1-7-9.4v-5z"/></svg><span class="id">打手 · 工号 W20260118</span>
+  <span class="sp"></span><span class="act">切回老板<svg class="ic arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="chathead">
+  <span class="bk"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span>
+  <span class="chava" data-mk="who">小</span>
+  <span class="who" data-mk="who-who"><b>小北</b>
+  <i><span class="dt"></span>本次咨询 04:12</i></span>
+  <span class="dot3"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M12 11v5.2M12 7.9v.1"/></svg></span></div><div class="chatbody" style="padding-top:24px"><div class="chipmsg">客服 老周 已接入</div><div class="bwrap">
+  <span class="bavt">小</span>
+  <div class="bub">单号 8241，开打前先跟我说一下</div></div><div class="bwrap mine">
+  
+  <div class="bub">在的，我先看下这单进度，稍等</div><span class="btime num">21:34</span></div><div class="bwrap">
+  <span class="bavt">小</span>
+  <div class="bub">刚那一局掉线了，能补吗</div></div><div class="bwrap mine">
+  
+  <div class="bub">能补。你把那局结算截图发我，我这边提交补单</div><span class="btime num">21:34</span></div></div><div class="composer"><span class="plus"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.6v12.8M5.6 12h12.8"/></svg></span>
+  <span class="inp">输入消息…</span><span class="send">发送</span></div><div class="csbar" data-mk="csbar">
+  <span class="act"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.6l4.6 4.6L19 7.6"/></svg>结束本次咨询</span>
+  <span class="sp"></span>
+  <span class="tbdact"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 9.4A7.6 7.6 0 1112 20"/><path d="M4.2 4.8v4.8h4.8"/></svg>退回池子<span class="tag tag-tbd">待定</span></span>
+</div><div class="mark" data-anchor="who" data-pad="6" data-labelpos="below"><span class="mklb">① 老板昵称 + 本次咨询时长</span></div><div class="mark" data-anchor="csbar" data-pad="4" data-labelpos="above" data-lbdy="-14"></div></div><div data-pane="return"><div class="statusbar"><span>21:34</span>
+<span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span>
+<span class="sb-batt"><i></i></span></span></div><div class="idbar">
+  <span class="lb">当前身份</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l7 2.6v5c0 4.3-2.8 7.6-7 9.4-4.2-1.8-7-5.1-7-9.4v-5z"/></svg><span class="id">打手 · 工号 W20260118</span>
+  <span class="sp"></span><span class="act">切回老板<svg class="ic arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></div><div class="chathead">
+  <span class="bk"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></span>
+  <span class="chava">小</span>
+  <span class="who"><b>小北</b>
+  <i><span class="dt"></span>本次咨询 04:12</i></span>
+  <span class="dot3"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M12 11v5.2M12 7.9v.1"/></svg></span></div><div class="chatbody" style="padding-top:24px"><div class="chipmsg">客服 老周 已接入</div><div class="bwrap">
+  <span class="bavt">小</span>
+  <div class="bub">单号 8241，开打前先跟我说一下</div></div><div class="bwrap mine">
+  
+  <div class="bub">在的，我先看下这单进度，稍等</div><span class="btime num">21:34</span></div><div class="bwrap">
+  <span class="bavt">小</span>
+  <div class="bub">刚那一局掉线了，能补吗</div></div><div class="bwrap mine">
+  
+  <div class="bub">能补。你把那局结算截图发我，我这边提交补单</div><span class="btime num">21:34</span></div></div><div class="composer"><span class="plus"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.6v12.8M5.6 12h12.8"/></svg></span>
+  <span class="inp">输入消息…</span><span class="send">发送</span></div><div class="csbar" data-mk="csbar">
+  <span class="act"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.6l4.6 4.6L19 7.6"/></svg>结束本次咨询</span>
+  <span class="sp"></span>
+  <span class="tbdact"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 9.4A7.6 7.6 0 1112 20"/><path d="M4.2 4.8v4.8h4.8"/></svg>退回池子<span class="tag tag-tbd">待定</span></span>
+</div><div class="mask"></div><div class="sheet"><div class="grab"></div>
+  <div class="sheet-h"><span class="st">退回待接入池子？</span><span class="tag tag-tbd">待定</span></div>
+  <div class="sheet-b">
+    <div class="note">退回后这条咨询回到客服大厅，其他客服能接到；聊天记录保留，老板那一侧的页头回到「等待客服接入」。<b>这条能力还没定案</b>，下面三件事定了才能做：</div>
+    <div class="qlist"><span>退回要不要限制次数（防挑单）</span>
+    <span>退回后老板那边要不要给提示</span>
+    <span>退回算不算客服的考核数据</span></div>
+  </div>
+  <div class="sheet-f"><button class="btn btn-ghost">取消</button><button class="btn btn-primary">确认退回</button></div></div></div></div>
+<div class="spec"><h4>S1 客服视角：沿用既有会话页版式，只有两处差异 + 一个待定能力</h4><ul><li><b>① 页头 = 老板昵称 + 本次咨询时长</b>（新增）：时长从接入那一刻算起（<code>chat_conversation_assign.created_at</code> → 现在），走等宽数字；老板视角那一条「客服信息条」在客服侧不显示 —— 那条是给老板看客服是谁、工号多少的，客服自己不需要看自己。</li><li><b>② 底部操作条有「结束本次咨询」</b>：能力是既有的（<code>POST /user/conversation/close</code>，保留聊天记录、老板再咨询自动开新会话）；<b>位置</b>从现在的「ⓘ 更多」弹层里提到操作条上常驻 —— 客服一天要结束很多次，藏两层不合适。建议提出来后把弹层里那条同项删掉（同一入口只出现一次）。</li><li><b>「退回池子」= 待定，不要当已定功能</b>：画的是虚线次级样式 + 待定标签，不做成主色实心按钮；弹层里列了三个必须先定的事。主流程只有「接」和「结束」两个动作，退回是异常补救，不该和结束平级。</li><li><b>不变的部分</b>：气泡、头像、时间位点、输入栏、快捷回复一律沿用既有版式（<code>chat_v4.dart</code> 硬参数），不新增第二套聊天页。</li><li><b>接入那一刻</b>：会话流里插一条系统消息「客服 老周 已接入」——老板和客服都看得到，谁接的、什么时候接的，可回溯。</li></ul></div>
+<script>
+(function(){
+  var panes = document.querySelectorAll('[data-pane]');
+  var want = new URLSearchParams(location.search).get('state');
+  if(panes.length){
+    var has = false;
+    panes.forEach(function(p){ if(p.getAttribute('data-pane')===want) has = true; });
+    if(!has) want = panes[0].getAttribute('data-pane');
+    panes.forEach(function(p){ p.style.display = (p.getAttribute('data-pane')===want) ? '' : 'none'; });
+  }
+  document.body.setAttribute('data-state', want || '');
+
+  // 标注框定位：在**当前可见 pane** 内测量锚点（隐藏 pane 的几何盒为 0，故必须放在切态之后）
+  document.querySelectorAll('.mark[data-anchor]').forEach(function(m){
+    var host = m.closest('[data-pane]') || document.querySelector('.phone');
+    var t = host.querySelector('[data-mk="' + m.getAttribute('data-anchor') + '"]');
+    if(!t) return;
+    var hr = host.getBoundingClientRect(), tr = t.getBoundingClientRect();
+    if(!tr.width && !tr.height) return;
+    var pad = parseInt(m.getAttribute('data-pad') || '4', 10);
+    m.style.left = Math.round(tr.left - hr.left - pad) + 'px';
+    m.style.top = Math.round(tr.top - hr.top - pad) + 'px';
+    m.style.width = Math.round(tr.width + pad * 2) + 'px';
+    m.style.height = Math.round(tr.height + pad * 2) + 'px';
+    var lb = m.querySelector('.mklb');
+    if(lb){
+      var pos = m.getAttribute('data-labelpos');
+      if(pos === 'below') lb.classList.add('below');
+      if(pos === 'right') lb.classList.add('right');
+      var ldy = m.getAttribute('data-lbdy');
+      if(ldy !== null) lb.style.top = ldy + 'px';
+      if(m.getAttribute('data-lbpos') === 'center'){ lb.style.left = '50%'; lb.style.transform = 'translateX(-50%)'; }
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "name": "qls-admin-shell",
+  "version": "1.0.0",
+  "private": true,
+  "description": "祁连山电竞 · 管理端 桌面薄壳（Electron 壳 + 远程管理端页面；页面更新后 exe 无需重发）",
+  "author": "祁连山电竞",
+  "license": "MIT",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "node scripts/build-win.mjs",
+    "verify": "node tools/verify-shell-cdp.mjs"
+  },
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.fish.admin.shell",
+    "productName": "祁连山电竞-管理端",
+    "copyright": "祁连山电竞",
+    "asar": true,
+    "directories": {
+      "output": "../../dist-desktop",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "build/icon.png",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "祁连山电竞-管理端-${version}.exe",
+      "legalTrademarks": "祁连山电竞"
+    },
+    "portable": {
+      "artifactName": "祁连山电竞-管理端-${version}.exe",
+      "requestExecutionLevel": "user",
+      "unpackDirName": "qls-admin-shell"
+    }
+  }
+}

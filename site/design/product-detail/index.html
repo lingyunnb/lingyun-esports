@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>商品详情页 · 三套方案 + 管理端「下单须知」设计</title>
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #EEF1F6; }
+body { font-family: "Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif;
+        color: #0F172A; -webkit-font-smoothing: antialiased; }
+.wrap { padding: 24px 30px 46px; }
+.pagehead h1 { font-size: 21px; font-weight: 800; margin: 0 0 6px; letter-spacing: .2px; }
+.pagehead .sub { font-size: 12.5px; color: #475569; line-height: 1.75; max-width: 1220px; }
+.pagehead .sub b { color: #0F172A; }
+.badge-row { display: flex; gap: 8px; margin: 12px 0 20px; flex-wrap: wrap; }
+.badge { font-size: 11.5px; padding: 4px 9px; border-radius: 6px; background: #fff;
+          border: 1px solid #E2E8F0; color: #475569; }
+.badge.warn { border-color: #FCD9A8; background: #FEF7EC; color: #B45309; }
+.badge.ok { border-color: #BBE5C8; background: #F1FBF4; color: #15803D; }
+.badge.no { border-color: #F5C6C6; background: #FEF2F2; color: #B91C1C; }
+
+.frames { display: flex; gap: 24px; align-items: flex-start; }
+.frame { width: 390px; flex: none; }
+.frame .cap { display: flex; align-items: baseline; gap: 7px; margin: 0 0 8px; min-height: 20px; }
+.frame .cap .n { font-size: 12.5px; font-weight: 800; color: #2563EB; }
+.frame .cap .t { font-size: 13px; font-weight: 700; }
+.frame .cap .d { font-size: 11px; color: #94A3B8; }
+.frames.scaled { zoom: .62; }
+
+/* ---------------- 手机（390×844，与真实页面同框） ---------------- */
+.phone { position: relative; width: 390px; height: 844px; background: #F5F7FB; overflow: hidden;
+          border: 1px solid #DFE5EE; }
+.status { height: 28px; display: flex; align-items: center; justify-content: space-between;
+           padding: 0 14px; font-size: 11.5px; font-weight: 700; color: #0F172A; }
+.status .right { display: flex; align-items: center; gap: 5px; }
+.sig { display: flex; align-items: flex-end; gap: 2px; }
+.sig i { display: block; width: 2.5px; background: #0F172A; border-radius: 1px; }
+.batt { width: 20px; height: 10px; border: 1px solid #0F172A; border-radius: 2.5px; padding: 1.5px; }
+.batt i { display: block; height: 100%; width: 72%; background: #0F172A; border-radius: 1px; }
+
+.scroll { position: absolute; left: 0; right: 0; top: 84px; bottom: 0; overflow: hidden; }
+.pad { padding-bottom: 78px; }   /* 给吸底栏让位：内容能滚到底、最后一行不被遮 */
+.st4 .scroll .inner { transform: translateY(var(--sy, -236px)); }
+
+/* ---------------- 页头 ---------------- */
+.hdr { position: absolute; left: 0; right: 0; top: 0; height: 84px; background: #FFFFFF;
+        z-index: 3; border-bottom: 1px solid #E2E8F0; }
+.hdr .row { height: 56px; display: flex; align-items: center; padding: 0 12px; gap: 2px; }
+.hdr .ttl { font-size: 17px; font-weight: 800; letter-spacing: .2px; }
+.hdr .sp { flex: 1; }
+.hdr .ico { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+.hdr .ico.circle { border: 1px solid #E2E8F0; border-radius: 50%; }
+
+/* ---------------- 商品图文区（真实图，非装饰插画） ---------------- */
+.media { background: #FFFFFF; }
+.media .hero { height: 208px; background: #EFF6FF; position: relative; overflow: hidden; }
+.media .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.media .hero .cnt { position: absolute; right: 10px; bottom: 10px; background: rgba(15,23,42,.55);
+                     color: #fff; font-size: 10.5px; padding: 2px 7px; border-radius: 10px; }
+.media .gal { display: flex; gap: 2px; background: #FFFFFF; }
+.media .gal .g { flex: 1; height: 116px; background: #EFF6FF; overflow: hidden; position: relative; }
+.media .gal .g img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.media .thumbs { display: flex; gap: 6px; padding: 10px 0 0; }
+.media .thumbs .t { width: 56px; height: 56px; border-radius: 6px; overflow: hidden; background: #EFF6FF; }
+.media .thumbs .t img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.media .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 46px; height: 46px;
+                border-radius: 50%; background: rgba(15,23,42,.42); display: flex; align-items: center;
+                justify-content: center; }
+.media .play i { display: block; width: 0; height: 0; margin-left: 3px;
+                  border-left: 13px solid #fff; border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+
+/* 无图占位（管理端没挂图时的真实兜底；不是装饰插画） */
+.ph { width: 100%; height: 100%; background: #EFF6FF; display: flex; flex-direction: column;
+       align-items: center; justify-content: center; gap: 6px;
+       background-image: repeating-linear-gradient(135deg, rgba(37,99,235,.045) 0 1px, transparent 1px 9px); }
+.ph .lb { font-size: 10.5px; color: #94A3B8; letter-spacing: .4px; }
+
+/* ---------------- 卡片 ---------------- */
+.card { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; }
+.blk { background: #FFFFFF; border-top: 1px solid #E2E8F0; }
+.gap { height: 8px; background: #F5F7FB; }
+
+/* ---------------- 价格区 ---------------- */
+.price { padding: 14px 16px 12px; }
+.price .r1 { display: flex; align-items: flex-start; }
+.price .num { font-size: 30px; font-weight: 800; color: #D97706; line-height: 1.05; letter-spacing: -.5px; }
+.price .unit { font-size: 12px; color: #94A3B8; margin-left: 4px; padding-top: 13px; }
+.price .num2 { font-size: 15px; font-weight: 800; color: #D97706; }
+.price .share { width: 34px; height: 34px; margin-left: auto; display: flex; align-items: center;
+                 justify-content: center; border: 1px solid #E2E8F0; border-radius: 50%; background: #FFFFFF; }
+.price .name { font-size: 15.5px; font-weight: 800; color: #0F172A; line-height: 1.42; margin: 9px 0 0; }
+.price .sub { font-size: 11.5px; color: #94A3B8; line-height: 1.5; margin: 4px 0 0; }
+.price .meta { display: flex; align-items: center; gap: 9px; margin: 7px 0 0; }
+.badge-gold { font-size: 10px; font-weight: 700; color: #fff; background: #D97706;
+               padding: 2px 6px; border-radius: 5px; line-height: 1.25; white-space: nowrap; }
+.limit { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #475569; margin: 8px 0 0; }
+
+/* ---------------- 数据行（三列） ---------------- */
+/* 三列必须能收缩：`flex:1 1 0` + `min-width:0`，否则「服务方式 · 人工陪同」这种
+   不可断行的长词会把整列撑到 min-content，把内容区顶宽 → 连带手机框被撑成 413px
+   （overflow:hidden 只裁剪不阻止撑宽，必须在这里收住）。 */
+.datarow { display: flex; border-top: 1px solid #E2E8F0; margin: 12px 0 0; padding: 11px 0 1px; }
+.datarow .c { flex: 1 1 0; min-width: 0; text-align: left; overflow: hidden; }
+.datarow .c + .c { border-left: 1px solid #E2E8F0; padding-left: 10px; }
+.datarow .k { font-size: 10px; color: #94A3B8; white-space: nowrap; }
+.datarow .v { font-size: 12.5px; font-weight: 800; color: #0F172A; margin-top: 3px; line-height: 1.35;
+               overflow-wrap: anywhere; }
+.datarow .v small { font-size: 10px; font-weight: 600; color: #475569; }
+
+/* ---------------- 提示条 ---------------- */
+.noticebar { margin: 10px 16px 0; background: #EFF6FF; border: 1px solid #E7EEFE; border-radius: 6px;
+              padding: 9px 11px; display: flex; gap: 7px; align-items: flex-start; }
+.noticebar .tx { font-size: 11.5px; line-height: 1.55; color: #1E40AF; }
+
+/* ---------------- 下单须知 ---------------- */
+.sec-ctr { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 18px 16px 12px; }
+.sec-ctr .ln { width: 34px; height: 2px; background: #E7EEFE; border-radius: 1px; }
+.sec-ctr .h { font-size: 14.5px; font-weight: 800; letter-spacing: 1.5px; }
+.sec-l { display: flex; align-items: baseline; gap: 8px; padding: 22px 16px 10px; }
+.sec-l .h { font-size: 14.5px; font-weight: 800; }
+.sec-l .s { font-size: 10.5px; color: #94A3B8; }
+.terms { padding: 0 16px 18px; font-size: 12px; line-height: 1.85; color: #475569; }
+.terms b { color: #0F172A; }
+.terms .st { color: #0F172A; font-weight: 700; }
+
+/* ---------------- 折叠（B 套） ---------------- */
+.fold { background: #FFFFFF; border-top: 1px solid #E2E8F0; }
+.fold .hd { display: flex; align-items: center; gap: 8px; padding: 13px 16px; }
+.fold .hd .h { font-size: 13.5px; font-weight: 800; }
+.fold .hd .one { font-size: 11px; color: #94A3B8; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fold .hd .go { font-size: 11.5px; font-weight: 700; color: #2563EB; display: flex; align-items: center; gap: 3px; }
+.fold .bd { display: none; padding: 0 16px 18px; font-size: 12px; line-height: 1.85; color: #475569; }
+.fold.open .bd { display: block; }
+
+/* ---------------- 常见问题（C 套） ---------------- */
+/* 组内紧（问题→答案 5）/ 组间松（问答对之间 16）—— docs/21 的间距节奏 */
+.faq { padding: 0 16px 18px; }
+.faq .q { display: flex; gap: 8px; padding: 16px 0 0; }
+.faq .q:first-child { padding-top: 2px; }
+.faq .q .mk { flex: none; width: 15px; height: 15px; border-radius: 4px; background: #E7EEFE;
+               color: #2563EB; font-size: 9.5px; font-weight: 800; display: flex; align-items: center;
+               justify-content: center; margin-top: 1px; }
+.faq .q .tx { font-size: 12.5px; font-weight: 700; color: #0F172A; line-height: 1.5; }
+.faq .a { font-size: 11.5px; color: #475569; line-height: 1.8; margin: 5px 0 0 23px; }
+
+/* ---------------- 吸底操作栏 ---------------- */
+.bar { position: absolute; left: 0; right: 0; bottom: 0; height: 74px; background: #FFFFFF;
+        border-top: 1px solid #E2E8F0; display: flex; align-items: center; padding: 0 12px; gap: 4px;
+        z-index: 4; }
+.bar .ic { width: 50px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.bar .ic .lb { font-size: 9.5px; color: #475569; }
+.bar .buy { flex: 1; height: 46px; margin-left: 8px; border-radius: 10px; background: #2563EB;
+             display: flex; align-items: center; justify-content: center; gap: 7px; }
+.bar .buy .lb { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: .5px; }
+.bar .home { position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+              width: 118px; height: 4px; border-radius: 2px; background: #CBD5E1; }
+
+/* 校验标注层 */
+.marks { position: absolute; inset: 0; z-index: 9; pointer-events: none;
+          font-family: ui-monospace, Consolas, monospace; font-size: 8.5px; color: #0F172A; }
+.marks .m { position: absolute; background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 4px;
+             padding: 1px 4px; white-space: nowrap; }
+.marks .m.b { background: #E7EEFE; border-color: #BFD3FB; color: #1E40AF; }
+.marks .m.g { background: #F1FBF4; border-color: #BBE5C8; color: #15803D; }
+
+/* ---------------- 表格 / 说明文字 ---------------- */
+h2.sec { font-size: 15.5px; font-weight: 800; margin: 34px 0 10px; }
+h2.sec:first-of-type { margin-top: 26px; }
+table { border-collapse: collapse; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px;
+         overflow: hidden; font-size: 11.5px; margin-bottom: 6px; }
+table th, table td { border-bottom: 1px solid #EEF1F6; padding: 7px 10px; text-align: left;
+                      vertical-align: top; line-height: 1.65; }
+table th { background: #F8FAFC; font-weight: 700; color: #334155; white-space: nowrap; }
+table tr:last-child td { border-bottom: 0; }
+table td.k { color: #475569; white-space: nowrap; }
+table td.ok { color: #15803D; font-weight: 700; white-space: nowrap; }
+table td.no { color: #B91C1C; font-weight: 700; white-space: nowrap; }
+table td.mid { color: #B45309; font-weight: 700; white-space: nowrap; }
+.note { font-size: 11.5px; color: #475569; line-height: 1.85; max-width: 1220px; }
+.note b { color: #0F172A; }
+.note code { font-family: ui-monospace, Consolas, monospace; font-size: 11px; background: #F1F5F9;
+              border: 1px solid #E2E8F0; border-radius: 4px; padding: 1px 4px; color: #0F172A; }
+ul.tight { margin: 6px 0 0; padding-left: 18px; font-size: 11.5px; color: #475569; line-height: 1.9; }
+ul.tight b { color: #0F172A; }
+a { color: #2563EB; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* 总览：手机框缩放列 */
+.cols { display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap; }
+.col { width: 260px; }
+.col .colhead { font-size: 13.5px; font-weight: 800; margin: 0 0 4px; }
+.col .colhead span { font-weight: 400; font-size: 11px; color: #94A3B8; }
+.col .colsub { font-size: 11px; color: #475569; line-height: 1.7; margin: 0 0 10px; min-height: 56px; }
+.col .stack { display: flex; flex-direction: column; gap: 12px; }
+.chip { border: 1px solid #E5E9F0; border-radius: 10px; background: #fff; overflow: hidden; }
+.chip .lb { font-size: 10.5px; color: #475569; padding: 7px 9px 6px; border-bottom: 1px solid #EEF1F6; }
+.chip .lb b { color: #0F172A; }
+.chip .st { position: relative; width: 390px; height: 300px; overflow: hidden; transform-origin: 0 0; }
+
+/* 管理端（Web 后台，宽度不受手机限制） */
+.admin { background: #fff; border: 1px solid #E2E8F0; border-radius: 14px; overflow: hidden; margin-bottom: 14px; }
+.admin .topbar { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 14px;
+                  border-bottom: 1px solid #E2E8F0; background: #FBFCFE; }
+.admin .topbar .lg { width: 20px; height: 20px; border-radius: 5px; background: #2563EB; color: #fff;
+                      font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.admin .topbar .nm { font-size: 12.5px; font-weight: 800; }
+.admin .crumb { font-size: 11px; color: #94A3B8; }
+.admin .body { display: flex; min-height: 0; }
+.admin .side { width: 168px; border-right: 1px solid #E2E8F0; background: #FBFCFE; padding: 8px 0; flex: none; }
+.admin .side .it { font-size: 11.5px; padding: 7px 14px; color: #475569; }
+.admin .side .it.on { background: #E7EEFE; color: #2563EB; font-weight: 700;
+                       box-shadow: inset 2px 0 0 #2563EB; }
+.admin .main { flex: 1; padding: 16px; min-width: 0; }
+.admin .main h3 { font-size: 14px; font-weight: 800; margin: 0 0 4px; }
+.admin .main .desc { font-size: 11px; color: #94A3B8; line-height: 1.7; margin: 0 0 14px; }
+.fld { margin-bottom: 14px; }
+.fld label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+.fld .hint { font-size: 10.5px; color: #94A3B8; margin-bottom: 6px; line-height: 1.6; }
+.fld .inp { border: 1px solid #E2E8F0; border-radius: 6px; background: #fff; padding: 9px 11px;
+             font-size: 12px; line-height: 1.75; color: #475569; }
+.fld .inp.ta { min-height: 118px; white-space: pre-wrap; }
+.fld .cnt { font-size: 10px; color: #94A3B8; text-align: right; margin-top: 3px; }
+.fld .sel { border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px 11px; font-size: 12px;
+             display: flex; align-items: center; background: #fff; }
+.fld .sel .opts { display: flex; gap: 8px; }
+.fld .sel .op { border: 1px solid #E2E8F0; border-radius: 6px; padding: 6px 11px; font-size: 11.5px; }
+.fld .sel .op.on { background: #2563EB; border-color: #2563EB; color: #fff; font-weight: 700; }
+.switch { width: 34px; height: 19px; border-radius: 10px; background: #2563EB; position: relative; flex: none; }
+.switch i { position: absolute; right: 2px; top: 2px; width: 15px; height: 15px; border-radius: 50%; background: #fff; }
+.switch.off { background: #CBD5E1; }
+.switch.off i { right: auto; left: 2px; }
+.btnrow { display: flex; gap: 8px; margin-top: 6px; align-items: center; }
+.btn { border-radius: 6px; font-size: 12px; font-weight: 700; padding: 8px 15px; border: 1px solid #E2E8F0;
+        background: #fff; color: #0F172A; }
+.btn.pri { background: #2563EB; border-color: #2563EB; color: #fff; }
+.btn.ghost { background: #F8FAFC; color: #475569; }
+.tagpill { font-size: 10px; padding: 2px 7px; border-radius: 5px; background: #EFF6FF;
+           border: 1px solid #E7EEFE; color: #1E40AF; font-weight: 700; }
+.preview { border: 1px solid #E2E8F0; border-radius: 14px; background: #F5F7FB; padding: 12px;
+            display: flex; gap: 16px; align-items: flex-start; }
+.preview .phwrap { transform-origin: 0 0; flex: none; }
+/* 说明文字限宽：不限宽时它会跟着父容器铺到 1900px，右侧留一大片空白（实测踩过） */
+.preview .phnote { font-size: 11px; color: #475569; line-height: 1.8; max-width: 660px; }
+.preview .phnote b { color: #0F172A; }
+.two { display: flex; gap: 16px; align-items: flex-start; }
+.two > * { flex: 1; min-width: 0; }
+.split { display: flex; gap: 20px; align-items: flex-start; }
+.split .left { flex: 1; min-width: 0; }
+.split .right { width: 430px; flex: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="pagehead">
+  <h1>商品详情页 · 三套方案（含管理端「下单须知」设计）</h1>
+  <div class="sub">
+    负责人要求：<b>「商品点开改成这样：所有下单须知在管理端写；点立即购买跳到购买页。」</b>
+    本稿只学参考截图的结构，<b>不复制其插画 / 图片 / 文案 / logo</b>；示例图全部来自我们自己的素材。
+    三套均在 <b>390×844</b> 上出图，每套 4 状态。
+  </div>
+  <div class="badge-row">
+    <span class="badge ok">不改 apps/** 业务代码（设计审批阶段）</span>
+    <span class="badge ok">不新增依赖</span>
+    <span class="badge ok">示例图 = 我们自己的图</span>
+    <span class="badge warn">现 <span class="mono">product_detail_page.dart</span> 是死代码（无人跳转）+ 玻璃主题，需重做</span>
+    <span class="badge no">参考截图的图片/插画/文案/logo 一律不用</span>
+  </div>
+</div>
+
+<h2 class="sec">一、三套方案并排（每套 4 状态，均为 390×844 原尺寸缩放 62%）</h2><div class="cols"><div class="col"><div class="colhead">A 电商式 <span>/a-ecommerce.html</span></div><div class="colsub">贴近参考截图的信息架构：图文详情大区 → 价格卡片 → 三列数据行 → 提示条 → 下单须知 → 固定底栏。最大信息量与最长浏览路径，适合"靠图片把服务卖清楚"的保底/上分类商品。<br><a href="a-ecommerce.html">看完整 4 状态 →</a></div><div class="stack"><div style="zoom:0.62"><div class="chip"><div class="lb"><b>① 正常</b> · 有详情图 + 有下单须知</div><div class="st"><div class="phone A" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div><div class="gal"><div class="g"><img src="assets/detail-a.jpg" alt=""></div><div class="g"><img src="assets/detail-b.jpg" alt=""></div></div><div class="gal" style="margin-top:2px"><div class="g" style="flex:1.6"><img src="assets/detail-c.jpg" alt=""></div><div class="g" style="flex:1"><img src="assets/detail-d.jpg" alt=""></div></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div class="blk" style="margin-top:8px"><div class="sec-ctr"><span class="ln"></span><span class="h">下单须知</span><span class="ln"></span></div><div class="terms">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div><div class="blk"><div class="sec-l"><span class="h">商品描述</span><span class="s">管理端维护</span></div><div class="terms">9.9新人体验单保200w不卡保底，按单计价。新人首单可拍；保底 200 万，超出保底部分不额外计费。下单前请确认游戏分区与游戏 ID。</div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div><div style="zoom:0.62"><div class="chip"><div class="lb"><b>② 无详情图</b> · 管理端只挂了主图</div><div class="st"><div class="phone A" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div class="blk" style="margin-top:8px"><div class="sec-ctr"><span class="ln"></span><span class="h">下单须知</span><span class="ln"></span></div><div class="terms">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div><div class="blk"><div class="sec-l"><span class="h">商品描述</span><span class="s">管理端维护</span></div><div class="terms">9.9新人体验单保200w不卡保底，按单计价。新人首单可拍；保底 200 万，超出保底部分不额外计费。下单前请确认游戏分区与游戏 ID。</div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div><div style="zoom:0.62"><div class="chip"><div class="lb"><b>③ 长内容</b> · 下单须知很长 · 滚动到底部</div><div class="st"><div class="phone A" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div><div class="gal"><div class="g"><img src="assets/detail-a.jpg" alt=""></div><div class="g"><img src="assets/detail-b.jpg" alt=""></div></div><div class="gal" style="margin-top:2px"><div class="g" style="flex:1.6"><img src="assets/detail-c.jpg" alt=""></div><div class="g" style="flex:1"><img src="assets/detail-d.jpg" alt=""></div></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div class="blk" style="margin-top:8px"><div class="sec-ctr"><span class="ln"></span><span class="h">下单须知</span><span class="ln"></span></div><div class="terms">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。<br>5. 保底类商品以商品名标注的保底数值为准，超出保底部分不额外计费、也不折算返积分。<br>6. 单局中途掉线、超时未上线，请立即在订单里联系护航员或客服，平台按未完成进度结算。<br>7. 每周限购按自然周计算（周一 00:00 重置）；额度以商品页「本周还可下 N 单」为准。<br>8. 退款一律按原路退回积分，积分不可提现、不可转让；退回后可在「我的 - 我的积分」查看流水。<br>9. 恶意刷单、代他人下单、使用外挂的订单平台有权直接取消，并按平台规则处理。<br>10. 以上须知由平台运营维护，若有调整以本页最新展示为准。</div></div><div class="blk"><div class="sec-l"><span class="h">商品描述</span><span class="s">管理端维护</span></div><div class="terms">9.9新人体验单保200w不卡保底，按单计价。新人首单可拍；保底 200 万，超出保底部分不额外计费。下单前请确认游戏分区与游戏 ID。</div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div><div style="zoom:0.62"><div class="chip"><div class="lb"><b>④ 底栏关系</b> · 吸底栏固定 · 内容可滚到底</div><div class="st"><div class="phone A" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div><div class="gal"><div class="g"><img src="assets/detail-a.jpg" alt=""></div><div class="g"><img src="assets/detail-b.jpg" alt=""></div></div><div class="gal" style="margin-top:2px"><div class="g" style="flex:1.6"><img src="assets/detail-c.jpg" alt=""></div><div class="g" style="flex:1"><img src="assets/detail-d.jpg" alt=""></div></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div class="blk" style="margin-top:8px"><div class="sec-ctr"><span class="ln"></span><span class="h">下单须知</span><span class="ln"></span></div><div class="terms">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div><div class="blk"><div class="sec-l"><span class="h">商品描述</span><span class="s">管理端维护</span></div><div class="terms">9.9新人体验单保200w不卡保底，按单计价。新人首单可拍；保底 200 万，超出保底部分不额外计费。下单前请确认游戏分区与游戏 ID。</div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div></div></div><div class="col"><div class="colhead">B 克制式 <span>/b-restrained.html</span></div><div class="colsub">单图 16:9 + 价格与标题紧凑成一块 + 下单须知默认折叠。最短浏览路径：图、价、名、规则四件事在一屏内看完，长条款不占版面。<br><a href="b-restrained.html">看完整 4 状态 →</a></div><div class="stack"><div style="zoom:0.62"><div class="chip"><div class="lb"><b>① 正常</b> · 有详情图 + 有下单须知</div><div class="st"><div class="phone B" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero" style="height:219px"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div><div style="padding:10px 16px 14px"><div class="thumbs"><div class="t"><img src="assets/detail-a.jpg" alt=""></div><div class="t"><img src="assets/detail-b.jpg" alt=""></div><div class="t"><img src="assets/detail-c.jpg" alt=""></div><div class="t"><img src="assets/detail-d.jpg" alt=""></div></div></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div style="height:8px"></div><div class="fold "><div class="hd"><span class="h">下单须知</span><span class="one">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。</span><span class="go">展开<svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9,5 L16,12 L9,19"/></g></svg></span></div><div class="bd">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div><div class="blk"><div class="sec-l"><span class="h">商品描述</span><span class="s">管理端维护</span></div><div class="terms">9.9新人体验单保200w不卡保底，按单计价。保底 200 万，超出部分不额外计费。</div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div><div style="zoom:0.62"><div class="chip"><div class="lb"><b>② 无详情图</b> · 管理端只挂了主图</div><div class="st"><div class="phone B" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero" style="height:219px"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div style="height:8px"></div><div class="fold "><div class="hd"><span class="h">下单须知</span><span class="one">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。</span><span class="go">展开<svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9,5 L16,12 L9,19"/></g></svg></span></div><div class="bd">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div><div class="blk"><div class="sec-l"><span class="h">商品描述</span><span class="s">管理端维护</span></div><div class="terms">9.9新人体验单保200w不卡保底，按单计价。保底 200 万，超出部分不额外计费。</div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div><div style="zoom:0.62"><div class="chip"><div class="lb"><b>③ 长内容</b> · 下单须知很长 · 滚动到底部</div><div class="st"><div class="phone B" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero" style="height:219px"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div><div style="padding:10px 16px 14px"><div class="thumbs"><div class="t"><img src="assets/detail-a.jpg" alt=""></div><div class="t"><img src="assets/detail-b.jpg" alt=""></div><div class="t"><img src="assets/detail-c.jpg" alt=""></div><div class="t"><img src="assets/detail-d.jpg" alt=""></div></div></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div style="height:8px"></div><div class="fold open"><div class="hd"><span class="h">下单须知</span><span class="one">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。</span><span class="go">收起<svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5,9 L12,16 L19,9"/></g></svg></span></div><div class="bd">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。<br>5. 保底类商品以商品名标注的保底数值为准，超出保底部分不额外计费、也不折算返积分。<br>6. 单局中途掉线、超时未上线，请立即在订单里联系护航员或客服，平台按未完成进度结算。<br>7. 每周限购按自然周计算（周一 00:00 重置）；额度以商品页「本周还可下 N 单」为准。<br>8. 退款一律按原路退回积分，积分不可提现、不可转让；退回后可在「我的 - 我的积分」查看流水。<br>9. 恶意刷单、代他人下单、使用外挂的订单平台有权直接取消，并按平台规则处理。<br>10. 以上须知由平台运营维护，若有调整以本页最新展示为准。</div></div><div class="blk"><div class="sec-l"><span class="h">商品描述</span><span class="s">管理端维护</span></div><div class="terms">9.9新人体验单保200w不卡保底，按单计价。保底 200 万，超出部分不额外计费。</div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div><div style="zoom:0.62"><div class="chip"><div class="lb"><b>④ 底栏关系</b> · 吸底栏固定 · 内容可滚到底</div><div class="st"><div class="phone B" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero" style="height:219px"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div><div style="padding:10px 16px 14px"><div class="thumbs"><div class="t"><img src="assets/detail-a.jpg" alt=""></div><div class="t"><img src="assets/detail-b.jpg" alt=""></div><div class="t"><img src="assets/detail-c.jpg" alt=""></div><div class="t"><img src="assets/detail-d.jpg" alt=""></div></div></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div style="height:8px"></div><div class="fold "><div class="hd"><span class="h">下单须知</span><span class="one">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。</span><span class="go">展开<svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9,5 L16,12 L9,19"/></g></svg></span></div><div class="bd">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div><div class="blk"><div class="sec-l"><span class="h">商品描述</span><span class="s">管理端维护</span></div><div class="terms">9.9新人体验单保200w不卡保底，按单计价。保底 200 万，超出部分不额外计费。</div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div></div></div><div class="col"><div class="colhead">C 双段式 <span>/c-two-stage.html</span></div><div class="colsub">发丝线切两段：上半「服务概览」（图 + 价格 + 标题 + 关键信息），下半「下单须知 + 常见问题」。规则像条款、疑问有出口，适合争议多的虚拟服务。<br><a href="c-two-stage.html">看完整 4 状态 →</a></div><div class="stack"><div style="zoom:0.62"><div class="chip"><div class="lb"><b>① 正常</b> · 有详情图 + 有下单须知</div><div class="st"><div class="phone C" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero" style="height:196px"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div><div style="display:flex;gap:2px;background:#fff"><div class="g" style="flex:1;height:104px;overflow:hidden"><img src="assets/detail-a.jpg" alt=""></div><div class="g" style="flex:1;height:104px;overflow:hidden"><img src="assets/detail-b.jpg" alt=""></div></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div class="gap"></div><div class="blk"><div class="sec-ctr"><span class="ln"></span><span class="h">下单须知</span><span class="ln"></span></div><div class="terms">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div><div class="blk"><div class="sec-l"><span class="h">常见问题</span><span class="s">客服 9:00-次日 2:00 在线</span></div><div class="faq"><div class="q"><span class="mk">1</span><span class="tx">下单后多久有人接单？</span></div><div class="a">订单进入待接单大厅后由有该分部权限的护航员接单；超过 24 小时无人接单，系统会自动取消并全额退回积分。</div><div class="q"><span class="mk">2</span><span class="tx">填错游戏 ID 怎么办？</span></div><div class="a">未接单时可直接取消订单再重新下单；已接单后请联系客服，由客服协调护航员更换信息。</div><div class="q"><span class="mk">3</span><span class="tx">积分能退吗？</span></div><div class="a">未接单取消、超时自动取消、售后申诉通过三种情况都会全额退回积分，明细在「我的 - 我的积分」。</div></div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div><div style="zoom:0.62"><div class="chip"><div class="lb"><b>② 无详情图</b> · 管理端只挂了主图</div><div class="st"><div class="phone C" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero" style="height:196px"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div class="gap"></div><div class="blk"><div class="sec-ctr"><span class="ln"></span><span class="h">下单须知</span><span class="ln"></span></div><div class="terms">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div><div class="blk"><div class="sec-l"><span class="h">常见问题</span><span class="s">客服 9:00-次日 2:00 在线</span></div><div class="faq"><div class="q"><span class="mk">1</span><span class="tx">下单后多久有人接单？</span></div><div class="a">订单进入待接单大厅后由有该分部权限的护航员接单；超过 24 小时无人接单，系统会自动取消并全额退回积分。</div><div class="q"><span class="mk">2</span><span class="tx">填错游戏 ID 怎么办？</span></div><div class="a">未接单时可直接取消订单再重新下单；已接单后请联系客服，由客服协调护航员更换信息。</div><div class="q"><span class="mk">3</span><span class="tx">积分能退吗？</span></div><div class="a">未接单取消、超时自动取消、售后申诉通过三种情况都会全额退回积分，明细在「我的 - 我的积分」。</div></div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div><div style="zoom:0.62"><div class="chip"><div class="lb"><b>③ 长内容</b> · 下单须知很长 · 滚动到底部</div><div class="st"><div class="phone C" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero" style="height:196px"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div><div style="display:flex;gap:2px;background:#fff"><div class="g" style="flex:1;height:104px;overflow:hidden"><img src="assets/detail-a.jpg" alt=""></div><div class="g" style="flex:1;height:104px;overflow:hidden"><img src="assets/detail-b.jpg" alt=""></div></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div class="gap"></div><div class="blk"><div class="sec-ctr"><span class="ln"></span><span class="h">下单须知</span><span class="ln"></span></div><div class="terms">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。<br>5. 保底类商品以商品名标注的保底数值为准，超出保底部分不额外计费、也不折算返积分。<br>6. 单局中途掉线、超时未上线，请立即在订单里联系护航员或客服，平台按未完成进度结算。<br>7. 每周限购按自然周计算（周一 00:00 重置）；额度以商品页「本周还可下 N 单」为准。<br>8. 退款一律按原路退回积分，积分不可提现、不可转让；退回后可在「我的 - 我的积分」查看流水。<br>9. 恶意刷单、代他人下单、使用外挂的订单平台有权直接取消，并按平台规则处理。<br>10. 以上须知由平台运营维护，若有调整以本页最新展示为准。</div></div><div class="blk"><div class="sec-l"><span class="h">常见问题</span><span class="s">客服 9:00-次日 2:00 在线</span></div><div class="faq"><div class="q"><span class="mk">1</span><span class="tx">下单后多久有人接单？</span></div><div class="a">订单进入待接单大厅后由有该分部权限的护航员接单；超过 24 小时无人接单，系统会自动取消并全额退回积分。</div><div class="q"><span class="mk">2</span><span class="tx">填错游戏 ID 怎么办？</span></div><div class="a">未接单时可直接取消订单再重新下单；已接单后请联系客服，由客服协调护航员更换信息。</div><div class="q"><span class="mk">3</span><span class="tx">积分能退吗？</span></div><div class="a">未接单取消、超时自动取消、售后申诉通过三种情况都会全额退回积分，明细在「我的 - 我的积分」。</div></div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div><div style="zoom:0.62"><div class="chip"><div class="lb"><b>④ 底栏关系</b> · 吸底栏固定 · 内容可滚到底</div><div class="st"><div class="phone C" style="transform:translateY(-0px)"><div class="hdr"><div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div><div class="row"><div class="ico"><svg viewBox="0 0 24 24" width="21" height="21" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll"><div class="inner"><div class="pad"><div class="media"><div class="hero" style="height:196px"><img src="assets/cover-peace.jpg" alt=""><span class="cnt">1 / 3</span></div><div style="display:flex;gap:2px;background:#fff"><div class="g" style="flex:1;height:104px;overflow:hidden"><img src="assets/detail-a.jpg" alt=""></div><div class="g" style="flex:1;height:104px;overflow:hidden"><img src="assets/detail-b.jpg" alt=""></div></div></div><div class="blk"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span><div class="share"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div class="gap"></div><div class="blk"><div class="sec-ctr"><span class="ln"></span><span class="h">下单须知</span><span class="ln"></span></div><div class="terms">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div><div class="blk"><div class="sec-l"><span class="h">常见问题</span><span class="s">客服 9:00-次日 2:00 在线</span></div><div class="faq"><div class="q"><span class="mk">1</span><span class="tx">下单后多久有人接单？</span></div><div class="a">订单进入待接单大厅后由有该分部权限的护航员接单；超过 24 小时无人接单，系统会自动取消并全额退回积分。</div><div class="q"><span class="mk">2</span><span class="tx">填错游戏 ID 怎么办？</span></div><div class="a">未接单时可直接取消订单再重新下单；已接单后请联系客服，由客服协调护航员更换信息。</div><div class="q"><span class="mk">3</span><span class="tx">积分能退吗？</span></div><div class="a">未接单取消、超时自动取消、售后申诉通过三种情况都会全额退回积分，明细在「我的 - 我的积分」。</div></div></div><div style="padding:14px 16px 20px;display:flex;align-items:center;gap:6px"><svg viewBox="0 0 100 72" width="14" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="9.600000000000001" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#94A3B8" stroke-width="8.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span style="font-size:10.5px;color:#94A3B8">祁连山电竞 · 官方自营</span></div></div></div></div><div class="bar"><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" id="buy"><span class="lb">立即购买</span></div><div class="home"></div></div></div></div></div></div></div></div></div>
+<h2 class="sec">二、两个必须自己决定的取舍（数据行 / 底部栏）</h2>
+<div class="split">
+  <div class="left">
+    <table>
+      <tr><th>项</th><th>参考截图</th><th>我们的决定</th><th>为什么</th></tr>
+      <tr>
+        <td class="k">数据行<br>第 1 列</td>
+        <td>9999件 / 日<br><span style="color:#94A3B8">（每日可售件数）</span></td>
+        <td class="ok">已售 N 单<br><span class="mono">product.salesCount</span></td>
+        <td>日产能我们没有任何字段支撑，写出来就是编的。真实销量是<b>已有字段</b>，且是用户真正在意的社会证明</td>
+      </tr>
+      <tr>
+        <td class="k">数据行<br>第 2 列</td>
+        <td>库存：999977</td>
+        <td class="ok">预计时长<br><span class="mono">product.estimateDurationMin</span></td>
+        <td><b>我们没有库存概念</b>（虚拟服务，不下库存）。时长是已有字段，也直接决定用户"要花多久"</td>
+      </tr>
+      <tr>
+        <td class="k">数据行<br>第 3 列</td>
+        <td>销量：28185</td>
+        <td class="ok">服务方式<br>手游 · 人工陪同</td>
+        <td>来自 <span class="mono">division.platform / platformLabel</span>（真实配置）。它回答"谁用什么方式陪我"，是虚拟服务最容易被误解的一点</td>
+      </tr>
+      <tr>
+        <td class="k">底部栏<br>左图标</td>
+        <td>店铺 + 客服</td>
+        <td class="ok">客服 + 我的订单</td>
+        <td><b>我们没有"店铺"</b>（只有平台官方自营，没有店铺主体），造一个店铺页就是造不存在的入口。「客服」与「我的订单」都是<b>现成功能</b>：客服会话（会话类型 <span class="mono">cs</span>，我的页同款入口）+ 订单页 <span class="mono">orders_page.dart</span></td>
+      </tr>
+      <tr>
+        <td class="k">底部栏<br>主按钮</td>
+        <td>立即购买 → 购买页</td>
+        <td class="ok">立即购买 → <span class="mono">order_create_page.dart</span></td>
+        <td>与负责人要求一致；<b>不再走详情页内联下单</b>（现详情页的 <span class="mono">_OrderSheet</span> 只收数量/分区/ID，缺区服选项、动态表单、护航员选择，等于绕过了确认订单页）</td>
+      </tr>
+    </table>
+    <div class="note">
+      <b>数据行的诚实提醒</b>：本机 33 个在售商品的 <span class="mono">estimateDurationMin</span>
+      <b>全部等于 30</b>（一个统一默认值，不是逐商品真实时长）。所以三套稿里这一列都写成"约 30 分钟"，
+      但<b>实施前建议管理端把它标成必填并逐个填真值</b>，否则用户点开 10 个商品看到 10 个"约 30 分钟"，
+      会立刻觉得这行是凑数的 —— 这正是 docs/21 说的"编造的装饰数据"。
+      <br><br>
+      <b>提示条文案（具体可验证 · 与后端实现对齐）</b>：
+      <div style="margin-top:6px;background:#EFF6FF;border:1px solid #E7EEFE;border-radius:6px;padding:9px 11px;color:#1E40AF">
+        未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。
+      </div>
+      <div style="margin-top:6px">两个数字都<b>不是编的</b>，可在后端找到：取消路径
+      <span class="mono">cancelByUser</span>（待接单可取消，全额退款，状态落 <span class="mono">canceled</span>）；
+      24 小时来自 <span class="mono">system_setting.order_pending_take_timeout_hours</span>（默认 24）。
+      <b>实施时这两个数必须由接口下发</b>（不能写死在 App 里），管理端改配置后文案自动跟着变。</div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="preview" style="display:block;padding:14px">
+      <div class="phnote" style="margin-bottom:10px"><b>列表页点击行为（建议）</b></div>
+      <table style="margin-bottom:10px">
+        <tr><th>位置</th><th>现在</th><th>建议</th></tr>
+        <tr><td class="k">点商品卡整卡</td><td class="no">→ 确认订单页</td><td class="ok">→ 商品详情页</td></tr>
+        <tr><td class="k">卡片右下「下单」</td><td class="no">→ 确认订单页</td><td class="ok">→ 确认订单页（不变）</td></tr>
+      </table>
+      <div class="phnote">
+        <b>理由</b>：现在列表<b>没有任何入口能看详情</b>，用户只能"盲下单"；而负责人这次要的正是详情页。
+        整卡点击给详情（信息完整、可反复看），「下单」按钮保留一步直达（老用户熟路、下单更快）——
+        两个动作、两个目的地，不互相抢，也不新增入口（符合 docs/21「同一入口只出现一次」）。
+      </div>
+      <div class="phnote" style="margin-top:10px"><b>主图与详情图（多图已用）</b></div>
+      <div class="phnote">
+        <span class="mono">GET /public/products/:id</span> 已经返回 <span class="mono">media[]</span>
+        （多图 + <span class="mono">mediaType</span> + <span class="mono">url</span>）与
+        <span class="mono">videoUrl</span>。现有详情页只把它当<b>92px 横向缩略图条</b>用，
+        容量远没用上 —— 三套稿都把它升级成正文级大图（A 连续长图 / B 一行缩略图 / C 第二段配图）。
+      </div>
+    </div>
+  </div>
+</div>
+<h2 class="sec">三、与参考截图结构逐条对照（只学结构，不复制其图片/插画/文案/logo）</h2>
+<table>
+  <tr><th>参考截图结构</th><th>A 电商式</th><th>B 克制式</th><th>C 双段式</th><th>说明</th></tr>
+  <tr><td class="k">页头：返回 + 居中标题「商品详情」+ 右侧两个圆形操作</td>
+      <td class="ok">同（返回 / 分享 / 更多）</td><td class="ok">同</td><td class="ok">同</td>
+      <td>右侧两个我们改成<b>分享 + 更多</b>（参考是"更多 + 关注"，我们没有关注功能）；圆 32px + 1px 发丝线描边</td></tr>
+  <tr><td class="k">商品图文详情大区（可滚动）</td>
+      <td class="ok">大图 + 连续 4 张长图</td><td class="mid">单图 16:9 + 缩略图行</td><td class="mid">16:9 单图 + 第二段配图</td>
+      <td>参考是"多屏长图海报"；我们素材是真实商品图，A 走连续长图，B/C 收成单图不堆版面</td></tr>
+  <tr><td class="k">价格区（大号价格 + 小「起」+ 右上角分享）</td>
+      <td class="ok">30px 大号 + 「积分 / 单」+ 分享</td><td class="ok">同</td><td class="ok">同</td>
+      <td>参考的「起」我们没有计价阶梯 → 换成<b>计价单位</b>「积分 / 单」（<span class="mono">product.priceUnit</span>，真实字段）</td></tr>
+  <tr><td class="k">标题</td><td class="ok">同（15.5px 粗 / 最多 3 行）</td><td class="ok">同</td><td class="ok">同</td>
+      <td>列表用短名 <span class="mono">listName</span>，详情一律用完整 <span class="mono">name</span>（与现状一致）</td></tr>
+  <tr><td class="k">数据行（三列：xx件/日 · 库存 · 销量）</td>
+      <td class="ok">已售 / 预计时长 / 服务方式</td><td class="ok">同</td><td class="ok">同</td>
+      <td><b>去掉了库存</b>（我们没这概念）；三列都是真实字段</td></tr>
+  <tr><td class="k">提示条（浅底 + 图标 + 一行说明）</td>
+      <td class="ok">冰蓝底 #EFF6FF + 主色说明图标</td><td class="ok">同</td><td class="ok">同</td>
+      <td>参考用浅绿（"不涉及道具交易"免责）；我们用<b>品牌冰蓝</b>，内容换成可验证的接单/退款承诺</td></tr>
+  <tr><td class="k">「下单须知」小节（居中标题 + 正文）</td>
+      <td class="ok">居中标题 + 正文条款</td><td class="mid">折叠（默认收起，点开看全）</td><td class="ok">居中标题 + 正文 + 常见问题</td>
+      <td>结构照参考；<b>内容改成管理端可写可覆盖</b>（见第五、六节）</td></tr>
+  <tr><td class="k">底部固定操作栏（左两个图标 + 右侧大按钮）</td>
+      <td class="ok">客服 + 我的订单 + 立即购买</td><td class="ok">同</td><td class="ok">同</td>
+      <td>去掉"店铺"（我们没有）；按钮走<b>实色主色 10px 圆角</b>，不用参考的胶囊大圆角</td></tr>
+  <tr><td class="k" style="color:#B91C1C">参考的插画 / 图片 / 文案 / logo</td>
+      <td class="no">全部不用</td><td class="no">全部不用</td><td class="no">全部不用</td>
+      <td>示例图用自己的和平精英封面 + 三角洲行动图标（<span class="mono">site/design/product-detail/assets/</span>）</td></tr>
+</table>
+<h2 class="sec">四、与 docs/21《反 AI 味设计规范》逐条对照</h2>
+<table>
+  <tr><th>docs/21 条款</th><th>A</th><th>B</th><th>C</th><th>本稿取值与理由</th></tr>
+  <tr><td class="k">禁 渐变当主视觉</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>全稿零渐变。主按钮 <span class="mono">#2563EB</span> <b>实色</b>；价格用已有的琥珀金 <span class="mono">#D97706</span></td></tr>
+  <tr><td class="k">禁 每卡左侧彩色竖条</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>分组靠<b>发丝线 + 底色切换</b>（白卡 ↔ #F5F7FB 间隔条），不用竖条</td></tr>
+  <tr><td class="k">禁 全大圆角（≥16）</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>圆角分档：徽标 5 / 缩略图 6 / 提示条 6 / 主按钮 10 / 卡片 14 / 图标圆 50%。<b>没有一处 ≥16</b></td></tr>
+  <tr><td class="k">禁 阴影铺满卡片</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>卡片一律 <b>1px 发丝线</b>，零阴影；吸底栏用上发丝线而不是投影</td></tr>
+  <tr><td class="k">禁 顶部并排三个大数字</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>数据行是<b>3 列小字标签 + 13px 数值</b>（不是 hero-metric），且三列都是真实业务数据</td></tr>
+  <tr><td class="k">禁 每条信息配彩色小标签</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>全页只有<b>两个</b>彩色小片：金色徽标「董事长推荐」、蓝色提示条。其余靠字号/灰度分层</td></tr>
+  <tr><td class="k">要 左对齐为主 · 组内紧 8–10 / 组间松 20–24</td>
+      <td class="ok">✓</td><td class="ok">✓</td><td class="mid">居中标题为条款风</td>
+      <td>卡片内 8–12，卡片之间 8（A/B）与 20+（C 两段之间）；C 的「下单须知」居中<b>是刻意的条款排版</b>，与参考一致而非默认居中</td></tr>
+  <tr><td class="k">禁 emoji 当图标</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>全部图标 = 24×24 线性描边（Material outlined 同族：arrow_back / ios_share / more_horiz / headset_mic / receipt_long / info_outline）</td></tr>
+  <tr><td class="k">禁 玻璃拟态 / 光斑 / 装饰插画</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>纯不透明表面；无插画。<b>无图时的占位块</b>是真实兜底态（品牌雪山标 + 「暂无详情图」），不是装饰</td></tr>
+  <tr><td class="k">禁 纯黑配纯白</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>近黑 <span class="mono">#0F172A</span> + 冷灰蓝底 <span class="mono">#F5F7FB</span></td></tr>
+  <tr><td class="k">要 假数据拟真（非整数/长短不一/带场景）</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td><b>关键：本稿一个数字都没编</b>。商品名/价格/销量/徽标/限购全部取自本机接口（137 / 126 / 147 三个真实商品）；
+      「约 30 分钟」也是接口真值</td></tr>
+  <tr><td class="k">要 文案具体可验证</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>提示条「超 24 小时无人接单自动取消退款」→ 后端 <span class="mono">order_pending_take_timeout_hours</span> 可查；
+      「客服 9:00-次日 2:00 在线」沿用已有文案</td></tr>
+  <tr><td class="k">要 空态 / 加载 / 错误态</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td>
+      <td>状态②就是"管理端没挂详情图"的真实空态（占位块 + 提示，不是留白也不是假图）；加载/错误态沿用列表页同一套骨架</td></tr>
+  <tr><td class="k">六节自检 ① 换成同行还成立？</td><td class="mid">偏通用</td><td class="ok">辨识度高</td><td class="ok">辨识度高</td>
+      <td>A 的"长图 + 价格卡 + 三列数据"任何电商都能套；B/C 的"折叠规则 / 条款 + FAQ"更像虚拟服务平台的取舍</td></tr>
+</table>
+<h2 class="sec">五、管理端「下单须知」编辑（两种方案对比 + 推荐）</h2>
+<div class="note" style="margin-bottom:14px">
+  负责人要求「所有下单须知在管理端写」。左右两张就是<b>同一份稿里的管理端设计</b>：
+  左 = 方案甲的<b>全局默认</b>页，右 = 方案甲的<b>商品级覆盖</b>入口（也正好是方案乙的全部内容）。
+  下面第三张是<b>必须有的东西</b>：管理端里能直接看到"用户在 App 里长什么样"。
+</div>
+
+<div class="split">
+  <div class="left">
+    <div class="admin">
+  <div class="topbar"><span class="lg">祁</span><span class="nm">祁连山电竞 · 管理后台</span>
+    <span class="crumb">系统设置 / 下单须知</span>
+    <span style="flex:1"></span><span class="crumb">超级管理员 · 凌云</span></div>
+  <div class="body">
+    <div class="side"><div class="it ">商品管理</div><div class="it ">分部管理</div><div class="it ">订单管理</div><div class="it ">积分管理</div><div class="it on">下单须知</div><div class="it ">系统设置</div><div class="it ">操作日志</div></div>
+    <div class="main">
+    <h3>下单须知</h3>
+    <p class="desc">全平台默认文案。<b>商品编辑页留空时，用户在 App 里看到的就是这一段</b>；
+    单个商品可以覆盖它（见下方「方案甲 · 商品编辑页」）。</p>
+
+    <div class="fld">
+      <label>默认下单须知 <span class="tagpill">富文本</span></label>
+      <div class="hint">支持分段与加粗。不允许图片与外链（须知要能在弱网下瞬间渲染）。
+      400 字以内为佳，超长会让用户滚不到价格区。</div>
+      <div class="inp ta">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。
+2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。
+3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。
+4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div>
+      <div class="cnt">185 / 2000 字</div>
+    </div>
+
+    <div class="fld">
+      <label>未接单可取消承诺（提示条）</label>
+      <div class="hint">这一段会渲染成详情页价格区下方的<b>冰蓝提示条</b>。里面的两个数字取自系统设置，<b>不在这里手写</b>。</div>
+      <div class="inp">未接单可随时取消并全额退回积分；超 <b>{order_pending_take_timeout_hours}</b> 小时无人接单，系统自动取消并退款。</div>
+      <div class="cnt">占位符由后端替换为真实配置值</div>
+    </div>
+
+    <div class="two">
+      <div class="fld">
+        <label>生效方式</label>
+        <div class="sel"><div class="opts">
+          <span class="op on">立即生效</span><span class="op">定时生效</span>
+        </div></div>
+        <div class="hint">定时生效 = 填一个生效时间（如大促规则切换），到点自动换。</div>
+      </div>
+      <div class="fld">
+        <label>版本</label>
+        <div class="sel"><span class="mono">v7</span>
+          <span style="flex:1"></span>
+          <span class="crumb">2026-10-05 14:22 · 凌云</span></div>
+        <div class="hint">每次保存自动 +1 并留一份历史（可回滚、可查是谁改的）。</div>
+      </div>
+    </div>
+
+    <div class="fld">
+      <label>保存后回溯</label>
+      <div class="sel" style="gap:9px">
+        <span class="switch"><i></i></span>
+        <span>下单时把当次须知快照写进订单</span>
+      </div>
+      <div class="hint">开启后，规则改了也能查清"这单当时用户同意的是哪一版"（与订单已有的商品快照同一做法）。</div>
+    </div>
+
+    <div class="btnrow">
+      <span class="btn pri">保存并生效</span>
+      <span class="btn">预览 App 效果</span>
+      <span class="btn ghost">查看历史版本</span>
+      <span style="flex:1"></span>
+      <span class="crumb">上次保存 3 分钟前</span>
+    </div>
+</div>
+  </div>
+</div>
+  </div>
+  <div class="left">
+    <div class="admin">
+  <div class="topbar"><span class="lg">祁</span><span class="nm">祁连山电竞 · 管理后台</span>
+    <span class="crumb">商品管理 / 编辑商品 #137</span>
+    <span style="flex:1"></span><span class="crumb">超级管理员 · 凌云</span></div>
+  <div class="body">
+    <div class="side"><div class="it on">商品管理</div><div class="it ">分部管理</div><div class="it ">订单管理</div><div class="it ">积分管理</div><div class="it ">下单须知</div><div class="it ">系统设置</div><div class="it ">操作日志</div></div>
+    <div class="main">
+    <h3>编辑商品 · 下单须知</h3>
+    <p class="desc">只有一个开关：<b>用平台默认</b> 还是 <b>本商品单独写</b>。
+    默认态下这一栏是只读的，直接显示继承来的文案 —— 管理员不用去另一个页面查"默认是什么"。</p>
+
+    <div class="fld">
+      <label>商品</label>
+      <div class="inp" style="padding:7px 11px">137 · 9.9新人体验单保200w不卡保底
+        <span class="tagpill" style="margin-left:6px">和平精英 · 手游</span></div>
+    </div>
+
+    <div class="fld">
+      <label>下单须知来源</label>
+      <div class="sel"><div class="opts">
+        <span class="op on">继承平台默认</span><span class="op">本商品单独写</span>
+      </div></div>
+      <div class="hint">选「继承」时，下面那栏自动变成只读并显示默认内容；选「单独写」才可编辑。</div>
+    </div>
+
+    <div class="fld">
+      <label>下单须知内容 <span class="tagpill">继承中 · 只读</span></label>
+      <div class="inp ta" style="background:#F8FAFC;color:#64748B">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。
+2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。
+3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。
+4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div>
+      <div class="cnt">来源：系统设置 → 下单须知 · v7</div>
+    </div>
+
+    <div class="fld">
+      <label>列表短名 / 徽标 / 每周限购（现状已有，位置不动）</label>
+      <div class="sel" style="gap:10px;flex-wrap:wrap">
+        <span class="crumb">listName：<span class="mono">（留空，列表显示完整名）</span></span>
+        <span class="crumb">badgeText：</span><span class="badge-gold">董事长推荐</span>
+        <span class="crumb">weeklyLimit：<span class="mono">2</span> 单 / 自然周</span>
+      </div>
+      <div class="hint">这三个字段已存在，本次<b>不改语义</b>：徽标与限购在新详情页的位置与现状一致（价格区上方 / 价格下方一行）。</div>
+    </div>
+
+    <div class="btnrow"><span class="btn pri">保存商品</span><span class="btn">取消</span></div>
+</div>
+  </div>
+</div>
+  </div>
+</div>
+
+<h2 class="sec">五之二、方案甲 vs 方案乙（字段 / 交互 / 预览 / 版本）</h2>
+<table>
+  <tr><th>维度</th><th>方案甲 · 全局默认 + 商品级覆盖</th><th>方案乙 · 仅商品级</th></tr>
+  <tr><td class="k">管理员要做几次</td>
+      <td class="ok">1 次（写默认）+ 例外商品再改</td>
+      <td class="no">N 次（每个商品各写一遍）</td></tr>
+  <tr><td class="k">改一条平台规则</td>
+      <td class="ok">改 1 处，全部继承的商品立刻同步</td>
+      <td class="no">33 个商品逐个改，必漏</td></tr>
+  <tr><td class="k">新商品上架</td>
+      <td class="ok">不用管，自动有须知</td>
+      <td class="no">忘了写 = 用户在详情页看不到任何须知</td></tr>
+  <tr><td class="k">例外商品（保底/包出这类特殊条款）</td>
+      <td class="ok">单独覆盖，其余仍跟默认</td><td class="ok">本来就是逐个写，天然支持</td></tr>
+  <tr><td class="k">"这句话现在到底生效哪一版"</td>
+      <td class="ok">商品页直接显示继承来源与版本号</td><td class="mid">只能看商品自己，看不出全平台口径</td></tr>
+  <tr><td class="k">后端字段</td>
+      <td><span class="mono">system_setting.order_notice_default</span>（TEXT）<br>
+          <span class="mono">product.order_notice</span>（TEXT, NULL = 继承）</td>
+      <td><span class="mono">product.order_notice</span>（TEXT, NOT NULL）</td></tr>
+  <tr><td class="k">接口</td>
+      <td><span class="mono">GET /public/products/:id</span> 返回<b>解析后</b>的
+          <span class="mono">orderNotice</span> + <span class="mono">orderNoticeSource</span>（default/product）</td>
+      <td>同上，但不返回 source</td></tr>
+  <tr><td class="k">管理端页面</td>
+      <td class="ok">新增 1 页（系统设置 → 下单须知）+ 商品编辑加 1 块</td>
+      <td class="ok">只加商品编辑 1 块</td></tr>
+  <tr><td class="k">预览"App 长什么样"</td>
+      <td class="ok">全局页与商品页都带同一个手机预览</td><td class="mid">只有商品页带</td></tr>
+  <tr><td class="k">版本 / 生效时间</td>
+      <td class="ok">全局页需要（v7 + 历史 + 定时生效 + 下单快照）</td>
+      <td class="mid">商品编辑已有 <span class="mono">updatedAt</span>，够用，不必额外做版本</td></tr>
+  <tr><td class="k">实施成本</td>
+      <td>后端 1 个 migration（2 列 + 1 设置项）+ 1 个解析函数 + 管理端 1 页 1 块</td>
+      <td>后端 1 个 migration（1 列）+ 管理端 1 块</td></tr>
+</table>
+
+<div class="note" style="margin-top:10px">
+  <b>推荐：方案甲。</b>依据：① 负责人的原话是"<b>所有</b>下单须知在管理端写"——
+  甲让 33 个商品一次到位，乙要靠人记住每个都写；② 下单须知里真正会变的是<b>平台规则</b>（退款、接单时限、积分规则），
+  这类话术<b>天然是全局的</b>；③ 保底/包出这类例外才需要逐商品，正好用"覆盖"表达；
+  ④ 甲多出来的成本只有一个页面，而它同时解决了乙最容易出的问题——<b>新商品没有须知</b>。
+  <br><br>
+  <b>但不要一次做全</b>：建议<b>第一步只做「全局默认 + 商品级覆盖」两个字段 + 一个编辑页</b>，
+  版本历史/定时生效/下单快照<b>留到第二步</b>（它们是锦上添花，且第一步做完就已经满足负责人要求）。
+  <br><br>
+  <b>预览怎么做（"必须能在管理端看到用户在 App 里长什么样"）</b>：管理端编辑区右侧固定一个
+  <b>390×844 的手机预览</b>，直接复用 App 同一份渲染规则（同一段落样式、同一提示条、同一「下单须知」小节标题）。
+  编辑框内容变化时预览实时更新；<b>不要</b>另外写一套"预览专用样式"——两套样式必然走偏，
+  这是"管理端写的和用户看到的不一样"的常见根因。
+</div>
+
+<div style="margin-top:16px">
+  <div class="phnote" style="font-size:11.5px;color:#475569;margin-bottom:10px">
+    <b>管理端预览（实时同步编辑框内容 · 复用同一份 App 组件）</b>
+  </div>
+  <div class="preview" id="admin-preview">
+    <div class="phwrap" style="zoom:.72"><div class="phone"><div class="hdr" style="height:56px"><div class="row" style="height:56px"><div class="ico"><svg viewBox="0 0 24 24" width="19" height="19" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></div><div class="sp"></div><div class="ttl" style="font-size:15px">商品详情</div><div class="sp"></div><div class="ico circle"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L12,15"/><path d="M8,7 L12,3 L16,7"/><path d="M5,13 L5,20 L19,20 L19,13"/></g></svg></div><div class="ico"><svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></g></svg></div></div></div><div class="scroll" style="top:56px"><div class="inner"><div class="pad" style="padding-bottom:60px"><div class="blk" style="border-top:0"><div class="price"><div class="r1"><span class="num">99</span><span class="unit">积分 / 单</span></div><div class="name">9.9新人体验单保200w不卡保底</div><div class="sub">官方自营 · 由平台护航员提供服务 · 下单后进入待接单大厅</div><div class="meta"><span class="badge-gold">董事长推荐</span></div><div class="limit"><svg viewBox="0 0 24 24" width="12" height="12" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.5 L10,17 L19,7"/></g></svg><span>每周限购 2 单 · 本周还可下 2 单</span></div></div><div class="datarow"><div class="c"><div class="k">已售</div><div class="v">0<small> 单</small></div></div><div class="c"><div class="k">预计时长</div><div class="v">30 分钟</div></div><div class="c"><div class="k">服务方式</div><div class="v">手游<small> 人工</small></div></div></div></div><div class="noticebar"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.5"/><path d="M12,8 L12,8.3"/></g></svg><div class="tx">未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。</div></div><div class="gap"></div><div class="blk"><div class="sec-ctr"><span class="ln"></span><span class="h">下单须知</span><span class="ln"></span></div><div class="terms">1. 请在提交订单前确认游戏分区与游戏 ID 填写正确；ID 填错会导致护航员无法上号，需要取消后重新下单。<br>2. 下单即按标价扣积分，1 件为 1 单；提交后 24 小时内无人接单，系统自动取消并全额退回积分。<br>3. 未接单可随时取消，积分全额退回；护航员接单后请勿自行取消，有问题先联系客服。<br>4. 服务过程中请勿将账号密码告知护航员，平台不支持任何形式的账号共享。</div></div></div></div></div><div class="bar" style="height:62px"><div class="ic"><svg viewBox="0 0 24 24" width="19" height="19" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5,15 L4.5,11.5 A7.5,7.5 0 0 1 19.5,11.5 L19.5,15"/><path d="M2.5,15.5 A2,2 0 0 1 6.5,15.5 L6.5,17.5 A2,2 0 0 1 2.5,17.5 Z"/><path d="M17.5,15.5 A2,2 0 0 1 21.5,15.5 L21.5,17.5 A2,2 0 0 1 17.5,17.5"/></g></svg><span class="lb">客服</span></div><div class="ic"><svg viewBox="0 0 24 24" width="19" height="19" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8"/><path d="M9,12 L15,12"/><path d="M9,16 L13,16"/></g></svg><span class="lb">我的订单</span></div><div class="buy" style="height:42px"><span class="lb" style="font-size:14px">立即购买</span></div></div></div></div>
+    <div class="phnote" style="flex:1">
+      <b>预览里刻意保留的三个真实约束</b>
+      <ul class="tight">
+        <li>提示条里的 <span class="mono">24</span> 是占位符渲染结果 —— 管理端改不了它，
+            它来自「系统设置 → 订单超时」。<b>文案里的数字只能有一个来源</b>，否则两处会打架。</li>
+        <li>须知区顶部尺寸固定（小节标题 14.5px + 正文 12px / 行高 1.85），
+            管理员在这里<b>看不到</b>字号设置 —— 排版是设计的事，管理端只写内容。</li>
+        <li>预览里也画了吸底「立即购买」：管理员能立刻看出<b>须知被压在按钮上方多少</b>，
+            写到 2000 字时会不会把价格挤到屏幕外。</li>
+      </ul>
+      <div style="margin-top:10px">
+        <b>若走方案乙</b>：同一张预览保留，只是左侧编辑区从"默认文案"换成"本商品文案"，
+        预览上多一行 <span class="mono">来源：本商品</span>。
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="sec">五之三、是否需要版本 / 生效时间（我的判断）</h2>
+<table>
+  <tr><th>能力</th><th>要不要</th><th>理由</th></tr>
+  <tr><td class="k">保存留史 + 版本号</td><td class="ok">要（全局默认页）</td>
+      <td>下单须知是<b>用户下单时依赖的规则</b>，出事要能回溯"当时写的是什么"。成本极低（一张历史表或一列 JSON）</td></tr>
+  <tr><td class="k">下单时写快照到订单</td><td class="ok">要，默认开</td>
+      <td>订单表已有商品快照的成熟做法，复用同一思路。没有它，规则一改，历史订单就说不清依据</td></tr>
+  <tr><td class="k">定时生效</td><td class="mid">第二步再做</td>
+      <td>只有大促/规则切换才用得上，属于低频。先做「立即生效」，字段留好 <span class="mono">effectiveAt</span> 即可</td></tr>
+  <tr><td class="k">商品级也做版本</td><td class="no">不要</td>
+      <td>商品编辑已有 <span class="mono">updatedAt</span> 与操作日志，再叠一层版本只会让页面变复杂</td></tr>
+</table>
+<h2 class="sec">六、下单须知的数据方案（落库 / 下发 / 兼容）</h2>
+<div class="split">
+  <div class="left">
+    <table>
+      <tr><th>层</th><th>现状</th><th>需要新增</th></tr>
+      <tr><td class="k">商品表 <span class="mono">product</span></td>
+          <td>已有 <span class="mono">description / detail / serviceFlow / serviceRules / attention</span>
+              （5 个 TEXT，<b>目前基本是空的</b>：抽查 137 只有 description 有值，其余 4 个为空）</td>
+          <td class="ok">加 <span class="mono">order_notice</span> TEXT NULL —— <b>NULL = 继承平台默认</b>（空串也归一化成 NULL）</td></tr>
+      <tr><td class="k">系统设置 <span class="mono">system_setting</span></td>
+          <td>已有成熟的 key/value 表 + 中文校验 + 超管专属权限（如 <span class="mono">platform_commission_rate</span>）</td>
+          <td class="ok">加一条 <span class="mono">order_notice_default</span>（TEXT）+ 一条
+              <span class="mono">order_notice_version</span>（INT，保存时 +1）</td></tr>
+      <tr><td class="k">公开接口</td>
+          <td><span class="mono">GET /public/products/:id</span> 目前 <b>直接 <span class="mono">...product</span> 整体铺开</b>返回实体
+              —— 新增列会<b>自动出现</b>在响应里，不加白名单</td>
+          <td class="ok">在 service 里做一次解析：把 <span class="mono">orderNotice</span> 填成最终生效文案，并附
+              <span class="mono">orderNoticeSource</span>（<span class="mono">default</span> / <span class="mono">product</span>）</td></tr>
+      <tr><td class="k">列表接口</td>
+          <td><b>已经做了列裁剪</b>（<span class="mono">select</span> 白名单，明确排除 5 个大 TEXT，为弱网首屏优化）</td>
+          <td class="ok">什么都不做 —— 须知<b>不进列表</b>，别把刚裁掉的体积加回去</td></tr>
+      <tr><td class="k">缓存</td>
+          <td>详情接口挂在 <span class="mono">PublicCacheInterceptor</span> 的 <b>30s 微缓存</b>下</td>
+          <td class="mid">无需改动，但要知道：<b>管理端改完最多 30s 生效</b>。若要求"改完立即看到"，需在保存时清该商品的缓存键</td></tr>
+      <tr><td class="k">订单表</td>
+          <td>已有商品快照字段</td>
+          <td class="mid">可选：加 <span class="mono">order_notice_snapshot</span> TEXT（下单时那一版）</td></tr>
+      <tr><td class="k">迁移</td>
+          <td>TypeORM migration，只加列 / 加设置项</td>
+          <td class="ok"><b>纯新增、无破坏</b>：老商品 <span class="mono">order_notice</span> 为 NULL → 自动跟默认；
+              默认初始值直接写入现在这段通用须知，<b>上线第一天每个商品就有须知</b>，不会出现空窗</td></tr>
+    </table>
+
+    <div class="note">
+      <b>一条重要的取舍：不要复用 <span class="mono">attention</span>（注意事项）字段。</b>
+      它语义是"这个商品的注意事项"，而负责人要的是<b>平台级下单须知</b>（退款、接单、积分规则）。
+      混用会出现"改了平台须知，把商品自己的提醒也冲掉"。两个字段各管一件事：
+      <span class="mono">order_notice</span> = 平台的规则（可继承全局），
+      <span class="mono">attention</span> = 这个商品的额外提醒（永远只属于它自己）。
+      <br><br>
+      <b>现有 4 个空 TEXT 字段怎么办</b>：<span class="mono">detail / serviceFlow / serviceRules</span> 目前全空、
+      且现有详情页会把它们各渲染成一个卡片（空则不渲染）。建议本次<b>只保留 <span class="mono">description</span>（商品描述）</b>一个，
+      其余三个要么在管理端明确用途后填起来，要么后续合并 —— 现在它们对用户是"不存在的东西"，符合 docs/21 就不该出现在设计里。
+    </div>
+  </div>
+  <div class="right">
+    <div class="preview" style="display:block;padding:14px">
+      <div class="phnote" style="margin-bottom:10px"><b>下发与解析（伪代码）</b></div>
+      <div class="inp" style="font-family:ui-monospace,Consolas,monospace;font-size:11px;white-space:pre-wrap;background:#F8FAFC">// 详情接口里解析生效文案
+const def = await settings.value(
+  'order_notice_default', DEFAULT_ORDER_NOTICE);
+const src = (p.orderNotice ?? '').trim();
+return {
+  ...product,
+  orderNotice:       src || def,
+  orderNoticeSource: src ? 'product' : 'default',
+  orderNoticeBar:    NOTICE_BAR_TEMPLATE,  // 含真实超时小时数
+};</div>
+      <div class="phnote" style="margin-top:12px"><b>客户端只做两件事</b></div>
+      <ul class="tight">
+        <li>有 <span class="mono">orderNotice</span> 就渲染「下单须知」小节，<b>没有就整节不存在</b>
+            （不显示空标题、不显示"暂无"）</li>
+        <li><b>不拼任何规则文案</b> —— 与现有每周限购同一原则（服务端下发、客户端只展示）
+            <br><span class="mono">/user/orders/weekly-quota</span> 已是这个模式的先例，照它做即可</li>
+      </ul>
+      <div class="phnote" style="margin-top:12px"><b>权限</b></div>
+      <ul class="tight">
+        <li>读：所有管理员可看</li>
+        <li>写：建议沿用超管专属（<span class="mono">admin:setting:write</span>），
+            与 <span class="mono">platform_commission_rate</span> 同级 —— 这是会影响全平台订单的规则文本</li>
+        <li>写操作进 <span class="mono">operation_log</span>（谁、改前、改后、版本号）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<h2 class="sec">七、本稿文件</h2>
+<div class="note">
+  <ul class="tight">
+    <li><a href="a-ecommerce.html">a-ecommerce.html</a> · A 电商式 4 状态</li>
+    <li><a href="b-restrained.html">b-restrained.html</a> · B 克制式 4 状态</li>
+    <li><a href="c-two-stage.html">c-two-stage.html</a> · C 双段式 4 状态</li>
+    <li><a href="index.html">index.html</a> · 本页（总览 + 对照 + 管理端设计 + 数据方案）</li>
+    <li><span class="mono">assets/cover-peace.jpg</span> · 和平精英封面（<b>我们自己的图</b>，来自
+        <span class="mono">data/uploads</span>）</li>
+    <li><span class="mono">assets/delta-mark.png</span> · 三角洲行动图标（同上，已去黑底）</li>
+    <li>生成器 <span class="mono">scripts/tmp/make-product-detail.py</span> ·
+        截图核验 <span class="mono">scripts/tmp/product-detail-shot.mjs</span></li>
+  </ul>
+  <div style="margin-top:8px"><b>本稿一个数字都没编</b>：商品名 / 价格 / 销量 / 徽标 / 每周限购 全部来自本机
+  <span class="mono">GET /api/v1/public/products/:id</span>；「24 小时」来自
+  <span class="mono">system_setting.order_pending_take_timeout_hours</span> 默认值。</div>
+</div>
+
+</div>
+</body>
+</html>

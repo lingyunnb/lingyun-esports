@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>B 套 · 严守原规则（无小胶囊 · 对照）· 祁连山电竞</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#EDF1F6}
+body{font-family:"MiSans","Microsoft YaHei","PingFang SC",Helvetica,Arial,sans-serif;color:#14202E;
+     padding:24px;display:flex;flex-direction:column;gap:20px}
+h1{font-size:22px;font-weight:800;letter-spacing:.2px}
+h2{font-size:18px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+.lead{font-size:13px;line-height:1.75;color:#4A5A6E;max-width:1258px}
+.lead b{color:#1D5FA8;font-weight:700}
+.lead .sep{color:#CDD6E2;padding:0 8px}
+.lead .alarm{color:#B42318;font-weight:700}
+.lead .ok2{color:#0E7C7B;font-weight:700}
+.panel{background:#fff;border:1px solid #CDD6E2;border-radius:14px;padding:16px 20px}
+.panel.alarm{border-color:#B42318;background:#FFFBFB}
+.row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;gap:8px;width:390px}
+.cap{font-size:12px;line-height:1.7;color:#4A5A6E}
+.cap b{display:block;font-size:13px;font-weight:700;color:#14202E;margin-bottom:4px}
+.cap i{font-style:normal;color:#1D5FA8;font-weight:700}
+.cap u{text-decoration:none;color:#B42318;font-weight:700}
+.warn{font-size:11px;line-height:1.7;color:#4A5A6E;background:#fff;border:1px solid #E3E8EF;border-radius:10px;padding:8px 12px}
+.warn b{color:#14202E}
+
+/* ---------- 手机壳 ---------- */
+.phone{width:390px;flex:0 0 auto;position:relative;overflow:hidden;background:#F4F6F9;
+       border-radius:14px;outline:1px solid #CDD6E2;outline-offset:-1px}
+.phone.fixed{height:844px}
+.phone.auto{height:auto}
+.phone .page{position:absolute;left:0;right:0;top:44px;bottom:0;overflow:hidden}
+.phone.auto .page{position:relative;top:0;bottom:0;overflow:visible}
+.phone .homebar{position:absolute;left:0;right:0;bottom:0;height:24px;display:flex;align-items:center;justify-content:center}
+.phone.auto .homebar{position:static}
+.homebar i{width:96px;height:4px;border-radius:999px;background:#CDD6E2}
+
+/* ---------- 系统状态栏 ---------- */
+.sb{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.sb .t{font-size:12px;font-weight:600}
+.sb .r{display:flex;align-items:center;gap:4px;color:#14202E}
+
+/* ---------- 页头 / 筛选 / 计数 ---------- */
+.appbar{height:48px;background:#fff;border-bottom:1px solid #E3E8EF;display:flex;align-items:center;padding:0 16px;gap:12px}
+.appbar .bk{color:#14202E;display:flex}
+.appbar .ab-t{font-size:22px;font-weight:800}
+.appbar .ab-s{font-size:11px;color:#8A99AB}
+/* 分部宫格（学参考图 ③ 的骨架：每行 4 格 / 格高 44 / 选中格浅底主色字；多分部时自动折行） */
+.gridrow{height:64px;padding:0 16px;background:#fff;border-bottom:1px solid #E3E8EF;display:flex;align-items:center;gap:8px}
+.gc{width:80px;height:44px;border-radius:4px;border:1px solid #E3E8EF;background:#F4F6F9;color:#4A5A6E;
+  font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.gc.on{background:#E8EEF7;border-color:#E8EEF7;color:#1D5FA8;font-weight:700}
+.meta{height:32px;display:flex;align-items:center;padding:0 16px;background:#F4F6F9}
+.meta .c{font-size:11px;color:#8A99AB}
+.meta .f{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13px;color:#4A5A6E}
+
+/* ---------- 卡片（两版共用外壳；A 套「放宽」多一行小胶囊） ---------- */
+.list{background:#fff;border-top:1px solid #E3E8EF}
+.pcard{height:116px;display:flex;align-items:flex-start;gap:12px;padding:16px;border-bottom:1px solid #E3E8EF;background:#fff}
+.pcard.tags{height:148px}
+.av{width:44px;height:44px;flex:0 0 44px;border-radius:999px;background:#E8EEF7;color:#1D5FA8;
+  display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600}
+.card-l{flex:1;min-width:0}
+.nmrow{height:20px;display:flex;align-items:center;gap:8px}
+.nm{flex:0 1 auto;min-width:0;font-size:15px;font-weight:700;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvl{flex:0 0 auto;height:20px;padding:0 8px;border-radius:4px;border:1px dashed #CDD6E2;color:#8A99AB;
+  font-size:11px;font-weight:600;display:flex;align-items:center;white-space:nowrap}
+.ds{margin-top:4px;font-size:12px;line-height:17px;height:34px;color:#4A5A6E;
+  display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ds.muted{color:#8A99AB}
+.mrow{margin-top:8px;height:16px;font-size:11px;line-height:16px;color:#8A99AB;
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* A 套「放宽」新增的一排小胶囊（B 套本页不用，仅第 ② 屏做对照） */
+.tagrow{margin-top:8px;height:20px;display:flex;align-items:center;gap:8px}
+.tgd{height:20px;padding:0 8px;border-radius:4px;background:#E8EEF7;color:#1D5FA8;font-size:11px;font-weight:600;display:flex;align-items:center;white-space:nowrap}
+.tgt{height:20px;padding:0 8px;border-radius:4px;background:#F4F6F9;border:1px solid #E3E8EF;color:#4A5A6E;font-size:11px;font-weight:400;display:flex;align-items:center;white-space:nowrap}
+.mk{width:18px;height:18px;flex:0 0 18px;border-radius:999px;background:#14202E;color:#fff;font-size:11px;
+  font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.mkrow{height:20px;display:flex;align-items:center;gap:8px;margin-top:8px}
+.tagrow .mk,.mkrow .mk{margin-left:0}
+.foot{height:48px;display:flex;align-items:center;justify-content:center;background:#fff;border-bottom:1px solid #E3E8EF;font-size:11px;color:#8A99AB}
+
+/* ---------- 骨架 ---------- */
+.sk{background:#E3E8EF;border-radius:4px}
+.sk.av{width:44px;height:44px;flex:0 0 44px;border-radius:999px}
+.sk.lvl{width:56px;border:0;background:#E3E8EF}
+
+/* ---------- 空态 ---------- */
+.empty{position:relative;overflow:hidden;padding:48px 32px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.empty .mesh{position:absolute;left:0;top:0;right:0;height:160px;
+  background-image:repeating-linear-gradient(0deg,rgba(15,36,64,.04) 0px,rgba(15,36,64,.04) 1px,rgba(0,0,0,0) 1px,rgba(0,0,0,0) 8px),
+                   repeating-linear-gradient(90deg,rgba(15,36,64,.04) 0px,rgba(15,36,64,.04) 1px,rgba(0,0,0,0) 1px,rgba(0,0,0,0) 8px)}
+.empty .ic,.empty .et,.empty .es,.empty .btns{position:relative}
+.empty .ic{color:#8A99AB}
+.empty .et{font-size:15px;font-weight:600}
+.empty .es{font-size:12px;line-height:1.7;color:#8A99AB;text-align:center;max-width:280px}
+.btns{display:flex;gap:8px;margin-top:12px}
+.bto{height:44px;padding:0 20px;border-radius:10px;border:1px solid #1D5FA8;color:#1D5FA8;
+  font-size:13px;font-weight:700;display:flex;align-items:center}
+.bts{height:44px;padding:0 20px;border-radius:10px;border:1px solid #CDD6E2;color:#4A5A6E;
+  font-size:13px;font-weight:600;display:flex;align-items:center}
+
+/* ---------- 对照标签行 ---------- */
+.vlabel{height:32px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#F4F6F9;font-size:11px;color:#8A99AB}
+.vlabel b{color:#14202E;font-weight:700}
+.chipx{height:20px;padding:0 8px;border-radius:4px;background:#F7EDE0;color:#B4732A;font-size:11px;font-weight:600;display:flex;align-items:center}
+
+/* ---------- 面板 ---------- */
+.two{display:flex;gap:20px;align-items:flex-start}
+.two .bx{flex:1;min-width:0}
+.bx .bt{font-size:15px;font-weight:700;margin-bottom:8px}
+.bx .bd{font-size:12px;line-height:1.8;color:#4A5A6E}
+.bx .bd b{color:#14202E}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #CDD6E2;border-radius:14px;overflow:hidden}
+th,td{border-bottom:1px solid #E3E8EF;padding:8px 12px;text-align:left;vertical-align:top;font-size:12px;line-height:1.7}
+th{background:#F4F6F9;font-weight:700}
+td.p{color:#1D5FA8;font-weight:700}
+td.y{color:#0E7C7B;font-weight:700}
+td.no{color:#B42318;font-weight:700}
+tr:last-child td{border-bottom:0}
+code{font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;color:#1D5FA8}
+</style>
+</head>
+<body>
+
+<h1>B 套 · 严守原规则（无小胶囊 · 对照）</h1>
+
+<div class="lead">
+  <b>B 套 = 严守原规则（对照版）</b>：不放「标签胶囊 / 分部副标」，卡片回到 <b>116dp</b>。
+  <span class="sep">|</span>
+  <b>为什么还留这一版</b>：负责人 2026-10-15「<b>暂时放宽 我看图之后决定</b>」→ 主推 <code>A-list.html</code>（放宽版，有胶囊）；
+  本页是<b>同一位打手、同一份数据</b>的严守版，<span class="ok2">两版并排供负责人对比后拍板</span>。
+  <span class="sep">|</span>
+  <b>第 ② 屏就是两版同框对照</b>（A 放宽 / B 严守）。
+  <span class="sep">|</span>
+  <b>两版共有的</b>：头像（字标兜底）· 名字 · 等级预留位 · 介绍 · 接单次数 · 好评率；顶部导航与列表页骨架完全一致。
+  <span class="sep">|</span>
+  <b>两版都不放</b>：空闲 / 忙碌 · 评分 · 单价 · 下单人数 · 语音时长 · 明星 / 大神 / 单考 / 双考 · 年龄性别 · 大竖图 · 价格行。
+</div>
+
+<div class="row">
+
+  <!-- ① B 套 首屏（无胶囊） -->
+  <div class="col">
+    <div class="cap"><b>① 首屏（B 套 · 无胶囊）</b>卡片 <i>116dp</i>；页头 144dp → 余下 656dp 装 <i>5 张卡</i> + 第 6 张露出一截。</div>
+    <div class="phone fixed">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="gridrow">
+          <div class="gc on"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>全部</div>
+          <div class="gc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4zM8 12h3M9.5 10.5v3M15 11h.01M17 13h.01"/></svg>和平精英</div>
+        </div>
+        <div class="meta"><div class="c">共 14 位陪玩</div>
+          <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+        </div>
+        <div class="list">
+          <div class="pcard"><div class="av">E</div><div class="card-l">
+            <div class="nmrow"><span class="nm">E2E打手</span><span class="lvl">等级位</span></div>
+            <div class="ds">E2E 测试账号：和平精英手游，只跑验收流程。</div>
+            <div class="mrow">接单 30 次 · 暂无评价</div></div></div>
+          <div class="pcard"><div class="av">凌</div><div class="card-l">
+            <div class="nmrow"><span class="nm">凌云</span><span class="lvl">等级位</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard"><div class="av">反</div><div class="card-l">
+            <div class="nmrow"><span class="nm">反悔</span><span class="lvl">等级位</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard"><div class="av">清</div><div class="card-l">
+            <div class="nmrow"><span class="nm">清水</span><span class="lvl">等级位</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard"><div class="av">打</div><div class="card-l">
+            <div class="nmrow"><span class="nm">打赏测试打手</span><span class="lvl">等级位</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+        </div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>本版（B 套）不放小胶囊</b>；<b>A 套（放宽版）才有</b>那一排 —— 两版同框对照见下一屏。<b>另需注意</b>：即便放宽，线上 <code>divisionId</code> <b>13/14 为 <code>null</code></b> → 绝大多数卡仍然只有一枚标签胶囊，<b>放宽 ≠ 会长出信息</b>。</div>
+  </div>
+
+  <!-- ② 两版卡片对照 -->
+  <div class="col">
+    <div class="cap"><b>② 两版卡片对照（同一位打手 · 同一份数据）</b>上 = <i>A 套 · 放宽（主推）</i>，下 = <i>B 套 · 严守原规则（对照）</i>。除这一排小胶囊，<b>其余每一个像素都相同</b>。</div>
+    <div class="phone fixed">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="vlabel"><b>A 套 · 放宽（主推）</b>有胶囊 · 行高 <b>148dp</b></div>
+        <div class="list">
+          <div class="pcard tags"><div class="av">E</div><div class="card-l">
+            <div class="nmrow"><span class="nm">E2E打手</span><span class="lvl">等级位</span></div>
+            <div class="tagrow"><span class="tgd">和平精英·手游</span><span class="mk">①</span><span class="tgt">上分</span><span class="mk">②</span></div>
+            <div class="ds">E2E 测试账号：和平精英手游，只跑验收流程。</div>
+            <div class="mrow">接单 30 次 · 暂无评价</div></div></div>
+        </div>
+        <div class="vlabel"><b>B 套 · 严守原规则（对照）</b>无胶囊 · 行高 <b>116dp</b></div>
+        <div class="list">
+          <div class="pcard"><div class="av">E</div><div class="card-l">
+            <div class="nmrow"><span class="nm">E2E打手</span><span class="lvl">等级位</span></div>
+            <div class="ds">E2E 测试账号：和平精英手游，只跑验收流程。</div>
+            <div class="mrow">接单 30 次 · 暂无评价</div></div></div>
+        </div>
+        <div class="vlabel"><b>差异汇总</b>只差这一排 · 148 ↔ 116 · 其余零变化</div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>视觉代价</b>：多一排胶囊后，卡片里出现 <b>3 类不同底色的信息</b>（名字/等级虚线框/两枚胶囊）—— 正是 <code>docs/21</code> 点名的「每条信息配一个彩色小标签」。所以两枚胶囊<b>必须只用极浅底</b>（<code>#E8EEF7</code> / <code>#F4F6F9</code>），不上主色实底。</div>
+  </div>
+
+  <!-- ③ B 套 骨架态（无胶囊行） -->
+  <div class="col">
+    <div class="cap"><b>③ 骨架态（B 套 · 无胶囊行）</b>行高 116dp；比 A 套（放宽版）少一条胶囊骨架行。</div>
+    <div class="phone fixed">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="gridrow">
+          <div class="gc on"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>全部</div>
+          <div class="gc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4zM8 12h3M9.5 10.5v3M15 11h.01M17 13h.01"/></svg>和平精英</div>
+        </div>
+        <div class="meta"><div class="c">正在加载…</div>
+          <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+        </div>
+        <div class="list">
+          <div class="pcard"><div class="sk av"></div><div class="card-l">
+            <div class="nmrow"><div class="sk" style="width:72px;height:16px"></div><div class="sk lvl" style="height:20px"></div></div>
+            <div class="sk" style="width:100%;height:11px;margin-top:12px"></div>
+            <div class="sk" style="width:56%;height:11px;margin-top:8px"></div>
+            <div class="sk" style="width:44%;height:11px;margin-top:8px"></div></div></div>
+          <div class="pcard"><div class="sk av"></div><div class="card-l">
+            <div class="nmrow"><div class="sk" style="width:56px;height:16px"></div><div class="sk lvl" style="height:20px"></div></div>
+            <div class="sk" style="width:84%;height:11px;margin-top:12px"></div>
+            <div class="sk" style="width:48%;height:11px;margin-top:8px"></div>
+            <div class="sk" style="width:60%;height:11px;margin-top:8px"></div></div></div>
+          <div class="pcard"><div class="sk av"></div><div class="card-l">
+            <div class="nmrow"><div class="sk" style="width:88px;height:16px"></div><div class="sk lvl" style="height:20px"></div></div>
+            <div class="sk" style="width:92%;height:11px;margin-top:12px"></div>
+            <div class="sk" style="width:38%;height:11px;margin-top:8px"></div>
+            <div class="sk" style="width:52%;height:11px;margin-top:8px"></div></div></div>
+        </div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>骨架行宽度也不等长</b>（88/40 · 40 · 56dp）—— 与真数据里「有的卡有分部副标、有的没有」对齐，避免骨架永远比真卡宽。</div>
+  </div>
+
+  <!-- ④ 空态 -->
+  <div class="col">
+    <div class="cap"><b>④ 空态（两版共用）</b>放宽/严守只差卡片内一行，<b>不影响空态</b> —— 两版共用同一份空态文案与动作。</div>
+    <div class="phone fixed">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="gridrow">
+          <div class="sk" style="width:80px;height:44px;border-radius:4px"></div>
+          <div class="sk" style="width:80px;height:44px;border-radius:4px"></div>
+        </div>
+        <div class="meta"><div class="c">共 0 位陪玩</div>
+          <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+        </div>
+        <div class="empty">
+          <div class="mesh"></div>
+          <div class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 15h6M9.5 10h.01M14.5 10h.01"/></svg></div>
+          <div class="et">和平精英分部还没有陪玩</div>
+          <div class="es">打手介绍由官方审核后填写，新打手入驻后会出现在这里；也可以不选人，直接下单由平台派单。</div>
+          <div class="btns"><div class="bto">直接去下单</div><div class="bts">问祁小山</div></div>
+        </div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>放宽（A 套）也<u>不会</u>新增空态</b>：胶囊是卡片上的展示属性、不是筛选档，所以不存在「筛空」这种额外状态 —— 这一点与上一版「照参考图完整」的方案不同（那一版因为加了「人气陪玩 / 明星大神」两档筛选项，会多出 8 种筛空组合）。</div>
+  </div>
+
+  <!-- ⑤ B 套 完整页 -->
+  <div class="col">
+    <div class="cap"><b>⑤ 滚动后（完整页 · B 套）</b>行高 116dp → 同样内容比 A 套（放宽版）短 <i>32dp × 行数</i>。</div>
+    <div class="phone auto">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="appbar">
+          <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+          <div class="ab-t">选择陪玩</div>
+          <div class="ab-s">介绍由官方审核填写</div>
+        </div>
+        <div class="gridrow">
+          <div class="gc on"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>全部</div>
+          <div class="gc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4zM8 12h3M9.5 10.5v3M15 11h.01M17 13h.01"/></svg>和平精英</div>
+        </div>
+        <div class="meta"><div class="c">共 14 位陪玩</div>
+          <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+        </div>
+        <div class="list">
+          <div class="pcard"><div class="av">E</div><div class="card-l">
+            <div class="nmrow"><span class="nm">E2E打手</span><span class="lvl">等级位</span></div>
+            <div class="ds">E2E 测试账号：和平精英手游，只跑验收流程。</div>
+            <div class="mrow">接单 30 次 · 暂无评价</div></div></div>
+          <div class="pcard"><div class="av">凌</div><div class="card-l">
+            <div class="nmrow"><span class="nm">凌云</span><span class="lvl">等级位</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard"><div class="av">反</div><div class="card-l">
+            <div class="nmrow"><span class="nm">反悔</span><span class="lvl">等级位</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard"><div class="av">清</div><div class="card-l">
+            <div class="nmrow"><span class="nm">清水</span><span class="lvl">等级位</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard"><div class="av">打</div><div class="card-l">
+            <div class="nmrow"><span class="nm">打赏测试打手</span><span class="lvl">等级位</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="pcard"><div class="av">演</div><div class="card-l">
+            <div class="nmrow"><span class="nm">演示工作端</span><span class="lvl">等级位</span></div>
+            <div class="ds muted">介绍待补充</div>
+            <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+          <div class="foot">共 14 位陪玩 · 已到底</div>
+        </div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div>
+    <div class="warn"><b>标签文案是示意</b>（上分 / 陪练 / 全程闭麦 / 新人）：标签体系<b>还没建表</b>，这些字样只在图上说明「放宽后长这样」，<b>不是线上数据、也不构成命名方案</b>。取名口径由负责人定。</div>
+  </div>
+
+</div>
+
+<!-- ============ 放宽版（A 套）的代价 ============ -->
+<div class="panel alarm">
+  <div class="bt" style="font-size:15px;font-weight:700;margin-bottom:8px">放宽版（A 套）要比本版额外补什么</div>
+  <table>
+    <tr><th style="width:44px">标记</th><th style="width:180px">新增展示</th><th style="width:170px">现在有没有</th><th>最小实现代价</th></tr>
+    <tr><td class="no">①</td><td>分部副标小胶囊<br>（<code>和平精英·手游</code>）</td><td class="no">半有</td><td><code>/public/players</code> 已下发 <code>divisionId</code>，只需再带一个 <code>divisionName</code>（1 处 JOIN，<b>0.25 人天</b>）。<b>但线上 13/14 为 null</b> → 放宽后绝大多数卡上仍然没有它，<b>收益极小</b></td></tr>
+    <tr><td class="no">②</td><td>资质 / 玩法标签胶囊<br>（<code>上分</code> / <code>陪练</code> / <code>全程闭麦</code>…）</td><td class="no">没有</td><td>需新建 <code>worker_tag</code> 表（<code>worker_id, tag_code, tag_name, sort_order, created_by</code>）+ 管理端维护页 + 客户端枚举 + <b>打手端自助勾选（可选）</b> → <b>约 2 人天</b>；且标签命名口径要先定（否则一上就是各写各的）</td></tr>
+    <tr><td class="p">—</td><td>卡片 116 → 148dp、骨架屏多一行、首屏少放约半张卡</td><td class="p">纯前端</td><td>客户端 <b>0.25 人天</b>（同一组件加一行）</td></tr>
+    <tr><td class="p">合计</td><td colspan="3"><b>② 是主要成本（≈2 人天 + 命名口径决策）；① 便宜但收益极小</b>。两版差异只在卡片内一行 → <b>无论选哪版，顶部导航、列表页骨架、空态、计数行、等级预留位全部照旧</b></td></tr>
+  </table>
+</div>
+
+<div class="panel">
+  <div class="two">
+    <div class="bx">
+      <div class="bt">两版差异一览（负责人一句话切换）</div>
+      <div class="bd">
+        <b>B 套（本页）→ A 套（放宽）</b>：只在 <code>.card-l</code> 里、<b>名字行与介绍之间</b>插入一行 <code>.tagrow</code>（高 20dp + 上间距 8dp）。<br>
+        <b>卡片高度</b>：<code>116</code> → <code>148</code>（+32dp = 一行 20dp + 上间距 8dp + 介绍位上间距 4dp 的调整）。<br>
+        <b>骨架屏</b>：多一条胶囊行（两块：88/40dp）。<br>
+        <b>空态</b>：不变（胶囊是展示属性，不新增筛选项）。<br>
+        <b>其余全部不变</b>：页头 / 胶囊行 / 计数行 / 名字 / 等级预留位 / 介绍 / 接单次数 / 好评率。<br>
+        <b>配色红线</b>：两枚胶囊只用极浅底（<code>#E8EEF7</code> 分部副标 / <code>#F4F6F9</code> 标签），<b>不上主色实底</b>，避免 <code>docs/21</code> 的「每条信息配彩色小标签」。
+      </div>
+    </div>
+    <div class="bx">
+      <div class="bt">仍然不画的东西（两版一致）</div>
+      <div class="bd">
+        空闲 · 忙碌 · 评分（我们是满意-不满意二元，无 5 星）· 单价（价格只在下单链路）· 下单人数 · 语音时长 · 明星陪玩 / 大神 · 单考 / 双考 · 年龄 · 性别 · 大竖图 · 价格行 ——
+        <b>逐条理由见 <code>compare.html</code> 的「规则 6 逐条对照表」</b>。<br>
+        <b>等级</b>：只保留名字右侧的<b>虚线预留位</b>，<b>没有名称、没有形态、没有图标</b>；负责人给出名称后再落地。
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

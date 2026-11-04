@@ -1,0 +1,242 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>管理端 · 工作台 · 品牌化设计图</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#0F2440; --primary:#1D5FA8; --primary-hover:#18528F; --celadon:#0E7C7B;
+  --gold:#B4732A; --page:#F4F6F9; --card:#FFFFFF; --hair:#E3E8EF;
+  --ink:#14202E; --ink2:#4A5A6E; --ink3:#8A99AB;
+  --primary-soft:#E8EEF7; --celadon-soft:#E3F0EF; --amber-soft:#F7EDE0;
+  --ok:#0E7C7B; --warn:#B45309; --err:#B42318;
+  --slot:#EDF1F7; --skel:#E7ECF3;
+  --r-xs:4px; --r-sm:6px; --r-md:10px; --r-lg:14px; --r-pill:999px;
+  --pad:16px;
+  --font:"MiSans","HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",-apple-system,"Segoe UI",sans-serif;
+}
+html{background:var(--page)}
+body{font-family:var(--font);color:var(--ink);background:var(--page);font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased}
+svg.ic{display:block;flex:none}
+.mono{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+h1,h2,h3{font-weight:700}
+
+.admin{width:1440px;display:flex;background:var(--card);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.side{width:220px;flex:0 0 220px;background:var(--card);border-right:1px solid var(--hair);display:flex;flex-direction:column;padding:0 0 14px}
+.sbrand{display:flex;align-items:center;gap:9px;height:56px;padding:0 14px;border-bottom:1px solid var(--hair)}
+.smark{width:28px;height:28px;flex:none;border-radius:var(--r-sm);background:var(--brand);display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%)}
+.smark span{font-size:15px;font-weight:700;color:#fff;line-height:1}
+.sbname{font-size:14px;font-weight:700;letter-spacing:.2px;line-height:1.15}
+.sbsub{font-size:11px;color:var(--ink2);line-height:1.2;margin-top:2px}
+.snav{padding:10px 8px 0;display:flex;flex-direction:column;gap:1px}
+.gp{display:flex;align-items:center;gap:9px;height:32px;padding:0 9px;border-radius:var(--r-sm);color:var(--ink);font-size:13px;font-weight:600}
+.gp.on{background:var(--primary-soft);color:var(--primary);font-weight:700;position:relative}
+.gp.on::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:3px;border-radius:0 3px 3px 0;background:var(--primary)}
+.gp .cv{margin-left:auto;transition:none}
+.gp.on .cv{transform:rotate(90deg)}
+.gsub{display:flex;flex-direction:column;gap:1px;margin:2px 0 4px}
+.gc{height:28px;display:flex;align-items:center;padding-left:34px;border-radius:var(--r-sm);font-size:12px;color:var(--ink2)}
+.gc.on{background:var(--primary-soft);color:var(--primary);font-weight:700;position:relative}
+.gc.on::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;border-radius:0 3px 3px 0;background:var(--primary)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--page)}
+.tbar{height:56px;flex:none;display:flex;align-items:center;gap:12px;padding:0 18px;background:var(--card);border-bottom:1px solid var(--hair)}
+.crumb{font-size:13px;color:var(--ink2)}
+.crumb b{color:var(--ink);font-weight:700}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.tbtn{height:30px;display:inline-flex;align-items:center;gap:6px;padding:0 11px;background:var(--card);border:1px solid var(--hair);
+  border-radius:var(--r-sm);font-size:12px;font-weight:600;color:var(--ink2)}
+.tbtn.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+.tabs{height:40px;flex:none;display:flex;align-items:flex-end;gap:2px;padding:0 18px;background:var(--card);border-bottom:1px solid var(--hair)}
+.tab{height:32px;display:inline-flex;align-items:center;gap:7px;padding:0 11px;font-size:12px;color:var(--ink2);border:1px solid var(--hair);border-bottom:0;
+  border-radius:var(--r-xs) var(--r-xs) 0 0;background:var(--page);position:relative;top:1px}
+.tab.on{background:var(--card);border-bottom:1px solid var(--card);color:var(--ink);font-weight:600}
+.tab.on::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--primary)}
+.abody{padding:16px 18px 22px;display:flex;flex-direction:column;gap:14px}
+.ph h1{font-size:18px;line-height:1.25;letter-spacing:-.2px}
+.ph p{margin-top:5px;font-size:12px;color:var(--ink2)}
+.ph-row{display:flex;align-items:flex-start;gap:14px}
+.ph-row .sp{flex:1}
+.panel{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-lg)}
+.panel-h{height:44px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--hair)}
+.panel-h h3{font-size:14px}
+.panel-h .hint{font-size:11px;color:var(--ink2)}
+table{width:100%;border-collapse:collapse}
+th{height:38px;padding:0 12px;text-align:left;font-size:12px;font-weight:600;color:var(--ink2);background:var(--slot);
+  border-bottom:1px solid var(--hair);white-space:nowrap}
+td{height:44px;padding:0 12px;font-size:13px;border-bottom:1px solid var(--hair);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+th.r,td.r{text-align:right}
+th.c,td.c{text-align:center}
+.tag{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 7px;border-radius:var(--r-xs);font-size:11px;font-weight:700}
+.tag i{width:5px;height:5px;flex:none;display:block}
+.money{color:var(--gold);font-weight:700}
+.tot{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;font-size:12px;color:var(--ink2);border-top:1px solid var(--hair)}
+.pager{margin-left:auto;display:flex;align-items:center;gap:6px}
+.pg{min-width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--hair);
+  border-radius:var(--r-sm);font-size:12px;color:var(--ink2);background:var(--card)}
+.pg.on{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:700}
+.sel,.inp{height:32px;display:inline-flex;align-items:center;gap:8px;padding:0 10px;background:var(--card);border:1px solid var(--hair);
+  border-radius:var(--r-sm);font-size:12px;color:var(--ink2);min-width:120px}
+.inp.on{border-color:var(--primary);color:var(--ink)}
+.sel .ph{color:var(--ink3)}
+.chip{height:28px;display:inline-flex;align-items:center;gap:6px;padding:0 11px;border-radius:var(--r-pill);
+  background:var(--card);border:1px solid var(--hair);font-size:12px;font-weight:600;color:var(--ink2)}
+.chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.statline{display:flex;background:var(--card);border:1px solid var(--hair);border-radius:var(--r-lg);overflow:hidden}
+.statline .c{flex:1;min-width:0;padding:14px 16px;border-left:1px solid var(--hair)}
+.statline .c:first-child{border-left:0}
+.statline .k{font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.statline .v{margin-top:6px;font-size:18px;font-weight:700;letter-spacing:-.3px}
+.statline .v.gold{color:var(--gold)}
+.statline .d{margin-top:4px;font-size:11px;color:var(--ink2)}
+.todo{display:flex;flex-direction:column}
+.todo .r{display:flex;align-items:center;gap:11px;height:44px;padding:0 14px;border-top:1px solid var(--hair)}
+.todo .r:first-child{border-top:0}
+.todo .r .k{flex:1;font-size:13px}
+.todo .r .v{font-size:15px;font-weight:700;letter-spacing:-.2px}
+.todo .r .g{font-size:11px;color:var(--ink2)}
+.empty{padding:44px 20px;text-align:center;position:relative;overflow:hidden}
+.empty .gi{width:44px;height:44px;margin:0 auto;border-radius:var(--r-lg);background:var(--card);border:1px solid var(--hair);
+  display:flex;align-items:center;justify-content:center;color:var(--ink3)}
+.empty .t{margin-top:11px;font-size:14px;font-weight:600;color:var(--ink2)}
+.empty .s{margin-top:6px;font-size:12px;color:var(--ink2);line-height:1.55}
+.drawer-mask{position:relative}
+.dw{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-lg);overflow:hidden}
+.dw-h{height:52px;display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--hair)}
+.dw-h h3{font-size:15px}
+.dw-b{padding:16px}
+.fg{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.fg>label{font-size:12px;font-weight:600;color:var(--ink2)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dw-f{height:56px;display:flex;align-items:center;gap:10px;padding:0 16px;border-top:1px solid var(--hair);background:var(--page)}
+.btn{height:32px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:var(--r-sm);font-size:13px;font-weight:600;
+  background:var(--card);border:1px solid var(--hair);color:var(--ink2)}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.warn{background:var(--card);border-color:#E7C9A6;color:var(--warn)}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.2 3 7.4 7 8.5 4-1.1 7-4.3 7-8.5V6z"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4.5h-4.5"/></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9.5 5.5 16 12l-6.5 6.5"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6H17a2 2 0 0 1 2 2v1"/><path d="M4 8.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5"/><path d="M4 8.5h13"/><path d="M21 11.5h-4.5a2.25 2.25 0 0 0 0 4.5H21z"/></symbol><symbol id="i-receipt" viewBox="0 0 24 24"><path d="M7 3.5h8.5L19 7v13.5H7z"/><path d="M15 3.5V7h3.5"/><path d="M10 11h6"/><path d="M10 14.5h6"/><path d="M10 18h4"/></symbol><symbol id="i-headset" viewBox="0 0 24 24"><path d="M4.5 14v-2a7.5 7.5 0 0 1 15 0v2"/><path d="M4.5 13.5h1.6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1z"/><path d="M19.5 13.5h-1.6a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h.6a1 1 0 0 0 1-1z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 7v5.2l3.4 2"/><path d="M12 3.6a8.4 8.4 0 1 1 0 16.8 8.4 8.4 0 0 1 0-16.8Z"/></symbol><symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3.5 13.5h4l1.5 2.5h6l1.5-2.5h4"/><path d="M3.5 13.5 6 5.5h12l2.5 8v4a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5S6.5 14 6.5 10Z"/><path d="M10 19a2 2 0 0 0 4 0"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M12 3.6a8.4 8.4 0 1 1 0 16.8 8.4 8.4 0 0 1 0-16.8Z"/><path d="M8.4 12.3l2.5 2.5 4.7-5"/></symbol><symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5.5 13.5H11L10 21l7.5-10.5H12z"/></symbol><symbol id="i-info" viewBox="0 0 24 24"><path d="M12 3.6a8.4 8.4 0 1 1 0 16.8 8.4 8.4 0 0 1 0-16.8Z"/><path d="M12 11v5.5"/><path d="M12 7.8v.01"/></symbol><symbol id="i-linkoff" viewBox="0 0 24 24"><path d="M9.5 14.5 14.5 9.5"/><path d="M8 11 6 13a3.5 3.5 0 0 0 5 5l2-2"/><path d="M16 13l2-2a3.5 3.5 0 0 0-5-5l-2 2"/></symbol><symbol id="i-swap" viewBox="0 0 24 24"><path d="M7.5 5.5h9l-2.5-2.5"/><path d="M16.5 18.5h-9l2.5 2.5"/><path d="M16.5 5.5l-2.5 2.5"/><path d="M7.5 18.5l2.5-2.5"/></symbol><symbol id="i-person" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><path d="M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13Z"/><path d="M15.5 15.5 20.5 20.5"/></symbol><symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></symbol><symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></symbol><symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4 3.5 19h17z"/><path d="M12 10v4"/><path d="M12 16.5v.01"/></symbol><symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3.5h8.5L19 7v13.5H7z"/><path d="M15 3.5V7h3.5"/><path d="M10 15h6"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V11"/><path d="M12 20V5"/><path d="M20 20v-6"/><path d="M3 20h18"/></symbol><symbol id="i-settings" viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M12 3.5v2.2"/><path d="M12 18.3v2.2"/><path d="M20.5 12h-2.2"/><path d="M5.7 12H3.5"/><path d="M18 6l-1.6 1.6"/><path d="M7.6 16.4 6 18"/><path d="M18 18l-1.6-1.6"/><path d="M7.6 7.6 6 6"/></symbol><symbol id="i-people" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.5 5.2a3.5 3.5 0 0 1 0 6.6"/><path d="M18 20a6.6 6.6 0 0 0-1.2-3.8"/></symbol><symbol id="i-coins" viewBox="0 0 24 24"><path d="M9.5 12.5a5 3.5 0 1 0 0-7 5 3.5 0 0 0 0 7Z"/><path d="M4.5 9v5c0 1.9 2.2 3.5 5 3.5s5-1.6 5-3.5V9"/><path d="M14.5 6.2a5 3.5 0 0 1 0 6.6c1 .6 2 .9 3 .9 2.8 0 5-1.6 5-3.5V5.2c0-1.9-2.2-3.5-5-3.5-1.4 0-2.7.4-3.6 1"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12Z"/><path d="M12 14.6a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2Z"/></symbol><symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v10.5"/><path d="M8 11l4 4 4-4"/><path d="M5 19.5h14"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h6.5v6.5H4z"/><path d="M13.5 4H20v6.5h-6.5z"/><path d="M4 13.5h6.5V20H4z"/><path d="M13.5 13.5H20V20h-6.5z"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><path d="M4 7.5A2 2 0 0 1 6 5.5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 10.5h16"/><path d="M8.5 3.5v4"/><path d="M15.5 3.5v4"/></symbol><symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M9 4.5h6v2H9z"/><path d="M7.5 5.5H6a1.5 1.5 0 0 0-1.5 1.5v12A1.5 1.5 0 0 0 6 20.5h12a1.5 1.5 0 0 0 1.5-1.5V7A1.5 1.5 0 0 0 18 5.5h-1.5"/><path d="M9 12h6"/><path d="M9 15.5h4"/></symbol><symbol id="i-arrowup" viewBox="0 0 24 24"><path d="M12 19.5V5"/><path d="M6.5 10.5 12 5l5.5 5.5"/></symbol><symbol id="i-arrowdown" viewBox="0 0 24 24"><path d="M12 4.5V19"/><path d="M6.5 13.5 12 19l5.5-5.5"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3.5 9.5 12 4l8.5 5.5"/><path d="M5.5 10v8"/><path d="M9.5 10v8"/><path d="M14.5 10v8"/><path d="M18.5 10v8"/><path d="M3.5 20.5h17"/></symbol></defs></svg>
+<div class="sheet" style="padding:20px 24px 30px;gap:16px">
+  <header class="sheet-head" style="width:1440px">
+    <h1>管理端「工作台」· 品牌化设计图（1440 桌面）</h1>
+    <p>管理端**不是**把 App 那套搬过来：密度更高、表格为主、品牌色克制。浅色为默认档（页底 #F4F6F9 / 卡 #FFFFFF / 发丝线 #E3E8EF），主色仍与打手端同族（#1D5FA8 + #0E7C7B）。</p>
+    <div class="meta"><span>1440 × 桌面</span><span>8 个分组侧栏</span><span>金额 ¥ + 两位小数 + 千分位</span><span>「积分」0 处</span></div>
+  </header>
+  <figure class="shot" style="width:1440px;flex:none"><figcaption><span class="n">1</span>首屏 <em>1440 宽 · 侧栏 + 页签 + 指标条 + 待办队列 + 结算流水</em></figcaption>
+    <div class="admin">
+  <aside class="side">
+    <div class="sbrand"><span class="smark"><span>祁</span></span>
+      <div><div class="sbname">祁连山电竞</div><div class="sbsub">管理后台</div></div></div>
+    <nav class="snav"><div class="gp on"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-grid"/></svg><span>工作台</span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-receipt"/></svg><span>订单与售后</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gc">订单管理</div><div class="gc">售后管理</div><div class="gc">退款审批</div><div class="gc">投诉工单</div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-people"/></svg><span>用户与身份</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-coins"/></svg><span>资金与抽成</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-clipboard"/></svg><span>商品与内容</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-headset"/></svg><span>客服与消息</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chart"/></svg><span>排行榜</span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-settings"/></svg><span>系统管理</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div></nav>
+  </aside>
+  <section class="main">
+    <div class="tbar"><span class="crumb">工作台</span>
+      <span class="tb-right">
+        <span class="tbtn"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-search"/></svg>搜索</span>
+        <span class="tbtn"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-person"/></svg>会长（全权限）</span>
+      </span></div>
+    <div class="tabs"><span class="tab on">工作台</span><span class="tab">订单管理</span></div>
+    <div class="abody">
+      <div class="ph"><div class="ph-row"><div class="sp"><h1>会长，您好</h1><p>今天也请按规范操作：金额一律 ¥ 两位小数，管理员动作全部留痕。</p></div><span class="tag" style="background:var(--primary-soft);color:var(--primary);height:22px">超级管理员</span></div></div>
+      
+  <div class="statline">
+    <div class="c"><div class="k"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-receipt"/></svg>累计订单</div><div class="v mono">1,247</div>
+      <div class="d">已结算 1,186 单 · 累计订单金额 ¥86,432.60</div></div>
+    <div class="c"><div class="k"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chart"/></svg>平台累计抽成</div><div class="v gold mono">¥19,884.35</div>
+      <div class="d">当前抽成比例 25%（打手 75%）</div></div>
+    <div class="c"><div class="k"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-coins"/></svg>今日平台抽成</div><div class="v gold mono">¥1,342.75</div>
+      <div class="d">按今日结算实时汇总</div></div>
+    <div class="c"><div class="k"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-people"/></svg>账号概览</div><div class="v mono">1,432</div>
+      <div class="d">老板 / 工作端合计 · 打手档案 168 个</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:14px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="panel">
+        <div class="panel-h"><h3>待处理事项</h3><span class="hint">按处理紧迫度排队，件件可直接点进去</span>
+          <span style="flex:1"></span><span class="btn"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-refresh"/></svg>刷新</span></div>
+        <div class="todo"><div class="r">
+          <span class="tag" style="background:var(--primary-soft);color:var(--primary)"><i style="background:currentColor;border-radius:50%"></i>笔</span>
+          <span class="k">待核对充值申请</span><span class="g">最早一笔 41 分钟前提交（¥98.00）</span>
+          <span class="v mono">3</span><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></div><div class="r">
+          <span class="tag" style="background:var(--amber-soft);color:var(--warn)"><i style="background:currentColor;border-radius:50%"></i>笔</span>
+          <span class="k">待处理的提现申请</span><span class="g">已锁定余额 ¥188.00 · 核对收款信息后打款</span>
+          <span class="v mono">1</span><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></div><div class="r">
+          <span class="tag" style="background:var(--slot);color:var(--ink2)"><i style="background:currentColor;border-radius:50%"></i>单</span>
+          <span class="k">待接单（实时）</span><span class="g">三角洲行动 · 手游 3 单 / 和平精英 · 手游 1 单</span>
+          <span class="v mono">5</span><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></div><div class="r">
+          <span class="tag" style="background:#FBEBE9;color:var(--err)"><i style="background:currentColor;border-radius:50%"></i>件</span>
+          <span class="k">未处理投诉工单</span><span class="g">其中 1 件已超 24 小时未响应</span>
+          <span class="v mono">2</span><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></div><div class="r">
+          <span class="tag" style="background:var(--slot);color:var(--ink2)"><i style="background:currentColor;border-radius:50%"></i>件</span>
+          <span class="k">待裁决售后申诉</span><span class="g">订单 ORDMUZQ8MHI8946 · 金额 ¥75.60</span>
+          <span class="v mono">1</span><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><h3>最近结算流水</h3><span class="hint">口径：下单时落库的比例，历史单据不随配置变化</span>
+          <span style="flex:1"></span><span class="tbtn">全部流水</span></div>
+        <table>
+          <thead><tr><th>结算单号</th><th>订单号</th><th class="r">订单金额</th><th class="r">打手收益 75%</th><th class="r">平台抽成 25%</th><th>结算时间</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">ST2026101400418</td><td class="mono">ORDMUZQ8MHI8946</td><td class="r mono">¥75.60</td>
+            <td class="r money mono">¥56.70</td><td class="r mono">¥18.90</td><td style="color:var(--ink2)">10-14 21:18</td></tr><tr><td class="mono">ST2026101400417</td><td class="mono">ORDMUZQ5LBR6879</td><td class="r mono">¥68.80</td>
+            <td class="r money mono">¥51.60</td><td class="r mono">¥17.20</td><td style="color:var(--ink2)">10-14 20:56</td></tr><tr><td class="mono">ST2026101400416</td><td class="mono">ORDMUZQ12638298</td><td class="r mono">¥149.70</td>
+            <td class="r money mono">¥112.28</td><td class="r mono">¥37.43</td><td style="color:var(--ink2)">10-14 19:42</td></tr><tr><td class="mono">ST2026101400415</td><td class="mono">ORDMUZQ128E7376</td><td class="r mono">¥25.00</td>
+            <td class="r money mono">¥18.75</td><td class="r mono">¥6.25</td><td style="color:var(--ink2)">10-14 18:20</td></tr><tr><td class="mono">ST2026101400414</td><td class="mono">ORDMUZQ9KDM3320</td><td class="r mono">¥8.80</td>
+            <td class="r money mono">¥6.60</td><td class="r mono">¥2.20</td><td style="color:var(--ink2)">10-14 17:31</td></tr>
+          </tbody>
+        </table>
+        <div class="tot">前 5 条 / 共 1,186 条<span class="pager"><span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">›</span></span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="panel">
+        <div class="panel-h"><h3>今日节奏</h3><span class="hint">客服 9:00 – 次日 2:00 在线</span></div>
+        <div style="padding:14px 14px 4px">
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--hair)">
+            <span style="width:3px;height:3px;background:#1D5FA8;display:block;flex:none"></span>
+            <span class="mono" style="font-size:12px;color:var(--ink2);width:96px">09:00 – 12:00</span>
+            <span style="font-size:12px;font-weight:600;color:#1D5FA8">高峰期</span>
+            <span style="flex:1"></span><span class="mono" style="font-size:13px;font-weight:700">386 单</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--hair)">
+            <span style="width:3px;height:3px;background:#0E7C7B;display:block;flex:none"></span>
+            <span class="mono" style="font-size:12px;color:var(--ink2);width:96px">12:00 – 18:00</span>
+            <span style="font-size:12px;font-weight:600;color:#0E7C7B">平峰</span>
+            <span style="flex:1"></span><span class="mono" style="font-size:13px;font-weight:700">512 单</span></div><div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--hair)">
+            <span style="width:3px;height:3px;background:#1D5FA8;display:block;flex:none"></span>
+            <span class="mono" style="font-size:12px;color:var(--ink2);width:96px">18:00 – 02:00</span>
+            <span style="font-size:12px;font-weight:600;color:#1D5FA8">高峰期</span>
+            <span style="flex:1"></span><span class="mono" style="font-size:13px;font-weight:700">349 单</span></div>
+          <div style="padding:10px 0 12px;font-size:11px;line-height:1.5;color:var(--ink2);border-top:1px solid var(--hair)">
+            平均接单时长 <b class="mono">2 分 41 秒</b>；超时回大厅 4 单。</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><h3>操作留痕</h3><span class="hint">管理员动作全部写 operation_log</span></div>
+        <table>
+          <thead><tr><th>时间</th><th>管理员</th><th>动作</th></tr></thead>
+          <tbody>
+            <tr><td class="mono" style="color:var(--ink2)">21:24:08</td><td>会长</td><td>发放余额 ¥98.00</td></tr><tr><td class="mono" style="color:var(--ink2)">20:41:55</td><td>运营-小周</td><td>派单 ORDMUZQ8MHI8946</td></tr><tr><td class="mono" style="color:var(--ink2)">19:12:30</td><td>会长</td><td>驳回提现 ¥188.00</td></tr><tr><td class="mono" style="color:var(--ink2)">18:03:12</td><td>客服-阿楠</td><td>关闭客服会话</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><h3>快捷入口</h3><span class="hint">按你的权限点显示</span></div>
+        <div style="padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px">
+          <span class="chip">余额管理</span><span class="chip">充值管理</span><span class="chip on">提现审核</span><span class="chip">订单管理</span><span class="chip">游戏与商品</span><span class="chip">用户管理</span><span class="chip">系统设置</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-h"><h3>高风险待办</h3><span class="hint">资金类动作集中在最下面，带二次确认；可看与可打款是两个独立权限点</span></div>
+    <div class="empty" style="background:var(--card)">
+      <div style="position:absolute;inset:0;background-image:linear-gradient(to right,rgba(29,95,168,.045) 1px,transparent 1px),linear-gradient(to bottom,rgba(29,95,168,.045) 1px,transparent 1px);background-size:24px 24px"></div>
+      <div style="position:relative">
+        <div class="gi"><svg class="ic " width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-check"/></svg></div>
+        <div class="t">今天没有超时未处理的资金待办</div>
+        <div class="s">充值核对 3 笔 / 提现申请 1 笔都在 24 小时内提交，按提交时间顺序处理即可。<br>超过 24 小时的会在这里置顶，并带「超时」标记。</div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </section></div>
+  </figure>
+  <div class="sec" style="width:1440px"><h3>本屏设计口径</h3><span class="hint">专业 · 信息密度高 · 好扫读</span></div>
+  <div style="width:1440px"><div class="specs"><div class="spec"><dl><dt>品牌区</dt><dd>侧栏顶端 28px 墨蓝斜切方块 +「祁」字标 + 「管理后台」副标；深色块全页只此一处</dd></dl></div><div class="spec"><dl><dt>侧栏</dt><dd>8 个顶层项（2 直接 + 6 可折叠），当前组自动展开，选中 = 浅底 + 主色字 + 左侧 3px 条</dd></dl></div><div class="spec"><dl><dt>信息密度</dt><dd>指标条 4 项一行（不再是并排大数字卡）；待办队列 5 行；结算与留痕两张紧凑表</dd></dl></div><div class="spec"><dl><dt>状态标签</dt><dd>统一形态：6px 圆角 + 11/700 + 5px 圆点。主色=资金/主流程 · 琥珀=待核对 · 红=异常 · 灰=中性</dd></dl></div><div class="spec"><dl><dt>空态</dt><dd>「高风险待办」给出口径与超时规则，不是一句"暂无数据"；细网格只用于空态与品牌区</dd></dl></div><div class="spec"><dl><dt>品牌色克制</dt><dd>主色只用在：选中态、主按钮、少量标签、链接。表格与正文保持灰阶，金额才用琥珀金</dd></dl></div></div></div>
+</div></body></html>

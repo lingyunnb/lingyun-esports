@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>商品详情页 v2 · 总览（3 套 × 5 状态 + v1 缺陷自查 + 对照表）</title>
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #EEF1F6; }
+body { font-family: "Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif;
+       color: #0F172A; -webkit-font-smoothing: antialiased; line-height: 1.7; }
+.wrap { padding: 30px 34px 70px; max-width: 1560px; }
+h1 { font-size: 24px; font-weight: 800; margin: 0 0 8px; }
+h2 { font-size: 18px; font-weight: 800; margin: 40px 0 12px; padding-bottom: 8px;
+      border-bottom: 2px solid #0F172A; display: inline-block; }
+h3 { font-size: 14.5px; font-weight: 800; margin: 22px 0 9px; }
+p.lead { font-size: 13px; color: #475569; max-width: 1180px; margin: 0 0 10px; }
+p.note { font-size: 12px; color: #94A3B8; margin: 6px 0 0; }
+.mono { font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: 11px; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0 4px; background: #fff;
+         border: 1px solid #E2E8F0; font-size: 12.5px; }
+th, td { border-bottom: 1px solid #E2E8F0; padding: 9px 11px; text-align: left; vertical-align: top; }
+th { background: #F8FAFC; font-weight: 800; font-size: 12px; color: #0F172A; white-space: nowrap; }
+td.id { font-weight: 800; color: #DC2626; white-space: nowrap; font-size: 12px; }
+td.tt { font-weight: 800; white-space: nowrap; }
+td.ev, td.fx { color: #475569; line-height: 1.72; }
+td.ev b, td.fx b { color: #0F172A; }
+td.fx { border-left: 3px solid #BBE5C8; background: #FBFEFC; }
+td.rt { font-weight: 700; width: 250px; }
+td.ra { width: 130px; white-space: nowrap; color: #2563EB; font-weight: 700; }
+td.d21k { font-weight: 700; width: 250px; }
+td.d21v { color: #475569; }
+td.yes { color: #15803D; font-weight: 800; white-space: nowrap; }
+td.nope { color: #B91C1C; font-weight: 800; white-space: nowrap; }
+td.sha { word-break: break-all; color: #94A3B8; max-width: 190px; }
+.cards { display: flex; gap: 18px; margin: 16px 0 6px; flex-wrap: wrap; }
+.card { background: #fff; border: 1px solid #E2E8F0; border-radius: 10px; padding: 16px 18px;
+         flex: 1 1 330px; max-width: 470px; }
+.card h3 { margin: 0 0 8px; font-size: 15px; }
+.card p { font-size: 12.5px; color: #475569; margin: 0 0 9px; }
+.card ul { margin: 0; padding-left: 17px; font-size: 12px; color: #475569; }
+.card li { margin: 4px 0; }
+.card .go { display: inline-block; margin-top: 11px; font-size: 12.5px; font-weight: 800;
+             color: #2563EB; text-decoration: none; border-bottom: 1px solid #2563EB; }
+.tag { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 5px;
+        background: #F1FBF4; color: #15803D; border: 1px solid #BBE5C8; margin-left: 6px; }
+.tag.rec { background: #FEF3C7; color: #B45309; border-color: #FCD9A8; }
+.box { background: #fff; border: 1px solid #E2E8F0; border-radius: 10px; padding: 15px 18px; margin: 12px 0; }
+.box.warn { background: #FFFBF5; border-color: #FCD9A8; }
+.box.ok { background: #FBFEFC; border-color: #BBE5C8; }
+.box h3 { margin-top: 0; }
+.box ol, .box ul { margin: 6px 0 0; padding-left: 19px; font-size: 12.5px; color: #475569; }
+.box li { margin: 5px 0; }
+.tagrow { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 0; }
+.pill { font-size: 11.5px; padding: 4px 10px; border-radius: 6px; background: #fff; border: 1px solid #E2E8F0;
+        color: #475569; }
+.pill.ok { border-color: #BBE5C8; background: #F1FBF4; color: #15803D; }
+.pill.no { border-color: #F5C6C6; background: #FEF2F2; color: #B91C1C; }
+.pill.warn { border-color: #FCD9A8; background: #FEF7EC; color: #B45309; }
+.shots { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0 0; }
+.shots figure { margin: 0; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 8px; }
+.shots img { display: block; width: 100%; max-width: 1000px; height: auto; }
+.shots figcaption { font-size: 11.5px; color: #475569; padding: 7px 2px 2px; }
+.inline { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+.inline img { border: 1px solid #E2E8F0; border-radius: 6px; background: #fff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>商品详情页 v2 · 重做稿（3 套 × 5 状态）</h1>
+  <p class="lead">负责人 2026-10-05 看了 v1（<span class="mono">site/design/product-detail/</span>，3 套 × 4 状态）后的原话：
+  「<b>商品详情页显示个给我重新搞一下然后再给我审批</b>」——按「不合格，重做一版再审批」执行。
+  本页是 v2 总览：先认 v1 的账（第 0 节，逐条带证据），再给 v2 三套（第 1 节），
+  再交代素材合规（第 2 节）、管理端（第 3 节）、可访问性验证（第 4 节）、审批要点（第 5 节）。</p>
+  <p class="note">v1 目录与 <span class="mono">site/design/{final-ui.html,auth/**,order-fab/**,home-banner/**}</span> 一字未动；
+  本页只读 v1 用于取证。所有数据取自本机运行中的接口与库表（<span class="mono">GET /api/v1/public/products/137</span>、
+  <span class="mono">media</span>/<span class="mono">division</span>/<span class="mono">product</span>/<span class="mono">system_setting</span>）。</p>
+
+  <h2>第 0 节 · v1 缺陷自查（7 条，逐条带证据）</h2>
+  <div class="box warn">
+    <h3>先承认最要命的一条</h3>
+    <p style="font-size:12.5px;color:#475569;margin:0">负责人在浏览器里看到的是 v1 的 <span class="mono">index.html</span>：
+    <b>12 个手机框的主图全是同一张「动漫少女 + 树叶天空」</b>。这一张图就足以让整版作废——
+    它是代练/护航服务的详情页，主图却和游戏、和服务、和我们平台没有任何关系。
+    v1 的 HTML 里还把这张图标成「我们自己的和平精英封面（非参考截图素材）」，<b>这是一句错误声明</b>。</p>
+  </div>
+  <table>
+    <thead><tr><th>编号</th><th>缺陷</th><th>证据</th><th>v2 怎么改</th></tr></thead>
+    <tbody><tr><td class="id">D1</td><td class="tt">示例素材不合格（最致命）</td><td class="ev">v1 的详情图/主图用的是<b>动漫人物 + 树叶天空</b>：<span class="mono">assets/cover-peace.jpg</span>（1200×675）在 v1 的 HTML 里被写成「我们自己的和平精英封面（非参考截图素材）」，实际画面是紫发动漫少女与树叶（负责人截图里 12 个手机框全是这一张）。另 <span class="mono">assets/detail-b.jpg</span> 是三角洲行动官方 logo 抠图、<span class="mono">detail-d.jpg</span> 是另一个平台的对战截图、<span class="mono">detail-c.jpg</span> 是蓝色太阳/盾牌线性图标（无意义装饰）。全部与代练/护航服务无关，且 v1 的一句来源声明是<b>错误声明</b>。</td><td class="fx">v2 主图位改为<b>自绘「护航流程三步」示意图</b>（深底/白底实色块 + 发丝线 + 编号方块），空态改为「雪山标 + 一句说明 + 三个真实字段」。全库 <b>0 张第三方素材、0 张实拍照片</b>。</td></tr><tr><td class="id">D2</td><td class="tt">主图区是「拼贴」而不是图廊</td><td class="ev">v1 的 <span class="mono">.media</span> 是 hero 208px + 两张并排 116px 小图 + 56px 缩略图条 + 播放按钮，一次塞 5 个图位；实测 Z-A-1.png：上半动漫、左下平板对战照、右下 logo 抠图，三种画风拼在一起，缩略图条与轮播角标「1 / 3」又和实际 5 个图位对不上。</td><td class="fx">A/B/C 三套全部<b>单主图位</b>（A 168px 实色示意图 / B 16:9 219px / C 176px 白底示意图），缩略图条与轮播角标<b>整个删掉</b>——本机 33 个在售商品里 product_media 行数为 0，做图廊是在给不存在的功能画界面。</td></tr><tr><td class="id">D3</td><td class="tt">装饰性图标无意义、违反 docs/21</td><td class="ev">Z-A-1.png 主图下方并排两个大号蓝色线性图标（太阳、盾牌勾）各占半宽，不承载任何信息。docs/21 第二节明列禁止「装饰性插画」「无功能理由的装饰」，第六节第 3 条：「把装饰全删掉，设计还剩下什么？」——v1 这里删掉后什么都不剩。</td><td class="fx">v2 的每个图形都必须回答一个业务问题：A 套示意图回答「这个服务分几步、谁来做」，B 套空态回答「没有图时我还能看到什么」，C 套回答「这些字段分别是多少」。</td></tr><tr><td class="id">D4</td><td class="tt">首屏过密：提示条与须知标题被底栏切掉</td><td class="ev">实测 Z-A-1.png（780×1688 = 390×844 二倍图）：数据行底边落在 y≈745（≈1488/2），提示条只剩最上面 2–3px 就被 y=772 的底栏压住，「下单须知」标题完全在第一屏之外。首屏塞了「主图 + 5 个图位 + 价格 + 标题 + 副标 + 徽标 + 限购 + 三列数据 + 半截提示条」，刚好卡在最难看的位置——用户会以为页面坏了。</td><td class="fx">v2 主图高度从 208px 收到 168–176px（B 套 219px 但砍掉缩略图与播放键），并在每个手机框上标出<b>底栏顶边 y=772</b> 的红色虚线：状态①应当让「下单须知」标题露出至少 1 行，或干净地收在提示条下——三套都按这条重新配平。</td></tr><tr><td class="id">D5</td><td class="tt">空态等于空白</td><td class="ev">v1 状态②「无详情图」只是把 hero 里的大图去掉，剩一块 208px 的冰蓝底 + 一行灰字「管理端只挂了主图」（负责人截图第 2 行 3 个框里那块亮蓝色空块）。而本机真实数据 <span class="mono">product 137: cover_media_id = NULL, product_media 无行</span>，也就是<b>空态就是当前真机上的默认态</b>，不是边角情况。docs/21 第五节却明确要求空态必须好看且给下一步动作。</td><td class="fx">v2 三套各有一套认真设计的空态：A 是「雪山标 + 管理端还没上传商品图 + 三个真实字段的三列表」，B 是 16:9 虚线位 + 三行 inline 字段，C 是「服务概览」标题下的实色空态块 + 两列字段。三套都不留纯白/纯色空白。</td></tr><tr><td class="id">D6</td><td class="tt">v1 自称「贴近参考截图结构」但把参考里最该学的那条去掉了</td><td class="ev">参考截图 <span class="mono">ref-product-detail.jpg</span> 的核心信息架构是四件套：「价格 → 标题 → 三列信息 → 免责提示条 → 下单须知 → 固定底栏」。v1 的 A 套把三列做对了，但三列里的字段换成了 v1 自己选的组合，且<b>没做参考截图里最显眼的「起」价与标题的层级对比</b>（参考里 169.90 是 40px 红字、标题 20px 黑字、三列灰字，三级对比一眼分明；v1 是 30px 金字 + 15.5px 标题，且金色与蓝色徽标同屏抢眼）。</td><td class="fx">v2 把价格提到 31px 琥珀金、标题 16px 近黑、三列 13px 粗值 + 10.5px 灰标，并<b>删掉金色与蓝色同屏抢眼</b>的问题：徽标改小号实底、限购改灰字线性图标，整屏只允许一个高饱和色（价格的金）。</td></tr><tr><td class="id">D7</td><td class="tt">底部操作栏与页面设计语言脱节</td><td class="ev">v1 底栏高 74px、按钮 46px、圆角 10px，但按钮内文字 15px/800 与页内 31px 价格、16px 标题之间没有统一的字号阶梯；底栏上沿那条发丝线在「白底 + 白卡」状态里几乎看不见（Z-C-4.png 底栏与页脚小字「祁连山电竞 · 官方自营」之间只剩一条极淡的线）。另外 v1 底栏把「我的订单」图标画成文档图标、客服画成耳机，与页内其他线性图标线宽不完全一致（1.7 vs 1.9 混用）。</td><td class="fx">v2 底栏统一 72px + 按钮 44px（≥44 可点）+ 圆角 10px，图标全部 1.7 线宽同一 24 网格；底栏上沿发丝线改为 <span class="mono">#E2E8F0</span> 并在下面加 8px 白色留白，让它在任何底色上都看得见；字号阶梯固定为 31 / 16 / 13 / 11.5 / 10.5 五档。</td></tr></tbody>
+  </table>
+  <h3>v1 素材取证（逐张看过原图，不是猜的）</h3>
+  <table>
+    <thead><tr><th>v1 素材</th><th>实际画面</th><th>判定</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">assets/cover-peace.jpg</td><td>紫发动漫少女 + 大片树叶 + 蓝天（1200×675）</td>
+          <td class="nope">违规：动漫素材 + 与游戏服务无关</td></tr>
+      <tr><td class="mono">assets/detail-a.jpg</td><td>手机/平板对着游戏界面的实拍照片（手部入镜、居家背景、900×500）</td>
+          <td class="nope">违规：第三方游戏界面实拍，非我们自有素材</td></tr>
+      <tr><td class="mono">assets/detail-b.jpg</td><td>三角洲行动官方 logo 抠图（绿三角 + 闪电，900×500）</td>
+          <td class="nope">违规：第三方商标抠图</td></tr>
+      <tr><td class="mono">assets/detail-c.jpg</td><td>蓝色太阳 / 盾牌勾两个线性图标占满画布</td>
+          <td class="nope">违规：无意义装饰（docs/21 明令禁止）</td></tr>
+      <tr><td class="mono">assets/detail-d.jpg</td><td>另一平台的对战数据截图（第三方平台截图）</td>
+          <td class="nope">违规：第三方平台截图</td></tr>
+      <tr><td class="mono">assets/delta-mark.png</td><td>与 media 表 140/141/150 三个文件比对 sha256 —— <b>都不匹配</b>，来源无法追溯</td>
+          <td class="nope">违规：来源不明的第三方图标</td></tr>
+    </tbody>
+  </table>
+  <p class="note">结论：v1 的 6 个素材里 <b>6/6 都不合规</b>。所以 v2 的素材策略是<b>推倒重来</b>——不用任何位图素材当主视觉，
+  只用「自绘 SVG 示意图 + 实色块 + 我们自己的分部图标」，见第 2 节。</p>
+
+  <h2>第 1 节 · v2 三套方案（3 套 × 5 状态）</h2>
+  <p class="lead">每套 <b>5 个状态</b>：① 默认（有主图 + 有须知）② 长内容滚到底 ③ 无详情图/无封面（空态要好看）
+  ④ 下单须知展开 ⑤ 底栏与内容的关系（最后一行不被压住，框上画了「底栏顶边 y=772」红线）。</p>
+  <div class="cards">
+    <div class="card">
+      <h3>A 服务卡式</h3>
+      <p>主图位 = 自绘「护航流程三步」深底示意图 → 价格 + 标题同块 → <b>关键信息三列</b> →
+      提示条 → <b>平台保障条</b>（托管结算 / 超时自动退 / 客服在线）→ 下单须知分段编号 → 商品说明。</p>
+      <ul>
+        <li>回答「这个服务分几步、谁来做、钱什么时候给」</li>
+        <li>信息量最大，适合保底/上分类商品</li>
+        <li>5 状态：默认 / 长内容 / 空态 / 须知展开 / 底栏关系</li>
+      </ul>
+      <a class="go" href="a-service-card.html">看 A 服务卡式 5 状态 →</a>
+    </div>
+    <div class="card">
+      <h3>B 极简克制 <span class="tag rec">推荐</span></h3>
+      <p>单图 16:9 走满宽 → 紧凑信息块（标题 → 价格 → 徽标 → 限购）→ 三列 →
+      <b>下单须知默认折叠成一行</b> → 页脚。大量留白，<b>最不像模板</b>。</p>
+      <ul>
+        <li>第一屏只有 4 个信息块，浏览路径最短</li>
+        <li>长条款默认不占版面，用户想看再展开</li>
+        <li>空态是虚线 16:9 位 + 三个真实字段（不用插画填空）</li>
+      </ul>
+      <a class="go" href="b-restrained.html">看 B 极简克制 5 状态 →</a>
+    </div>
+    <div class="card">
+      <h3>C 双段式</h3>
+      <p>上半「<b>服务概览</b>」= 服务流程示意 + 价格标题 + 三列；下半「<b>下单须知 + 常见问题</b>」，
+      两段用<b>发丝线</b>分段，FAQ 4 条可展开。</p>
+      <ul>
+        <li>把客服最常被问的 4 个问题前置，减工单</li>
+        <li>章节标题左对齐 + 右侧灰字副标，靠排版而非彩色标签</li>
+        <li>适合规则多、争议多的保底类商品</li>
+      </ul>
+      <a class="go" href="c-two-stage.html">看 C 双段式 5 状态 →</a>
+    </div>
+  </div>
+
+  <h3>v1 → v2 具体差异（不是只改颜色）</h3>
+  <table>
+    <thead><tr><th>维度</th><th>v1</th><th>v2</th></tr></thead>
+    <tbody>
+      <tr><td class="tt">主图位</td><td>hero 208 + 两张并排 116 小图 + 56 缩略图条 + 播放键（一次 5 个图位）</td>
+          <td><b>单主图位</b>：A 168px 深底自绘示意图 / B 219px 16:9 / C 176px 白底自绘示意图；缩略图条与「1/3」角标全删</td></tr>
+      <tr><td class="tt">素材</td><td>动漫 / 树叶 / 官方 logo 抠图 / 装饰图标 / 来源不明图标（6/6 不合规）</td>
+          <td>自绘 SVG + 实色块 + 分部图标（media 表 division_icon），<b>0 张第三方、0 张实拍</b></td></tr>
+      <tr><td class="tt">A 套结构</td><td>价格 → 标题 → 徽标 → 限购 → 三列 → 提示条 → 须知 → 描述</td>
+          <td>价格+标题同块 → 徽标+限购 → 三列 → 提示条 → <b>平台保障条（新增 3 行列表）</b> → 须知 → 商品说明</td></tr>
+      <tr><td class="tt">B 套结构</td><td>16:9 单图 + 价格块 + 折叠须知（折叠行是「下单须知 / 一行摘要 / 展开」）</td>
+          <td>16:9 单图 + 紧凑块（标题在前、价格在后 → 视觉重心从价格转到商品名）+ 折叠须知 + <b>三列改为通栏 tight 版</b></td></tr>
+      <tr><td class="tt">C 套结构</td><td>发丝线双段 + 须知 4 条 + FAQ 3 条</td>
+          <td>发丝线双段 + <b>FAQ 扩到 4 条且可展开</b> + 每段加「左对齐标题 + 灰字副标」+ 新增第 4 问「护航员会要我账号密码吗」</td></tr>
+      <tr><td class="tt">空态</td><td>去掉大图后剩一块冰蓝底 + 一行灰字</td>
+          <td>三套各自设计：雪山标 + 说明 + 真实字段（A 三列 / B 三 inline / C 两列），<b>不留空白</b></td></tr>
+      <tr><td class="tt">首屏密度</td><td>提示条被底栏切一半、须知标题完全看不见</td>
+          <td>主图收矮 32–40px，价格块内距压缩；5 个手机框都标注底栏顶边位置逐一核对</td></tr>
+      <tr><td class="tt">状态数</td><td>4 状态（无「须知展开」独立态）</td>
+          <td><b>5 状态</b>（新增 ④ 下单须知展开 / FAQ 展开），并保留 ⑤ 底栏关系</td></tr>
+      <tr><td class="tt">底栏</td><td>74px / 按钮 46px / 图标线宽混用（1.7 与 1.9）</td>
+          <td>72px / 按钮 44px（≥44 可点）/ 全部图标 1.7 线宽同一 24 网格 / 底栏上沿发丝线加 8px 白留白</td></tr>
+      <tr><td class="tt">字号阶梯</td><td>31 / 15.5 / 12.5 / 11.5（层级偏平）</td>
+          <td>固定五档：31（价格）/ 16（标题）/ 13（值）/ 11.5（正文）/ 10.5（标签）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>与负责人给的参考截图（<span class="mono">data/temp/ref-product-detail.jpg</span>）结构对照</h3>
+  <table>
+    <thead><tr><th>参考截图的做法</th><th>v2 的取舍</th><th>说明</th></tr></thead>
+    <tbody><tr><td class="rt">顶部返回 + 标题 + 右上角两个按钮</td><td class="ra">1:1 照做</td><td class="rd">返回 / 分享 / 更多，位置与参考一致（我们的分享与更多是真入口）</td></tr><tr><td class="rt">满宽商品图（参考是长图，占首屏 2/3）</td><td class="ra"><b>改造</b></td><td class="rd">参考靠实拍长图卖货；我们没有实拍图（本机 product_media 为 0 行），所以主图位改成同样满宽的<b>自绘服务示意图</b>，高度从「2/3 屏」收到 168–219px，把省下的高度让给价格与须知</td></tr><tr><td class="rt">价格红色大号 + 标题 + 右侧分享圆钮</td><td class="ra"><b>改造</b></td><td class="rd">价格改用我们的琥珀金 <span class="mono">#D97706</span>（品牌已定案，蓝色留给主按钮），字号 31px；不给「起」字（我们是按单一口价，没有价格区间）</td></tr><tr><td class="rt">三列信息（9999件/日 · 库存 · 销量）</td><td class="ra"><b>只保留真实字段</b></td><td class="rd">参考的「日产能 / 库存」我们<b>没有这两个概念</b>，写出来就是编造。换成 已售 N 单（sales_count）/ 预计时长（estimate_duration_min）/ 服务方式（division.platform）</td></tr><tr><td class="rt">绿色免责提示条（不涉及代练代打）</td><td class="ra"><b>反过来做</b></td><td class="rd">参考那句「本平台所有商品不涉及代练代打服务」是它的免责声明；我们本来就是代练/护航平台，所以这一条改成<b>我们的承诺条</b>：「未接单可随时取消并全额退回积分；超 24 小时无人接单，系统自动取消并退款。」</td></tr><tr><td class="rt">「下单须知」居中花体小标题 + 长条款</td><td class="ra"><b>分两路</b></td><td class="rd">A 套保留居中感但改左对齐 + 编号分段（长条款不糊）；C 套升级成「须知 + 常见问题」双段；B 套直接折叠成一行</td></tr><tr><td class="rt">固定底栏：店铺 / 客服 / 立即购买</td><td class="ra"><b>删「店铺」</b></td><td class="rd">我们只有官方自营、没有多店铺概念，底栏左侧只留<b>客服（真实会话）+ 我的订单</b>；「立即购买」→ 现有确认订单页 <span class="mono">order_create_page.dart</span></td></tr></tbody>
+  </table>
+
+  <h3>与 docs/21《反 AI 味设计规范》逐条对照（逐条自检）</h3>
+  <table>
+    <thead><tr><th>docs/21 条目</th><th>v2 落地</th></tr></thead>
+    <tbody><tr><td class="d21k">禁渐变做主视觉</td><td class="d21v"><b>已达标</b> · 三套 0 处渐变：按钮/示意图/提示条/徽标全部实色（<span class="mono">#2563EB / #0B1220 / #EFF6FF / #D97706</span>）</td></tr><tr><td class="d21k">禁每卡左侧彩色竖条</td><td class="d21v"><b>已达标</b> · 无一处左竖条；分组靠发丝线 + 章节标题</td></tr><tr><td class="d21k">禁全大圆角（一律 ≥16）</td><td class="d21v"><b>已达标</b> · 圆角分档：角标/方块 5–6、提示条 6、按钮与卡片 10、示意图 10；无 14 以上大圆角</td></tr><tr><td class="d21k">禁阴影铺满卡片</td><td class="d21v"><b>已达标</b> · 全文 <span class="mono">box-shadow</span> 出现 0 次；层级靠发丝线 + 底色差</td></tr><tr><td class="d21k">禁顶部并排三个大数字</td><td class="d21v"><b>已达标</b> · 三列是 13px 粗值 + 10.5px 灰标，不是 hero-metric；数值全部真实下发</td></tr><tr><td class="d21k">禁每条信息配彩色小标签</td><td class="d21v"><b>已达标</b> · 全页只有 2 个彩色片：价格（琥珀金）+ 主按钮（蓝）；徽标只有「董事长推荐」一处</td></tr><tr><td class="d21k">禁居中对称 / 处处均匀间距</td><td class="d21v"><b>已达标</b> · 全左对齐；组内 7–9、组间 18–22；价格块内 8/5/9 三档节奏</td></tr><tr><td class="d21k">禁 emoji 当图标</td><td class="d21v"><b>已达标</b> · 图标全部是内联 SVG，同一 24×24 网格、stroke-width 1.7、圆头圆角，0 个 emoji</td></tr><tr><td class="d21k">禁玻璃拟态 / 光斑 / 装饰插画</td><td class="d21v"><b>已达标</b> · 每张图都能说出业务理由（服务流程 / 空态事实 / 字段值）</td></tr><tr><td class="d21k">禁纯黑配纯白</td><td class="d21v"><b>已达标</b> · 文字近黑 <span class="mono">#0F172A</span>，底 <span class="mono">#F5F7FB</span>，示意图底 <span class="mono">#0B1220</span></td></tr><tr><td class="d21k">禁假数据（整数一眼假）</td><td class="d21v"><b>已达标</b> · 全部字段真实：99 积分/单 · 已售 0 单 · 30 分钟 · 每周限购 2 单 · 24 小时超时。「已售 0 单」不美化——真实就是真实，且 index 里同时给了 9 单的商品 136 做对照</td></tr><tr><td class="d21k">文案具体可验证</td><td class="d21v"><b>已达标</b> · 「平台护航员上号 · 全程订单可查」「客服 9:00-次日 2:00 在线」「超 24 小时无人接单自动退」；无「极致/赋能/一站式/畅享」</td></tr><tr><td class="d21k">组内紧组间松</td><td class="d21v"><b>已达标</b> · 价格块内 5–9、三列内 3、组间 gap 8 + 18</td></tr><tr><td class="d21k">必须设计空态</td><td class="d21v"><b>已达标</b> · 状态③ 三套各一套空态设计，且空态就是真机默认态（商品 137 无封面）</td></tr><tr><td class="d21k">空态给下一步动作</td><td class="d21v"><b>已达标</b> · 空态里三项真实字段 + 下方紧接「立即购买」，不逼用户先看图</td></tr><tr><td class="d21k">列表优先于卡片阵</td><td class="d21v"><b>已达标</b> · A 的保障条是列表行、C 的 FAQ 是发丝线分隔的列表，都不是卡片阵</td></tr><tr><td class="d21k">同一入口只出现一次</td><td class="d21v"><b>已达标</b> · 底栏「客服 / 我的订单」在页内不再重复出现</td></tr><tr><td class="d21k">圆角/颜色/间距都能说理由</td><td class="d21v"><b>已达标</b> · 见本节与 index 的「设计决策」小表</td></tr></tbody>
+  </table>
+
+  <h2>第 2 节 · 示例素材清单（每张图的来源 + 合规断言）</h2>
+  <div class="box ok">
+    <h3>v2 的素材策略：主视觉<b>不用任何位图</b></h3>
+    <p style="font-size:12.5px;color:#475569;margin:0">本机 <span class="mono">data/uploads</span> 里能当商品图的候选只有
+    分部图标（media 表 140/141/150，均为 <span class="mono">division_icon</span> 类型），
+    其余是用户头像、论坛配图与安装包；<span class="mono">product_media</span> 表对商品 137/136 <b>行数为 0</b>。
+    而 <span class="mono">media</span> 表里<b>没有任何图片的记录来源/授权字段</b>，无法自证是实拍照还是网图。
+    所以 v2 一律不把位图当主视觉，改用「自绘 SVG 示意图 + 实色块 + 分部图标」——
+    这条路<b>不需要举证授权</b>，也不会重蹈 v1 的覆辙。</p>
+  </div>
+  <table>
+    <thead><tr><th>文件</th><th>类别</th><th>来源（可追溯）</th><th>用在哪</th><th>sha256</th><th>断言</th></tr></thead>
+    <tbody><tr><td class="mono">division-icon-peace.png</td><td>我们自己的游戏图标</td><td>data/uploads/2026/10/98a69a57-a0ba-4d55-82b9-212706da6454.png（media 表 id=141 division_icon "peace.png" 512×512，已在 App 里作为「和平精英·手游」分部图标使用）</td><td>A/B/C 三套的主图与空态左上角小图标（28×28 圆角 6，不做主视觉）</td><td class="mono sha">cb754a1fd5844a798766c4f0b31ee770866e010dda4b8473c78533a34cb61427</td><td class="yes">合规</td></tr><tr><td class="mono">division-icon-delta.png</td><td>我们自己的游戏图标</td><td>data/uploads/2026/10/2470246a-e675-4346-ac33-ac6c82f25ae4.png（media 表 id=140 division_icon "delta.png" 512×512，已在 App 里作为「三角洲行动」分部图标使用）</td><td>仅用于 index.html 的「同一套设计 × 第二组真实数据（9 单）」证明块</td><td class="mono sha">7bd47945de605fab9ba7367846322992d1a0fd636f965fa3a61bbe005f26b09d</td><td class="yes">合规</td></tr><tr><td class="mono">（内联 SVG）brand-mountain.svg</td><td>自绘（项目自研品牌标）</td><td>apps/packages/core/lib/src/widgets/app_ui.dart 的 _MountainPainter（AppMountainMark）——本项目 2026-10-03 自研的祁连山雪山标，双峰折线 + 两处雪顶，逐点照抄坐标</td><td>空态占位块、页脚「祁连山电竞 · 官方自营」的小标</td><td class="mono sha">不适用（矢量，内联在 HTML 里，无外部文件）</td><td class="yes">合规</td></tr><tr><td class="mono">（内联 SVG）svg-flow / svg-guard / svg-review / svg-clock / svg-headset / svg-order / svg-image / svg-shield-check / svg-receipt</td><td>自绘（示意图 + 线性图标）</td><td>本生成器内按项目描边规则手写的几何图形：同一 24×24 网格、stroke-width 1.7、round cap/join、fill=none 或实色块，与 Flutter 内置 Material outlined 同族</td><td>「护航流程三步」示意图、平台保障条、列表图标、空态提示图标</td><td class="mono sha">不适用（矢量，内联在 HTML 里，无外部文件）</td><td class="yes">合规</td></tr></tbody>
+  </table>
+  <h3>被明确排除的素材（v1 用过的，v2 一张不用）</h3>
+  <table>
+    <thead><tr><th>素材</th><th>排除理由</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">assets/cover-peace.jpg</td><td>动漫人物 + 风景树叶（非广告素材，与游戏服务无关）</td></tr>
+      <tr><td class="mono">assets/detail-a.jpg</td><td>第三方游戏界面实拍照片（居家背景、手部入镜）</td></tr>
+      <tr><td class="mono">assets/detail-b.jpg</td><td>第三方商标 logo 抠图</td></tr>
+      <tr><td class="mono">assets/detail-c.jpg</td><td>装饰性线性图标（无业务语义）</td></tr>
+      <tr><td class="mono">assets/detail-d.jpg</td><td>第三方平台截图</td></tr>
+      <tr><td class="mono">assets/delta-mark.png</td><td>来源无法追溯（sha256 与 media 表三个候选都不匹配）</td></tr>
+      <tr><td>任何网络图片 / 参考 App 素材</td><td>硬约束：一律不用</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><b>正式实施需要负责人上传真实商品图</b>：主图位已经按单图设计好（A 168px / B 16:9 219px / C 176px），
+  管理端挂上 <span class="mono">cover_media_id</span> 后直接替换 <span class="mono">&lt;img&gt;</span> 即可，版面不用动。
+  在有真实图之前，空态就是线上默认态（商品 137 现在就是无封面）。</p>
+
+  <h2>第 3 节 · 管理端「下单须知」页（沿用 v1 设计 + 3 处优化点）</h2>
+  <p class="lead">管理端这套页 v1 已经定案且负责人看过，<b>v2 不改结构</b>，只标注 3 处优化点。
+  v1 原图 <span class="mono">site/design/product-detail/ADMIN-1-默认须知.png</span>（v1 目录一字未动）。</p>
+  <table>
+    <thead><tr><th>沿用</th><th>v2 优化点（不改结构）</th></tr></thead>
+    <tbody>
+      <tr><td class="tt">左侧导航「商品管理 / 分部管理 / 订单管理 / 积分管理 / <b>下单须知</b> / 系统设置 / 操作日志」</td>
+          <td>导航项不动，v2 不改信息架构</td></tr>
+      <tr><td class="tt">「默认下单须知」富文本（400 字以内、禁图片与外链）</td>
+          <td><b>优化 1</b>：右下角字数提示旁加「当前 185 字 ≈ 首屏 2.1 屏」的<b>屏数预估</b>——
+          负责人第一次看到「185 字」是不知道它在 App 里有多长的，屏数才是他真正关心的量</td></tr>
+      <tr><td class="tt">「未接单可取消承诺（提示条）」+ 占位符 <span class="mono">{order_pending_take_timeout_hours}</span></td>
+          <td><b>优化 2</b>：占位符下面直接显示「当前解析值：24 小时（来自 系统设置 → 订单超时）」，
+          并给一个跳转链接。v1 只写了「占位符由后端替换为真实配置值」，管理员看不到它到底是什么数</td></tr>
+      <tr><td class="tt">生效方式（立即生效 / 定时生效）+ 版本 v7 + 每次保存 +1 留历史</td>
+          <td><b>优化 3</b>：版本行右侧加「与线上差异」标记——当草稿与当前生效版本不一致时显示一个琥珀金小点，
+          避免「改完忘了点保存并生效」</td></tr>
+      <tr><td class="tt">「保存后回溯」开关（下单时把须知快照写进订单）</td><td>沿用，v2 不加改动（这条已经对了）</td></tr>
+      <tr><td class="tt">「预览 App 效果」按钮</td>
+          <td>沿用；<b>联调建议</b>：预览就用本页 A/B/C 里选中的那套模板渲染，做到「管理端看到什么 = App 里就是什么」</td></tr>
+    </tbody>
+  </table>
+  <div class="shots">
+    <figure><img src="ADMIN-1-默认须知.png" alt="v1 管理端下单须知页（沿用）">
+      <figcaption>v1 管理端「下单须知」页（<span class="mono">product-detail/ADMIN-1-默认须知.png</span>，原样沿用；
+      上方 3 处优化点是在这张图上加，不改结构）。v2 目录内图片为<b>同一文件的副本</b>，
+      便于本页单独打开；v1 原文件未被修改。</figcaption></figure>
+  </div>
+
+  <h2>第 4 节 · 可访问性验证（curl + 核验器 + read_image + 文件清单）</h2>
+  <div class="tagrow">
+    <span class="pill ok">curl 逐个 200</span>
+    <span class="pill ok">核验器 ≥40 项全过</span>
+    <span class="pill ok">390×844 实测</span>
+    <span class="pill ok">无横向溢出</span>
+    <span class="pill ok">吸底栏不压内容</span>
+    <span class="pill ok">中文无替换符</span>
+    <span class="pill ok">素材合规断言（0 张第三方）</span>
+  </div>
+  <table>
+    <thead><tr><th>产出文件</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">a-service-card.html</td><td>A 服务卡式 · 5 状态（390×844 × 5）</td></tr>
+      <tr><td class="mono">b-restrained.html</td><td>B 极简克制 · 5 状态</td></tr>
+      <tr><td class="mono">c-two-stage.html</td><td>C 双段式 · 5 状态</td></tr>
+      <tr><td class="mono">index.html</td><td>本页（3 套并排 + v1 缺陷 + 对照表 + 素材清单 + 管理端）</td></tr>
+      <tr><td class="mono">assets/hero-detail.svg</td><td>B 套 16:9 主图（自绘示意图）</td></tr>
+      <tr><td class="mono">assets/division-icon-peace.png</td><td>我们自己的分部图标（media 141）</td></tr>
+      <tr><td class="mono">assets/division-icon-delta.png</td><td>我们自己的分部图标（media 140，仅 index 对照块用）</td></tr>
+      <tr><td class="mono">P2-A-服务卡式.png / P2-B-极简克制.png / P2-C-双段式.png</td><td>三套整页出图（5 状态同框）</td></tr>
+      <tr><td class="mono">Z2-A-默认.png / Z2-A-空态.png / Z2-B-默认.png / Z2-B-折叠.png / Z2-C-默认.png / Z2-INDEX.png</td>
+          <td>单框放大核查图（read_image 自查用）</td></tr>
+      <tr><td class="mono">ADMIN-1-默认须知.png</td><td>管理端下单须知页（v1 沿用副本）</td></tr>
+    </tbody>
+  </table>
+  <p class="note">核验器：<span class="mono">scripts/tmp/product-detail-v2-shot.mjs</span>（本机 headless Edge + CDP，零新增依赖）；
+  生成器：<span class="mono">scripts/tmp/make-product-detail-v2.py</span>。</p>
+
+  <h2>第 5 节 · 审批要点</h2>
+  <div class="box">
+    <h3>推荐：<b>B 极简克制</b>（若负责人更看重「把服务讲清楚」则选 A）</h3>
+    <p style="font-size:12.5px;color:#475569;margin:0">理由：① 它是三套里<b>最不像模板</b>的一套——第一屏只有 4 个信息块，
+    没有卡片阵、没有缩略图条、没有装饰图标；② <b>下单须知默认折叠</b>，把最长的条款从第一屏挪走，
+    直接解决 v1「首屏塞太满」的病根；③ 主图位是干净的 16:9，管理端后台上传真实商品图之后<b>版面零改动</b>；
+    ④ 空态用虚线位 + 三个真实字段，不用插画填空，符合 docs/21。</p>
+    <p style="font-size:12.5px;color:#475569;margin:8px 0 0">若负责人的判断是「详情页必须一眼看懂卖什么、有平台背书」，
+    则选 <b>A 服务卡式</b>：它多了「护航流程三步」示意图与「平台保障条」三行，转化说服力更强，
+    代价是首屏信息量回到偏满。</p>
+  </div>
+  <h3>实施成本（选 B 的话）</h3>
+  <table>
+    <thead><tr><th>项</th><th>内容</th><th>评估</th></tr></thead>
+    <tbody>
+      <tr><td class="tt">新增文件</td><td>老板端 <span class="mono">apps/boss-app/lib/pages/product_detail_page.dart</span>（若已有则改造）
+          + <span class="mono">core</span> 里 3 个小组件（折叠行 / 空态块 / 三列数据行）</td><td>约 1 个页面 + 3 个组件</td></tr>
+      <tr><td class="tt">改动文件</td><td>商品列表卡片点击跳转（已有则不动）、
+          <span class="mono">product_detail</span> 的接口调用（补 <span class="mono">salesCount / estimateDurationMin / division.platformLabel</span>）</td>
+          <td>2–3 处小改</td></tr>
+      <tr><td class="tt">后端字段</td><td><b>无需新增字段</b>：<span class="mono">sales_count</span> /
+          <span class="mono">estimate_duration_min</span> / <span class="mono">badge_text</span> /
+          <span class="mono">weekly_limit</span> 都已在 <span class="mono">product</span> 表；
+          <span class="mono">platform_label</span> 在 <span class="mono">division</span> 表；
+          超时小时数在 <span class="mono">system_setting.order_pending_take_timeout_hours</span></td>
+          <td><b>0 迁移</b></td></tr>
+      <tr><td class="tt">接口改动</td><td>详情接口 <span class="mono">GET /public/products/:id</span> 已经回了
+          <span class="mono">salesCount / estimateDurationMin / badgeText / weeklyLimit</span>；
+          只需确认响应里带上 <span class="mono">division.platform + platformLabel</span>（三列的服务方式要用）</td>
+          <td>最多 1 处补字段</td></tr>
+      <tr><td class="tt">管理端</td><td>只需「下单须知」页加 3 处优化（屏数预估 / 占位符解析值 / 版本差异点），
+          <b>不改信息架构</b></td><td>1 页 3 处</td></tr>
+      <tr><td class="tt">数据</td><td>商品 137 现在 <span class="mono">cover_media_id = NULL</span>，
+          建议负责人先上传 1 张真实商品图（或先上 B 的空态版）</td><td>需负责人提供素材</td></tr>
+    </tbody>
+  </table>
+  <h3>若仍不满意，最快能改的几处</h3>
+  <ol style="font-size:12.5px;color:#475569">
+    <li><b>主图高度</b>：B 套 <span class="mono">.hero169 height:219px</span> 一个数就能改（16:9 = 219，4:3 = 292，1:1 = 390）。</li>
+    <li><b>价格与标题的先后</b>：B 套把 <span class="mono">.name</span> 与 <span class="mono">.r1</span> 两个 div 对调即可
+    （现在标题在前，参考截图是价格在前）。</li>
+    <li><b>须知默认展开/折叠</b>：B 套给 <span class="mono">.fold</span> 加 <span class="mono">open</span> 类即默认展开。</li>
+    <li><b>三列字段</b>：换字段只动 <span class="mono">datarow()</span> 一个函数（A/B/C 共用）。</li>
+    <li><b>主色/金色</b>：全部走 5 个 token（<span class="mono">BLUE / GOLD / INK / LINE / PAGE</span>），改 token 即全局生效。</li>
+    <li><b>三套互相借零件</b>：A 的保障条、C 的 FAQ 都是独立函数，可单独搬进 B。</li>
+  </ol>
+
+  <h2>附 · 出图（read_image 自查用）</h2>
+  <div class="shots">
+    <figure><img src="P2-A-服务卡式.png" alt="A 服务卡式 5 状态整页"><figcaption>A 服务卡式 · 5 状态整页（390×844 × 5）</figcaption></figure>
+  </div>
+  <div class="shots">
+    <figure><img src="P2-B-极简克制.png" alt="B 极简克制 5 状态整页"><figcaption>B 极简克制 · 5 状态整页</figcaption></figure>
+  </div>
+  <div class="shots">
+    <figure><img src="P2-C-双段式.png" alt="C 双段式 5 状态整页"><figcaption>C 双段式 · 5 状态整页</figcaption></figure>
+  </div>
+</div>
+</body>
+</html>

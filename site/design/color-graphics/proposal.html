@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>祁连山电竞 · 配色与图案大胆方案（A 雪山晨光 / B 暗夜电竞 / C 彩浪潮汐）</title>
+<style>
+  :root { --yahei: "Microsoft YaHei","PingFang SC",sans-serif; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#E7EBF2; font-family:var(--yahei); color:#14202E; padding:22px 26px; }
+  h1.head { font-size:21px; font-weight:800; margin-bottom:4px; }
+  p.sub { font-size:12px; color:#5A6B80; margin-bottom:16px; }
+
+  .board { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:start; }
+  .col { display:flex; flex-direction:column; gap:12px; }
+  .colhead { padding:10px 12px; border-radius:10px; color:#fff; font-size:14px; font-weight:800; letter-spacing:1px; }
+  .colhead small { display:block; font-weight:400; font-size:11px; opacity:.85; letter-spacing:0; margin-top:2px; }
+  .chA { background:linear-gradient(135deg,#0F2440,#1D5FA8 60%,#0E7C7B); }
+  .chB { background:#0B1226; border:1px solid rgba(0,229,255,.45); box-shadow:0 0 18px rgba(0,229,255,.25); }
+  .chC { background:linear-gradient(120deg,#2563EB,#06B6D4 45%,#8B5CF6); }
+
+  .phone { width:390px; height:844px; margin:0 auto; position:relative; overflow:hidden; display:flex; flex-direction:column; flex:none; }
+  .plabel { text-align:center; font-size:11px; color:#5A6B80; margin:2px 0 6px; }
+
+  /* ============ 方案 A：雪山晨光 ============ */
+  .pA { background:#F5F7FB; }
+  .pA .hero { position:relative; background:linear-gradient(165deg,#0F2440 0%,#1D5FA8 55%,#0E7C7B 100%); padding:0 16px 14px; border-radius:0 0 22px 22px; box-shadow:0 8px 24px rgba(29,95,168,.25); }
+  .pA .mtsvg { position:absolute; left:0; right:0; bottom:-1px; opacity:.9; }
+  .pA .topnav { display:flex; align-items:center; justify-content:space-between; padding:14px 0 10px; }
+  .pA .brand { color:#fff; font-weight:800; font-size:15px; letter-spacing:.5px; }
+  .pA .brand span { color:#FFD98A; }
+  .pA .icbtn { width:30px; height:30px; border-radius:9px; background:rgba(255,255,255,.16); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; }
+  .pA .tabs { display:flex; gap:14px; font-size:12px; color:rgba(255,255,255,.75); }
+  .pA .tabs b { color:#fff; border-bottom:2px solid #FFD98A; padding-bottom:3px; font-weight:700; }
+  .pA .recharge { margin-top:10px; display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:12px; background:rgba(255,255,255,.16); backdrop-filter:blur(8px); color:#fff; font-size:12px; }
+  .pA .recharge b { color:#FFD98A; }
+  .pA .banner { margin-top:10px; height:110px; border-radius:14px; background:linear-gradient(120deg,rgba(255,255,255,.22),rgba(255,255,255,.06)),rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.35); position:relative; overflow:hidden; }
+  .pA .banner .t { position:absolute; left:12px; top:12px; color:#fff; font-size:13px; font-weight:800; }
+  .pA .banner .s { position:absolute; left:12px; top:32px; color:rgba(255,255,255,.85); font-size:10px; }
+  .pA .banner .gold { position:absolute; right:10px; bottom:10px; background:linear-gradient(135deg,#E8B24C,#B4732A); color:#fff; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; }
+  .pA .body { flex:1; padding:14px 16px 0; display:flex; flex-direction:column; gap:12px; }
+  .pA .divcard { border-radius:16px; color:#fff; padding:12px 14px; position:relative; overflow:hidden; box-shadow:0 6px 16px rgba(29,95,168,.18); }
+  .pA .dmain { background:linear-gradient(135deg,#1D5FA8,#2563EB); }
+  .pA .dsub { background:linear-gradient(135deg,#0E7C7B,#06B6D4); }
+  .pA .divrow { display:flex; gap:10px; }
+  .pA .divrow .divcard { flex:1; }
+  .pA .divcard b { font-size:13px; }
+  .pA .divcard em { display:block; font-style:normal; font-size:10px; opacity:.85; margin-top:3px; }
+  .pA .divcard .num { position:absolute; right:10px; top:10px; background:rgba(255,255,255,.22); padding:2px 8px; border-radius:999px; font-size:10px; }
+  .pA .sec h4 { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:800; }
+  .pA .sec h4 i { width:16px; height:4px; background:linear-gradient(90deg,#1D5FA8,#06B6D4); border-radius:2px; display:inline-block; }
+  .pA .cards { display:flex; gap:10px; margin-top:8px; }
+  .pA .prodcard { flex:1; background:#fff; border-radius:14px; padding:10px; box-shadow:0 4px 12px rgba(15,36,64,.08); }
+  .pA .prodcard .cov { height:56px; border-radius:10px; background:linear-gradient(135deg,#DBEAFE,#CFFAFE); }
+  .pA .prodcard b { font-size:11px; display:block; margin-top:6px; }
+  .pA .prodcard .price { color:#B4732A; font-weight:800; font-size:12px; margin-top:3px; }
+  .pA .ensure { display:flex; gap:8px; font-size:10px; color:#4A5A6E; }
+  .pA .ensure span { background:#fff; border:1px solid #E3E8EF; border-radius:999px; padding:4px 10px; }
+  .pA .botnav { display:flex; align-items:center; justify-content:space-around; background:#fff; padding:10px 0 14px; border-top:1px solid #EDF1F6; }
+  .pA .botnav .it { font-size:10px; color:#8A99AB; text-align:center; }
+  .pA .botnav .it.on { color:#1D5FA8; font-weight:700; }
+  .pA .botnav .it i { display:block; font-style:normal; font-size:14px; margin-bottom:2px; }
+  .pA .fab { width:46px; height:46px; border-radius:50%; margin-top:-22px; background:linear-gradient(135deg,#2563EB,#06B6D4); color:#fff; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 6px 14px rgba(37,99,235,.4); }
+
+  /* ============ 方案 B：暗夜电竞 ============ */
+  .pB { background:#0B1226; color:#E6EEFF; }
+  .pB .hero { position:relative; padding:14px 16px 14px; background:
+      linear-gradient(rgba(0,229,255,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,.07) 1px, transparent 1px),
+      linear-gradient(180deg,#111C3A,#0B1226);
+    background-size:26px 26px, 26px 26px, auto; border-bottom:1px solid rgba(0,229,255,.22); box-shadow:0 0 26px rgba(0,229,255,.14); }
+  .pB .topnav { display:flex; align-items:center; justify-content:space-between; }
+  .pB .brand { font-weight:800; font-size:15px; color:#fff; text-shadow:0 0 12px rgba(0,229,255,.8); }
+  .pB .brand span { color:#00E5FF; }
+  .pB .icbtn { width:30px; height:30px; border-radius:9px; border:1px solid rgba(0,229,255,.5); color:#00E5FF; display:flex; align-items:center; justify-content:center; font-size:13px; }
+  .pB .tabs { display:flex; gap:14px; font-size:12px; color:#7C8DB5; margin-top:8px; }
+  .pB .tabs b { color:#00E5FF; text-shadow:0 0 8px rgba(0,229,255,.7); border-bottom:2px solid #00E5FF; padding-bottom:3px; font-weight:700; }
+  .pB .recharge { margin-top:10px; display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:12px; background:rgba(0,229,255,.08); border:1px solid rgba(0,229,255,.35); color:#BFF3FF; font-size:12px; }
+  .pB .recharge b { color:#FFC857; }
+  .pB .banner { margin-top:10px; height:110px; border-radius:14px; border:1px solid rgba(0,229,255,.45); background:linear-gradient(135deg,rgba(37,99,235,.35),rgba(6,182,212,.18)); position:relative; overflow:hidden; box-shadow:0 0 20px rgba(0,229,255,.22) inset; }
+  .pB .banner .t { position:absolute; left:12px; top:12px; color:#fff; font-size:13px; font-weight:800; text-shadow:0 0 10px rgba(0,229,255,.8); }
+  .pB .banner .s { position:absolute; left:12px; top:32px; color:#9FD9FF; font-size:10px; }
+  .pB .banner .gold { position:absolute; right:10px; bottom:10px; background:linear-gradient(135deg,#FFC857,#E8832B); color:#14101E; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; }
+  .pB .body { flex:1; padding:14px 16px 0; display:flex; flex-direction:column; gap:12px; }
+  .pB .divcard { border-radius:14px; padding:12px 14px; position:relative; overflow:hidden; border:1px solid rgba(0,229,255,.3); }
+  .pB .dmain { background:linear-gradient(135deg,#1D4ED8,#2563EB); box-shadow:0 0 18px rgba(37,99,235,.45); }
+  .pB .dsub { background:linear-gradient(135deg,#0E7490,#06B6D4); box-shadow:0 0 18px rgba(6,182,212,.35); }
+  .pB .divrow { display:flex; gap:10px; }
+  .pB .divrow .divcard { flex:1; }
+  .pB .divcard b { font-size:13px; color:#fff; }
+  .pB .divcard em { display:block; font-style:normal; font-size:10px; color:#BFF3FF; margin-top:3px; }
+  .pB .divcard .num { position:absolute; right:10px; top:10px; background:rgba(0,0,0,.35); color:#00E5FF; padding:2px 8px; border-radius:999px; font-size:10px; }
+  .pB .sec h4 { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:800; color:#E6EEFF; }
+  .pB .sec h4 i { width:16px; height:4px; background:linear-gradient(90deg,#00E5FF,#2563EB); border-radius:2px; display:inline-block; box-shadow:0 0 8px rgba(0,229,255,.7); }
+  .pB .cards { display:flex; gap:10px; margin-top:8px; }
+  .pB .prodcard { flex:1; background:#121A33; border:1px solid rgba(124,141,181,.25); border-radius:14px; padding:10px; }
+  .pB .prodcard .cov { height:56px; border-radius:10px; background:linear-gradient(135deg,#1E3A8A,#155E75); }
+  .pB .prodcard b { font-size:11px; display:block; margin-top:6px; color:#E6EEFF; }
+  .pB .prodcard .price { color:#FFC857; font-weight:800; font-size:12px; margin-top:3px; }
+  .pB .ensure { display:flex; gap:8px; font-size:10px; color:#7C8DB5; }
+  .pB .ensure span { background:#121A33; border:1px solid rgba(0,229,255,.25); border-radius:999px; padding:4px 10px; color:#9FD9FF; }
+  .pB .botnav { display:flex; align-items:center; justify-content:space-around; background:#0D1530; padding:10px 0 14px; border-top:1px solid rgba(0,229,255,.2); }
+  .pB .botnav .it { font-size:10px; color:#5C6C96; text-align:center; }
+  .pB .botnav .it.on { color:#00E5FF; font-weight:700; text-shadow:0 0 8px rgba(0,229,255,.6); }
+  .pB .botnav .it i { display:block; font-style:normal; font-size:14px; margin-bottom:2px; }
+  .pB .fab { width:46px; height:46px; border-radius:50%; margin-top:-22px; background:linear-gradient(135deg,#00E5FF,#2563EB); color:#06202A; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 0 18px rgba(0,229,255,.8); }
+
+  /* ============ 方案 C：彩浪潮汐 ============ */
+  .pC { background:#FFFFFF; }
+  .pC .hero { position:relative; padding:0 16px 12px; background:linear-gradient(180deg,#EFF6FF, #ECFEFF); }
+  .pC .wave { position:absolute; left:0; right:0; bottom:-2px; }
+  .pC .topnav { display:flex; align-items:center; justify-content:space-between; padding:14px 0 10px; }
+  .pC .brand { font-weight:800; font-size:15px; background:linear-gradient(90deg,#2563EB,#06B6D4); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .pC .icbtn { width:30px; height:30px; border-radius:10px; background:#fff; color:#2563EB; box-shadow:0 3px 8px rgba(37,99,235,.18); display:flex; align-items:center; justify-content:center; font-size:13px; }
+  .pC .tabs { display:flex; gap:14px; font-size:12px; color:#64748B; }
+  .pC .tabs b { color:#2563EB; font-weight:700; }
+  .pC .tabs b::after { content:""; display:block; height:3px; border-radius:2px; background:linear-gradient(90deg,#2563EB,#06B6D4); margin-top:3px; }
+  .pC .recharge { margin-top:10px; display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:14px; background:linear-gradient(90deg,#2563EB,#4F46E5); color:#fff; font-size:12px; box-shadow:0 6px 14px rgba(79,70,229,.35); }
+  .pC .recharge b { color:#FFE9A8; }
+  .pC .banner { margin-top:10px; height:110px; border-radius:16px; background:linear-gradient(120deg,#06B6D4,#8B5CF6); position:relative; overflow:hidden; box-shadow:0 8px 18px rgba(139,92,246,.35); }
+  .pC .banner .t { position:absolute; left:12px; top:12px; color:#fff; font-size:13px; font-weight:800; }
+  .pC .banner .s { position:absolute; left:12px; top:32px; color:rgba(255,255,255,.9); font-size:10px; }
+  .pC .banner .gold { position:absolute; right:10px; bottom:10px; background:#FFB020; color:#3B2400; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; }
+  .pC .body { flex:1; padding:14px 16px 0; display:flex; flex-direction:column; gap:12px; }
+  .pC .divcard { border-radius:16px; color:#fff; padding:12px 14px; position:relative; overflow:hidden; }
+  .pC .dmain { background:linear-gradient(135deg,#2563EB,#3B82F6); box-shadow:0 6px 14px rgba(37,99,235,.3); }
+  .pC .dsub1 { background:linear-gradient(135deg,#06B6D4,#22D3EE); }
+  .pC .dsub2 { background:linear-gradient(135deg,#F59E0B,#FB923C); }
+  .pC .divrow { display:flex; gap:10px; }
+  .pC .divrow .divcard { flex:1; }
+  .pC .divcard b { font-size:13px; }
+  .pC .divcard em { display:block; font-style:normal; font-size:10px; opacity:.9; margin-top:3px; }
+  .pC .divcard .num { position:absolute; right:10px; top:10px; background:rgba(255,255,255,.28); padding:2px 8px; border-radius:999px; font-size:10px; }
+  .pC .sec h4 { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:800; }
+  .pC .sec h4 i { width:16px; height:16px; border-radius:5px; background:linear-gradient(135deg,#2563EB,#06B6D4); display:inline-block; }
+  .pC .cards { display:flex; gap:10px; margin-top:8px; }
+  .pC .prodcard { flex:1; background:#fff; border:1px solid #EEF2F7; border-radius:16px; padding:10px; box-shadow:0 5px 14px rgba(37,99,235,.08); }
+  .pC .prodcard .cov { height:56px; border-radius:12px; background:linear-gradient(135deg,#DBEAFE,#CFFAFE); }
+  .pC .prodcard b { font-size:11px; display:block; margin-top:6px; }
+  .pC .prodcard .price { color:#F59E0B; font-weight:800; font-size:12px; margin-top:3px; }
+  .pC .ensure { display:flex; gap:8px; font-size:10px; color:#4A5A6E; }
+  .pC .ensure span { background:#F1F5F9; border-radius:999px; padding:4px 10px; }
+  .pC .botnav { display:flex; align-items:center; justify-content:space-around; background:#fff; padding:10px 0 14px; border-top:1px solid #EDF1F6; }
+  .pC .botnav .it { font-size:10px; color:#94A3B8; text-align:center; }
+  .pC .botnav .it.on { color:#2563EB; font-weight:700; }
+  .pC .botnav .it i { display:block; font-style:normal; font-size:14px; margin-bottom:2px; }
+  .pC .fab { width:46px; height:46px; border-radius:50%; margin-top:-22px; background:linear-gradient(135deg,#2563EB,#8B5CF6); color:#fff; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 8px 18px rgba(139,92,246,.45); }
+</style>
+</head>
+<body>
+  <h1 class="head">祁连山电竞 · 配色与图案方案（无限制 · 三套大胆方向）</h1>
+  <p class="sub">每列两个屏：上 = 服务页（顶部导航 + 充值条 + 宣传图 + 分部卡 + 官方自营馆 + 保障 + 底部导航），下 = 找陪玩列表。选一套（或混搭），我再实施。</p>
+  <div class="board">
+
+    <!-- ================= 方案 A：雪山晨光 ================= -->
+    <div class="col">
+      <div class="colhead chA">方案 A · 雪山晨光<small>品牌渐变主视觉 + 玻璃拟态 + 金色点缀（高级感、雪山意象）</small></div>
+
+      <div class="phone pA">
+        <div class="hero">
+          <svg class="mtsvg" viewBox="0 0 390 90" preserveAspectRatio="none" style="height:64px;">
+            <path d="M0,70 L70,32 L130,58 L200,14 L270,48 L330,26 L390,56 L390,90 L0,90 Z" fill="rgba(255,255,255,.10)"/>
+            <polyline points="0,78 80,40 150,64 230,24 300,54 390,34" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2.5"/>
+          </svg>
+          <div class="topnav">
+            <div class="brand">祁连山<span>电竞</span></div>
+            <div class="icbtn">🔍</div>
+          </div>
+          <div class="tabs"><b>选择陪玩</b><span>排行榜</span><span>公告</span></div>
+          <div class="recharge">⚡ 充值入口 <span>·</span> 线下收款 人工审核 <b>到账快</b> ›</div>
+          <div class="banner">
+            <div class="t">欢迎光临祁连山电竞</div>
+            <div class="s">专业陪玩 · 上分护航 · 全天在线</div>
+            <div class="gold">¥28.8 起</div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="divcard dmain"><div class="num">12 人在线</div><b>和平精英 · 手游</b><em>上分护航 · 全天接单</em></div>
+          <div class="divrow">
+            <div class="divcard dsub"><b>三角洲 · 手游</b><em>摸金撤离 · 排位</em></div>
+            <div class="divcard dsub"><b>三角洲 · 端游</b><em>竞技护航 · 教学</em></div>
+          </div>
+          <div class="sec"><h4><i></i>官方自营馆</h4>
+            <div class="cards">
+              <div class="prodcard"><div class="cov"></div><b>9.9 新人体验单</b><div class="price">¥9.90 <em style="font-style:normal;color:#8A99AB;font-weight:400;font-size:9px;">19 单</em></div></div>
+              <div class="prodcard"><div class="cov"></div><b>30 保 1000w</b><div class="price">¥30.00</div></div>
+            </div>
+          </div>
+          <div class="ensure"><span>✓ 官方自营</span><span>✓ 不满意可退款</span><span>✓ 全程录屏</span></div>
+        </div>
+        <div class="botnav">
+          <div class="it on"><i>◆</i>服务</div><div class="it"><i>▤</i>订单</div>
+          <div class="fab">＋</div>
+          <div class="it"><i>◇</i>消息</div><div class="it"><i>○</i>我的</div>
+        </div>
+      </div>
+
+      <div class="phone pA">
+        <div class="topnav" style="padding:14px 16px;background:#fff;border-bottom:1px solid #EDF1F6;">
+          <div style="font-weight:800;font-size:17px;">选择陪玩</div><div class="icbtn" style="background:#F1F5F9;color:#1D5FA8;">🔍</div>
+        </div>
+        <div class="body" style="padding-top:12px;">
+          <div class="divrow">
+            <div class="divcard dmain" style="padding:9px;"><b>和平精英·手游</b></div>
+            <div class="divcard dsub" style="padding:9px;"><b>三角洲·手游</b></div>
+            <div class="divcard dsub" style="padding:9px;"><b>三角洲·端游</b></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;color:#4A5A6E;"><i style="width:16px;height:4px;background:linear-gradient(90deg,#1D5FA8,#06B6D4);border-radius:2px;display:inline-block;"></i>共 3 位陪玩 · 全部在线</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+            <div style="background:#fff;border-radius:16px;padding:12px;display:flex;gap:10px;box-shadow:0 4px 12px rgba(15,36,64,.08);">
+              <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0F2440,#1D5FA8);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;">凌</div>
+              <div style="flex:1;"><b style="font-size:13px;">凌云</b> <span style="font-size:10px;color:#fff;background:#B4732A;border-radius:999px;padding:1px 7px;margin-left:4px;">接单 2847</span>
+                <div style="font-size:10px;color:#4A5A6E;margin-top:4px;">战神陪打 · 稳定上分 · 全程录屏</div></div>
+              <div style="text-align:right;font-size:10px;color:#1D5FA8;font-weight:700;">98.6%<br/><span style="color:#8A99AB;font-weight:400;">好评</span></div>
+            </div>
+            <div style="background:#fff;border-radius:16px;padding:12px;display:flex;gap:10px;box-shadow:0 4px 12px rgba(15,36,64,.08);">
+              <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0E7C7B,#06B6D4);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;">反</div>
+              <div style="flex:1;"><b style="font-size:13px;">反悔</b> <span style="font-size:10px;color:#fff;background:#1D5FA8;border-radius:999px;padding:1px 7px;margin-left:4px;">语音 24h</span>
+                <div style="font-size:10px;color:#4A5A6E;margin-top:4px;">擅长突袭 · 脾气好 · 教学耐心</div></div>
+              <div style="text-align:right;font-size:10px;color:#1D5FA8;font-weight:700;">99.1%<br/><span style="color:#8A99AB;font-weight:400;">好评</span></div>
+            </div>
+            <div style="background:#fff;border-radius:16px;padding:12px;display:flex;gap:10px;box-shadow:0 4px 12px rgba(15,36,64,.08);">
+              <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#B4732A,#E8B24C);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;">清</div>
+              <div style="flex:1;"><b style="font-size:13px;">清水</b> <span style="font-size:10px;color:#fff;background:#0E7C7B;border-radius:999px;padding:1px 7px;margin-left:4px;">新人有礼</span>
+                <div style="font-size:10px;color:#4A5A6E;margin-top:4px;">女陪 · 声甜 · 会带节奏</div></div>
+              <div style="text-align:right;font-size:10px;color:#1D5FA8;font-weight:700;">100%<br/><span style="color:#8A99AB;font-weight:400;">好评</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 方案 B：暗夜电竞 ================= -->
+    <div class="col">
+      <div class="colhead chB">方案 B · 暗夜电竞<small>深空底色 + 霓虹青蓝发光 + 网格线（电竞感、夜店风）</small></div>
+
+      <div class="phone pB">
+        <div class="hero">
+          <div class="topnav">
+            <div class="brand">祁连山<span>电竞</span></div>
+            <div class="icbtn">🔍</div>
+          </div>
+          <div class="tabs"><b>选择陪玩</b><span>排行榜</span><span>公告</span></div>
+          <div class="recharge">⚡ 充值入口 <span>·</span> 线下收款 人工审核 <b>到账快</b> ›</div>
+          <div class="banner">
+            <div class="t">欢迎光临祁连山电竞</div>
+            <div class="s">专业陪玩 · 上分护航 · 全天在线</div>
+            <div class="gold">¥28.8 起</div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="divcard dmain"><div class="num">12 人在线</div><b>和平精英 · 手游</b><em>上分护航 · 全天接单</em></div>
+          <div class="divrow">
+            <div class="divcard dsub"><b>三角洲 · 手游</b><em>摸金撤离 · 排位</em></div>
+            <div class="divcard dsub"><b>三角洲 · 端游</b><em>竞技护航 · 教学</em></div>
+          </div>
+          <div class="sec"><h4><i></i>官方自营馆</h4>
+            <div class="cards">
+              <div class="prodcard"><div class="cov"></div><b>9.9 新人体验单</b><div class="price">¥9.90 <em style="font-style:normal;color:#5C6C96;font-weight:400;font-size:9px;">19 单</em></div></div>
+              <div class="prodcard"><div class="cov"></div><b>30 保 1000w</b><div class="price">¥30.00</div></div>
+            </div>
+          </div>
+          <div class="ensure"><span>✓ 官方自营</span><span>✓ 不满意可退款</span><span>✓ 全程录屏</span></div>
+        </div>
+        <div class="botnav">
+          <div class="it on"><i>◆</i>服务</div><div class="it"><i>▤</i>订单</div>
+          <div class="fab">＋</div>
+          <div class="it"><i>◇</i>消息</div><div class="it"><i>○</i>我的</div>
+        </div>
+      </div>
+
+      <div class="phone pB">
+        <div class="topnav" style="padding:14px 16px;border-bottom:1px solid rgba(0,229,255,.2);">
+          <div style="font-weight:800;font-size:17px;color:#fff;">选择陪玩</div><div class="icbtn">🔍</div>
+        </div>
+        <div class="body" style="padding-top:12px;">
+          <div class="divrow">
+            <div class="divcard dmain" style="padding:9px;"><b>和平精英·手游</b></div>
+            <div class="divcard dsub" style="padding:9px;"><b>三角洲·手游</b></div>
+            <div class="divcard dsub" style="padding:9px;"><b>三角洲·端游</b></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;color:#9FD9FF;"><i style="width:16px;height:4px;background:linear-gradient(90deg,#00E5FF,#2563EB);border-radius:2px;box-shadow:0 0 8px rgba(0,229,255,.7);display:inline-block;"></i>共 3 位陪玩 · 全部在线</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+            <div style="background:#121A33;border:1px solid rgba(0,229,255,.3);border-radius:14px;padding:12px;display:flex;gap:10px;box-shadow:0 0 14px rgba(0,229,255,.12);">
+              <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#1D4ED8,#2563EB);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;box-shadow:0 0 12px rgba(37,99,235,.6);">凌</div>
+              <div style="flex:1;"><b style="font-size:13px;color:#E6EEFF;">凌云</b> <span style="font-size:10px;color:#14101E;background:linear-gradient(135deg,#FFC857,#E8832B);border-radius:999px;padding:1px 7px;margin-left:4px;font-weight:700;">接单 2847</span>
+                <div style="font-size:10px;color:#7C8DB5;margin-top:4px;">战神陪打 · 稳定上分 · 全程录屏</div></div>
+              <div style="text-align:right;font-size:10px;color:#00E5FF;font-weight:700;">98.6%<br/><span style="color:#5C6C96;font-weight:400;">好评</span></div>
+            </div>
+            <div style="background:#121A33;border:1px solid rgba(0,229,255,.3);border-radius:14px;padding:12px;display:flex;gap:10px;">
+              <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0E7490,#06B6D4);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;">反</div>
+              <div style="flex:1;"><b style="font-size:13px;color:#E6EEFF;">反悔</b> <span style="font-size:10px;color:#00E5FF;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.4);border-radius:999px;padding:1px 7px;margin-left:4px;">语音 24h</span>
+                <div style="font-size:10px;color:#7C8DB5;margin-top:4px;">擅长突袭 · 脾气好 · 教学耐心</div></div>
+              <div style="text-align:right;font-size:10px;color:#00E5FF;font-weight:700;">99.1%<br/><span style="color:#5C6C96;font-weight:400;">好评</span></div>
+            </div>
+            <div style="background:#121A33;border:1px solid rgba(0,229,255,.3);border-radius:14px;padding:12px;display:flex;gap:10px;">
+              <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;">清</div>
+              <div style="flex:1;"><b style="font-size:13px;color:#E6EEFF;">清水</b> <span style="font-size:10px;color:#9FD9FF;background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.4);border-radius:999px;padding:1px 7px;margin-left:4px;">新人有礼</span>
+                <div style="font-size:10px;color:#7C8DB5;margin-top:4px;">女陪 · 声甜 · 会带节奏</div></div>
+              <div style="text-align:right;font-size:10px;color:#00E5FF;font-weight:700;">100%<br/><span style="color:#5C6C96;font-weight:400;">好评</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 方案 C：彩浪潮汐 ================= -->
+    <div class="col">
+      <div class="colhead chC">方案 C · 彩浪潮汐<small>明亮活泼：多彩色块 + 波浪漫画感 + 紫蓝渐变点缀（年轻化）</small></div>
+
+      <div class="phone pC">
+        <div class="hero">
+          <svg class="wave" viewBox="0 0 390 30" preserveAspectRatio="none" style="height:22px;">
+            <path d="M0,22 C50,4 90,4 130,18 C170,30 210,30 250,16 C290,2 340,2 390,18 L390,30 L0,30 Z" fill="#fff"/>
+          </svg>
+          <div class="topnav">
+            <div class="brand">祁连山电竞</div>
+            <div class="icbtn">🔍</div>
+          </div>
+          <div class="tabs"><b>选择陪玩</b><span>排行榜</span><span>公告</span></div>
+          <div class="recharge">⚡ 充值入口 <span>·</span> 线下收款 人工审核 <b>到账快</b> ›</div>
+          <div class="banner">
+            <div class="t">欢迎光临祁连山电竞</div>
+            <div class="s">专业陪玩 · 上分护航 · 全天在线</div>
+            <div class="gold">¥28.8 起</div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="divcard dmain"><div class="num">12 人在线</div><b>和平精英 · 手游</b><em>上分护航 · 全天接单</em></div>
+          <div class="divrow">
+            <div class="divcard dsub1"><b>三角洲 · 手游</b><em>摸金撤离 · 排位</em></div>
+            <div class="divcard dsub2"><b>三角洲 · 端游</b><em>竞技护航 · 教学</em></div>
+          </div>
+          <div class="sec"><h4><i></i>官方自营馆</h4>
+            <div class="cards">
+              <div class="prodcard"><div class="cov"></div><b>9.9 新人体验单</b><div class="price">¥9.90 <em style="font-style:normal;color:#8A99AB;font-weight:400;font-size:9px;">19 单</em></div></div>
+              <div class="prodcard"><div class="cov"></div><b>30 保 1000w</b><div class="price">¥30.00</div></div>
+            </div>
+          </div>
+          <div class="ensure"><span>✓ 官方自营</span><span>✓ 不满意可退款</span><span>✓ 全程录屏</span></div>
+        </div>
+        <div class="botnav">
+          <div class="it on"><i>◆</i>服务</div><div class="it"><i>▤</i>订单</div>
+          <div class="fab">＋</div>
+          <div class="it"><i>◇</i>消息</div><div class="it"><i>○</i>我的</div>
+        </div>
+      </div>
+
+      <div class="phone pC">
+        <div class="topnav" style="padding:14px 16px;border-bottom:1px solid #EDF1F6;">
+          <div style="font-weight:800;font-size:17px;">选择陪玩</div><div class="icbtn">🔍</div>
+        </div>
+        <div class="body" style="padding-top:12px;">
+          <div class="divrow">
+            <div class="divcard dmain" style="padding:9px;"><b>和平精英·手游</b></div>
+            <div class="divcard dsub1" style="padding:9px;"><b>三角洲·手游</b></div>
+            <div class="divcard dsub2" style="padding:9px;"><b>三角洲·端游</b></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;color:#4A5A6E;"><i style="width:16px;height:16px;border-radius:5px;background:linear-gradient(135deg,#2563EB,#06B6D4);display:inline-block;"></i>共 3 位陪玩 · 全部在线</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+            <div style="background:#fff;border:1px solid #EEF2F7;border-radius:16px;padding:12px;display:flex;gap:10px;box-shadow:0 5px 14px rgba(37,99,235,.08);">
+              <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#2563EB,#3B82F6);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;">凌</div>
+              <div style="flex:1;"><b style="font-size:13px;">凌云</b> <span style="font-size:10px;color:#fff;background:#F59E0B;border-radius:999px;padding:1px 7px;margin-left:4px;font-weight:700;">接单 2847</span>
+                <div style="font-size:10px;color:#4A5A6E;margin-top:4px;">战神陪打 · 稳定上分 · 全程录屏</div></div>
+              <div style="text-align:right;font-size:10px;color:#2563EB;font-weight:700;">98.6%<br/><span style="color:#8A99AB;font-weight:400;">好评</span></div>
+            </div>
+            <div style="background:#fff;border:1px solid #EEF2F7;border-radius:16px;padding:12px;display:flex;gap:10px;box-shadow:0 5px 14px rgba(37,99,235,.08);">
+              <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#06B6D4,#22D3EE);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;">反</div>
+              <div style="flex:1;"><b style="font-size:13px;">反悔</b> <span style="font-size:10px;color:#fff;background:#8B5CF6;border-radius:999px;padding:1px 7px;margin-left:4px;">语音 24h</span>
+                <div style="font-size:10px;color:#4A5A6E;margin-top:4px;">擅长突袭 · 脾气好 · 教学耐心</div></div>
+              <div style="text-align:right;font-size:10px;color:#2563EB;font-weight:700;">99.1%<br/><span style="color:#8A99AB;font-weight:400;">好评</span></div>
+            </div>
+            <div style="background:#fff;border:1px solid #EEF2F7;border-radius:16px;padding:12px;display:flex;gap:10px;box-shadow:0 5px 14px rgba(37,99,235,.08);">
+              <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#F472B6,#F59E0B);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;">清</div>
+              <div style="flex:1;"><b style="font-size:13px;">清水</b> <span style="font-size:10px;color:#fff;background:#10B981;border-radius:999px;padding:1px 7px;margin-left:4px;">新人有礼</span>
+                <div style="font-size:10px;color:#4A5A6E;margin-top:4px;">女陪 · 声甜 · 会带节奏</div></div>
+              <div style="text-align:right;font-size:10px;color:#2563EB;font-weight:700;">100%<br/><span style="color:#8A99AB;font-weight:400;">好评</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

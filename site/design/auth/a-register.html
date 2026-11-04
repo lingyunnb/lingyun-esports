@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390,initial-scale=1">
+<title>方案A 极简留白 · register</title>
+<style>
+:root{
+  --primary:#2563EB; --primary-strong:#1D4ED8; --primary-soft:#E7EEFE; --ice:#EFF6FF;
+  --cyan:#06B6D4; --gold:#D97706;
+  --bg-page:#F5F7FB; --surface:#FFFFFF; --surface-2:#FAFBFD;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8;
+  --hair:#E5E9F0; --hair-2:#EEF1F6; --line-field:#CFD8E6;
+  --error:#DC2626; --error-soft:#FDECEC; --error-hair:#F3C4C4;
+  --success:#16A34A; --disabled:#E9EDF4;
+  --r-xs:4px; --r-sm:6px; --r-ctl:10px; --r-card:14px;
+  --gap-in:10px; --gap-out:20px; --pad:24px;
+  --kb:0px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--ink);background:#DDE3EC;font-size:14px;line-height:1.4}
+
+/* ---- 手机壳（390×844，iPhone 逻辑像素）---- */
+.phone{width:390px;height:844px;margin:0 auto;background:var(--bg-page);position:relative;overflow:hidden;
+  display:flex;flex-direction:column}
+.statusbar{height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px 0 var(--pad);font-size:12.5px;font-weight:600;letter-spacing:.2px;color:var(--ink)}
+.statusbar.on-brand{color:#fff}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:11px}
+.sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6.5px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:11px}
+.sb-batt{width:20px;height:10.5px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;opacity:.85}
+.sb-batt::after{content:"";position:absolute;right:-3.2px;top:3px;width:1.8px;height:4px;background:currentColor;border-radius:0 1px 1px 0}
+.sb-batt i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:60%;background:currentColor;border-radius:1px}
+
+.scroll{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.kb-open .scroll{max-height:calc(844px - 48px - var(--kb))}
+/* ---- 通用排版（组内紧 10 / 组间松 22）---- */
+.group{display:flex;flex-direction:column;gap:var(--gap-in)}
+.stack{display:flex;flex-direction:column;gap:var(--gap-out)}.row{display:flex;align-items:center}
+.between{justify-content:space-between}
+.grow{flex:1 1 auto;min-width:0}
+.h1{font-size:24px;font-weight:700;letter-spacing:-.2px;color:var(--ink)}
+.h2{font-size:19px;font-weight:700;letter-spacing:-.1px}
+.h3{font-size:14px;font-weight:600;color:var(--ink)}
+.note{font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+.sub{font-size:12px;line-height:1.5;color:var(--ink-3)}
+.hair{height:1px;background:var(--hair-2);border:0}
+.hair-strong{height:1px;background:var(--hair)}
+
+/* ---- 输入框（发丝线描边，focus 加粗主色）---- */
+.field{position:relative}
+.field>label{display:block;font-size:12px;font-weight:600;color:var(--ink-3);margin-bottom:6px}
+.control{display:flex;align-items:center;gap:8px;height:48px;padding:0 12px;background:var(--surface);
+  border:1px solid var(--line-field);border-radius:var(--r-sm);transition:border-color .15s,box-shadow .15s}
+.control input{flex:1 1 auto;min-width:0;border:0;outline:0;background:transparent;font-family:var(--font);
+  font-size:15px;color:var(--ink);height:100%}
+.control input::placeholder{color:var(--ink-3)}
+.control .ic{width:18px;height:18px;flex:0 0 18px;color:var(--ink-3)}
+.control.focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.control.err{border-color:var(--error);background:var(--error-soft)}
+.control.disabled{background:var(--disabled);border-color:var(--hair);color:var(--ink-3)}
+.control.disabled input{color:var(--ink-3)}
+.field:has(.control.disabled) .hint{color:#B6C0CE}
+.eye{width:24px;height:24px;flex:0 0 24px;display:flex;align-items:center;justify-content:center;color:var(--ink-3)}
+.eye svg{width:18px;height:18px}
+.errline{display:flex;gap:5px;align-items:flex-start;margin-top:6px;font-size:11.5px;line-height:1.35;
+  font-weight:500;color:var(--error)}
+.errline svg{width:12px;height:12px;flex:0 0 12px;margin-top:1.5px}
+.hint{font-size:11.5px;line-height:1.4;color:var(--ink-3);margin-top:6px}
+
+/* ---- 按钮（实色主色，圆角分档）---- */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;border:0;border-radius:var(--r-sm);
+  font-family:var(--font);font-size:15.5px;font-weight:600;letter-spacing:.3px;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:active{background:var(--primary-strong)}
+.btn-primary[disabled]{background:var(--disabled);color:var(--ink-3)}
+.btn-ghost{background:var(--surface);color:var(--primary);border:1px solid var(--hair);height:46px;font-size:15px;
+  border-radius:var(--r-sm)}
+.btn-text{background:transparent;border:0;height:40px;font-family:var(--font);font-size:14px;font-weight:600;
+  color:var(--primary);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.link{color:var(--primary);font-weight:600;text-decoration:none}
+.link-quiet{color:var(--ink-2);font-weight:600;text-decoration:none}
+
+/* ---- 审批用注释（只在设计稿上，不进 App）---- */
+.ann{position:absolute;left:24px;right:24px;bottom:10px;z-index:45;font-size:11px;line-height:1.5;
+  font-weight:600;color:#fff;background:rgba(15,23,42,.9);border-radius:var(--r-xs);padding:7px 9px}
+.ann b{color:#93C5FD;font-weight:700}
+
+/* ---- 协议 / 勾选 ---- */
+.agree{display:flex;gap:9px;align-items:flex-start;font-size:11.5px;line-height:1.5;color:var(--ink-2)}
+.box{width:17px;height:17px;flex:0 0 17px;border:1px solid var(--line-field);border-radius:var(--r-xs);
+  background:#fff;margin-top:1px;position:relative}
+.box.on{background:var(--primary);border-color:var(--primary)}
+.box.on::after{content:"";position:absolute;left:5px;top:2px;width:5px;height:9px;border-right:2px solid #fff;
+  border-bottom:2px solid #fff;transform:rotate(42deg)}
+.box svg{position:absolute;left:-6.5px;top:-4.5px;width:28px;height:28px;color:transparent}
+
+/* ---- 顶部错误条（浅红底，发丝线描边，不用阴影）---- */
+.banner{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--error-soft);border:1px solid var(--error-hair)}
+.banner svg{width:15px;height:15px;flex:0 0 15px;margin-top:1px;color:var(--error)}
+.banner .t{font-size:12.5px;font-weight:600;color:var(--error);line-height:1.45}
+.banner .d{font-size:11.5px;color:#8C3A3A;line-height:1.5;margin-top:2px}
+.banner.info{background:var(--ice);border-color:#CCE0FB}
+.banner.info svg,.banner.info .t{color:var(--primary)}
+.banner.info .d{color:#3A5A99}
+
+/* ---- 键盘（静态示意）---- */
+.kb{position:fixed;left:50%;transform:translateX(-50%);width:390px;bottom:0;height:286px;background:#D5DAE3;
+  border-top:1px solid #BFC6D2;padding:10px 6px 0;display:none;z-index:40}
+.kb-open .kb{display:block}
+.kb-row{display:flex;gap:6px;justify-content:center;margin-bottom:9px}
+.kb-row span{flex:1 1 0;max-width:34px;height:38px;background:#fff;border-radius:var(--r-xs);
+  display:flex;align-items:center;justify-content:center;font-size:17px;color:#3B4757;
+  box-shadow:0 1px 0 rgba(15,23,42,.22)}
+.kb-row span.wide{max-width:52px;font-size:13px}
+.kb-row span.space{max-width:170px;font-size:12px;color:var(--ink-3)}
+
+/* ---- 角标（设计稿注释，仅审批用，不进 App）---- */
+.tag{display:inline-flex;align-items:center;gap:4px;height:18px;padding:0 7px;border-radius:var(--r-xs);
+  font-size:10.5px;font-weight:700;letter-spacing:.2px}
+.tag-new{background:#FEF3C7;color:#92400E;border:1px solid #F5D08A}
+.tag-miss{background:var(--error-soft);color:var(--error);border:1px solid var(--error-hair)}
+.tag-ok{background:var(--primary-soft);color:var(--primary);border:1px solid #C7D8FB}
+
+.a .scroll{padding:0 var(--pad)}
+.a-head{padding:20px 0 0}
+.a-rule{margin:var(--gap-out) 0 0}
+.a-form{padding:var(--gap-out) 0 0;display:flex;flex-direction:column;gap:var(--gap-in)}
+.a-foot{padding:26px 0 28px;display:flex;flex-direction:column;gap:14px}
+.a-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:2px}
+.a-actions .agree{flex:1 1 auto}
+.a-underline .control{border:0;border-bottom:1px solid var(--line-field);border-radius:0;padding:0 2px 0 0;
+  background:transparent}
+.a-underline .control.focus{border-bottom:2px solid var(--primary);box-shadow:none;padding-bottom:0}
+.a-underline .control.err{border-bottom:2px solid var(--error);background:transparent}
+.a-switch{text-align:left;font-size:13px;color:var(--ink-2)}
+</style>
+</head>
+<body class="a">
+<div class="phone">
+<div class="statusbar"><span>22:17</span>
+<span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span>
+<span class="sb-batt"><i></i></span></span></div>
+<div class="scroll">
+<div class="a-underline">
+<div class="row" style="padding-top:6px"><span style="color:var(--ink-2)"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="width:18px;height:18px"><path d="M15.4 4.6 8 12l7.4 7.4-1.4 1.4L5.2 12l8.8-8.8 1.4 1.4Z"/></svg></span></div>
+<div class="a-head"><h1 class="h1">注册</h1><p class="note" style="margin-top:8px">注册后即可浏览分部、下单与查看订单。</p></div>
+<hr class="hair a-rule">
+<div class="a-form">
+<div class="field"><label>账号</label><div class="control focus"><input type="text" value="qilian_yao" placeholder=""></div><div class="hint">6-20 位字母、数字或下划线；注册后不可修改</div></div>
+<div class="field"><label>密码</label><div class="control"><input type="password" value="••••••••" placeholder=""><span class="eye" data-eye><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 5c5 0 9 4.5 9 7s-4 7-9 7-9-4.5-9-7 4-7 9-7Zm0 2c-3.5 0-6.7 3-6.9 5 .2 2 3.4 5 6.9 5s6.7-3 6.9-5c-.2-2-3.4-5-6.9-5Zm0 2.2a2.8 2.8 0 1 1 0 5.6 2.8 2.8 0 0 1 0-5.6Z"/></svg></span></div><div class="hint">8-64 位，建议字母 + 数字组合</div></div>
+<div class="field"><label>昵称（可选）</label><div class="control"><input type="text" value="" placeholder="留空则用账号作为昵称"></div></div>
+</div>
+<div class="a-foot">
+
+<button class="btn btn-primary">注册</button>
+<div class="a-actions"><div class="agree"><span class="box on"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.6 16.2 4.8 11.4l1.4-1.4 3.4 3.4 8-8 1.4 1.4-9.4 9.4Z"/></svg></span><span>我已阅读并同意 <a class="link" href="#">用户协议</a> 与 <a class="link" href="#">隐私政策</a></span></div><a class="link-quiet" href="#" style="font-size:12.5px">用已有账号登录</a></div>
+<div class="sub">注册即成为普通用户，不能接单；接单权限由管理员按分部授予。</div>
+</div>
+</div>
+</div>
+<div class="kb">
+<div class="kb-row"><span>q</span><span>w</span><span>e</span><span>r</span><span>t</span><span>y</span><span>u</span><span>i</span><span>o</span><span>p</span></div>
+<div class="kb-row"><span>a</span><span>s</span><span>d</span><span>f</span><span>g</span><span>h</span><span>j</span><span>k</span><span>l</span></div>
+<div class="kb-row"><span class="wide">⇧</span><span>z</span><span>x</span><span>c</span><span>v</span><span>b</span><span>n</span><span>m</span><span class="wide">⌫</span></div>
+<div class="kb-row"><span class="wide">123</span><span class="space">空格</span><span class="wide">.com</span><span class="wide">换行</span></div>
+</div>
+
+</div>
+
+<script>
+(function(){
+  var q=new URLSearchParams(location.search);
+  if(q.get('state')==='kb'){document.body.classList.add('kb-open');
+    var f=document.querySelector('.control.focus');if(f){f.scrollIntoView({block:'center'});}}
+  var pw=document.querySelector('[data-eye]');
+  if(pw){pw.addEventListener('click',function(){
+    var i=pw.parentNode.querySelector('input');
+    if(i){i.type=i.type==='password'?'text':'password';}
+  });}
+  document.querySelectorAll('.box').forEach(function(b){
+    b.addEventListener('click',function(){b.classList.toggle('on');});});
+})();
+</script>
+</body>
+</html>

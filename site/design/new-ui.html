@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>祁连山电竞 · UI 大改设计方案（照东东电竞）</title>
+<style>
+  :root{ --ink:#17181c; --ink2:#6b7280; --ink3:#9ca3af; --line:#eeeef5; --purple:#7c4dff;
+         --purple-soft:#f0ebff; --gold:#f0b429; --bg:#f6f6fa; --card:#fff;
+         --sh:0 4px 14px rgba(23,24,28,.06), 0 12px 32px rgba(23,24,28,.05); }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:"PingFang SC","Microsoft YaHei UI","Microsoft YaHei",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  header{padding:38px 32px 6px;max-width:1520px;margin:0 auto}
+  .badge{display:inline-block;background:var(--purple-soft);color:#5b21d6;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:14px}
+  h1{margin:0 0 10px;font-size:30px;font-weight:800}
+  .sub{color:var(--ink2);font-size:14px;line-height:1.8;max-width:1180px}
+  main{max-width:1520px;margin:0 auto;padding:10px 32px 90px}
+  .sec{margin:44px 0 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .sec h2{margin:0;font-size:20px;font-weight:800}
+  .sec span{font-size:13px;color:var(--ink3)}
+  .grid{display:grid;gap:24px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid.one{grid-template-columns:minmax(0,1fr)}
+  .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--sh)}
+  .card h3{margin:0 0 4px;font-size:15.5px;font-weight:800}
+  .card p{margin:0 0 12px;font-size:12.5px;color:var(--ink2);line-height:1.65}
+  .shot{display:block;width:100%;border-radius:14px;border:1px solid var(--line);cursor:zoom-in;background:#fff}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px;background:#fff;border:1px solid var(--line);
+        border-radius:20px;overflow:hidden;box-shadow:var(--sh)}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+  th{color:var(--ink3);font-weight:700;font-size:12px;background:#fbfbfe}
+  td b{color:var(--ink)}
+  code{background:#f3f2fa;border-radius:6px;padding:2px 6px;font-size:12.5px;font-family:Consolas,Monaco,monospace;color:#5b21d6}
+  .tools{display:flex;gap:10px;align-items:center;margin:18px 0 4px;flex-wrap:wrap}
+  .tools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;
+                font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2)}
+  .tools button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tools .hint{font-size:12.5px;color:var(--ink3)}
+  .sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px;border:1px solid rgba(0,0,0,.08)}
+  .note{background:#fff8e6;border:1px solid #f4e2b8;border-radius:16px;padding:16px 20px;margin-top:16px;
+        font-size:13px;color:#7a5a12;line-height:1.8}
+  @media (max-width:980px){ .grid,.grid.three{grid-template-columns:1fr} header,main{padding-left:16px;padding-right:16px} }
+</style>
+</head>
+<body>
+<header>
+  <div class="badge">新方向 · 依负责人提供的东东电竞真机录屏复刻（原 A/B 方案作废）</div>
+  <h1>祁连山电竞 · UI 大改设计方案</h1>
+  <p class="sub">
+    依据负责人 2026-10-03 提供的 47 秒真机录屏，逐帧拆解后按该 App 的设计语言重做（拆解文档：<code>docs/19-东东电竞设计拆解.md</code>）。
+    <br>核心语言：<b>紫色主色 + 渐变紫粉</b> · 顶部主导航（图标+文字+短下划线）· 底部 5 项含中间凸起＋ · 全局「自助下单」浮标
+    · 卡片白底圆角 16 + <b>左上角彩标</b> · <b>金色大号价格</b> · 打手卡左大图右信息 · 榜单渐变头 + 奖牌 + 吸底我的排名。
+    <br><b>两个游戏分部</b>已内置：首页/大神/排行榜/下单全局按分部切换。
+    <br><a href="./" style="color:var(--purple);font-weight:700">← 旧 A/B 投票页（已作废，仅留档）</a>
+  </p>
+  <div class="tools">
+    <button data-cols="one" class="on">单列看细节</button>
+    <button data-cols="two">双列</button>
+    <button data-cols="three">三列总览</button>
+    <span class="hint">点任意图片可开原始尺寸</span>
+  </div>
+</header>
+
+<main>
+  <div class="sec"><h2>六屏总览</h2><span>首页 / 大神 / 排行榜 / 东友圈</span></div>
+  <div class="grid one">
+    <div class="card">
+      <h3>第一组</h3>
+      <p>首页（分部切换 + 3D 叠放轮播 + 游戏分类 + 俱乐部卡）· 大神（打手列表，价格金色）· 排行榜（分部榜 + 日/周 + 吸底）· 东友圈（帖子流）</p>
+      <a href="E0-设计总览-1.png" target="_blank"><img class="shot" src="E0-设计总览-1.png" alt="总览 1" /></a>
+    </div>
+  </div>
+  <div class="grid" style="margin-top:24px">
+    <div class="card">
+      <h3>第二组：消息 / 我的</h3>
+      <p>消息（聊天·好友·群组 + 一键已读 + 官方/活动公告会话）· 我的（权益深色卡 + 三个权益入口 + 等级进度 + 更多服务）</p>
+      <a href="E0-设计总览-2.png" target="_blank"><img class="shot" src="E0-设计总览-2.png" alt="总览 2" /></a>
+    </div>
+    <div class="card">
+      <h3>设计语言拆解（关键点）</h3>
+      <p>
+        <b>① 主色紫 <span class="sw" style="background:#7c4dff"></span>#7C4DFF</b> + 渐变紫粉 <span class="sw" style="background:#a855f7"></span>#A855F7：选中态、悬浮＋、榜单横幅、活动 Banner<br>
+        <b>② 价格金色 <span class="sw" style="background:#f0b429"></span>#F0B429</b>：永远最大最亮，与紫色形成双强调<br>
+        <b>③ 角标是层级核心</b>：卡片左上角彩标（服务天花板/开业福利/自营）<br>
+        <b>④ 状态标签体系</b>：空闲（绿）/忙碌（橙）/单考（黄）/双考（粉）/明星打手（金）<br>
+        <b>⑤ 胶囊两段制</b>：一级=文字标签带下划线，二级=胶囊（选中紫底白字）<br>
+        <b>⑥ 下单入口无处不在</b>：底部中间凸起＋、右下「自助下单」浮标
+      </p>
+    </div>
+  </div>
+
+  <div class="sec"><h2>逐屏说明</h2><span>点开看大图</span></div>
+  <div class="grid three">
+    <div class="card"><h3>E1 首页</h3>
+      <p>顶部分部切换（使命召唤手游 / 三角洲行动）→ 3D 叠放轮播 → 游戏分类圆标 → 俱乐部类型与活动胶囊 → 俱乐部卡片（角标 + 封面 + 自营标 + 评分 + 简介 + ID/粉丝）。</p>
+      <a href="E1-首页.png" target="_blank"><img class="shot" src="E1-首页.png" alt="E1" /></a></div>
+    <div class="card"><h3>E2 大神（打手列表）</h3>
+      <p>核心页：左侧大图（带语音「05″」小标）+ 昵称等级 + 状态标（空闲/忙碌）+ 游戏与「明星打手」金标 + 标签胶囊与宣传语 + <b>金色价格</b>与付款人数。</p>
+      <a href="E2-大神.png" target="_blank"><img class="shot" src="E2-大神.png" alt="E2" /></a></div>
+    <div class="card"><h3>E3 排行榜</h3>
+      <p>子榜标签（神豪榜/亲密榜/魅力榜/接单榜/好评榜）+ 紫色横幅 + 日榜/周榜 + <b>分部筛选</b> + 奖牌名次 + 金色数值 + 吸底「我的排名」。</p>
+      <a href="E3-排行榜.png" target="_blank"><img class="shot" src="E3-排行榜.png" alt="E3" /></a></div>
+    <div class="card"><h3>E4 东友圈</h3>
+      <p>视频 / 帖子 / 热榜 三标签；筛选胶囊（热门/最新/关注/吃瓜）→ 活动 Banner → 置顶 → 帖子流（等级徽章 + 话题 + 三图 + 互动数）。</p>
+      <a href="E4-东友圈.png" target="_blank"><img class="shot" src="E4-东友圈.png" alt="E4" /></a></div>
+    <div class="card"><h3>E5 消息</h3>
+      <p>聊天（红点）/ 好友 / 群组 + 一键已读 + 搜索ID/昵称 + 彩色圆形会话图标（活动公告/官方公告/好友/订单群）+ 未读气泡。</p>
+      <a href="E5-消息.png" target="_blank"><img class="shot" src="E5-消息.png" alt="E5" /></a></div>
+    <div class="card"><h3>E6 我的</h3>
+      <p>资料头（大头像/ID/单身中/个人主页）→ 三数据 → <b>我的权益深色卡</b>（钻石·猫粮 + 尊享卡/优惠券）→ 三个权益入口 → 等级进度卡 → 更多服务。</p>
+      <a href="E6-我的.png" target="_blank"><img class="shot" src="E6-我的.png" alt="E6" /></a></div>
+  </div>
+
+  <div class="sec"><h2>与现有功能的映射（重要）</h2><span>照抄界面 ≠ 丢掉功能</span></div>
+  <table>
+    <tr><th>参考 App 的结构</th><th>我们怎么落</th><th>现有功能去哪</th></tr>
+    <tr><td>顶部导航：首页/大神/赛事/排行榜/评审团/公告</td><td>保留同样六个位置</td><td>大神＝打手列表（新增页）；评审团＝现有论坛/社区改造；公告＝现有公告；赛事＝先占位</td></tr>
+    <tr><td>首页：3D 轮播 + 分类 + 俱乐部卡</td><td>照抄布局</td><td>游戏/分类/商品继续由后台配置（零客户端改动原则不变）</td></tr>
+    <tr><td>底部：首页·东友圈·＋·消息·我的</td><td>照抄（中间＋＝自助下单）</td><td>「收藏/接单」换成「东友圈（社区）」；下单入口移到中间＋与浮标</td></tr>
+    <tr><td>钻石/猫粮</td><td>钻石＝<b>积分</b>（现有钱包）</td><td>猫粮＝占位（后续定含义）；尊享卡/优惠券占位</td></tr>
+    <tr><td>排行榜（多子榜）</td><td>先上：接单榜（现有）+ <b>分部榜</b></td><td>神豪/亲密/魅力榜需要新数据（消费额/互动），二期</td></tr>
+    <tr><td>我的房间</td><td>占位（语聊房已暂停）</td><td>——</td></tr>
+  </table>
+  <div class="note">
+    <b>两个游戏分部怎么落：</b>新增「分部」概念（后台配置，一个分部 = 一个游戏），
+    ① 首页顶部胶囊切换分部 → 该分部下的大神/商品/榜单/公告全部跟着切；
+    ② 排行榜支持「分部榜」（示例已按 使命召唤手游 / 三角洲行动 出图）；
+    ③ 大神与商品都带 <code>division_id</code>，跨分部不混展示；④ 工作端接单大厅同样按分部筛选。
+  </div>
+
+  <div class="sec"><h2>请你拍板</h2><span>确认后按此实施</span></div>
+  <table>
+    <tr><th>问题</th><th>我的建议</th></tr>
+    <tr><td><b>两个游戏是哪两个？</b></td><td>图里我先用「使命召唤手游 / 三角洲行动」占位，你给准确的游戏名（可后台配置，改起来不费事）</td></tr>
+    <tr><td><b>顶部导航六个位是否照抄？</b></td><td>照抄：首页 / 大神 / 赛事 / 排行榜 / 评审团 / 公告（赛事先占位）——或你来定要哪六个</td></tr>
+    <tr><td><b>底部 5 项</b></td><td>首页 · 东友圈 · ＋（自助下单）· 消息 · 我的</td></tr>
+    <tr><td><b>术语替换</b></td><td>「钻石」沿用我们叫「积分」；「猫粮/尊享卡/优惠券」先占位；你要改叫法告诉我</td></tr>
+    <tr><td><b>工作端要不要一起改成这套？</b></td><td>建议同语言（深色浅色同一套紫色体系），接单大厅按分部筛选</td></tr>
+  </table>
+</main>
+
+<script>
+  document.querySelectorAll('.tools button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.tools button').forEach(function(b){ b.classList.remove('on'); });
+      btn.classList.add('on');
+      document.querySelectorAll('.grid').forEach(function(g){
+        g.classList.remove('one','two','three'); g.classList.add(btn.dataset.cols);
+      });
+    });
+  });
+</script>
+</body>
+</html>

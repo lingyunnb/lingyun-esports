@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>9.9 新人体验单 · 商品封面设计稿（3 套 × 2 尺寸）· 待审批</title>
+<style>
+/* 纯自绘页面：零外链、零位图、零字体 CDN。所有颜色/圆角/间距都取自 docs/21 与品牌色。 */
+:root{
+  --brand:#2563EB; --cyan:#06B6D4; --amber:#D97706; --amber-lt:#F59E0B;
+  --amber-pale:#FDE68A; --amber-dk:#B45309; --ink:#0F172A; --ink2:#1E293B;
+  --bg:#F5F7FB; --ice:#EFF6FF; --slate:#64748B; --slate-lt:#94A3B8;
+  --line:#CBD5E1; --line-dk:#334155; --deep:#0A0F1C; --white:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+     font:15px/1.75 "Microsoft YaHei","PingFang SC",system-ui,-apple-system,sans-serif;}
+.wrap{max-width:1280px;margin:0 auto;padding:48px 32px 96px}
+h1{font-size:30px;line-height:1.3;margin:0 0 6px;letter-spacing:-.2px}
+.sub{color:var(--slate);font-size:14px;margin:0 0 6px}
+.tagrow{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+.tag{font-size:12.5px;padding:4px 11px;border-radius:999px;background:var(--ice);
+     color:var(--brand);border:1px solid #DBEAFE}
+.tag.amber{background:#FEF3C7;color:var(--amber-dk);border-color:#FDE68A}
+.tag.dark{background:var(--ink);color:#E2E8F0;border-color:var(--ink)}
+h2{font-size:20px;margin:56px 0 8px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+h2 .n{color:var(--slate-lt);font-weight:400;margin-right:8px}
+h3{font-size:16px;margin:26px 0 8px}
+p{margin:8px 0}
+code{background:#EEF2F7;border:1px solid var(--line);border-radius:4px;
+     padding:1px 5px;font-size:13px;font-family:Consolas,"Courier New",monospace}
+.note{background:var(--white);border:1px solid var(--line);border-radius:10px;
+      padding:16px 20px;margin:14px 0}
+.note.warn{border-left:3px solid var(--amber);background:#FFFBEB}
+.note.ok{border-left:3px solid var(--cyan);background:#ECFEFF}
+.note b{color:var(--ink)}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;background:var(--white)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#EEF2F7;font-weight:700}
+td.y{color:#047857;font-weight:700}
+td.n{color:#B91C1C;font-weight:700}
+.sets{display:grid;grid-template-columns:1fr;gap:34px;margin-top:22px}
+.set{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.set-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.set-head h3{margin:0;font-size:19px}
+.badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;
+       background:var(--brand);color:#fff}
+.badge.rec{background:var(--amber)}
+.figs{display:flex;gap:20px;flex-wrap:wrap;margin:16px 0 6px}
+.fig{flex:1 1 300px;min-width:260px}
+.fig img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px}
+.fig .cap{font-size:12.5px;color:var(--slate);margin-top:6px}
+.thumbs{display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;margin-top:16px;
+        padding:16px 18px;background:var(--ink);border-radius:10px}
+.tgroup{display:flex;align-items:flex-end;gap:10px}
+.tgroup img{display:block;border-radius:4px;border:1px solid var(--line-dk)}
+.tlbl{font-size:11.5px;color:var(--slate-lt);text-align:center;margin-top:5px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+ul{margin:8px 0;padding-left:20px}
+li{margin:4px 0}
+.kv{font-size:13.5px}
+.kv b{display:inline-block;min-width:96px;color:var(--slate)}
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);
+       font-size:12.5px;color:var(--slate)}
+.status{font-family:Consolas,monospace;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>9.9 新人体验单 · 商品封面设计稿</h1>
+  <p class="sub">和平精英 · 地铁逃生 · 手游 · 常规单 ｜ 99 积分（= 9.9 元）｜ 保底 200w 地铁币 ｜ 不卡保底 ｜ 每周限购 2 单</p>
+  <p class="sub">用途：列表卡与详情页 16:9 主图位；同时给出 1:1（1080×1080）与 16:9（1920×1080）两版。</p>
+  <div class="tagrow">
+    <span class="tag">3 套方向</span>
+    <span class="tag">6 张成品 PNG</span>
+    <span class="tag">纯矢量自绘 · 零位图输入</span>
+    <span class="tag amber">待负责人审批 · 未上传 · 未改 App 代码</span>
+    <span class="tag dark">生成器 scripts/tmp/make-product-covers.py</span>
+  </div>
+
+  <div class="note warn">
+    <b>审批状态：设计稿，未实施。</b>本页与 6 张 PNG 只用于评审；<b>没有上传到任何平台/媒体库</b>，
+    <b>没有修改 <code>apps/**</code>、<code>server/**</code>、<code>admin-web/**</code> 任何代码</b>。
+    审批通过后另开实施任务。
+  </div>
+
+  <!-- ============================================================ 调研依据 -->
+  <h2><span class="n">00</span>调研依据（地铁币与变卖物的实际特征）</h2>
+  <p>设计前先做了实物调研：搜索并<b>下载参考图后逐张看图</b>，把"地铁币 / 变卖物实际长什么样"写成可核对的描述，
+  再据此自绘。参考图仅用于理解特征，<b>成品零位图</b>（见 §03 合规自证）。</p>
+
+  <h3>地铁币的实际外观（有实拍图佐证）</h3>
+  <ul>
+    <li><b>不是圆形硬币</b>：是<b>3/4 俯视的矩形金色物件</b>（读作金条／一叠钞票形态），有四个倒角边。</li>
+    <li><b>下方露出一条"第二层"薄边</b>，所以看起来像"叠着的一层"，而不是一块实心砖。</li>
+    <li>表面有<b>深色横向花纹</b>（两道短横 + 一道长横），左端面有<b>平行刻线</b>。</li>
+    <li>配色：主体亮金／奶油金（近 <code>#FDE68A</code>），暗部深琥珀（近 <code>#B45309</code>）。</li>
+    <li>数量与名称在游戏里是<b>白色粗体数字在图标下方</b>（实拍见 <code>30000</code> / <code>地铁币</code> 的排布）。</li>
+    <li>游戏内物品面板底色是<b>深蓝紫</b>，琥珀金只用于"价值/金额"文字 —— 这也是本设计把琥珀金专留给价格与数字的原因。</li>
+  </ul>
+
+  <h3>变卖物的真实品类与外观</h3>
+  <ul>
+    <li>查到并看图确认的品类：<b>飞机雕像</b>（6 周年纪念，橙红底图标、价值约 66 万）、
+        <b>群狼宝冠</b>（金冠 + 红宝石，宣传图级别）、<b>金龙／龙形金器</b>、
+        <b>金丝大棉被</b>（游戏内售价 <code>$588,888</code>，纯金色）、
+        <b>特种部队头盔（3 级，头部减伤 55%）</b>、<b>警用防弹衣（2 级，减伤 45% / 容量 +50）</b>、
+        <b>显卡／硬盘／加密币／情报／钥匙</b> 一类深色矩形电子件与卡片。</li>
+    <li>共同视觉规律：<b>高价变卖物基本是"大块金色／黄铜色立体器物"</b>，体量大、轮廓复杂、金属反光；
+        <b>深色小矩形</b>则是低价的电子件/卡片类。</li>
+    <li>游戏内售价写法：<b>金色大号数字 + <code>$</code> 前缀 + 千位逗号</b>（如 <code>$588,888</code>）。</li>
+    <li>据此，方向 B 的"资产堆叠"选用 <b>金条 + 硬币 + 保险箱</b> 三类<b>几何化</b>表达：
+        它们覆盖了"贵金属 / 通货 / 容器"三种真实资产形态，而且都能用纯几何块画准（不描摹官方美术）。</li>
+  </ul>
+
+  <h3>「保底 200w」「不卡保底」的语义</h3>
+  <ul>
+    <li><b>w = 万</b>：<code>200w</code> = 200 万，此处单位是<b>地铁币</b>（地铁逃生模式内的通货）。</li>
+    <li><b>保底</b>：代练/陪玩行业通用用法是<b>"承诺一个最低结果"</b>；在搜打撤玩法里即
+        <b>"账号资产至少带到 200 万地铁币"</b>。行业里"保底收益"是被投诉过的宣传点
+        （有消费者投诉平台以"虚高装备价值结算"拒绝退款），所以本稿把它写成<b>可验证的动作</b>：
+        「一局内带出到账，未达 200w 按约定补带」，而不是含糊的"稳定收益"。</li>
+    <li><b>不卡保底</b>：查到的公开资料里没有权威定义。<b>保守处理</b>：按行业最通行的两种理解写成
+        「<b>不加价、不设隐藏门槛</b>」——即不会因为打到保底就临时加价或设附加条件，
+        并<b>不声称</b>"必定达成"。<b>此条需负责人确认</b>（见"未做/风险"）。</li>
+  </ul>
+
+  <div class="note">
+    <b>参考图来源（仅用于理解特征，成品未使用其中任何像素）：</b>
+    <div class="kv" style="margin-top:6px">
+      <div><b>地铁币图标实拍</b> 九游（media.9game.cn）和平精英地铁币奖励页面截图</div>
+      <div><b>变卖物实拍 UI</b> 腾讯 gametalk 静态图（飞机雕像售价 666666 + 特种部队头盔 + 警用防弹衣）</div>
+      <div><b>变卖物品类</b> 九游 / 18183 / 游侠「地铁逃生最贵变卖物」「变卖物图鉴」图文</div>
+      <div><b>龙形金器 / 金丝大棉被</b> 九游与玩家截图（游戏内 <code>$588,888</code> 售价）</div>
+      <div><b>保底/虚高结算投诉</b> 新浪消费者投诉平台「MQ电竞虚假宣传保底收益」条目（用于理解行业风险，不引用其素材）</div>
+    </div>
+  </div>
+
+  <h3>合规红线遵守说明</h3>
+  <ul>
+    <li>参考图<b>只下载到 <code>data/temp/ref-metro/</code> 用于人眼理解特征</b>，没有进入 <code>site/design/</code>。</li>
+    <li><b>成品 6 张 PNG 全部由 <code>scripts/tmp/make-product-covers.py</code> 用 PIL 图元从零绘制</b>：
+        零外链、零字体 CDN、<b>零位图输入</b>（脚本内没有任何图片读取调用）。</li>
+    <li>没有描摹、裁切、调色或二次加工任何官方素材／他人截图／带水印图；没有使用 AI 生成图。</li>
+    <li>雪山标是照仓库既有自绘组件 <code>apps/packages/core/lib/src/widgets/qishan_mark.dart</code>
+        的 24 网格几何复刻（自家资产）。</li>
+  </ul>
+
+  <!-- ============================================================ 三套设计 -->
+  <h2><span class="n">01</span>三套设计（方向不同，不是换色）</h2>
+  <div class="sets">
+
+    <!-- ---------------- A ---------------- -->
+    <div class="set">
+      <div class="set-head">
+        <h3>A · 数字主导</h3>
+        <span class="badge rec">推荐</span>
+        <span class="badge">整幅深色海报</span>
+      </div>
+      <p class="kv"><b>做法</b>整幅近黑实色（<code>#0F172A</code>）单底色，不放分栏；右上版块全部让给
+        <b>琥珀金「200w」</b>（字号按可用宽度自动收敛到约 0.92 栏宽），下接一道琥珀实色下划线 + 「保底地铁币」；
+        底部一条<b>价格带</b>：左侧琥珀「9.9 元 / 99 积分」块，右侧「董事长推荐」块。</p>
+      <p class="kv"><b>为什么</b>封面第一眼必须看到"保底 200w"这个数字。把整幅压成单一深底、
+        把唯一的亮色大块给数字，是让数字成为绝对主体最省装饰的做法 —— 也是删掉左右分栏的原因：
+        分栏会在画面中间留纵缝，且两栏中段都空。</p>
+      <p class="kv"><b>元素的信息意义</b>右上角自绘地铁币 + 「地铁逃生 · 计价单位」＝ 说明 200w 是什么单位；
+        左下三行＝交付口径；价格带＝价与积分。</p>
+      <div class="figs">
+        <div class="fig"><img src="exp99-a-1x1.png" alt="A 方向 1:1"><div class="cap">A · 1080×1080</div></div>
+        <div class="fig"><img src="exp99-a-16x9.png" alt="A 方向 16:9"><div class="cap">A · 1920×1080</div></div>
+      </div>
+      <div class="thumbs">
+        <div class="tgroup"><div><img src="thumb-120/exp99-a-1x1-120.png" alt=""><div class="tlbl">120px · 1:1</div></div>
+          <div><img src="thumb-200/exp99-a-1x1-200.png" alt=""><div class="tlbl">200px · 1:1</div></div></div>
+        <div class="tgroup"><div><img src="thumb-120/exp99-a-16x9-120.png" alt=""><div class="tlbl">120px · 16:9</div></div>
+          <div><img src="thumb-200/exp99-a-16x9-200.png" alt=""><div class="tlbl">200px · 16:9</div></div></div>
+      </div>
+    </div>
+
+    <!-- ---------------- B ---------------- -->
+    <div class="set">
+      <div class="set-head">
+        <h3>B · 资产堆叠</h3>
+        <span class="badge">左下堆叠 + 右侧信息列</span>
+      </div>
+      <p class="kv"><b>做法</b>左下用<b>自绘的三层金条错位叠放 + 保险箱压顶 + 三枚硬币</b>堆出"一垛资产"，
+        下面挂一行说明「金条 / 硬币 / 保险箱 = 可带出资产」；右上一列信息：
+        「200w」→「保底地铁币 + 琥珀下划线」→（新人体验单 / 不卡保底·不加价 / 单局资产结算 / 每周限购 2 单）；
+        左上品牌 + <b>琥珀价格条</b>，右上「董事长推荐」块，页脚两段服务口径。</p>
+      <p class="kv"><b>为什么</b>这一套回答"我买到的是什么"：把抽象的"200w 资产"具象成一垛可辨认的变卖物。
+        堆叠的每个几何体都对应真实品类，所以它是有信息意义的图示，不是装饰插画。</p>
+      <p class="kv"><b>画的取舍</b>金条与地铁币<b>都用平面示意</b>（扁平长条 + 刻线 + 压印槽），
+        不做等距 3D —— 试过等距形体，在 120px 缩略图里三个面会糊成一块，反而认不出。</p>
+      <div class="figs">
+        <div class="fig"><img src="exp99-b-1x1.png" alt="B 方向 1:1"><div class="cap">B · 1080×1080</div></div>
+        <div class="fig"><img src="exp99-b-16x9.png" alt="B 方向 16:9"><div class="cap">B · 1920×1080</div></div>
+      </div>
+      <div class="thumbs">
+        <div class="tgroup"><div><img src="thumb-120/exp99-b-1x1-120.png" alt=""><div class="tlbl">120px · 1:1</div></div>
+          <div><img src="thumb-200/exp99-b-1x1-200.png" alt=""><div class="tlbl">200px · 1:1</div></div></div>
+        <div class="tgroup"><div><img src="thumb-120/exp99-b-16x9-120.png" alt=""><div class="tlbl">120px · 16:9</div></div>
+          <div><img src="thumb-200/exp99-b-16x9-200.png" alt=""><div class="tlbl">200px · 16:9</div></div></div>
+      </div>
+    </div>
+
+    <!-- ---------------- C ---------------- -->
+    <div class="set">
+      <div class="set-head">
+        <h3>C · 徽章式（凭证）</h3>
+        <span class="badge">信息最全</span>
+      </div>
+      <p class="kv"><b>做法</b>冰蓝底 <code>#EFF6FF</code> + 一张白底 2px 主色描边凭证卡（硬边偏移块做层级，不是模糊阴影）。
+        卡内按"凭证"体例：头右两枚胶囊（描边「董事长推荐」+ 实色「新人体验单」）、
+        <b>主色实色块</b>里的「200w 地铁币」+ 自绘地铁币、保障行「不卡保底 · 不加价 · 不设隐藏门槛」、
+        <b>两列 × 三行规格清单</b>（游戏 / 平台 / 单型 / 保底 / 时长 / 保障）、底部价格 + 限购。</p>
+      <p class="kv"><b>为什么</b>面向"要把参数看清楚才下单"的信息型用户：一张图把六个关键参数讲完。
+        规格清单同时解决了卡片中部大面积空白的问题（早先版本中下部整片是空的）。</p>
+      <p class="kv"><b>16:9 的特别处理</b>凭证卡不跟着拉宽成 1.6:1（那比例不像凭证），
+        而是<b>限制卡宽 1120px 并整体居中</b>，两侧留冰蓝底。</p>
+      <div class="figs">
+        <div class="fig"><img src="exp99-c-1x1.png" alt="C 方向 1:1"><div class="cap">C · 1080×1080</div></div>
+        <div class="fig"><img src="exp99-c-16x9.png" alt="C 方向 16:9"><div class="cap">C · 1920×1080</div></div>
+      </div>
+      <div class="thumbs">
+        <div class="tgroup"><div><img src="thumb-120/exp99-c-1x1-120.png" alt=""><div class="tlbl">120px · 1:1</div></div>
+          <div><img src="thumb-200/exp99-c-1x1-200.png" alt=""><div class="tlbl">200px · 1:1</div></div></div>
+        <div class="tgroup"><div><img src="thumb-120/exp99-c-16x9-120.png" alt=""><div class="tlbl">120px · 16:9</div></div>
+          <div><img src="thumb-200/exp99-c-16x9-200.png" alt=""><div class="tlbl">200px · 16:9</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>缩略图可读性结论（120px 列表卡实测）</h3>
+  <table>
+    <tr><th>方向</th><th>120px 下「200w」</th><th>120px 下价格</th><th>琥珀金占比（120px）</th><th>结论</th></tr>
+    <tr><td>A · 1:1</td><td class="y">清楚可辨</td><td class="y">「9.9」清楚，价格带整块可辨</td><td>14.81%</td><td class="y">达标</td></tr>
+    <tr><td>A · 16:9</td><td class="y">清楚可辨</td><td class="y">「9.9」清楚</td><td>12.45%</td><td class="y">达标</td></tr>
+    <tr><td>B · 1:1</td><td class="y">清楚可辨</td><td>「9.9」可辨（块较小）</td><td>11.97%</td><td class="y">达标</td></tr>
+    <tr><td>B · 16:9</td><td class="y">可辨</td><td>「9.9」可辨（块较小）</td><td>5.64%</td><td class="y">达标（本方向最弱）</td></tr>
+    <tr><td>C · 1:1</td><td class="y">清楚可辨（主色块内白字）</td><td class="y">「9.9」清楚</td><td>2.35%</td><td class="y">达标</td></tr>
+    <tr><td>C · 16:9</td><td class="y">清楚可辨</td><td class="y">「9.9」清楚</td><td>1.59%</td><td class="y">达标</td></tr>
+  </table>
+  <p class="sub">判定方法：把 <code>thumb-120/*.png</code> 按<b>最近邻放大 2 倍</b>后目视（保留真实像素边界，
+  不做插值美化）。结论：六个方向在 120px 下「200w」全部可辨、价格块全部可辨；
+  <b>B·16:9 是最弱的一张</b>（琥珀占比 5.64%，价格条最小），若 B 方向入选建议把 16:9 的价格条再放大一档。
+  120px 下 C 的规格清单已不可读 —— 这是可接受的：它在缩略图里退成"有内容的凭证纹理"，
+  而「200w」与价格这两个必读信息仍然清楚。</p>
+
+  <!-- ============================================================ docs/21 对照 -->
+  <h2><span class="n">02</span>与 docs/21《反 AI 味设计规范》逐条对照</h2>
+  <table>
+    <tr><th>docs/21 禁止项</th><th>本稿做法</th><th>结论</th></tr>
+    <tr><td>渐变当主视觉</td><td>全套零渐变：A 单色近黑、B 单色深底、C 冰蓝 + 白卡；地铁币/金条的高光都用<b>实色块</b>而非渐变</td><td class="y">合规</td></tr>
+    <tr><td>每张卡左侧一条彩色竖条</td><td>无任何彩色竖条</td><td class="y">合规</td></tr>
+    <tr><td>全部元素大圆角（≥16）</td><td>圆角只用三档：小片 <b>6</b>、卡片 <b>10</b>、卡片主体 <b>14</b>、胶囊全圆。<b>无 16 及以上</b></td><td class="y">合规</td></tr>
+    <tr><td>阴影铺满所有卡片</td><td><b>零 shadow</b>。C 的卡片层级用<b>硬边偏移实色块</b>（<code>#E7F0FE</code> 下移右移 10px）表达，不是模糊阴影</td><td class="y">合规</td></tr>
+    <tr><td>顶部并排三个大数字</td><td>只有<b>一个</b>大数字「200w」；其余数字（9.9 / 99 / 2）都嵌在语义块里</td><td class="y">合规</td></tr>
+    <tr><td>每条信息配一个彩色小标签</td><td>全稿<b>没有</b>彩色小标签；主次靠字号/字重/灰度。仅 C 头右两枚胶囊承载"商品类型/背书"，是必须区分的项</td><td class="y">合规</td></tr>
+    <tr><td>居中对称、处处均匀间距</td><td>左对齐为主（A 左栏、B 右栏信息列、C 规格清单）。间距成对：说明组内 22/18，组间 34–52</td><td class="y">合规</td></tr>
+    <tr><td>emoji 当图标</td><td>零 emoji、零图标字体。所有图形（雪山标、地铁币、金条、硬币、保险箱）都是几何自绘</td><td class="y">合规</td></tr>
+    <tr><td>玻璃拟态/光斑/装饰插画</td><td>无模糊、无光斑。唯一的"图形"是变卖物堆叠，且挂着说明文字（有信息意义）</td><td class="y">合规</td></tr>
+    <tr><td>纯黑配纯白</td><td>近黑 <code>#0F172A</code> / 深底 <code>#0A0F1C</code>，浅底 <code>#F5F7FB</code> / <code>#EFF6FF</code>，纯白只用于反白文字与卡片底</td><td class="y">合规</td></tr>
+    <tr><td>假数据（4.9 / 3589 / 50000 这类整数）</td><td>图上的数字<b>全部是真实商品参数</b>：200w、9.9 元、99 积分、每周限购 2 单、一单一结、客服 9:00-次日 2:00。<b>没有任何装饰性数字</b></td><td class="y">合规</td></tr>
+    <tr><td>泛泛 CTA / 营销空话（超值、震撼、极致、一站式）</td><td>全稿零营销形容词。文案都是可验证的动作与口径：「一局内带出到账，未达 200w 按约定补带」「不加价、不设隐藏门槛」「打手上号前先沟通时间，进度截图可查」</td><td class="y">合规</td></tr>
+  </table>
+
+  <h3>docs/21 第六节 6 条验收自检</h3>
+  <table>
+    <tr><th>#</th><th>问题</th><th>本稿回答</th></tr>
+    <tr><td>1</td><td>把内容换成任意同行的，这版设计是否还成立？</td><td><b>不成立</b>。A 的主体是"200w 地铁币"这个具体单位与数量，B 的堆叠是地铁逃生的具体品类（金条/硬币/保险箱），C 的规格清单写着"和平精英·地铁逃生"。换成别的游戏必须重画。</td></tr>
+    <tr><td>2</td><td>是否用了模型反射式默认（渐变主视觉/卡片阵/全大圆角/满屏阴影）？</td><td><b>没有</b>。逐条见上表 11 行。</td></tr>
+    <tr><td>3</td><td>把装饰全删掉，设计还剩下什么？</td><td>剩下：商品名、保底数字与单位、价格与积分、限购、三条交付口径、四个参数。B 的堆叠删掉后仍剩"保底 200w + 价格 + 4 条信息"，且堆叠本身就带说明文字 —— 没有纯装饰元素可删。</td></tr>
+    <tr><td>4</td><td>每个颜色、圆角、间距能否说出理由？</td><td>见 §01「元素的信息意义」与本表。关键几条：琥珀金专给"钱"（价格/价值数字），主色蓝只用于 C 的凭证主体与品牌，青色只用于"不卡保底"这一条承诺。</td></tr>
+    <tr><td>5</td><td>假数据是否具体、长短不一、有业务味？</td><td>图上无假数据；文案长度天然不一（"不卡保底：不加价、不设隐藏门槛" vs "每周限购 2 单"）。</td></tr>
+    <tr><td>6</td><td>空态/加载/错误态是否都设计了？</td><td><b>不适用</b>：这是静态商品封面，没有交互状态。<b>但有一条相关缺口</b>：若商品图缺失，列表卡需要一个占位封面 —— 见"未做/风险"。</td></tr>
+  </table>
+
+  <!-- ============================================================ 自查 -->
+  <h2><span class="n">03</span>自查与合规自证</h2>
+
+  <h3>6 张成品逐张自查（read_image 目视）</h3>
+  <table>
+    <tr><th>文件</th><th>中文渲染</th><th>溢出/叠字</th><th>AI 味违禁项</th><th>结论</th></tr>
+    <tr><td>exp99-a-1x1.png</td><td class="y">无豆腐块</td><td class="y">无</td><td class="y">无</td><td class="y">通过</td></tr>
+    <tr><td>exp99-a-16x9.png</td><td class="y">无豆腐块</td><td class="y">无</td><td class="y">无</td><td class="y">通过</td></tr>
+    <tr><td>exp99-b-1x1.png</td><td class="y">无豆腐块</td><td class="y">无</td><td class="y">无</td><td class="y">通过</td></tr>
+    <tr><td>exp99-b-16x9.png</td><td class="y">无豆腐块</td><td class="y">无</td><td class="y">无</td><td class="y">通过</td></tr>
+    <tr><td>exp99-c-1x1.png</td><td class="y">无豆腐块</td><td class="y">无</td><td class="y">无</td><td class="y">通过</td></tr>
+    <tr><td>exp99-c-16x9.png</td><td class="y">无豆腐块</td><td class="y">无</td><td class="y">无</td><td class="y">通过</td></tr>
+  </table>
+  <p class="sub">缩略图档另自查 <code>thumb-120/*</code> 与 <code>thumb-200/*</code> 共 12 张（已拼对照图目视）：
+  「200w」在 120px 下六个方向全部可辨，价格块全部可辨。</p>
+
+  <h3>自动化守护（生成器内置，出图前必然执行）</h3>
+  <ul>
+    <li><b>版式断言</b>：每个文本块按<b>真实墨迹包围盒</b>高度累加；任何叠字/越界直接抛
+        <code>AssertionError</code>，该张图不出。本次运行 6/6 通过。</li>
+    <li><b>边缘守护 <code>edge_guard()</code></b>：从成品像素反查四边与内缩带是否有内容贴边/溢出。本次 6/6 通过
+        （A 为有意 full-bleed 深色海报，四边不参与检查，改由断言 + 目视把关）。</li>
+    <li>运行输出：<code>DONE 6 covers; 0 problems</code>。</li>
+  </ul>
+
+  <div class="note warn">
+    <b>自查抓到并已修掉的一个真实缺陷（值得记录）：</b><br>
+    生成器里曾<b>同时存在两份同名 <code>safe_box()</code></b>（保险箱绘制函数）。Python 取后一份，
+    于是"内嵌门板 + 圆盘密码锁 + 锁舌"那份被静默覆盖，成品里保险箱退回成<b>一块灰色圆角板</b>，
+    而所有版式断言与边缘守护<b>都照样通过</b>（它们只管位置，不管画的是不是保险箱）。<br>
+    抓出方式：把 <code>safe_box()</code> 单独渲染成测试图看 —— 目视立刻发现它不像保险箱。
+    <b>已修</b>：删除重复定义、只留一份，并已扫描全文件确认<b>不再有任何重名函数定义</b>（0 处重复）。
+  </div>
+
+  <h3>素材合规断言（纯自绘证明）</h3>
+  <div class="note ok">
+    <p><b>断言 1 · 生成器不含任何图片读取</b></p>
+    <p class="status">grep -E "Image\.open|\.jpg|\.jpeg|\.png|\.webp|urlopen|requests|http" scripts/tmp/make-product-covers.py → 仅命中输出文件名与注释，<b>0 处图片读取调用</b></p>
+    <p><b>断言 2 · 页面不含任何外链与位图输入</b></p>
+    <p class="status">grep -E "https?://|//cdn|@import|url\(http" site/design/product-covers/index.html → <b>0 处</b>（页面只引用本目录内的 6 张 PNG 与 12 张缩略图）</p>
+    <p><b>断言 3 · 成品只引用本目录资源</b></p>
+    <p class="status">index.html 内全部 src 均为相对路径 <code>exp99-*.png</code> / <code>thumb-*/exp99-*.png</code>，无跨目录、无外站</p>
+  </div>
+
+  <h3>没有做的事（明确声明）</h3>
+  <ul>
+    <li><b>没有上传</b>任何图片到平台、媒体库、CDN 或云端。</li>
+    <li><b>没有修改任何 App 代码</b>：<code>apps/**</code>、<code>server/**</code>、<code>admin-web/**</code> 零改动；
+        本任务只新增了 <code>scripts/tmp/make-product-covers.py</code> 与
+        <code>site/design/product-covers/**</code>。</li>
+    <li>没有 commit、没有打包、没有发布。</li>
+    <li>没有新增任何依赖到仓库（用的是运行环境自带的 Pillow 12.3.0 与系统字体）。</li>
+    <li>没有触碰 <code>site/design/{final-ui.html,auth/**,order-fab/**,home-banner/**,product-detail/**,product-detail-v2/**}</code>、
+        <code>xinqiao-*</code>、<code>data/**</code>（<code>data/temp/ref-metro/</code> 的调研参考图除外）。</li>
+  </ul>
+
+  <footer>
+    生成器：<code>scripts/tmp/make-product-covers.py</code>　·　成品：<code>site/design/product-covers/</code>　·　
+    字体：系统 <code>msyhbd.ttc / msyh.ttc / impact.ttf</code>　·　4x 超采样后 LANCZOS 降采样<br>
+    状态：<b>设计稿，待负责人审批</b>。审批通过后再进入实施（上传到媒体库 / 挂到商品）。
+  </footer>
+
+</div>
+</body>
+</html>

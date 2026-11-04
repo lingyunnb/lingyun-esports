@@ -1,0 +1,13 @@
+[
+  {
+    "page": "/wallets",
+    "fails": [],
+    "shots": [
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-revert-wallets-t1.png",
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-revert-wallets-t2.png"
+    ],
+    "yuanCount": 100,
+    "cells": 30,
+    "jifen": 0
+  }
+]

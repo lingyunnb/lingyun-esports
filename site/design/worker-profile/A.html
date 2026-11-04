@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>A 套（放宽版·主推）· 打手个人主页 —— 白底为主</title>
+<style>
+:root{
+  /* 品牌（点缀；docs/32 §一） */
+  --brand:#1D5FA8;          /* 主交互：按钮 / 选中 / 链接 */
+  --brand-ink:#0F2440;      /* 品牌锚墨蓝：只给极小面积 */
+  --brand-tint:#E8EEF7;     /* 主色浅底 */
+  --celadon:#0E7C7B;        /* 强调青瓷 */
+  --amber:#B4732A;          /* 价格 / 等级：全站唯一金（L-SLOT 用它） */
+  --amber-tint:#F7EDE0;
+  --warn:#B45309;
+  --danger:#B42318;
+  --danger-tint:#FBECEA;
+  /* 6 档灰阶 */
+  --g1:#14202E; --g2:#4A5A6E; --g3:#8A99AB; --g4:#CDD6E2; --g5:#E3E8EF; --g6:#F4F6F9;
+  --card:#FFFFFF; --hair:#E3E8EF; --sk:#EAEEF4;
+  --field:#F1F4F8;          /* 头部网格场底色（冷灰蓝，非深色） */
+  --r-chip:6px; --r-ctl:10px; --r-card:14px;
+  --font:"Microsoft YaHei","PingFang SC",-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--g1);background:#FFFFFF;-webkit-font-smoothing:antialiased}
+svg.ic{display:block;flex:0 0 auto}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- 手机壳（390×844 逻辑像素，docs/32 §十） ---------- */
+.phone{width:390px;height:844px;background:var(--card);position:relative;overflow:hidden;
+  border:1px solid var(--g4);border-radius:18px;display:flex;flex-direction:column;color:var(--g1);flex:0 0 auto}
+.phone.tall{height:1260px}
+.statusbar{flex:0 0 48px;height:48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;font-size:12px;font-weight:600;background:var(--card)}
+.sb-r{display:flex;align-items:center;gap:8px}
+.sb-bars{display:flex;align-items:flex-end;gap:4px;height:12px}
+.sb-bars i{display:block;width:4px;background:var(--g1);border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:12px}
+.sb-batt{width:24px;height:12px;border:1px solid var(--g4);border-radius:3px;position:relative}
+.sb-batt i{position:absolute;left:2px;top:2px;bottom:2px;width:14px;background:var(--g1);border-radius:1px}
+.scroll{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--card)}
+
+/* ---------- 返回栏 56dp（白底 + 发丝线；二级页无底栏） ---------- */
+.nav56{flex:0 0 56px;height:56px;display:flex;align-items:center;gap:12px;padding:0 16px;
+  background:var(--card);border-bottom:1px solid var(--g5)}
+.nav56 .tt{font-size:18px;font-weight:700;letter-spacing:.2px}
+.nav56 .sp{flex:1 1 auto}
+.nav56 .act{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--g2)}
+
+/* ---------- 头部「网格场」：白底为主下的隆重感（零深色块、零渐变） ---------- */
+.hfield{position:relative;flex:0 0 160px;height:160px;padding:24px 16px 20px;background-color:var(--field);
+  background-image:
+    repeating-linear-gradient(90deg,rgba(15,36,64,.05) 0 1px,rgba(0,0,0,0) 1px 8px),
+    repeating-linear-gradient(0deg,rgba(15,36,64,.05) 0 1px,rgba(0,0,0,0) 1px 8px)}
+/* 斜切角（主符号 ①）：头部右上角切 24dp，用白三角压出 45° 缺口 */
+.fieldcut{position:absolute;right:0;top:0;width:24px;height:24px;background:var(--card);
+  clip-path:polygon(0 0,100% 0,100% 100%)}
+.hrow{display:flex;align-items:center;gap:16px;position:relative}
+.avwrap{position:relative;width:96px;height:96px;flex:0 0 96px;display:flex;align-items:center;justify-content:center}
+.avwrap::before{content:"";position:absolute;left:0;top:0;right:0;bottom:0;border-radius:999px;border:1px solid var(--brand-tint)}
+.tk{position:absolute;background:var(--brand);border-radius:1px}
+.tk.t{left:47.5px;top:0;width:1px;height:6px}.tk.b{left:47.5px;bottom:0;width:1px;height:6px}
+.tk.l{left:0;top:47.5px;width:6px;height:1px}.tk.r{right:0;top:47.5px;width:6px;height:1px}
+.av80{width:80px;height:80px;border-radius:999px;background:var(--brand-ink);color:#fff;display:flex;
+  align-items:center;justify-content:center;font-size:22px;font-weight:800;letter-spacing:1px;position:relative;z-index:1}
+.hcol{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:8px}
+/* 名字行：名字 + 8dp + L-SLOT（同行垂直居中） */
+.nmrow{display:flex;align-items:center;gap:8px}
+.nm{font-size:22px;font-weight:800;letter-spacing:.4px;line-height:1.35}
+/* L-SLOT 等级预留位（负责人 2026-10-15）：高 20 × 最长 72 · 琥珀虚线空框 · 不画形态、不起名字 */
+.lvslot{width:72px;height:20px;flex:0 0 72px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:var(--r-chip);border:1px dashed var(--amber);background:var(--amber-tint);
+  color:var(--amber);font-size:11px;font-weight:700;letter-spacing:.2px}
+.hf{font-size:13px;color:var(--g2);display:flex;align-items:center;gap:8px}
+.hf b{color:var(--g1);font-weight:700}
+.hf em{font-style:normal;font-weight:600;color:var(--g2)}
+.hf em.mute{color:var(--g3);font-weight:600}
+.hsrc{font-size:11px;color:var(--g3)}
+.dotsep{width:3px;height:3px;border-radius:999px;background:var(--g4);flex:0 0 3px}
+/* 放宽版（A 套）：名字下方一排小胶囊 —— 标签胶囊 / 分部副标 暂时放宽（此项待负责人看图后最终确认） */
+.caps{display:flex;align-items:center;gap:8px}
+.cap{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:var(--r-chip);
+  background:var(--brand-tint);color:var(--brand);font-size:11px;font-weight:600;border:1px solid var(--brand-tint)}
+
+/* ---------- 标尺线（辅助图形 ③：1px 发丝线 + 端点 3×3 小方块） ---------- */
+.ruler{position:relative;flex:0 0 1px;height:1px;background:var(--g5)}
+.ruler::before,.ruler::after{content:"";position:absolute;top:-1px;width:3px;height:3px;background:var(--g4)}
+.ruler::before{left:0}.ruler::after{right:0}
+
+/* ---------- 内容区（4dp 网格：页边 16 / 组间 20） ---------- */
+.stack{display:flex;flex-direction:column;gap:20px;padding:20px 16px 32px}
+
+/* ---------- 卡片三档 ---------- */
+.card{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-card)}
+.cardintro{padding:16px;display:flex;flex-direction:column;gap:8px;min-height:104px}
+.cardstats{padding:16px;display:flex;align-items:flex-start;gap:24px}
+.k11{font-size:11px;color:var(--g3);font-weight:600}
+.p13{font-size:13px;line-height:1.8;color:var(--g1)}
+.p13.mute{color:var(--g3)}
+.fcell{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fk{font-size:11px;color:var(--g3)}
+.fv{font-size:15px;font-weight:700;color:var(--g1);font-variant-numeric:tabular-nums}
+.fv.mute{font-size:13px;font-weight:600;color:var(--g2)}
+.fsep{width:1px;background:var(--g5);align-self:stretch}
+
+/* ---------- Tab 行（照参考图骨架，但只保留「评价」一项） ---------- */
+.rblock{display:flex;flex-direction:column}
+.tabs{flex:0 0 44px;height:44px;display:flex;align-items:center;gap:24px;border-bottom:1px solid var(--g5);background:var(--card)}
+.tab{font-size:13px;font-weight:600;color:var(--g2);position:relative;height:44px;display:flex;align-items:center;gap:4px}
+.tab.on{color:var(--brand);font-weight:700}
+.tab.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand)}
+
+/* ---------- ListCard：无圆角分组 + 发丝线行 ---------- */
+.rlist{background:var(--card);border-bottom:1px solid var(--g5)}
+.rrow{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--g5)}
+.rrow:first-child{border-top:0}
+.rav{width:24px;height:24px;flex:0 0 24px;border-radius:999px;background:var(--brand-tint);color:var(--brand);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.rmain{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:8px}
+.rhead{display:flex;align-items:center;gap:8px}
+.rn{font-size:13px;font-weight:600}
+.rhead .sp{flex:1 1 auto}
+.ver{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700}
+.ver.ok{color:var(--celadon)}
+.ver.no{color:var(--danger)}
+.rtxt{font-size:13px;line-height:1.7;color:var(--g1)}
+.rt{font-size:11px;color:var(--g3);font-variant-numeric:tabular-nums}
+.more{padding:16px 0 0;display:flex;justify-content:center}
+.more span{font-size:13px;font-weight:600;color:var(--brand)}
+
+/* ---------- 空态（docs/21 §五：空态给下一步动作） ---------- */
+.empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 16px 24px;
+  background-color:var(--field);
+  background-image:
+    repeating-linear-gradient(90deg,rgba(15,36,64,.04) 0 1px,rgba(0,0,0,0) 1px 8px),
+    repeating-linear-gradient(0deg,rgba(15,36,64,.04) 0 1px,rgba(0,0,0,0) 1px 8px)}
+.empty .eic{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--g3)}
+.empty .et{font-size:13px;font-weight:600;color:var(--g2)}
+.empty .en{font-size:12px;color:var(--g3);line-height:1.7;text-align:center}
+.empty .ea{margin-top:4px;font-size:12px;font-weight:600;color:var(--brand)}
+
+/* ---------- 底部固定操作条：只保留一个主操作 ---------- */
+.bbar{flex:0 0 72px;height:72px;display:flex;align-items:center;gap:12px;padding:0 16px;
+  background:var(--card);border-top:1px solid var(--g5)}
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:700;border:1px solid transparent}
+.btn em{font-style:normal}
+.btn-pri{flex:1 1 auto;background:var(--brand);color:#fff;border-radius:var(--r-ctl);
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
+
+/* ---------- 骨架（与真实布局逐块等高） ---------- */
+.skb{background:var(--sk);border-radius:4px}
+.sk-round{background:var(--sk);border-radius:999px}
+
+/* ---------- 评审外壳 ---------- */
+.wrapdoc{max-width:1560px;margin:0 auto;padding:32px 24px 64px}
+.doch{display:flex;align-items:flex-start;gap:24px;padding-bottom:16px;border-bottom:1px solid #E3E8EF}
+.doch h1{font-size:22px;font-weight:800;letter-spacing:.2px}
+.doch .sub{font-size:13px;color:#4A5A6E;margin-top:8px;line-height:1.8;max-width:1180px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:#4A5A6E;margin-top:16px}
+.metarow b{color:#14202E}
+.notebox{margin-top:16px;border:1px solid #E6CFAE;background:#F7EDE0;border-radius:14px;padding:16px}
+.notebox h3{font-size:13px;font-weight:800;color:#B45309;margin-bottom:8px}
+.notebox p,.notebox li{font-size:12px;color:#4A5A6E;line-height:1.9}
+.notebox ul{margin:0;padding-left:16px}
+.shot{margin-top:32px}
+.shot h2{font-size:18px;font-weight:700;display:flex;align-items:baseline;gap:12px}
+.shot h2 em{font-style:normal;font-size:12px;font-weight:400;color:#8A99AB}
+.shot .cap{font-size:12px;color:#4A5A6E;margin:8px 0 16px;line-height:1.8;max-width:1180px}
+.screens{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.fig{display:flex;flex-direction:column;gap:8px}
+.figtag{align-self:flex-start;height:20px;display:inline-flex;align-items:center;padding:0 6px;
+  border-radius:6px;background:#F7EDE0;color:#B4732A;font-size:11px;font-weight:600}
+.figcap{font-size:12px;font-weight:600;color:#14202E}
+.figcap em{font-style:normal;font-weight:400;color:#8A99AB}
+.notes{margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px}
+.note{background:#FFFFFF;border:1px solid #E3E8EF;border-radius:14px;padding:16px}
+.note h3{font-size:13px;font-weight:700;margin-bottom:8px}
+.note p{font-size:12px;color:#4A5A6E;line-height:1.8}
+.note ul{margin:0;padding-left:16px}
+.note li{font-size:12px;color:#4A5A6E;line-height:1.9}
+table.tb{width:100%;border-collapse:collapse;font-size:12px;color:#14202E;margin-top:8px}
+table.tb th,table.tb td{border:1px solid #E3E8EF;padding:8px 12px;text-align:left;vertical-align:top;line-height:1.7;font-size:12px}
+table.tb th{background:#F4F6F9;font-weight:700}
+code{font-family:ui-monospace,Consolas,monospace;font-size:11px;background:#F4F6F9;padding:0 4px;border-radius:4px}
+a{color:#1D5FA8}
+</style></head>
+<body><div class="wrapdoc">
+<div class="doch"><div>
+  <h1>A 套（放宽版·主推）· 打手个人主页 —— 白底为主</h1>
+  <p class="sub">对齐「东东电竞」打手详情页（负责人参考图 2）的<b>信息层级与视觉组织方式</b>，内容<b>只放我们真实拥有的字段</b>：
+      头像 / 名字 / 介绍 / 接单次数 / 好评率 / 评价列表，<b>外加一排运营可填的小胶囊（本次按「暂时放宽」画）</b>。
+      等级只画 <b>L-SLOT 预留位</b>（高 20 × 最长 72 · 距名字 8dp · 同行垂直居中 · 琥珀虚线空框，<b>不画形态、不起名字</b>）。<b>白底为主</b>：全页零深色块、零渐变、零阴影、零 emoji。</p>
+  <div class="metarow"><span><b>尺寸</b> 390×844 × 5 屏（完整页 1260）</span><span><b>屏序</b> 首屏 / 完整页 / 骨架 / 真实现状 / 异常态</span>
+  <span><b>头部</b> 160dp（含一排胶囊） · L-SLOT 72×20</span>
+  <span><b>底部条</b> 单一主操作「找 TA 下单」</span>
+  <span><b>状态</b> 待审批 · 未改任何产品代码</span></div>
+  <div class="notebox"><h3>本套按负责人 2026-10-15 的两条指示画</h3>
+  <ul>
+    <li><b>「标签胶囊 / 分部副标 暂时放宽」</b> → 名字下方加一排小胶囊（最多 3 枚、高 24dp）。<b>此项待负责人看图后最终确认</b>；若最后定「不放」，直接切 <a href="B.html">B 套</a>（其余逐字节相同）。</li>
+    <li><b>等级只画 L-SLOT 预留位</b>：高 20 × 最长 72dp，距名字 <b>8dp</b>、<b>同行垂直居中</b>；只有琥珀虚线空框 + 尺寸标注，<b>不画形态、不起名字</b>（名称待负责人定）。</li>
+    <li><b>底部固定条只保留一个主操作</b>「找 TA 下单」：参考图 2 的 <code>[关注][找 TA 开黑][礼物]</code> 里，「关注」（4 人日）与「礼物」（3 人日）两个能力都不存在，硬凑第三个按钮就是凑数。</li>
+  </ul>
+  </div>
+  <div class="notebox"><h3>本套的定位</h3><p><b>A 套 = 放宽版（主推）</b>：名字下方多一排小胶囊 <code>[和平精英 · 手游][上分][四排]</code> ——
+      对应负责人 2026-10-15「<b>标签胶囊 / 分部副标 暂时放宽，我看图之后决定</b>」。<b>此项待负责人看图后最终确认</b>；其余禁项（空闲 / 等级 / 评分 / 单价 / 下单人数 / 语音时长 / 明星·大神·单考·双考 / 认证徽章 / 粉丝关注数 / 在线状态 / 俱乐部）<b>一律仍不放</b>。</p></div>
+</div></div>
+
+<!-- ============================= A-1 首屏 ============================= -->
+<div class="shot"><h2>A-1 首屏<em>不滚动 · 头部网格场 + 统计 + 介绍 + 底部固定操作条</em></h2>
+<p class="cap">首屏顺序 = 返回栏 → <b>头部网格场</b>（80dp 字标头像 + 刻度环 + 名字行含 L-SLOT + 一排小胶囊 + 一行真实事实）→ 介绍卡 → 统计卡（接单次数 / 好评率）→ Tab 行（<b>只一项「评价」</b>）→ 评价列表（露出 2 行余，提示可滚）。
+底部固定条在首屏就位、不随滚动消失。这一屏是「参考图 2：大深色横幅 + 头像区」那一块的替代品。</p>
+<div class="screens">
+  <div class="fig"><div class="figtag">示例数据</div>
+  <div class="phone">
+<div class="statusbar"><span class="num">9:41</span><span class="sb-r">
+      <span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="nav56">
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></span>
+      <span class="tt">打手信息</span><span class="sp"></span>
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg></span>
+    </div>
+    <div class="hfield">
+      <span class="fieldcut" data-deco></span>
+      <div class="hrow">
+        <span class="avwrap" data-deco><span class="tk t"></span><span class="tk b"></span><span class="tk l"></span><span class="tk r"></span><span class="av80">凌</span></span>
+        <div class="hcol">
+          <div class="nmrow"><span class="nm">凌云</span><span class="lvslot">L-SLOT</span></div>
+          <div class="hf num">接单 <b>76</b> 次<span class="dotsep"></span>好评率 <b>98.2%</b></div>
+          <div class="caps"><span class="cap">和平精英 · 手游</span><span class="cap">上分</span><span class="cap">四排</span></div>
+          <div class="hsrc">资料与介绍由官方审核填写</div>
+        </div>
+      </div>
+    </div>
+    <div class="ruler"></div>
+    <div class="scroll">
+      <div class="stack">
+        <div class="card cardintro">
+          <span class="k11">打手介绍</span>
+          <p class="p13">和平精英 · 手游。晚 9 点到次日 2 点在线，不接急单；四排报点为主，掉线必补局。</p>
+        </div>
+        <div class="card cardstats">
+          <div class="fcell"><span class="fk">接单次数</span><span class="fv">76 次</span></div>
+          <span class="fsep"></span>
+          <div class="fcell"><span class="fk">好评率</span><span class="fv">98.2%</span></div>
+        </div>
+        <div class="rblock">
+          <div class="tabs"><span class="tab on">评价 <span class="num">55</span></span></div>
+          <div class="rlist">
+            <div class="rrow">
+              <span class="rav">小</span>
+              <div class="rmain">
+                <div class="rhead"><span class="rn">l**</span><span class="sp"></span>
+                  <span class="ver ok"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="#0E7C7B"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><em>满意</em></span></div>
+                <p class="rtxt">开麦准时，报点清楚，四排一局没掉过链子。</p>
+                <div class="rhead"><span class="rt num">10-14 22:15</span></div>
+              </div>
+            </div>
+            <div class="rrow">
+              <span class="rav">杰</span>
+              <div class="rmain">
+                <div class="rhead"><span class="rn">杰**</span><span class="sp"></span>
+                  <span class="ver ok"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="#0E7C7B"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><em>满意</em></span></div>
+                <p class="rtxt">等了 20 分钟才开局，人稳、不喷人；就是希望迟一点能提前说一声。</p>
+                <div class="rhead"><span class="rt num">10-12 21:40</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="more"><span>查看更多评价</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="bbar"><span class="btn btn-pri"><em>找 TA 下单</em></span></div>
+  </div>
+  <div class="figcap">A-1 首屏<em>844 · 不滚动 · 头部 160dp</em></div>
+  </div>
+</div></div>
+
+<!-- ============================= A-2 完整页 ============================= -->
+<div class="shot"><h2>A-2 滚动后完整页<em>评价列表 6 条 + 查看更多</em></h2>
+<p class="cap">评价区是 <b>ListCard</b>（无圆角 + 发丝线行），行内三层：<b>昵称 + 判定</b>（上）→ <b>备注</b>（中）→ <b>时间</b>（下）。
+判定用「<b>图标 + 字重 w700 + 文案「满意 / 不满意」</b>」三重信号，<b>不只靠颜色</b>（<code>docs/21</code>）。
+参考图 2 那个位置是五颗橙星 —— 我们是<b>二元评价</b>，所以是<b>青瓷勾 / 错误色警示牌</b>，<b>没有星</b>。
+备注长短刻意不一（1 行 / 2 行 / 1 行 / 4 字 / 1 行 / 1 行），是 <code>docs/21</code>「假数据必须拟真」的要求。</p>
+<div class="screens">
+  <div class="fig"><div class="figtag">示例数据</div>
+  <div class="phone tall">
+<div class="statusbar"><span class="num">9:41</span><span class="sb-r">
+      <span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="nav56">
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></span>
+      <span class="tt">打手信息</span><span class="sp"></span>
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg></span>
+    </div>
+    <div class="hfield">
+      <span class="fieldcut" data-deco></span>
+      <div class="hrow">
+        <span class="avwrap" data-deco><span class="tk t"></span><span class="tk b"></span><span class="tk l"></span><span class="tk r"></span><span class="av80">凌</span></span>
+        <div class="hcol">
+          <div class="nmrow"><span class="nm">凌云</span><span class="lvslot">L-SLOT</span></div>
+          <div class="hf num">接单 <b>76</b> 次<span class="dotsep"></span>好评率 <b>98.2%</b></div>
+          <div class="caps"><span class="cap">和平精英 · 手游</span><span class="cap">上分</span><span class="cap">四排</span></div>
+          <div class="hsrc">资料与介绍由官方审核填写</div>
+        </div>
+      </div>
+    </div>
+    <div class="ruler"></div>
+    <div class="scroll">
+      <div class="stack">
+        <div class="card cardintro">
+          <span class="k11">打手介绍</span>
+          <p class="p13">和平精英 · 手游。晚 9 点到次日 2 点在线，不接急单；四排报点为主，掉线必补局。</p>
+        </div>
+        <div class="card cardstats">
+          <div class="fcell"><span class="fk">接单次数</span><span class="fv">76 次</span></div>
+          <span class="fsep"></span>
+          <div class="fcell"><span class="fk">好评率</span><span class="fv">98.2%</span></div>
+        </div>
+        <div class="rblock">
+          <div class="tabs"><span class="tab on">评价 <span class="num">55</span></span></div>
+          <div class="rlist">
+            <div class="rrow">
+              <span class="rav">小</span>
+              <div class="rmain">
+                <div class="rhead"><span class="rn">l**</span><span class="sp"></span>
+                  <span class="ver ok"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="#0E7C7B"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><em>满意</em></span></div>
+                <p class="rtxt">开麦准时，报点清楚，四排一局没掉过链子。</p>
+                <div class="rhead"><span class="rt num">10-14 22:15</span></div>
+              </div>
+            </div>
+            <div class="rrow">
+              <span class="rav">杰</span>
+              <div class="rmain">
+                <div class="rhead"><span class="rn">杰**</span><span class="sp"></span>
+                  <span class="ver ok"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="#0E7C7B"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><em>满意</em></span></div>
+                <p class="rtxt">等了 20 分钟才开局，人稳、不喷人；就是希望迟一点能提前说一声。</p>
+                <div class="rhead"><span class="rt num">10-12 21:40</span></div>
+              </div>
+            </div>
+            <div class="rrow">
+              <span class="rav">匿</span>
+              <div class="rmain">
+                <div class="rhead"><span class="rn">匿名用户</span><span class="sp"></span>
+                  <span class="ver no"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="#B42318"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><em>不满意</em></span></div>
+                <p class="rtxt">第三局打到一半退了没回来，那单没打完，已经在售后里处理了。</p>
+                <div class="rhead"><span class="rt num">10-09 01:20</span></div>
+              </div>
+            </div>
+            <div class="rrow">
+              <span class="rav">阿</span>
+              <div class="rmain">
+                <div class="rhead"><span class="rn">阿**</span><span class="sp"></span>
+                  <span class="ver ok"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="#0E7C7B"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><em>满意</em></span></div>
+                <p class="rtxt">挺好的。</p>
+                <div class="rhead"><span class="rt num">10-06 23:05</span></div>
+              </div>
+            </div>
+            <div class="rrow">
+              <span class="rav">水</span>
+              <div class="rmain">
+                <div class="rhead"><span class="rn">水**</span><span class="sp"></span>
+                  <span class="ver ok"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="#0E7C7B"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><em>满意</em></span></div>
+                <p class="rtxt">带了两把就上了，中途有个队友挂机也没摆烂。</p>
+                <div class="rhead"><span class="rt num">09-28 20:11</span></div>
+              </div>
+            </div>
+            <div class="rrow">
+              <span class="rav">大</span>
+              <div class="rmain">
+                <div class="rhead"><span class="rn">大**</span><span class="sp"></span>
+                  <span class="ver ok"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="#0E7C7B"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><em>满意</em></span></div>
+                <p class="rtxt">第二次点了，还是那个节奏。</p>
+                <div class="rhead"><span class="rt num">09-20 19:48</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="more"><span>查看更多评价</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="bbar"><span class="btn btn-pri"><em>找 TA 下单</em></span></div>
+  </div>
+  <div class="figcap">A-2 完整页<em>1260 · 6 条评价（长短不一）</em></div>
+  </div>
+</div></div>
+
+<!-- ============================= A-3 骨架 ============================= -->
+<div class="shot"><h2>A-3 加载骨架态<em>与真实布局逐块等高（零跳动）</em></h2>
+<p class="cap">骨架不是「几个灰条」，而是<b>按真实布局逐块等高</b>：头像 80 圆、L-SLOT 72×20、名字条 22 高、事实条 13 高、胶囊排 24 高、
+介绍卡 104、统计卡 72、Tab 行 44、评价行 2 行。底部操作条<b>不进骨架</b>（它不依赖数据，直接显示真按钮）——
+数据回来时页面<b>只会「变清晰」，不会「跳一下」</b>。</p>
+<div class="screens">
+  <div class="fig">
+  <div class="phone">
+<div class="statusbar"><span class="num">9:41</span><span class="sb-r">
+      <span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="nav56">
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></span>
+      <span class="tt">打手信息</span><span class="sp"></span>
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg></span>
+    </div>
+    <div class="hfield">
+      <span class="fieldcut" data-deco></span>
+      <div class="hrow">
+        <span class="avwrap" data-deco><span class="tk t"></span><span class="tk b"></span><span class="tk l"></span><span class="tk r"></span><span class="av80 sk-round" style="background:#E1E7EF"></span></span>
+        <div class="hcol">
+          <div class="nmrow"><span class="skb" style="width:96px;height:22px"></span><span class="lvslot" style="width:72px;background:#EAEEF4;border-style:solid;border-color:#EAEEF4;color:transparent">L-SLOT</span></div>
+          <span class="skb" style="width:176px;height:13px"></span>
+          <div class="caps"><span class="cap" style="width:88px;background:#EAEEF4;border-color:#EAEEF4;color:transparent">和平精英 · 手游</span><span class="cap" style="width:44px;background:#EAEEF4;border-color:#EAEEF4;color:transparent">上分</span><span class="cap" style="width:44px;background:#EAEEF4;border-color:#EAEEF4;color:transparent">四排</span></div>
+          <span class="skb" style="width:132px;height:11px"></span>
+        </div>
+      </div>
+    </div>
+    <div class="ruler"></div>
+    <div class="scroll">
+      <div class="stack">
+        <div class="card cardintro">
+          <span class="skb" style="width:64px;height:11px"></span>
+          <span class="skb" style="width:100%;height:16px"></span>
+          <span class="skb" style="width:168px;height:16px"></span>
+        </div>
+        <div class="card cardstats">
+          <div class="fcell"><span class="skb" style="width:56px;height:11px"></span><span class="skb" style="width:72px;height:15px"></span></div>
+          <span class="fsep"></span>
+          <div class="fcell"><span class="skb" style="width:44px;height:11px"></span><span class="skb" style="width:64px;height:15px"></span></div>
+        </div>
+        <div class="rblock">
+          <div class="tabs"><span class="skb" style="width:72px;height:13px"></span></div>
+          <div class="rlist">
+            <div class="rrow">
+              <span class="rav sk-round" style="background:#E1E7EF"></span>
+              <div class="rmain">
+                <div class="rhead"><span class="skb" style="width:56px;height:13px"></span><span class="sp"></span><span class="skb" style="width:56px;height:12px"></span></div>
+                <span class="skb" style="width:100%;height:13px"></span>
+                <span class="skb" style="width:72px;height:11px"></span>
+              </div>
+            </div>
+            <div class="rrow">
+              <span class="rav sk-round" style="background:#E1E7EF"></span>
+              <div class="rmain">
+                <div class="rhead"><span class="skb" style="width:56px;height:13px"></span><span class="sp"></span><span class="skb" style="width:56px;height:12px"></span></div>
+                <span class="skb" style="width:100%;height:13px"></span>
+                <span class="skb" style="width:72px;height:11px"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bbar"><span class="btn btn-pri"><em>找 TA 下单</em></span></div>
+  </div>
+  <div class="figcap">A-3 骨架<em>844 · 骨架块与真实块同高同宽</em></div>
+  </div>
+</div></div>
+
+<!-- ============================= A-4 真实现状 ============================= -->
+<div class="shot"><h2>A-4 真实现状（重点屏）<em>线上就是这一屏：介绍为空 + 头像 null + 0 评价</em></h2>
+<p class="cap">这一屏是<b>按线上真实数据画的</b>（<code>GET /public/workers/167</code> 实测：<code>intro:""</code>、<code>avatarMediaId:null</code>、
+<code>completedOrders:0</code>、<code>reviewCount:0</code>、<code>satisfiedRate:null</code>）。因为我们能放的东西本来就少，这一屏才是<b>真实的首印象</b>，四道兜底让它不塌、不像坏掉：
+① 头像走<b>首字字标</b>（墨蓝实底 + 白字，<b>不是渐变</b>）；② 介绍位<b>高度不变</b>、填弱化占位「介绍待补充」；
+③ 好评率显示「<b>暂无评价</b>」—— <b>绝不编一个 100%</b>（唯一出口 <code>satisfiedRateText()</code>，<code>review_models.dart:126</code>）；
+④ <b>L-SLOT 照旧占位</b>（不因为等级没做就缩掉，否则将来加等级会整屏重排）。</p>
+<div class="screens">
+  <div class="fig"><div class="figtag">线上真实数据</div>
+  <div class="phone">
+<div class="statusbar"><span class="num">9:41</span><span class="sb-r">
+      <span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="nav56">
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></span>
+      <span class="tt">打手信息</span><span class="sp"></span>
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg></span>
+    </div>
+    <div class="hfield">
+      <span class="fieldcut" data-deco></span>
+      <div class="hrow">
+        <span class="avwrap" data-deco><span class="tk t"></span><span class="tk b"></span><span class="tk l"></span><span class="tk r"></span><span class="av80">凌</span></span>
+        <div class="hcol">
+          <div class="nmrow"><span class="nm">凌云</span><span class="lvslot">L-SLOT</span></div>
+          <div class="hf num">接单 <b>0</b> 次<span class="dotsep"></span>好评率 <em class="mute">暂无评价</em></div>
+          <div class="caps"><span class="cap">和平精英 · 手游</span><span class="cap">上分</span><span class="cap">四排</span></div>
+          <div class="hsrc">资料与介绍由官方审核填写</div>
+        </div>
+      </div>
+    </div>
+    <div class="ruler"></div>
+    <div class="scroll">
+      <div class="stack">
+        <div class="card cardintro">
+          <span class="k11">打手介绍</span>
+          <p class="p13 mute">介绍待补充 —— 该打手的介绍由官方审核填写，目前还没有填写。</p>
+        </div>
+        <div class="card cardstats">
+          <div class="fcell"><span class="fk">接单次数</span><span class="fv num">0 次</span></div>
+          <span class="fsep"></span>
+          <div class="fcell"><span class="fk">好评率</span><span class="fv mute">暂无评价</span></div>
+        </div>
+        <div class="rblock">
+          <div class="tabs"><span class="tab on">评价</span></div>
+          <div class="empty">
+            <span class="eic"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#8A99AB"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg></span>
+            <span class="et">这位打手还没有收到评价</span>
+            <span class="en">完成第 1 单后，评价会出现在这里；<br>好评率也只从有评价那天开始算。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bbar"><span class="btn btn-pri"><em>找 TA 下单</em></span></div>
+  </div>
+  <div class="figcap">A-4 真实现状<em>844 · 空介绍 / null 头像 / 0 评价 / L-SLOT 照旧 —— 页面不塌</em></div>
+  </div>
+</div></div>
+
+<!-- ============================= A-5 异常态 ============================= -->
+<div class="shot"><h2>A-5 异常态<em>详情接口取不到 —— 用列表兜底的名字，不白屏</em></h2>
+<p class="cap">从「选择陪玩」列表或「指定护航员」弹层进来时，客户端<b>已经拿到了名字</b>，所以接口失败时头部照常渲染（<code>fallbackNickname</code>），
+只在下方给一个<b>说清原因的说明块 + 一个重试动作</b>，而不是整页报错页（<code>worker_profile_page.dart:174-179</code> 的现有行为，本设计只把它画清楚）。
+注意：这一屏<b>不显示 Tab 行与评价区</b>—— 没有数据就不摆「评价」这个空壳。</p>
+<div class="screens">
+  <div class="fig">
+  <div class="phone">
+<div class="statusbar"><span class="num">9:41</span><span class="sb-r">
+      <span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="nav56">
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></span>
+      <span class="tt">打手信息</span><span class="sp"></span>
+      <span class="act"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#4A5A6E"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg></span>
+    </div>
+    <div class="hfield">
+      <span class="fieldcut" data-deco></span>
+      <div class="hrow">
+        <span class="avwrap" data-deco><span class="tk t"></span><span class="tk b"></span><span class="tk l"></span><span class="tk r"></span><span class="av80">反</span></span>
+        <div class="hcol">
+          <div class="nmrow"><span class="nm">反悔</span><span class="lvslot">L-SLOT</span></div>
+          <div class="hf num">资料暂时没取到<span class="dotsep"></span>以下内容来自列表</div>
+          <div class="caps"><span class="cap">和平精英 · 手游</span><span class="cap">上分</span><span class="cap">四排</span></div>
+          <div class="hsrc">资料与介绍由官方审核填写</div>
+        </div>
+      </div>
+    </div>
+    <div class="ruler"></div>
+    <div class="scroll">
+      <div class="stack">
+        <div class="empty">
+          <span class="eic"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" fill="#8A99AB"><path d="M11 7h2v2h-2V7zm0 4h2v6h-2v-6zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg></span>
+          <span class="et">打手信息暂时取不到</span>
+          <span class="en">网络波动或服务在重启；名字来自上一页，<br>接单次数与评价要等这次请求回来。</span>
+          <span class="ea">重试</span>
+        </div>
+      </div>
+    </div>
+    <div class="bbar"><span class="btn btn-pri"><em>找 TA 下单</em></span></div>
+  </div>
+  <div class="figcap">A-5 异常态<em>844 · 头部兜底 + 原因 + 重试</em></div>
+  </div>
+</div></div>
+
+<!-- ============================= 核心问答 ============================= -->
+<div class="shot"><h2>核心问答 ①：白底为主的前提下，头部「隆重感」怎么做</h2>
+<p class="cap">参考图 2 的头部是<b>大块深色横幅（游戏截图）</b>，与 2026-10-14 定案的「白底为主 · 不做大块深色/蓝色块」正面冲突。
+而现在徽章、等级、粉丝数又被规则 6 挡住 —— 这一页的「分量」<b>只能靠版式语言撑</b>。答案是把「隆重感」拆成<b>五件互不重复的事</b>，一件都不需要深色面积：</p>
+<div class="notes">
+  <div class="note"><h3>① 场：细网格场代替深色横幅（撑「区块边界」）</h3>
+  <p>头部 160dp 用冷灰蓝 <code>#F1F4F8</code> 打底，叠 <b>1px × 8dp 细网格</b>（透明度 5%），与下方纯白内容区形成「两个场」。
+  横幅原本提供的信息只有一条：「这是一个独立区块」—— <b>明度可以浅，边界必须在</b>。细网格只出现在头部与空态（<code>docs/32</code> §二）。</p></div>
+  <div class="note"><h3>② 尺度：把「大」给字与头像，不给色块（撑「主体感」）</h3>
+  <p>头像 <b>80dp</b>（外圈标尺环 96dp）+ 名字 <b>22/800</b>（7 级字号里的 Display，本页最大的一档）+ 场内上下 <b>24 / 20 留白</b>。
+  隆重感来自「这个人在页面上占的地方大、名字敢写大」，而不是「这块地方是黑的」。</p></div>
+  <div class="note"><h3>③ 装饰：斜切角 + 标尺环 + 标尺线（撑「被设计过」）</h3>
+  <p>头部右上角 <b>24dp 斜切角</b>（品牌主符号，45° 缺口）；头像外圈 <b>4 枚 6×1dp 刻度</b>替掉参考图的旋转光效环（静态、无发光、无粒子）；
+  头部与内容之间一条 <b>标尺线</b>（1px 发丝线 + 端点 3×3 方块）。全屏斜切角 <b>2 处</b>（头部 + 主按钮）≤ 4。</p></div>
+  <div class="note"><h3>④ 锚：极小面积的墨蓝（撑「品牌重量」）</h3>
+  <p><code>#0F2440</code> 全页只出现在<b>头像字标那一块 80dp 的圆</b>（实测占壳面积 <b>1.42%</b>）。它 100% 绑定在名字上，
+  所以读起来是「这个名字带着品牌的重量」，而不是「页面上有一块深色」。</p></div>
+  <div class="note"><h3>⑤ 秩序：4dp 网格 + 组内紧组间松（撑「专业度」）</h3>
+  <p>全页间距只用 4/8/12/16/20/24/32/48/64（实测落格率 <b>100%</b>）；头部场内 <b>8</b> → 卡内 <b>8</b> → 卡间 <b>20</b>。
+  节奏一致才有「正经主页」的感觉；<b>凑间距是 AI 味最容易被看出来的地方</b>。</p></div>
+  <div class="note"><h3>明确不做（参考图 2 有、我们不做）</h3>
+  <ul>
+    <li>大块深色 / 彩色横幅 —— 与白底为主冲突</li>
+    <li>旋转光效 / 发光 / 粒子 —— 廉价电竞风（<code>docs/32</code> §二）</li>
+    <li>空闲 / 忙碌 / 等级 / 评分 / 单价 / 下单人数 / 语音时长 / 明星·大神·单考·双考 / 认证徽章 / 粉丝关注数 / 在线状态 / 俱乐部 —— 一律不放</li>
+    <li>Tab 整排 —— 只保留「评价」一项（其余四个 Tab 对应的模块不存在）</li>
+    <li>筛选行（全部 ▾ / 带图评价 / 最新）—— 无「带图评价」能力、<code>/reviews</code> 无排序参数，摆了就是死控件</li>
+    <li>底部第三个圆钮（礼物）—— 无礼物模块，且粉色不在品牌色板里</li>
+  </ul></div>
+</div>
+<p class="cap">逐层拆解图（裸版 → +场 → +尺度与锚 → +装饰与秩序）与两套头部并排：<a href="header-variants.html">header-variants.html</a></p>
+</div>
+
+<div class="shot"><h2>核心问答 ②：底部固定操作条为什么只留一个按钮</h2>
+<table class="tb">
+  <tr><th>考虑过的做法</th><th>结论</th><th>理由</th></tr>
+  <tr><td>照参考图 2 放三个：<code>[关注][找 TA 开黑][礼物]</code></td><td><b>不做</b></td><td>「关注」需要关注关系表（4 人日）、「礼物」需要礼物流水（3 人日）—— 两个能力都不存在；粉色圆钮也不在品牌色板里。<b>画一个点不动的按钮＝告诉用户这个 App 坏了</b>（<code>docs/21</code> §三）。</td></tr>
+  <tr><td>两个：<code>[问祁小山][找 TA 下单]</code></td><td><b>不做</b></td><td>「问祁小山」是底栏第 5 个分支（结构规则 7），本页是二级页（无底栏）。为它在本页再开一个入口＝<b>同一入口出现两次</b>（结构规则 1）；而且不带打手上下文时它只是个通用入口，放在这里等于装饰。</td></tr>
+  <tr><td>放「去找陪玩」这类回列表的次级入口</td><td><b>不做</b></td><td>「选择陪玩」的入口已由<b>顶部导航第一项</b>单一承担（负责人 2026-10-15 已把底栏长按快捷面板里的「找陪玩」移除）。本页再放一个 = <b>同一入口第二次出现</b>（结构规则 1）；而且返回键本身就是回列表，等于给了两个同样的出口。</td></tr>
+  <tr><td><b>一个全宽主按钮：<code>[找 TA 下单]</code></b></td><td><b>采用</b></td><td>① 它是本页<b>唯一有明确业务落点</b>的动作（下单页「指定护航员」链路已存在，0 服务端改动）；② 本页是二级页、<b>屏内没有底栏</b>（<code>worker_profile_page.dart:165</code>），所以这个按钮与底栏凸起「＋下单」<b>不在同一屏出现，不构成结构规则 1 的重复</b>；③ 一个按钮的主次关系最清楚 —— 只能区分一个项时就不要造第二个（<code>docs/21</code>）。</td></tr>
+</table>
+</div>
+
+<div class="shot"><h2>逐块「学 / 不学」（与参考图 2 对应）</h2>
+<table class="tb">
+  <tr><th>参考图 2 的块</th><th>参考图 2 的做法</th><th>本套做法</th><th>结论</th><th>理由</th></tr>
+  <tr><td>顶部深色横幅 + 左上返回 + 右上分享</td><td>深色大块 + 游戏截图</td><td>白底 56 返回栏 + 头部网格场 160dp</td><td class="mid">学结构 · 不学深色</td><td>2026-10-14 定案白底为主、不做大块深色/蓝色块；横幅原本只提供「这是一个独立区块」这一条信息 —— <b>明度可以浅，边界必须在</b>。用它的游戏截图还等于复制竞品素材。</td></tr>
+  <tr><td>大圆头像 + 外圈旋转光效 + 右下 LV.4</td><td>光效环 + 等级角标</td><td>80dp 字标头像 + 4 枚静态刻度环；等级只留 <b>L-SLOT 72×20</b>（名字行内，距名字 8dp）</td><td class="mid">学「头像最大 + 有装饰环」· 不学光效 · 等级只留位</td><td>旋转光效属 <code>docs/32</code> 禁项；L-SLOT 不显示任何等级值、不命名、不带颜色语义，只把几何占住 —— 将来加等级<b>不会整屏重排</b>。</td></tr>
+  <tr><td>名字 + 在线胶囊 + 认证徽章 + ID + 关系状态</td><td>名字下方四行</td><td>名字 22/800 + L-SLOT + 一行真实事实（接单 N 次 · 好评率 X%）+ 来源小字</td><td class="mid">学「名字下方紧跟一行事实」· <b>不学</b>那四行</td><td>四行对应的字段要么没有、要么被规则 6 禁；而「接过多少单、好评率多少」是既有字段（零成本），也是老板下单时唯一能验证的两件事。</td></tr>
+  <tr><td>46 朋友 · 71 关注 · 237 粉丝 ｜ 右侧「空闲」</td><td>三个社交数 + 状态胶囊</td><td>接单次数 / 好评率 双列（中间 1px 发丝线）；右端状态位<b>留空不塌</b></td><td class="mid">学「一行数字 + 右端状态位」的排布 · 不学内容</td><td>三个社交数属规则 6「下单人数」同类面子数；状态胶囊禁「空闲 / 忙碌」且数据上也没有「当前忙不忙」。</td></tr>
+  <tr><td>一排 5 枚徽章 / 所属俱乐部 / 年龄 26</td><td>徽章墙 + 俱乐部行 + 年龄行</td><td>整段删除</td><td class="no">不学</td><td>规则 6 禁「标签胶囊」；俱乐部与年龄字段也不存在（年龄还属个人信息）。</td></tr>
+  <tr><td>介绍两行文案</td><td>两行截断</td><td>介绍卡（ContentCard）：11px 标签「打手介绍」+ 13/1.8 正文、<b>不截断</b></td><td class="yes">学</td><td>规则 6 允许的两个字段之一；本页是它的完整展示位（列表里只有 2 行截断）。</td></tr>
+  <tr><td>Tab 行：帖子 0 · 吃瓜 0 · 评审团 0 · 礼物 35 · 评论 209</td><td>五个 Tab</td><td><b>只保留一项「评价 N」</b>（选中态 + 2dp 下划线）</td><td class="mid">学骨架 · 只留一项</td><td>负责人指示 Tab 只留「评价」；做五个 Tab 会留四个「点进去是空页」的入口。</td></tr>
+  <tr><td>筛选行：全部 ▾ / 带图评价 / 最新</td><td>三枚筛选胶囊</td><td><b>不做</b></td><td class="no">不学</td><td><code>/reviews</code> 只支持 page/pageSize，没有排序参数；更没有「带图评价」的数据能力。<b>摆了就是死控件</b> —— 这是唯一一处主动不照骨架做的地方，请在审批表确认。</td></tr>
+  <tr><td>评价行：头像 + 昵称 + 五颗橙星 + 标签 + 文字 + 时间</td><td>五颗星</td><td>头像字标 + 昵称脱敏 + <b>满意 / 不满意</b>（图标 + 字重 + 文案三重信号）+ 备注 + 时间</td><td class="mid">学「行内分层结构」· 不学 5 星</td><td>我们的评价模型就是<b>二元</b>（<code>order_review.satisfied</code> bool）；规则 6 也明令禁「评分」。满意度用「图标 + 字重 + 文案 + 颜色」四重表达，不只靠颜色（<code>docs/21</code>）。</td></tr>
+  <tr><td>底部：[关注] [找 TA 开黑] [礼物圆钮]</td><td>两个浅底 + 一个主按钮</td><td>单一全宽主按钮 <b>[找 TA 下单]</b>（右上斜切角）</td><td class="mid">学「底部有一个实底主操作」· 不学另外两个</td><td>见核心问答 ②。</td></tr>
+  <tr><td><b>名字下方一排小胶囊</b>（本次放宽项）</td><td>无此块（图 2 的「认证 / 徽章墙」位置在别处）</td><td><b>画</b>：最多 3 枚 · 高 24dp · 圆角 6px · 11px/600 · 主色浅底</td><td class="mid">学「名字下方可有一排轻量标签」· <b>此项待负责人看图后最终确认</b></td><td>分部副标数据已有（<code>division</code> 表，需补名字 ≈ 0.2 人日）；打手标签需新增 <code>worker_tag</code> + 管理端录入 ≈ 1.5 人日。风险：这类标签一旦放开，很容易变成「每条信息配一个彩色小标签」—— 所以必须限死 <b>3 枚 + 单一主色浅底</b>（<code>docs/21</code>）。</td></tr>
+</table>
+</div>
+</div></body></html>

@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>祁连山电竞 · 方案 F「潮玩」全 App 设计图 · 16 屏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#E7EBF2;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#14202E;-webkit-font-smoothing:antialiased}
+/* ============ 图标：mask 上色（真实素材 assets/*.svg，禁 emoji） ============ */
+/* 图标一律 assets/*.svg 真素材。本机 headless Edge 实测不支持 mask-image（proposal-2 的图标全都没渲染出来），
+   改用 background-image + SVG feColorMatrix 滤镜上色：!important 用来压掉内联 `background:` 简写重置的 background-image。 */
+.ic{display:inline-block;background-repeat:no-repeat!important;background-position:center!important;background-size:contain!important;background-color:transparent!important;filter:url(#t-white);-webkit-mask-image:none!important;mask-image:none!important}
+.ic-snow{background-image:url(assets/lu-mountain-snow.svg)!important;mask-image:url(assets/lu-mountain-snow.svg)}
+.ic-wallet{background-image:url(assets/lu-wallet.svg)!important;mask-image:url(assets/lu-wallet.svg)}
+.ic-coins{background-image:url(assets/lu-coins.svg)!important;mask-image:url(assets/lu-coins.svg)}
+.ic-banknote{background-image:url(assets/lu-banknote.svg)!important;mask-image:url(assets/lu-banknote.svg)}
+.ic-piggy{background-image:url(assets/lu-piggy-bank.svg)!important;mask-image:url(assets/lu-piggy-bank.svg)}
+.ic-trend{background-image:url(assets/lu-trending-up.svg)!important;mask-image:url(assets/lu-trending-up.svg)}
+.ic-smart{background-image:url(assets/lu-smartphone.svg)!important;mask-image:url(assets/lu-smartphone.svg)}
+.ic-lock{background-image:url(assets/lu-lock.svg)!important;mask-image:url(assets/lu-lock.svg)}
+.ic-eye{background-image:url(assets/lu-eye.svg)!important;mask-image:url(assets/lu-eye.svg)}
+.ic-chevR{background-image:url(assets/lu-chevron-right.svg)!important;mask-image:url(assets/lu-chevron-right.svg)}
+.ic-chevD{background-image:url(assets/lu-chevron-down.svg)!important;mask-image:url(assets/lu-chevron-down.svg)}
+.ic-arrow-up{background-image:url(assets/lu-arrow-up.svg)!important;mask-image:url(assets/lu-arrow-up.svg)}
+.ic-arrU{background-image:url(assets/lu-arrow-up.svg)!important;mask-image:url(assets/lu-arrow-up.svg)}
+.ic-search{background-image:url(assets/lu-search.svg)!important;mask-image:url(assets/lu-search.svg)}
+.ic-users{background-image:url(assets/lu-users.svg)!important;mask-image:url(assets/lu-users.svg)}
+.ic-userplus{background-image:url(assets/lu-user-plus.svg)!important;mask-image:url(assets/lu-user-plus.svg)}
+.ic-trophy{background-image:url(assets/lu-trophy.svg)!important;mask-image:url(assets/lu-trophy.svg)}
+.ic-star{background-image:url(assets/lu-star.svg)!important;mask-image:url(assets/lu-star.svg)}
+.ic-heart{background-image:url(assets/lu-heart.svg)!important;mask-image:url(assets/lu-heart.svg)}
+.ic-headset{background-image:url(assets/lu-headset.svg)!important;mask-image:url(assets/lu-headset.svg)}
+.ic-sparkles{background-image:url(assets/lu-sparkles.svg)!important;mask-image:url(assets/lu-sparkles.svg)}
+.ic-wand{background-image:url(assets/lu-wand-sparkles.svg)!important;mask-image:url(assets/lu-wand-sparkles.svg)}
+.ic-shield{background-image:url(assets/lu-shield-check.svg)!important;mask-image:url(assets/lu-shield-check.svg)}
+.ic-clock{background-image:url(assets/lu-clock.svg)!important;mask-image:url(assets/lu-clock.svg)}
+.ic-cal{background-image:url(assets/lu-calendar-days.svg)!important;mask-image:url(assets/lu-calendar-days.svg)}
+.ic-pencil{background-image:url(assets/lu-pencil.svg)!important;mask-image:url(assets/lu-pencil.svg)}
+.ic-upload{background-image:url(assets/lu-upload.svg)!important;mask-image:url(assets/lu-upload.svg)}
+.ic-refresh{background-image:url(assets/lu-refresh-cw.svg)!important;mask-image:url(assets/lu-refresh-cw.svg)}
+.ic-camera{background-image:url(assets/lu-camera.svg)!important;mask-image:url(assets/lu-camera.svg)}
+.ic-image{background-image:url(assets/lu-image.svg)!important;mask-image:url(assets/lu-image.svg)}
+.ic-play{background-image:url(assets/lu-play.svg)!important;mask-image:url(assets/lu-play.svg)}
+.ic-qr{background-image:url(assets/lu-qr-code.svg)!important;mask-image:url(assets/lu-qr-code.svg)}
+.ic-flame{background-image:url(assets/lu-flame.svg)!important;mask-image:url(assets/lu-flame.svg)}
+.ic-rocket{background-image:url(assets/lu-rocket.svg)!important;mask-image:url(assets/lu-rocket.svg)}
+.ic-gift{background-image:url(assets/lu-gift.svg)!important;mask-image:url(assets/lu-gift.svg)}
+.ic-target{background-image:url(assets/lu-target.svg)!important;mask-image:url(assets/lu-target.svg)}
+.ic-pin{background-image:url(assets/lu-map-pin.svg)!important;mask-image:url(assets/lu-map-pin.svg)}
+.ic-compass{background-image:url(assets/lu-compass.svg)!important;mask-image:url(assets/lu-compass.svg)}
+.ic-clip{background-image:url(assets/lu-clipboard-list.svg)!important;mask-image:url(assets/lu-clipboard-list.svg)}
+.ic-pack{background-image:url(assets/lu-package.svg)!important;mask-image:url(assets/lu-package.svg)}
+.ic-bag{background-image:url(assets/lu-shopping-bag.svg)!important;mask-image:url(assets/lu-shopping-bag.svg)}
+.ic-tag{background-image:url(assets/lu-tag.svg)!important;mask-image:url(assets/lu-tag.svg)}
+.ic-ticket{background-image:url(assets/lu-ticket.svg)!important;mask-image:url(assets/lu-ticket.svg)}
+.ic-settings{background-image:url(assets/lu-settings.svg)!important;mask-image:url(assets/lu-settings.svg)}
+.ic-logout{background-image:url(assets/lu-log-out.svg)!important;mask-image:url(assets/lu-log-out.svg)}
+.ic-send{background-image:url(assets/lu-send.svg)!important;mask-image:url(assets/lu-send.svg)}
+.ic-phone{background-image:url(assets/lu-phone.svg)!important;mask-image:url(assets/lu-phone.svg)}
+.ic-link{background-image:url(assets/lu-link.svg)!important;mask-image:url(assets/lu-link.svg)}
+.ic-check{background-image:url(assets/lu-check.svg)!important;mask-image:url(assets/lu-check.svg)}
+.ic-cuser{background-image:url(assets/lu-user-plus.svg)!important;mask-image:url(assets/lu-user-plus.svg)}
+.ic-x{background-image:url(assets/lu-x.svg)!important;mask-image:url(assets/lu-x.svg)}
+.ic-cok{background-image:url(assets/lu-circle-check.svg)!important;mask-image:url(assets/lu-circle-check.svg)}
+.ic-zap{background-image:url(assets/lu-zap.svg)!important;mask-image:url(assets/lu-zap.svg)}
+.ic-medal{background-image:url(assets/lu-medal.svg)!important;mask-image:url(assets/lu-medal.svg)}
+.ic-badge{background-image:url(assets/lu-badge-check.svg)!important;mask-image:url(assets/lu-badge-check.svg)}
+.ic-crown{background-image:url(assets/lu-crown.svg)!important;mask-image:url(assets/lu-crown.svg)}
+.ic-msg{background-image:url(assets/lu-message-circle.svg)!important;mask-image:url(assets/lu-message-circle.svg)}
+.ic-swords{background-image:url(assets/lu-swords.svg)!important;mask-image:url(assets/lu-swords.svg)}
+.ic-box{background-image:url(assets/lu-box.svg)!important;mask-image:url(assets/lu-box.svg)}
+.ic-mic{background-image:url(assets/lu-mic.svg)!important;mask-image:url(assets/lu-mic.svg)}
+.ic-palette{background-image:url(assets/lu-palette.svg)!important;mask-image:url(assets/lu-palette.svg)}
+.ic-flag{background-image:url(assets/lu-flag.svg)!important;mask-image:url(assets/lu-flag.svg)}
+.ic-pad{background-image:url(assets/lu-gamepad-2.svg)!important;mask-image:url(assets/lu-gamepad-2.svg)}
+.ic-film{background-image:url(assets/lu-film.svg)!important;mask-image:url(assets/lu-film.svg)}
+.ic-mail{background-image:url(assets/lu-mail.svg)!important;mask-image:url(assets/lu-mail.svg)}
+.ic-bell{background-image:url(assets/lu-bell.svg)!important;mask-image:url(assets/lu-bell.svg)}
+.ic-timer{background-image:url(assets/lu-timer.svg)!important;mask-image:url(assets/lu-timer.svg)}
+.ic-hour{background-image:url(assets/lu-hourglass.svg)!important;mask-image:url(assets/lu-hourglass.svg)}
+.ic-book{background-image:url(assets/lu-clipboard-list.svg)!important;mask-image:url(assets/lu-clipboard-list.svg)}
+.ic-download{background-image:url(assets/lu-download.svg)!important;mask-image:url(assets/lu-download.svg)}
+.ic-share{background-image:url(assets/lu-share-2.svg)!important;mask-image:url(assets/lu-share-2.svg)}
+.ic-sun{background-image:url(assets/lu-sun.svg)!important;mask-image:url(assets/lu-sun.svg)}
+.ic-moon{background-image:url(assets/lu-moon.svg)!important;mask-image:url(assets/lu-moon.svg)}
+.ic-cloud{background-image:url(assets/lu-cloud.svg)!important;mask-image:url(assets/lu-cloud.svg)}
+.ic-bot{background-image:url(assets/lu-bot.svg)!important;mask-image:url(assets/lu-bot.svg)}
+.ic-credit{background-image:url(assets/lu-credit-card.svg)!important;mask-image:url(assets/lu-credit-card.svg)}
+.ic-ban{background-image:url(assets/lu-ban.svg)!important;mask-image:url(assets/lu-ban.svg)}
+/* 图标上色：内联 background 的色值当"选色器"（色块本身已被 base 的 transparent!important 关掉） */
+.ic[style*="#0369A1"]{filter:url(#t-0369A1)}
+.ic[style*="#0891B2"]{filter:url(#t-0891B2)}
+.ic[style*="#14202E"]{filter:url(#t-14202E)}
+.ic[style*="#2563EB"]{filter:url(#t-2563EB)}
+.ic[style*="#4A5A6E"]{filter:url(#t-4A5A6E)}
+.ic[style*="#64748B"]{filter:url(#t-64748B)}
+.ic[style*="#7C3AED"]{filter:url(#t-7C3AED)}
+.ic[style*="#8A99AB"]{filter:url(#t-8A99AB)}
+.ic[style*="#9AA8B8"]{filter:url(#t-9AA8B8)}
+.ic[style*="#C0CBD8"]{filter:url(#t-C0CBD8)}
+.ic[style*="#E9EEF5"]{filter:url(#t-E9EEF5)}
+.ic[style*="#F59E0B"]{filter:url(#t-F59E0B)}
+/* 浅底胶囊 / 区块标题里的图标（无内联色）：跟随该行文字色 */
+.sec .more i.ic{filter:url(#t-8A99AB)}
+.pill[style*="color:#0369A1"] i.ic{filter:url(#t-0369A1)}
+.pill[style*="color:#0891B2"] i.ic{filter:url(#t-0891B2)}
+.pill[style*="color:#15803D"] i.ic{filter:url(#t-15803D)}
+.pill[style*="color:#2563EB"] i.ic{filter:url(#t-2563EB)}
+.pill[style*="color:#6D28D9"] i.ic{filter:url(#t-6D28D9)}
+.pill[style*="color:#7C3AED"] i.ic{filter:url(#t-7C3AED)}
+.pill[style*="color:#8A99AB"] i.ic{filter:url(#t-8A99AB)}
+.pill[style*="color:#B45309"] i.ic{filter:url(#t-B45309)}
+.pill[style*="color:#BE185D"] i.ic{filter:url(#t-BE185D)}
+/* ============ 渐变（F 专属） ============ */
+.gm{background:linear-gradient(135deg,#2563EB,#06B6D4)}
+.gp{background:linear-gradient(135deg,#8B5CF6,#2563EB)}
+.gg{background:linear-gradient(135deg,#F59E0B,#FB923C)}
+.gc{background:linear-gradient(135deg,#06B6D4,#22D3EE)}
+.gk{background:linear-gradient(135deg,#F472B6,#F59E0B)}
+.gn{background:linear-gradient(135deg,#10B981,#22D3EE)}
+/* ============ 板面 ============ */
+.sheet{width:1700px;height:3700px;padding:22px 30px 0;overflow:hidden;background:#E7EBF2}
+.hd{height:74px}
+.hd h1{font-size:21px;font-weight:800;letter-spacing:.3px}
+.hd h1 b{color:#2563EB}
+.hd .hs{font-size:12px;color:#5A6B80;margin-top:6px;display:flex;gap:14px;align-items:center}
+.hd .hs em{font-style:normal;color:#8A99AB}
+.hd .hs s{text-decoration:none;color:#2563EB;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,410px);grid-template-rows:repeat(4,868px);row-gap:32px}
+.cell{width:410px;height:868px;padding:0 10px;display:flex;flex-direction:column}
+.cap{height:24px;flex:none;font-size:12px;color:#5A6B80;display:flex;align-items:center;gap:7px;font-weight:600}
+.cap b{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:6px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;font-size:10px;font-weight:800}
+.phone{width:390px;height:844px;background:#fff;border-radius:14px;overflow:hidden;border:1px solid #DDE4EC;display:flex;flex-direction:column;box-shadow:0 8px 22px rgba(15,36,64,.08);position:relative}
+/* 状态栏 */
+.st{height:26px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:10px;font-weight:800;letter-spacing:.3px}
+.st .sr{display:flex;align-items:center;gap:4px}
+.st .bar{width:3px;background:#14202E;border-radius:1px;display:block}
+.st .bat{width:17px;height:9px;border:1.2px solid #14202E;border-radius:2.6px;position:relative;display:block}
+.st .bat i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:10px;background:#14202E;border-radius:1px;display:block}
+.page{flex:1;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.pat{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+/* 通用 */
+.r{display:flex;align-items:center}
+.b{justify-content:space-between}
+.rc{display:flex;align-items:center;justify-content:center}
+.f1{flex:1;min-width:0}
+.w8{font-weight:800}
+.c1{color:#14202E}.c2{color:#4A5A6E}.c3{color:#8A99AB}
+.tab{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ib{border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.ib i{width:18px;height:18px}
+.card{background:#fff;border:1px solid #E9EEF5;border-radius:16px;position:relative;overflow:hidden}
+.sh-blue{box-shadow:0 6px 16px rgba(37,99,235,.09)}
+.sh-cyan{box-shadow:0 6px 16px rgba(6,182,212,.09)}
+.sh-gold{box-shadow:0 6px 16px rgba(245,158,11,.11)}
+.sh-purple{box-shadow:0 6px 16px rgba(139,92,246,.1)}
+.sec{display:flex;align-items:center;justify-content:space-between;margin:11px 0 7px}
+.sec h3{font-size:13.5px;font-weight:800;letter-spacing:.2px}
+.sec .more{font-size:10.5px;color:#8A99AB;display:flex;align-items:center;gap:1px}
+.sec .more i{width:12px;height:12px;background:#8A99AB}
+.pill{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 9px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap}
+.pill i{width:12px;height:12px}
+.price{display:inline-flex;align-items:center;justify-content:center;height:22px;padding:0 10px;border-radius:999px;color:#fff;font-size:12.5px;font-weight:800;letter-spacing:.2px}
+.stk{position:absolute;font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap;z-index:3}
+.btn{height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;letter-spacing:.6px}
+.btn.gm{background:linear-gradient(135deg,#2563EB,#06B6D4);box-shadow:0 10px 22px rgba(37,99,235,.3)}
+.btn.gp{background:linear-gradient(135deg,#8B5CF6,#2563EB);box-shadow:0 10px 22px rgba(139,92,246,.32)}
+.inp{height:50px;border:1px solid #E9EEF5;border-radius:14px;background:#F8FAFD;display:flex;align-items:center;gap:10px;padding:0 12px;font-size:12.5px;color:#8A99AB}
+.inp .ib{width:28px;height:28px;border-radius:10px}
+.inp .ib i{width:15px;height:15px}
+/* 底部导航 5 位 */
+.bnav{flex:none;height:58px;border-top:1px solid #E9EEF5;background:#fff;display:flex;align-items:flex-start;padding:7px 4px 0}
+.bnav .it{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9.5px;color:#8A99AB;font-weight:600}
+.bnav .it.on{color:#2563EB;font-weight:800}
+.nib{width:26px;height:26px;border-radius:9px;background:#EEF2F7;display:flex;align-items:center;justify-content:center}
+.nib i{width:15px;height:15px}
+.bnav .it.on .nib{background:linear-gradient(135deg,#2563EB,#06B6D4);box-shadow:0 5px 11px rgba(37,99,235,.35)}
+.plus{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#2563EB);box-shadow:0 7px 16px rgba(139,92,246,.42);display:flex;align-items:center;justify-content:center;color:#fff;font-size:21px;font-weight:700;line-height:1;margin-top:-14px}
+.ft{margin-top:20px;font-size:11px;color:#8A99AB;display:flex;gap:20px;align-items:center;height:16px}
+.ft b{color:#2563EB;font-weight:800}
+</style>
+</head>
+<body>
+<!-- ============ 图案定义（8 套，F 配色版；本页实际铺底用 p-wave / p-dots / p-diag 三套） ============ -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- 图标上色滤镜：feColorMatrix 把 RGB 换成常量、保留 alpha，等于给 SVG 图标精确上色 -->
+    <filter id="t-white" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"/></filter>
+    <filter id="t-0369A1" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .012  0 0 0 0 .412  0 0 0 0 .631  0 0 0 1 0"/></filter>
+    <filter id="t-0891B2" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .031  0 0 0 0 .569  0 0 0 0 .698  0 0 0 1 0"/></filter>
+    <filter id="t-14202E" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .078  0 0 0 0 .125  0 0 0 0 .18  0 0 0 1 0"/></filter>
+    <filter id="t-15803D" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .082  0 0 0 0 .502  0 0 0 0 .239  0 0 0 1 0"/></filter>
+    <filter id="t-2563EB" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .145  0 0 0 0 .388  0 0 0 0 .922  0 0 0 1 0"/></filter>
+    <filter id="t-4A5A6E" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .29  0 0 0 0 .353  0 0 0 0 .431  0 0 0 1 0"/></filter>
+    <filter id="t-64748B" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .392  0 0 0 0 .455  0 0 0 0 .545  0 0 0 1 0"/></filter>
+    <filter id="t-6D28D9" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .427  0 0 0 0 .157  0 0 0 0 .851  0 0 0 1 0"/></filter>
+    <filter id="t-7C3AED" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .486  0 0 0 0 .227  0 0 0 0 .929  0 0 0 1 0"/></filter>
+    <filter id="t-8A99AB" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .541  0 0 0 0 .6  0 0 0 0 .671  0 0 0 1 0"/></filter>
+    <filter id="t-9AA8B8" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .604  0 0 0 0 .659  0 0 0 0 .722  0 0 0 1 0"/></filter>
+    <filter id="t-B45309" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .706  0 0 0 0 .325  0 0 0 0 .035  0 0 0 1 0"/></filter>
+    <filter id="t-BE185D" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .745  0 0 0 0 .094  0 0 0 0 .365  0 0 0 1 0"/></filter>
+    <filter id="t-C0CBD8" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .753  0 0 0 0 .796  0 0 0 0 .847  0 0 0 1 0"/></filter>
+    <filter id="t-E9EEF5" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .914  0 0 0 0 .933  0 0 0 0 .961  0 0 0 1 0"/></filter>
+    <filter id="t-F59E0B" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .961  0 0 0 0 .62  0 0 0 0 .043  0 0 0 1 0"/></filter>
+    <pattern id="p-wave" width="40" height="16" patternUnits="userSpaceOnUse">
+      <path d="M0,12 Q10,2 20,12 T40,12" fill="none" stroke="#06B6D4" stroke-opacity=".4" stroke-width="1.4"/>
+    </pattern>
+    <pattern id="p-dots" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="2.5" cy="2.5" r="1.5" fill="#2563EB" fill-opacity=".22"/>
+    </pattern>
+    <pattern id="p-diag" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="10" height="10" fill="#8B5CF6" fill-opacity=".07"/>
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#8B5CF6" stroke-opacity=".22" stroke-width="2"/>
+    </pattern>
+    <pattern id="p-topo" width="160" height="90" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#2563EB" stroke-opacity=".2" stroke-width="1.1">
+        <path d="M-10,20 C30,-4 70,44 110,20 C130,8 150,14 170,24"/>
+        <path d="M-10,50 C30,26 70,74 110,50 C130,38 150,44 170,54"/>
+        <path d="M-10,80 C30,56 70,104 110,80 C130,68 150,74 170,84"/>
+      </g>
+    </pattern>
+    <pattern id="p-mount" width="60" height="34" patternUnits="userSpaceOnUse">
+      <path d="M0,34 L18,10 L30,24 L44,4 L60,26 L60,34 Z" fill="#2563EB" fill-opacity=".09"/>
+      <polyline points="0,30 20,12 34,22 46,8 60,22" fill="none" stroke="#06B6D4" stroke-opacity=".26" stroke-width="1.2"/>
+    </pattern>
+    <pattern id="p-hex" width="28" height="24" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#8B5CF6" stroke-opacity=".2" stroke-width="1.1">
+        <path d="M7,1 L21,1 L28,12 L21,23 L7,23 L0,12 Z"/>
+        <path d="M35,1 L35,23 M28,12 L42,12"/>
+      </g>
+    </pattern>
+    <pattern id="p-grid" width="14" height="14" patternUnits="userSpaceOnUse">
+      <path d="M0,0 H14 M0,0 V14" stroke="#06B6D4" stroke-opacity=".22" stroke-width=".9" fill="none"/>
+    </pattern>
+    <pattern id="p-scale" width="18" height="12" patternUnits="userSpaceOnUse">
+      <path d="M0,12 A9,9 0 0,1 18,12" fill="none" stroke="#F59E0B" stroke-opacity=".3" stroke-width="1.1"/>
+      <path d="M9,12 A9,9 0 0,1 27,12" fill="none" stroke="#F59E0B" stroke-opacity=".18" stroke-width="1.1"/>
+    </pattern>
+  </defs>
+</svg>
+
+<div class="sheet">
+  <div class="hd">
+    <h1>祁连山电竞 · 方案 F「潮玩」<b>全 App 设计图</b> · 16 屏</h1>
+    <div class="hs">
+      <em>主渐变 #2563EB→#06B6D4 · 紫渐变 #8B5CF6→#2563EB · 橙金 #F59E0B→#FB923C</em>
+      <em>图标：本机真实素材 96 个（Lucide 78 + Tabler 18）</em>
+      <s>全站金额一律 ¥ 两位小数 · 计价单位统一为「元」</s>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- ================= 屏 1 · 登录页 ================= -->
+    <div class="cell">
+      <div class="cap"><b>1</b> 登录页</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-dots)"/></svg>
+          <div style="position:relative;padding:0 26px;display:flex;flex-direction:column;height:100%">
+            <div style="height:56px"></div>
+            <div class="r" style="gap:12px">
+              <div class="ib gm" style="width:58px;height:58px;border-radius:19px;box-shadow:0 10px 20px rgba(37,99,235,.3)"><i class="ic ic-snow" style="width:31px;height:31px"></i></div>
+              <div>
+                <div style="font-size:20px;font-weight:800;letter-spacing:.6px">祁连山电竞</div>
+                <div style="font-size:10.5px;color:#8A99AB;margin-top:3px">陪玩 · 代练 · 全程录屏</div>
+              </div>
+            </div>
+            <div style="height:40px"></div>
+            <div style="font-size:27px;font-weight:800;letter-spacing:-.6px">欢迎回来</div>
+            <div style="font-size:12px;color:#4A5A6E;margin-top:7px">登录后浏览分部 · 下单 · 找陪玩</div>
+            <div style="height:26px"></div>
+            <div class="inp"><span class="ib gm"><i class="ic ic-smart"></i></span><span>账号 / 手机号</span></div>
+            <div style="height:12px"></div>
+            <div class="inp"><span class="ib gp"><i class="ic ic-lock"></i></span><span>密码</span><span style="flex:1"></span><i class="ic ic-eye" style="width:16px;height:16px;background:#C0CBD8"></i></div>
+            <div class="r b" style="margin-top:14px">
+              <span class="r" style="gap:6px;font-size:11px;color:#4A5A6E"><span class="rc" style="width:15px;height:15px;border-radius:5px;border:1.4px solid #2563EB;background:#EFF6FF"><i class="ic ic-check" style="width:10px;height:10px;background:#2563EB"></i></span>记住账号</span>
+              <span style="font-size:11px;color:#2563EB;font-weight:700">忘记密码</span>
+            </div>
+            <div style="height:20px"></div>
+            <div class="btn gm">登录 / 注册</div>
+            <div style="height:12px"></div>
+            <div class="rc" style="height:48px;border-radius:14px;border:1.4px solid #D7E2F0;color:#2563EB;font-size:14px;font-weight:800;background:#fff">新用户注册</div>
+            <div style="flex:1"></div>
+            <div class="card" style="padding:11px 12px;display:flex;align-items:center;gap:10px;background:linear-gradient(120deg,#FFF7ED,#FFFFFF);border-color:#FDE6C8">
+              <span class="ib gg" style="width:34px;height:34px"><i class="ic ic-gift" style="width:18px;height:18px"></i></span>
+              <div class="f1">
+                <div style="font-size:12.5px;font-weight:800">新客首单 ¥9.90 起</div>
+                <div style="font-size:10px;color:#8A99AB;margin-top:2px">保 400w · 送 7 套＋aug · 已售 19</div>
+              </div>
+              <span class="price" style="background:#F59E0B">¥9.90</span>
+            </div>
+            <div class="r" style="gap:8px;margin-top:12px">
+              <span class="pill" style="flex:1;justify-content:center;background:#EFF6FF;color:#2563EB;height:30px"><i class="ic ic-shield"></i>官方自营</span>
+              <span class="pill" style="flex:1;justify-content:center;background:#ECFEFF;color:#0891B2;height:30px"><i class="ic ic-film"></i>全程录屏</span>
+              <span class="pill" style="flex:1;justify-content:center;background:#F5F3FF;color:#7C3AED;height:30px"><i class="ic ic-refresh"></i>不满意重打</span>
+            </div>
+            <div style="height:14px"></div>
+            <div style="font-size:9.5px;color:#8A99AB;line-height:1.65">登录即代表同意《用户服务协议》与《隐私政策》<br>余额充值走线下扫码，管理员核对后发放</div>
+            <div style="height:18px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 2 · 服务页（首页） ================= -->
+    <div class="cell">
+      <div class="cap"><b>2</b> 服务页（首页）</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <!-- 顶部导航：选择陪玩 · 排行榜 · 公告 + 搜索（不含底部已有四项） -->
+          <div class="r" style="height:46px;flex:none;padding:0 14px;gap:16px">
+            <span style="font-size:13.5px;font-weight:800;color:#2563EB;position:relative">选择陪玩<span style="position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);width:16px;height:3px;border-radius:2px;background:linear-gradient(90deg,#2563EB,#06B6D4)"></span></span>
+            <span style="font-size:13.5px;font-weight:700;color:#4A5A6E">排行榜</span>
+            <span style="font-size:13.5px;font-weight:700;color:#4A5A6E">公告</span>
+            <span class="f1"></span>
+            <span class="rc" style="width:30px;height:30px;border-radius:11px;background:#F1F5FA"><i class="ic ic-search" style="width:15px;height:15px;background:#4A5A6E"></i></span>
+          </div>
+          <!-- 充值入口条：紧贴导航、同宽、凸起（零底距） -->
+          <div style="position:relative;height:54px;flex:none;overflow:hidden;background:linear-gradient(120deg,#8B5CF6,#2563EB 55%,#06B6D4);box-shadow:0 10px 20px rgba(37,99,235,.3);border-radius:0 0 18px 18px">
+            <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+            <div class="r" style="position:relative;height:100%;padding:0 16px;gap:10px">
+              <span class="rc" style="width:30px;height:30px;border-radius:11px;background:rgba(255,255,255,.22)"><i class="ic ic-wallet" style="width:16px;height:16px"></i></span>
+              <div class="f1">
+                <div style="font-size:13.5px;font-weight:800;color:#fff;letter-spacing:.3px">充值入口 · 余额充值</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.88);margin-top:1px">线下扫码付款 · 管理员核对后发放余额</div>
+              </div>
+              <i class="ic ic-chevR" style="width:15px;height:15px"></i>
+            </div>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:0 14px;display:flex;flex-direction:column">
+            <!-- 宣传图 16:9 + 角标 -->
+            <div style="height:10px"></div>
+            <div class="card" style="height:196px;border:0;background:linear-gradient(120deg,#0EA5E9,#2563EB 48%,#8B5CF6);box-shadow:0 8px 20px rgba(37,99,235,.22)">
+              <svg class="pat" style="opacity:.55"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <span class="stk" style="right:10px;top:10px;background:#FFB020;color:#3B2400;transform:rotate(6deg)">官方自营</span>
+              <div style="position:absolute;left:16px;bottom:16px;color:#fff">
+                <div style="font-size:17px;font-weight:800;letter-spacing:.4px">新赛季护航 · 24h 在线</div>
+                <div style="font-size:10.5px;color:rgba(255,255,255,.9);margin-top:5px">3 个分部 · 全程录屏 · 不满意重打</div>
+              </div>
+              <div style="position:absolute;right:14px;bottom:16px"><span class="rc" style="width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.24)"><i class="ic ic-play" style="width:16px;height:16px"></i></span></div>
+              <div style="position:absolute;left:16px;top:16px;font-size:9px;color:rgba(255,255,255,.75)">16:9 宣传图位</div>
+            </div>
+            <!-- 分部卡 -->
+            <div class="sec"><h3>选择分部</h3><span class="more">全部分部<i class="ic ic-chevR"></i></span></div>
+            <div class="card sh-blue" style="height:56px;border:0;background:linear-gradient(120deg,#2563EB,#06B6D4);display:flex;align-items:center;gap:10px;padding:0 14px">
+              <span class="rc" style="width:32px;height:32px;border-radius:12px;background:rgba(255,255,255,.22)"><i class="ic ic-pad" style="width:17px;height:17px"></i></span>
+              <div class="f1">
+                <div style="font-size:13.5px;font-weight:800;color:#fff">和平精英 · 手游</div>
+                <div style="font-size:9.5px;color:rgba(255,255,255,.88);margin-top:2px">12 人在线 · 官方自营</div>
+              </div>
+              <span class="price" style="background:rgba(255,255,255,.22)">进入</span>
+            </div>
+            <div class="r" style="gap:8px;margin-top:8px">
+              <div class="card sh-cyan" style="flex:1;height:52px;border:0;background:linear-gradient(135deg,#06B6D4,#22D3EE);display:flex;align-items:center;gap:8px;padding:0 11px">
+                <span class="rc" style="width:26px;height:26px;border-radius:9px;background:rgba(255,255,255,.24)"><i class="ic ic-swords" style="width:14px;height:14px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800;color:#fff">三角洲行动</div><div style="font-size:9px;color:rgba(255,255,255,.88)">手游</div></div>
+              </div>
+              <div class="card sh-gold" style="flex:1;height:52px;border:0;background:linear-gradient(135deg,#F59E0B,#FB923C);display:flex;align-items:center;gap:8px;padding:0 11px">
+                <span class="rc" style="width:26px;height:26px;border-radius:9px;background:rgba(255,255,255,.24)"><i class="ic ic-target" style="width:14px;height:14px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800;color:#fff">三角洲行动</div><div style="font-size:9px;color:rgba(255,255,255,.88)">端游</div></div>
+              </div>
+            </div>
+            <!-- 官方自营馆 -->
+            <div class="sec"><h3>官方自营馆</h3><span class="more">全部 5 件<i class="ic ic-chevR"></i></span></div>
+            <div class="r" style="gap:8px">
+              <div class="card sh-cyan f1" style="height:66px;padding:8px;display:flex;align-items:center;gap:8px">
+                <svg class="pat" style="opacity:.55"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+                <span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#06B6D4,#8B5CF6);position:relative"><i class="ic ic-snow" style="width:19px;height:19px"></i></span>
+                <div class="f1" style="position:relative">
+                  <div class="cl2" style="font-size:10.5px;font-weight:800;line-height:1.3">9.9 新人体验单 保 400w（送 7 套＋aug）</div>
+                  <div class="r" style="margin-top:4px;gap:5px"><span class="price" style="background:#F59E0B;height:18px;font-size:11px;padding:0 8px">¥9.90</span><span style="font-size:9px;color:#8A99AB">已售 19</span></div>
+                </div>
+              </div>
+              <div class="card sh-gold f1" style="height:66px;padding:8px;display:flex;align-items:center;gap:8px">
+                <svg class="pat" style="opacity:.55"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+                <span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#F59E0B,#F472B6);position:relative"><i class="ic ic-crown" style="width:19px;height:19px"></i></span>
+                <div class="f1" style="position:relative">
+                  <div class="cl2" style="font-size:10.5px;font-weight:800;line-height:1.3">233 保 1 亿（送小金人＋金 Aug/雪隼二选一）</div>
+                  <div class="r" style="margin-top:4px;gap:5px"><span class="price" style="background:#2563EB;height:18px;font-size:11px;padding:0 8px">¥233.00</span><span style="font-size:9px;color:#8A99AB">高端局</span></div>
+                </div>
+              </div>
+            </div>
+            <!-- 保障胶囊 -->
+            <div class="r" style="gap:6px;margin-top:10px">
+              <span class="pill" style="background:#EFF6FF;color:#2563EB;height:26px"><i class="ic ic-shield"></i>官方自营</span>
+              <span class="pill" style="background:#ECFEFF;color:#0891B2;height:26px"><i class="ic ic-film"></i>全程录屏</span>
+              <span class="pill" style="background:#F5F3FF;color:#7C3AED;height:26px"><i class="ic ic-refresh"></i>不满意重打</span>
+            </div>
+          </div>
+          <div class="bnav">
+            <div class="it on"><span class="nib"><i class="ic ic-bag"></i></span><span>服务</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-clip" style="background:#64748B"></i></span><span>订单</span></div>
+            <div class="it" style="margin-top:0"><span class="plus">＋</span><span style="margin-top:3px">下单</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-msg" style="background:#64748B"></i></span><span>消息</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-users" style="background:#64748B"></i></span><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 3 · 商品列表 ================= -->
+    <div class="cell">
+      <div class="cap"><b>3</b> 商品列表</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r" style="height:44px;flex:none;padding:0 14px;gap:10px">
+            <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#4A5A6E;transform:rotate(180deg)"></i></span>
+            <div class="f1">
+              <div style="font-size:15px;font-weight:800">和平精英 · 手游</div>
+              <div style="font-size:9.5px;color:#8A99AB;margin-top:1px">共 5 件商品 · 12 人在线</div>
+            </div>
+            <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-search" style="width:14px;height:14px;background:#4A5A6E"></i></span>
+          </div>
+          <!-- 分部胶囊筛选（选中=渐变实底） -->
+          <div class="r" style="gap:7px;flex:none;padding:4px 14px 0;overflow:hidden">
+            <span class="pill" style="height:28px;padding:0 12px;font-size:11px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;box-shadow:0 6px 13px rgba(37,99,235,.32)">全部</span>
+            <span class="pill" style="height:28px;padding:0 12px;font-size:11px;background:#F1F5FA;color:#4A5A6E">和平精英·手游</span>
+            <span class="pill" style="height:28px;padding:0 12px;font-size:11px;background:#F1F5FA;color:#4A5A6E">三角洲·手游</span>
+            <span class="pill" style="height:28px;padding:0 12px;font-size:11px;background:#F1F5FA;color:#4A5A6E">端游</span>
+          </div>
+          <!-- 排序栏 -->
+          <div class="r b" style="height:38px;flex:none;padding:0 15px;margin-top:5px;border-bottom:1px solid #F1F5FA">
+            <span style="font-size:11.5px;font-weight:800;color:#2563EB;position:relative">综合<span style="position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);width:14px;height:2.5px;border-radius:2px;background:#2563EB"></span></span>
+            <span style="font-size:11.5px;color:#4A5A6E">销量</span>
+            <span class="r" style="gap:2px;font-size:11.5px;color:#4A5A6E">价格<i class="ic ic-arrow-up" style="width:12px;height:12px;background:#4A5A6E"></i></span>
+            <span class="r" style="gap:3px;font-size:11.5px;color:#4A5A6E">筛选<i class="ic ic-chevD" style="width:12px;height:12px;background:#4A5A6E"></i></span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:10px 14px 0;display:flex;flex-direction:column;gap:9px">
+            <!-- 卡 1：彩浪底纹 + 贴纸角标 + 价格气囊 + 热度条 -->
+            <div class="card sh-blue" style="height:90px;padding:11px;display:flex;gap:10px;align-items:center">
+              <svg class="pat" style="opacity:.6"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <span class="stk" style="right:-4px;top:8px;background:#FFB020;color:#3B2400;transform:rotate(-5deg)">董事长推荐</span>
+              <span class="rc" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#06B6D4,#8B5CF6);position:relative"><i class="ic ic-snow" style="width:26px;height:26px"></i></span>
+              <div class="f1" style="position:relative">
+                <div class="cl2" style="font-size:11.5px;font-weight:800;line-height:1.35">9.9 新人体验单 保 400w（送 7 套＋aug）</div>
+                <div class="r" style="gap:5px;margin-top:5px"><span class="pill" style="background:#E0F2FE;color:#0369A1;height:18px;padding:0 7px">已售 19</span><span class="pill" style="background:#FEF3C7;color:#B45309;height:18px;padding:0 7px">限 2 单</span></div>
+                <div style="height:4px;border-radius:2px;background:#EEF2F7;margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:78%;border-radius:2px;background:linear-gradient(90deg,#2563EB,#8B5CF6)"></i></div>
+              </div>
+              <div style="position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                <span class="price" style="background:#F59E0B">¥9.90</span>
+                <span style="font-size:9px;color:#8A99AB">热度 78%</span>
+              </div>
+            </div>
+            <!-- 卡 2 -->
+            <div class="card sh-cyan" style="height:90px;padding:11px;display:flex;gap:10px;align-items:center">
+              <svg class="pat" style="opacity:.6"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <span class="stk" style="right:-4px;top:8px;background:#22D3EE;color:#083344;transform:rotate(5deg)">不出保</span>
+              <span class="rc" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F59E0B,#F472B6);position:relative"><i class="ic ic-swords" style="width:26px;height:26px"></i></span>
+              <div class="f1" style="position:relative">
+                <div class="cl2" style="font-size:11.5px;font-weight:800;line-height:1.35">44.6 博弈鹰雕单 不出保 1200w</div>
+                <div class="r" style="gap:5px;margin-top:5px"><span class="pill" style="background:#E0F2FE;color:#0369A1;height:18px;padding:0 7px">全程录屏</span><span class="pill" style="background:#EEE9FE;color:#6D28D9;height:18px;padding:0 7px">30 分钟</span></div>
+                <div style="height:4px;border-radius:2px;background:#EEF2F7;margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:42%;border-radius:2px;background:linear-gradient(90deg,#06B6D4,#22D3EE)"></i></div>
+              </div>
+              <div style="position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                <span class="price" style="background:#8B5CF6">¥44.60</span>
+                <span style="font-size:9px;color:#8A99AB">热度 42%</span>
+              </div>
+            </div>
+            <!-- 卡 3 -->
+            <div class="card sh-gold" style="height:90px;padding:11px;display:flex;gap:10px;align-items:center">
+              <svg class="pat" style="opacity:.6"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <span class="rc" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#2563EB,#0EA5E9);position:relative"><i class="ic ic-target" style="width:26px;height:26px"></i></span>
+              <div class="f1" style="position:relative">
+                <div class="cl2" style="font-size:11.5px;font-weight:800;line-height:1.35">30 保 1000w（送 7 级套＋强化 74u/妹控/Aug 四选一）</div>
+                <div class="r" style="gap:5px;margin-top:5px"><span class="pill" style="background:#FEF3C7;color:#B45309;height:18px;padding:0 7px">四选一</span></div>
+                <div style="height:4px;border-radius:2px;background:#EEF2F7;margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:63%;border-radius:2px;background:linear-gradient(90deg,#8B5CF6,#2563EB)"></i></div>
+              </div>
+              <div style="position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                <span class="price" style="background:#2563EB">¥30.00</span>
+                <span style="font-size:9px;color:#8A99AB">热度 63%</span>
+              </div>
+            </div>
+            <!-- 卡 4 -->
+            <div class="card sh-purple" style="height:90px;padding:11px;display:flex;gap:10px;align-items:center">
+              <svg class="pat" style="opacity:.6"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <span class="stk" style="right:-4px;top:8px;background:#8B5CF6;color:#fff;transform:rotate(-6deg)">高端局</span>
+              <span class="rc" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F59E0B,#FB923C);position:relative"><i class="ic ic-crown" style="width:26px;height:26px"></i></span>
+              <div class="f1" style="position:relative">
+                <div class="cl2" style="font-size:11.5px;font-weight:800;line-height:1.35">233 保 1 亿（送小金人＋金 Aug/雪隼二选一）</div>
+                <div class="r" style="gap:5px;margin-top:5px"><span class="pill" style="background:#FEF3C7;color:#B45309;height:18px;padding:0 7px">小金人</span><span class="pill" style="background:#EEE9FE;color:#6D28D9;height:18px;padding:0 7px">二选一</span></div>
+                <div style="height:4px;border-radius:2px;background:#EEF2F7;margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:28%;border-radius:2px;background:linear-gradient(90deg,#F59E0B,#EF4444)"></i></div>
+              </div>
+              <div style="position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                <span class="price" style="background:#F59E0B">¥233.00</span>
+                <span style="font-size:9px;color:#8A99AB">热度 28%</span>
+              </div>
+            </div>
+            <!-- 卡 5 -->
+            <div class="card sh-blue" style="height:90px;padding:11px;display:flex;gap:10px;align-items:center">
+              <svg class="pat" style="opacity:.6"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <span class="stk" style="right:-4px;top:8px;background:#10B981;color:#fff;transform:rotate(5deg)">走量单</span>
+              <span class="rc" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#10B981,#22D3EE);position:relative"><i class="ic ic-flame" style="width:26px;height:26px"></i></span>
+              <div class="f1" style="position:relative">
+                <div class="cl2" style="font-size:11.5px;font-weight:800;line-height:1.35">18.8 保 500w（送 7 级套＋aug）</div>
+                <div class="r" style="gap:5px;margin-top:5px"><span class="pill" style="background:#DCFCE7;color:#15803D;height:18px;padding:0 7px">已售 59</span><span class="pill" style="background:#E0F2FE;color:#0369A1;height:18px;padding:0 7px">回头客多</span></div>
+                <div style="height:4px;border-radius:2px;background:#EEF2F7;margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:91%;border-radius:2px;background:linear-gradient(90deg,#10B981,#06B6D4)"></i></div>
+              </div>
+              <div style="position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                <span class="price" style="background:#10B981">¥18.80</span>
+                <span style="font-size:9px;color:#8A99AB">热度 91%</span>
+              </div>
+            </div>
+          </div>
+          <div class="bnav">
+            <div class="it on"><span class="nib"><i class="ic ic-bag"></i></span><span>服务</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-clip" style="background:#64748B"></i></span><span>订单</span></div>
+            <div class="it"><span class="plus">＋</span><span style="margin-top:3px">下单</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-msg" style="background:#64748B"></i></span><span>消息</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-users" style="background:#64748B"></i></span><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 4 · 商品详情 ================= -->
+    <div class="cell">
+      <div class="cap"><b>4</b> 商品详情</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#4A5A6E;transform:rotate(180deg)"></i></span>
+            <span style="font-size:14px;font-weight:800">商品详情</span>
+            <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-share" style="width:14px;height:14px;background:#4A5A6E"></i></span>
+          </div>
+          <!-- 大图位 -->
+          <div style="height:219px;flex:none;position:relative;overflow:hidden;background:linear-gradient(120deg,#0EA5E9,#2563EB 50%,#8B5CF6)">
+            <svg class="pat" style="opacity:.55"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+            <span class="stk" style="left:14px;top:14px;background:#FFB020;color:#3B2400;transform:rotate(-5deg)">董事长推荐</span>
+            <span class="stk" style="right:14px;top:16px;background:rgba(255,255,255,.9);color:#2563EB;transform:rotate(5deg)">已售 59</span>
+            <div class="rc" style="position:absolute;inset:0"><span class="rc" style="width:76px;height:76px;border-radius:26px;background:rgba(255,255,255,.24)"><i class="ic ic-snow" style="width:44px;height:44px"></i></span></div>
+            <div style="position:absolute;right:14px;bottom:14px;font-size:9px;color:rgba(255,255,255,.8)">16:9 主图位</div>
+            <div class="r" style="position:absolute;left:14px;bottom:14px;gap:6px">
+              <span class="pill" style="background:rgba(255,255,255,.22);color:#fff;height:22px"><i class="ic ic-film"></i>全程录屏</span>
+              <span class="pill" style="background:rgba(255,255,255,.22);color:#fff;height:22px"><i class="ic ic-shield"></i>官方自营</span>
+            </div>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:0 14px">
+            <!-- 标题价格 -->
+            <div class="card sh-blue" style="margin-top:-14px;padding:13px 14px;position:relative;z-index:2">
+              <div style="font-size:14px;font-weight:800;line-height:1.4">18.8 保 500w（送 7 级套＋aug）</div>
+              <div class="r b" style="margin-top:9px">
+                <div class="r" style="gap:8px;align-items:flex-end">
+                  <span style="font-size:23px;font-weight:800;color:#F59E0B;letter-spacing:-.5px" class="tab">¥18.80</span>
+                  <span style="font-size:10px;color:#8A99AB;padding-bottom:3px">已售 59 · 回头客多</span>
+                </div>
+                <span class="price" style="background:#2563EB;height:24px">和平精英 · 手游</span>
+              </div>
+              <div class="r" style="gap:6px;margin-top:10px">
+                <span class="pill" style="background:#EFF6FF;color:#2563EB;height:24px"><i class="ic ic-clock"></i>约 30 分钟</span>
+                <span class="pill" style="background:#ECFEFF;color:#0891B2;height:24px"><i class="ic ic-users"></i>需 2 人</span>
+                <span class="pill" style="background:#F5F3FF;color:#7C3AED;height:24px"><i class="ic ic-gift"></i>送 7 级套</span>
+              </div>
+            </div>
+            <!-- 规格 -->
+            <div class="sec"><h3>规格</h3><span class="more">共 4 项</span></div>
+            <div class="card" style="padding:2px 13px">
+              <div class="r b" style="height:32px;border-bottom:1px solid #F3F6FA"><span style="font-size:11px;color:#8A99AB">服务分部</span><span style="font-size:11.5px;font-weight:700">和平精英 · 手游</span></div>
+              <div class="r b" style="height:32px;border-bottom:1px solid #F3F6FA"><span style="font-size:11px;color:#8A99AB">服务时长</span><span style="font-size:11.5px;font-weight:700">约 30 分钟（3 局）</span></div>
+              <div class="r b" style="height:32px;border-bottom:1px solid #F3F6FA"><span style="font-size:11px;color:#8A99AB">是否录屏</span><span style="font-size:11.5px;font-weight:700;color:#06B6D4">全程录屏</span></div>
+              <div class="r b" style="height:32px"><span style="font-size:11px;color:#8A99AB">附赠内容</span><span class="r" style="gap:5px;font-size:11.5px;font-weight:700">7 级套 ＋ aug</span></div>
+            </div>
+            <!-- 须知 -->
+            <div class="sec"><h3>下单须知</h3><span class="more">必读 3 条</span></div>
+            <div style="background:#EFF6FF;border-radius:14px;padding:11px 13px;position:relative;overflow:hidden">
+              <svg class="pat" style="opacity:.4"><rect width="100%" height="100%" fill="url(#p-dots)"/></svg>
+              <div style="position:relative">
+                <div class="r" style="gap:7px;font-size:11px;color:#4A5A6E;line-height:1.5;margin-bottom:6px"><i class="ic ic-cok" style="width:13px;height:13px;background:#2563EB;flex:none"></i><span>下单后请保持手机畅通，打手 10 分钟内联系</span></div>
+                <div class="r" style="gap:7px;font-size:11px;color:#4A5A6E;line-height:1.5;margin-bottom:6px"><i class="ic ic-cok" style="width:13px;height:13px;background:#2563EB;flex:none"></i><span>服务开始前可免费取消，开始后不支持退款</span></div>
+                <div class="r" style="gap:7px;font-size:11px;color:#4A5A6E;line-height:1.5"><i class="ic ic-cok" style="width:13px;height:13px;background:#2563EB;flex:none"></i><span>如遇掉线/闪退，录屏为唯一凭证，可按比例补单</span></div>
+              </div>
+            </div>
+          </div>
+          <!-- 底部「立即下单」渐变长条 -->
+          <div style="flex:none;height:66px;border-top:1px solid #E9EEF5;background:#fff;display:flex;align-items:center;gap:11px;padding:0 14px">
+            <div>
+              <div style="font-size:9.5px;color:#8A99AB">合计</div>
+              <div style="font-size:18px;font-weight:800;color:#F59E0B;letter-spacing:-.4px" class="tab">¥18.80</div>
+            </div>
+            <div class="btn gm f1" style="height:46px">立即下单</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 5 · 下单页 ================= -->
+    <div class="cell">
+      <div class="cap"><b>5</b> 下单页</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#4A5A6E;transform:rotate(180deg)"></i></span>
+            <span style="font-size:14px;font-weight:800">确认下单</span>
+            <span style="width:28px;height:28px"></span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:0 14px">
+            <!-- 商品摘要卡 -->
+            <div class="card sh-blue" style="padding:11px;display:flex;gap:10px;align-items:center">
+              <svg class="pat" style="opacity:.55"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <span class="rc" style="width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#2563EB,#0EA5E9);position:relative"><i class="ic ic-target" style="width:23px;height:23px"></i></span>
+              <div class="f1" style="position:relative">
+                <div class="cl2" style="font-size:11.5px;font-weight:800;line-height:1.35">30 保 1000w（送 7 级套＋强化 74u/妹控/Aug 四选一）</div>
+                <div class="r" style="gap:6px;margin-top:5px">
+                  <span class="pill" style="background:#EFF6FF;color:#2563EB;height:18px;padding:0 7px">和平精英 · 手游</span>
+                  <span class="price" style="background:#F59E0B;height:18px;font-size:11px;padding:0 8px">¥30.00</span>
+                </div>
+              </div>
+            </div>
+            <!-- 平台 / 时长 -->
+            <div class="sec"><h3>选择平台</h3><span class="more">该游戏仅手游</span></div>
+            <div class="r" style="gap:8px">
+              <span class="pill" style="height:33px;padding:0 14px;font-size:11.5px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;box-shadow:0 6px 13px rgba(37,99,235,.3)"><i class="ic ic-pad" style="width:14px;height:14px"></i>和平精英 · 手游</span>
+              <span class="pill" style="height:33px;padding:0 14px;font-size:11.5px;background:#F1F5FA;color:#4A5A6E"><i class="ic ic-swords" style="width:14px;height:14px;background:#4A5A6E"></i>三角洲 · 手游</span>
+              <span class="pill" style="height:33px;padding:0 14px;font-size:11.5px;background:#F1F5FA;color:#4A5A6E"><i class="ic ic-target" style="width:14px;height:14px;background:#4A5A6E"></i>端游</span>
+            </div>
+            <div class="sec"><h3>选择时长</h3><span class="more">超时按 15 分钟计</span></div>
+            <div class="r" style="gap:8px">
+              <span class="pill" style="height:33px;padding:0 16px;font-size:11.5px;background:#F1F5FA;color:#4A5A6E">1 小时</span>
+              <span class="pill" style="height:33px;padding:0 16px;font-size:11.5px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;box-shadow:0 6px 13px rgba(139,92,246,.32)">2 小时</span>
+              <span class="pill" style="height:33px;padding:0 16px;font-size:11.5px;background:#F1F5FA;color:#4A5A6E">包夜 6 小时</span>
+            </div>
+            <!-- 备注 -->
+            <div class="sec"><h3>订单备注</h3><span class="more">选填 · 200 字</span></div>
+            <div style="border:1px solid #E9EEF5;border-radius:14px;background:#F8FAFD;padding:10px 12px;height:60px;position:relative">
+              <div style="font-size:11px;color:#8A99AB;line-height:1.6">服务器 M23 · 角色名 老张不慌 · 今晚 21:00 上线<br>要求：全程录屏，打完发仓库截图</div>
+              <span class="rc" style="position:absolute;right:10px;bottom:8px;width:22px;height:22px;border-radius:8px;background:#EEF2F7"><i class="ic ic-pencil" style="width:12px;height:12px;background:#4A5A6E"></i></span>
+            </div>
+            <!-- 结算 -->
+            <div class="sec"><h3>金额结算</h3><span class="more">全站 ¥ 两位小数</span></div>
+            <div class="card" style="padding:2px 13px">
+              <div class="r b" style="height:30px"><span style="font-size:11px;color:#8A99AB">商品金额</span><span style="font-size:11.5px;font-weight:700" class="tab">¥30.00</span></div>
+              <div class="r b" style="height:30px;border-top:1px solid #F3F6FA"><span style="font-size:11px;color:#8A99AB">数量</span><span style="font-size:11.5px;font-weight:700" class="tab">× 1</span></div>
+              <div class="r b" style="height:30px;border-top:1px solid #F3F6FA"><span style="font-size:11px;color:#8A99AB">新人立减</span><span style="font-size:11.5px;font-weight:700;color:#10B981" class="tab">-¥0.00</span></div>
+              <div class="r b" style="height:40px;border-top:1px solid #F3F6FA"><span style="font-size:12px;font-weight:800">合计</span><span style="font-size:19px;font-weight:800;color:#F59E0B;letter-spacing:-.4px" class="tab">¥30.00</span></div>
+            </div>
+            <!-- 保障提示 -->
+            <div class="r" style="gap:6px;margin-top:9px">
+              <span class="pill" style="background:#EFF6FF;color:#2563EB;height:24px"><i class="ic ic-shield"></i>平台担保</span>
+              <span class="pill" style="background:#ECFEFF;color:#0891B2;height:24px"><i class="ic ic-film"></i>全程录屏</span>
+              <span class="pill" style="background:#F5F3FF;color:#7C3AED;height:24px"><i class="ic ic-headset"></i>客服 24h</span>
+            </div>
+            <div style="background:#ECFEFF;border-radius:14px;padding:9px 13px;margin-top:8px;position:relative;overflow:hidden">
+              <svg class="pat" style="opacity:.35"><rect width="100%" height="100%" fill="url(#p-dots)"/></svg>
+              <div class="r" style="gap:7px;position:relative"><i class="ic ic-hour" style="width:14px;height:14px;background:#0891B2;flex:none"></i><span style="font-size:10.5px;color:#0E7490;line-height:1.5">下单后 60 秒内无打手接单，系统自动全额退回余额</span></div>
+            </div>
+            <div class="sec" style="margin:10px 0 7px"><h3>服务流程</h3><span class="more">下单 → 接单 → 结算</span></div>
+            <div class="card" style="padding:7px 6px;display:flex;align-items:center">
+              <div class="f1 rc" style="flex-direction:column;gap:4px"><span class="rc" style="width:30px;height:30px;border-radius:11px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;font-size:13px;font-weight:800">1</span><span style="font-size:10px;color:#4A5A6E">提交订单</span></div>
+              <span style="width:13px;height:2px;border-radius:1px;background:#E9EEF5"></span>
+              <div class="f1 rc" style="flex-direction:column;gap:4px"><span class="rc" style="width:30px;height:30px;border-radius:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:13px;font-weight:800">2</span><span style="font-size:10px;color:#4A5A6E">打手接单</span></div>
+              <span style="width:13px;height:2px;border-radius:1px;background:#E9EEF5"></span>
+              <div class="f1 rc" style="flex-direction:column;gap:4px"><span class="rc" style="width:30px;height:30px;border-radius:11px;background:linear-gradient(135deg,#06B6D4,#22D3EE);color:#fff;font-size:13px;font-weight:800">3</span><span style="font-size:10px;color:#4A5A6E">完成结算</span></div>
+            </div>
+          </div>
+          <div style="flex:none;height:74px;border-top:1px solid #E9EEF5;background:#fff;padding:11px 14px 0">
+            <div class="btn gm" style="height:46px">提交订单 · <span class="tab">¥30.00</span></div>
+          </div>
+          <div style="flex:none;height:26px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:9.5px;color:#8A99AB">当前余额 <span class="tab" style="color:#F59E0B;font-weight:800;margin-left:3px">¥99,999.90</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 6 · 订单列表 ================= -->
+    <div class="cell">
+      <div class="cap"><b>6</b> 订单列表</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span style="font-size:15px;font-weight:800">我的订单</span>
+            <span class="r" style="gap:8px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-search" style="width:14px;height:14px;background:#4A5A6E"></i></span><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-headset" style="width:14px;height:14px;background:#4A5A6E"></i></span></span>
+          </div>
+          <!-- 状态筛选胶囊 -->
+          <div class="r" style="gap:7px;flex:none;padding:2px 14px 0">
+            <span class="pill" style="height:28px;padding:0 13px;font-size:11px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;box-shadow:0 6px 13px rgba(37,99,235,.3)">全部</span>
+            <span class="pill" style="height:28px;padding:0 13px;font-size:11px;background:#F1F5FA;color:#4A5A6E">待接单</span>
+            <span class="pill" style="height:28px;padding:0 13px;font-size:11px;background:#F1F5FA;color:#4A5A6E">进行中</span>
+            <span class="pill" style="height:28px;padding:0 13px;font-size:11px;background:#F1F5FA;color:#4A5A6E">已完成</span>
+            <span class="pill" style="height:28px;padding:0 13px;font-size:11px;background:#F1F5FA;color:#4A5A6E">已取消</span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:10px 14px 0;display:flex;flex-direction:column;gap:10px">
+            <!-- 待接单 -->
+            <div class="card sh-blue" style="padding:11px 12px">
+              <div class="r b">
+                <span style="font-size:10px;color:#8A99AB" class="tab">订单号 OD20261016001</span>
+                <span class="pill" style="background:#FEF3C7;color:#B45309"><i class="ic ic-hour"></i>待接单</span>
+              </div>
+              <div class="r" style="gap:9px;margin-top:9px">
+                <span class="rc" style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#06B6D4,#8B5CF6)"><i class="ic ic-snow" style="width:19px;height:19px"></i></span>
+                <div class="f1">
+                  <div class="ell" style="font-size:11.5px;font-weight:800">9.9 新人体验单 保 400w（送 7 套＋aug）</div>
+                  <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">和平精英 · 手游 · 10-16 20:12 下单</div>
+                </div>
+                <span style="font-size:15px;font-weight:800;color:#F59E0B" class="tab">¥9.90</span>
+              </div>
+              <div class="r" style="gap:8px;margin-top:10px;justify-content:flex-end">
+                <span class="rc" style="height:30px;padding:0 13px;border-radius:11px;border:1px solid #E9EEF5;font-size:11px;font-weight:700;color:#4A5A6E">取消订单</span>
+                <span class="rc" style="height:30px;padding:0 13px;border-radius:11px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;font-size:11px;font-weight:800">催一下</span>
+              </div>
+            </div>
+            <!-- 进行中 -->
+            <div class="card sh-purple" style="padding:11px 12px">
+              <div class="r b">
+                <span style="font-size:10px;color:#8A99AB" class="tab">订单号 OD20261016002</span>
+                <span class="pill" style="background:#EDE9FE;color:#6D28D9"><i class="ic ic-play"></i>进行中</span>
+              </div>
+              <div class="r" style="gap:9px;margin-top:9px">
+                <span class="rc" style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#2563EB,#0EA5E9)"><i class="ic ic-target" style="width:19px;height:19px"></i></span>
+                <div class="f1">
+                  <div class="ell" style="font-size:11.5px;font-weight:800">30 保 1000w（送 7 级套＋强化 74u/妹控/Aug 四选一）</div>
+                  <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">打手 凌云 · 已服务 26 分钟</div>
+                </div>
+                <span style="font-size:15px;font-weight:800;color:#F59E0B" class="tab">¥30.00</span>
+              </div>
+              <div class="r" style="gap:8px;margin-top:10px;justify-content:flex-end">
+                <span class="rc" style="height:30px;padding:0 13px;border-radius:11px;border:1px solid #E9EEF5;font-size:11px;font-weight:700;color:#4A5A6E">查看进度</span>
+                <span class="rc" style="height:30px;padding:0 13px;border-radius:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:11px;font-weight:800">联系打手</span>
+              </div>
+            </div>
+            <!-- 已完成 -->
+            <div class="card" style="padding:11px 12px">
+              <div class="r b">
+                <span style="font-size:10px;color:#8A99AB" class="tab">订单号 OD20261015018</span>
+                <span class="pill" style="background:#DCFCE7;color:#15803D"><i class="ic ic-cok"></i>已完成</span>
+              </div>
+              <div class="r" style="gap:9px;margin-top:9px">
+                <span class="rc" style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#F59E0B,#F472B6)"><i class="ic ic-swords" style="width:19px;height:19px"></i></span>
+                <div class="f1">
+                  <div class="ell" style="font-size:11.5px;font-weight:800">44.6 博弈鹰雕单 不出保 1200w</div>
+                  <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">三角洲行动 · 手游 · 已完成 3 小时</div>
+                </div>
+                <span style="font-size:15px;font-weight:800;color:#F59E0B" class="tab">¥44.60</span>
+              </div>
+              <div class="r" style="gap:8px;margin-top:10px;justify-content:flex-end">
+                <span class="rc" style="height:30px;padding:0 13px;border-radius:11px;border:1px solid #E9EEF5;font-size:11px;font-weight:700;color:#4A5A6E">申请售后</span>
+                <span class="rc" style="height:30px;padding:0 13px;border-radius:11px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;font-size:11px;font-weight:800">再次下单</span>
+              </div>
+            </div>
+            <!-- 已取消 -->
+            <div class="card" style="padding:11px 12px;background:#FAFBFD">
+              <div class="r b">
+                <span style="font-size:10px;color:#8A99AB" class="tab">订单号 OD20261014007</span>
+                <span class="pill" style="background:#F1F5FA;color:#8A99AB"><i class="ic ic-ban"></i>已取消</span>
+              </div>
+              <div class="r" style="gap:9px;margin-top:9px">
+                <span class="rc" style="width:38px;height:38px;border-radius:12px;background:#E5EAF1"><i class="ic ic-crown" style="width:19px;height:19px;background:#9AA8B8"></i></span>
+                <div class="f1">
+                  <div class="ell" style="font-size:11.5px;font-weight:800;color:#4A5A6E">233 保 1 亿（送小金人＋金 Aug/雪隼二选一）</div>
+                  <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">超时未接单 · 已全额退回余额</div>
+                </div>
+                <span style="font-size:15px;font-weight:800;color:#8A99AB" class="tab">¥233.00</span>
+              </div>
+              <div style="margin-top:10px;text-align:right"><span class="rc" style="display:inline-flex;height:30px;padding:0 13px;border-radius:11px;background:#EEF2F7;font-size:11px;font-weight:800;color:#4A5A6E">重新下单</span></div>
+            </div>
+            <div style="text-align:center;font-size:10px;color:#B7C1CE;padding:2px 0 4px">— 只显示最近 30 天订单 —</div>
+          </div>
+          <div class="bnav">
+            <div class="it"><span class="nib"><i class="ic ic-bag" style="background:#64748B"></i></span><span>服务</span></div>
+            <div class="it on"><span class="nib"><i class="ic ic-clip"></i></span><span>订单</span></div>
+            <div class="it"><span class="plus">＋</span><span style="margin-top:3px">下单</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-msg" style="background:#64748B"></i></span><span>消息</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-users" style="background:#64748B"></i></span><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 7 · 订单详情 ================= -->
+    <div class="cell">
+      <div class="cap"><b>7</b> 订单详情</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#4A5A6E;transform:rotate(180deg)"></i></span>
+            <span style="font-size:14px;font-weight:800">订单详情</span>
+            <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-headset" style="width:14px;height:14px;background:#4A5A6E"></i></span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:0 14px">
+            <!-- 状态 + 时间轴（竖线 + 彩点） -->
+            <div class="card" style="padding:0;border:0;background:linear-gradient(120deg,#2563EB,#06B6D4)">
+              <svg class="pat" style="opacity:.45"><rect width="100%" height="100%" fill="url(#p-diag)"/></svg>
+              <div style="position:relative;padding:11px 14px 10px">
+                <div class="r b"><span style="font-size:17px;font-weight:800;color:#fff;letter-spacing:.4px">进行中</span><span class="price" style="background:rgba(255,255,255,.22)">预计 20:50 完成</span></div>
+                <div style="font-size:10px;color:rgba(255,255,255,.88);margin-top:5px" class="tab">订单号 OD20261016001 · 打手 凌云 已接单</div>
+              </div>
+              <div style="background:#fff;border-radius:16px 16px 0 0;padding:11px 14px 11px">
+                <div style="position:relative;padding-left:20px">
+                  <div style="position:absolute;left:5px;top:6px;bottom:14px;width:2px;background:linear-gradient(180deg,#2563EB,#06B6D4,#8B5CF6,#E9EEF5)"></div>
+                  <div style="position:relative;margin-bottom:11px">
+                    <span style="position:absolute;left:-20px;top:2px;width:11px;height:11px;border-radius:50%;background:#2563EB;box-shadow:0 0 0 3px #EFF6FF"></span>
+                    <div class="r b"><span style="font-size:11.5px;font-weight:800">已提交订单</span><span style="font-size:9.5px;color:#8A99AB" class="tab">10-16 20:12</span></div>
+                    <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">已下单，等待打手接单</div>
+                  </div>
+                  <div style="position:relative;margin-bottom:11px">
+                    <span style="position:absolute;left:-20px;top:2px;width:11px;height:11px;border-radius:50%;background:#06B6D4;box-shadow:0 0 0 3px #ECFEFF"></span>
+                    <div class="r b"><span style="font-size:11.5px;font-weight:800">打手已接单</span><span style="font-size:9.5px;color:#8A99AB" class="tab">20:14</span></div>
+                    <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">凌云 接了这单，10 分钟内上线</div>
+                  </div>
+                  <div style="position:relative;margin-bottom:11px">
+                    <span style="position:absolute;left:-20px;top:2px;width:11px;height:11px;border-radius:50%;background:#8B5CF6;box-shadow:0 0 0 3px #F5F3FF"></span>
+                    <div class="r b"><span style="font-size:11.5px;font-weight:800">服务进行中</span><span style="font-size:9.5px;color:#8A99AB" class="tab">20:24</span></div>
+                    <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">已开始录屏，服务约 3 局</div>
+                  </div>
+                  <div style="position:relative">
+                    <span style="position:absolute;left:-20px;top:2px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #E9EEF5"></span>
+                    <div class="r b"><span style="font-size:11.5px;font-weight:800;color:#8A99AB">服务完成</span><span style="font-size:9.5px;color:#B7C1CE">待完成</span></div>
+                    <div style="font-size:9.5px;color:#B7C1CE;margin-top:3px">完成后余额自动结算给打手</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 打手信息卡 -->
+            <div class="sec"><h3>服务打手</h3><span class="more">官方自营</span></div>
+            <div class="card sh-cyan" style="padding:9px 12px;display:flex;align-items:center;gap:10px">
+              <span class="rc" style="width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:18px;font-weight:800">凌</span>
+              <div class="f1">
+                <div class="r" style="gap:5px"><span style="font-size:12.5px;font-weight:800">凌云</span><i class="ic ic-badge" style="width:13px;height:13px;background:#2563EB"></i></div>
+                <div style="font-size:10px;color:#8A99AB;margin-top:3px">接单 2847 · 好评率 98.6%</div>
+              </div>
+              <span class="rc" style="height:30px;padding:0 14px;border-radius:11px;background:linear-gradient(135deg,#06B6D4,#22D3EE);color:#fff;font-size:11px;font-weight:800">联系 TA</span>
+            </div>
+            <!-- 商品 -->
+            <div class="sec"><h3>商品信息</h3><span class="more">查看商品</span></div>
+            <div class="card" style="padding:11px 12px;display:flex;align-items:center;gap:10px">
+              <span class="rc" style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#06B6D4,#8B5CF6)"><i class="ic ic-snow" style="width:19px;height:19px"></i></span>
+              <div class="f1"><div class="ell" style="font-size:11px;font-weight:800">9.9 新人体验单 保 400w（送 7 套＋aug）</div><div style="font-size:9.5px;color:#8A99AB;margin-top:3px">和平精英 · 手游 · 数量 × 1</div></div>
+              <span style="font-size:13px;font-weight:800;color:#F59E0B" class="tab">¥9.90</span>
+            </div>
+            <!-- 费用明细 -->
+            <div class="sec"><h3>费用明细</h3><span class="more">已冻结</span></div>
+            <div class="card" style="padding:2px 13px">
+              <div class="r b" style="height:26px"><span style="font-size:11px;color:#8A99AB">商品金额</span><span style="font-size:11.5px;font-weight:700" class="tab">¥9.90</span></div>
+              <div class="r b" style="height:26px;border-top:1px solid #F3F6FA"><span style="font-size:11px;color:#8A99AB">新人立减</span><span style="font-size:11.5px;font-weight:700;color:#10B981" class="tab">-¥0.00</span></div>
+              <div class="r b" style="height:32px;border-top:1px solid #F3F6FA"><span style="font-size:12px;font-weight:800">实付金额</span><span style="font-size:16px;font-weight:800;color:#F59E0B" class="tab">¥9.90</span></div>
+            </div>
+            <div class="sec"><h3>订单信息</h3><span class="more">3 项</span></div>
+            <div class="card" style="padding:2px 13px">
+              <div class="r b" style="height:26px"><span style="font-size:11px;color:#8A99AB">下单时间</span><span style="font-size:11.5px;font-weight:700" class="tab">2026-10-16 20:12</span></div>
+              <div class="r b" style="height:26px;border-top:1px solid #F3F6FA"><span style="font-size:11px;color:#8A99AB">服务时长</span><span style="font-size:11.5px;font-weight:700">约 30 分钟（3 局）</span></div>
+              <div class="r b" style="height:26px;border-top:1px solid #F3F6FA"><span style="font-size:11px;color:#8A99AB">订单备注</span><span style="font-size:11.5px;font-weight:700">服务器 M23 · 全程录屏</span></div>
+            </div>
+          </div>
+          <div style="flex:none;height:70px;border-top:1px solid #E9EEF5;background:#fff;display:flex;align-items:center;gap:9px;padding:0 14px">
+            <span class="rc" style="flex:1;height:44px;border-radius:13px;border:1.4px solid #D7E2F0;font-size:12.5px;font-weight:800;color:#4A5A6E">申请售后</span>
+            <span class="rc" style="flex:1.4;height:44px;border-radius:13px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;font-size:12.5px;font-weight:800;box-shadow:0 8px 18px rgba(37,99,235,.28)">联系客服</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 8 · 消息列表 ================= -->
+    <div class="cell">
+      <div class="cap"><b>8</b> 消息列表（好友 / 客服 / 打手 三类分区）</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span style="font-size:15px;font-weight:800">消息</span>
+            <span class="r" style="gap:8px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-search" style="width:14px;height:14px;background:#4A5A6E"></i></span><span class="r" style="gap:3px;font-size:11px;color:#4A5A6E">全部已读<i class="ic ic-check" style="width:12px;height:12px;background:#4A5A6E"></i></span></span>
+          </div>
+          <div style="padding:2px 14px 0;flex:none">
+            <div class="r" style="height:34px;border-radius:12px;background:#F1F5FA;padding:0 11px;gap:8px">
+              <i class="ic ic-search" style="width:14px;height:14px;background:#8A99AB"></i>
+              <span style="font-size:11px;color:#8A99AB">搜索联系人 / 订单号</span>
+            </div>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:8px 14px 0">
+            <!-- 分区 1 好友私聊 -->
+            <div class="r b" style="height:26px">
+              <span class="r" style="gap:6px;font-size:11.5px;font-weight:800;color:#2563EB"><span style="width:3px;height:12px;border-radius:2px;background:linear-gradient(180deg,#2563EB,#06B6D4)"></span>好友私聊</span>
+              <span style="font-size:10px;color:#8A99AB">3 条会话</span>
+            </div>
+            <div class="card" style="padding:0 12px">
+              <div class="r" style="height:72px;gap:10px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#2563EB,#3B82F6);color:#fff;font-size:16px;font-weight:800">老</span>
+                <div class="f1">
+                  <div class="r b"><span style="font-size:12.5px;font-weight:800">老王不慌</span><span style="font-size:9.5px;color:#8A99AB" class="tab">20:14</span></div>
+                  <div class="ell" style="font-size:10.5px;color:#4A5A6E;margin-top:4px">刚那单打完了吗？明天还差一个人</div>
+                </div>
+                <span class="rc" style="width:17px;height:17px;border-radius:50%;background:linear-gradient(135deg,#EF4444,#F59E0B);color:#fff;font-size:9px;font-weight:800">2</span>
+              </div>
+              <div class="r" style="height:72px;gap:10px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#06B6D4,#22D3EE);color:#fff;font-size:16px;font-weight:800">哲</span>
+                <div class="f1">
+                  <div class="r b"><span style="font-size:12.5px;font-weight:800">阿哲</span><span style="font-size:9.5px;color:#8A99AB" class="tab">19:02</span></div>
+                  <div class="ell" style="font-size:10.5px;color:#4A5A6E;margin-top:4px">晚上开黑不，我这边两个人</div>
+                </div>
+              </div>
+              <div class="r" style="height:72px;gap:10px">
+                <span class="rc" style="width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#10B981,#22D3EE);color:#fff;font-size:16px;font-weight:800">满</span>
+                <div class="f1">
+                  <div class="r b"><span style="font-size:12.5px;font-weight:800">小满</span><span style="font-size:9.5px;color:#8A99AB">昨天</span></div>
+                  <div class="ell" style="font-size:10.5px;color:#4A5A6E;margin-top:4px">上次那个打手推我一下，我朋友也要打</div>
+                </div>
+              </div>
+            </div>
+            <!-- 分区 2 客服 -->
+            <div class="r b" style="height:26px;margin-top:11px">
+              <span class="r" style="gap:6px;font-size:11.5px;font-weight:800;color:#0891B2"><span style="width:3px;height:12px;border-radius:2px;background:linear-gradient(180deg,#06B6D4,#22D3EE)"></span>客服</span>
+              <span style="font-size:10px;color:#8A99AB">官方 · 24h 在线</span>
+            </div>
+            <div class="card" style="padding:0 12px">
+              <div class="r" style="height:72px;gap:10px">
+                <span class="rc" style="width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#06B6D4,#22D3EE)"><i class="ic ic-headset" style="width:21px;height:21px"></i></span>
+                <div class="f1">
+                  <div class="r b"><span style="font-size:12.5px;font-weight:800">祁连山客服</span><span style="font-size:9.5px;color:#8A99AB" class="tab">18:40</span></div>
+                  <div class="ell" style="font-size:10.5px;color:#4A5A6E;margin-top:4px">你的订单 OD20261016001 已派单，打手 凌云</div>
+                </div>
+                <span class="rc" style="width:17px;height:17px;border-radius:50%;background:linear-gradient(135deg,#EF4444,#F59E0B);color:#fff;font-size:9px;font-weight:800">1</span>
+              </div>
+            </div>
+            <!-- 分区 3 打手 -->
+            <div class="r b" style="height:26px;margin-top:11px">
+              <span class="r" style="gap:6px;font-size:11.5px;font-weight:800;color:#7C3AED"><span style="width:3px;height:12px;border-radius:2px;background:linear-gradient(180deg,#8B5CF6,#2563EB)"></span>打手</span>
+              <span style="font-size:10px;color:#8A99AB">一对一会话</span>
+            </div>
+            <div class="card" style="padding:0 12px">
+              <div class="r" style="height:72px;gap:10px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:16px;font-weight:800">凌</span>
+                <div class="f1">
+                  <div class="r b"><span style="font-size:12.5px;font-weight:800">凌云 <span style="font-size:9px;color:#0891B2;font-weight:700">接单 2847 · 98.6%</span></span><span style="font-size:9.5px;color:#8A99AB" class="tab">20:16</span></div>
+                  <div class="ell" style="font-size:10.5px;color:#4A5A6E;margin-top:4px">老板，我 10 分钟内上线，服务器你定</div>
+                </div>
+                <span class="rc" style="width:17px;height:17px;border-radius:50%;background:linear-gradient(135deg,#EF4444,#F59E0B);color:#fff;font-size:9px;font-weight:800">3</span>
+              </div>
+              <div class="r" style="height:72px;gap:10px">
+                <span class="rc" style="width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#F59E0B,#F472B6);color:#fff;font-size:16px;font-weight:800">反</span>
+                <div class="f1">
+                  <div class="r b"><span style="font-size:12.5px;font-weight:800">反悔 <span style="font-size:9px;color:#0891B2;font-weight:700">语音 24h · 99.1%</span></span><span style="font-size:9.5px;color:#8A99AB">昨天</span></div>
+                  <div class="ell" style="font-size:10.5px;color:#4A5A6E;margin-top:4px">录屏已发，有需要随时喊我</div>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:10px;color:#B7C1CE;margin-top:10px">消息保留 30 天，重要内容请及时截图</div>
+          </div>
+          <div class="bnav">
+            <div class="it"><span class="nib"><i class="ic ic-bag" style="background:#64748B"></i></span><span>服务</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-clip" style="background:#64748B"></i></span><span>订单</span></div>
+            <div class="it"><span class="plus">＋</span><span style="margin-top:3px">下单</span></div>
+            <div class="it on"><span class="nib"><i class="ic ic-msg"></i></span><span>消息</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-users" style="background:#64748B"></i></span><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 9 · 聊天页 ================= -->
+    <div class="cell">
+      <div class="cap"><b>9</b> 聊天页</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:52px;flex:none;padding:0 14px;border-bottom:1px solid #F3F6FA">
+            <span class="r" style="gap:9px">
+              <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#4A5A6E;transform:rotate(180deg)"></i></span>
+              <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:14px;font-weight:800">凌</span>
+              <span>
+                <span class="r" style="gap:4px"><span style="font-size:12.5px;font-weight:800">凌云</span><i class="ic ic-badge" style="width:12px;height:12px;background:#2563EB"></i></span>
+                <span class="r" style="gap:4px;margin-top:2px"><span style="width:5px;height:5px;border-radius:50%;background:#10B981"></span><span style="font-size:9.5px;color:#0891B2">在线 · 接单 2847 · 98.6%</span></span>
+              </span>
+            </span>
+            <span class="r" style="gap:7px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-headset" style="width:14px;height:14px;background:#4A5A6E"></i></span><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-settings" style="width:14px;height:14px;background:#4A5A6E"></i></span></span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:12px 14px 0">
+            <div style="text-align:center;margin-bottom:12px"><span style="font-size:9.5px;color:#B7C1CE;background:#F1F5FA;padding:3px 10px;border-radius:999px">今天 20:14</span></div>
+            <!-- 对方气泡（白底描边） -->
+            <div class="r" style="gap:8px;align-items:flex-start;margin-bottom:12px">
+              <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:13px;font-weight:800;flex:none">凌</span>
+              <div style="max-width:250px">
+                <div style="background:#fff;border:1px solid #E9EEF5;border-radius:4px 16px 16px 16px;padding:10px 12px;font-size:11.5px;line-height:1.6;color:#14202E;box-shadow:0 4px 12px rgba(37,99,235,.06)">老板您好，你的 9.9 新人体验单我接了，10 分钟内上线</div>
+                <div style="font-size:9px;color:#B7C1CE;margin-top:4px">20:14</div>
+              </div>
+            </div>
+            <!-- 我方气泡（渐变底白字） -->
+            <div class="r" style="justify-content:flex-end;margin-bottom:12px">
+              <div style="max-width:250px;text-align:right">
+                <div style="background:linear-gradient(135deg,#2563EB,#06B6D4);border-radius:16px 4px 16px 16px;padding:10px 12px;font-size:11.5px;line-height:1.6;color:#fff;box-shadow:0 6px 14px rgba(37,99,235,.24)">好的，服务器 M23，角色名 老张不慌，麻烦全程录屏</div>
+                <div style="font-size:9px;color:#B7C1CE;margin-top:4px">20:15</div>
+              </div>
+              <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#F59E0B,#FB923C);color:#fff;font-size:13px;font-weight:800;flex:none;margin-left:8px">张</span>
+            </div>
+            <!-- 对方图片气泡 -->
+            <div class="r" style="gap:8px;align-items:flex-start;margin-bottom:12px">
+              <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:13px;font-weight:800;flex:none">凌</span>
+              <div style="max-width:250px">
+                <div style="background:#fff;border:1px solid #E9EEF5;border-radius:4px 16px 16px 16px;padding:10px 12px;font-size:11.5px;line-height:1.6;color:#14202E;box-shadow:0 4px 12px rgba(37,99,235,.06)">收到，录屏已开。大概 3 局，打完把仓库截图发你</div>
+                <div style="margin-top:6px;width:150px;height:104px;border-radius:14px;overflow:hidden;position:relative;background:linear-gradient(135deg,#0EA5E9,#2563EB 55%,#8B5CF6)">
+                  <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+                  <div class="rc" style="position:absolute;inset:0"><span class="rc" style="width:32px;height:32px;border-radius:12px;background:rgba(255,255,255,.28)"><i class="ic ic-image" style="width:16px;height:16px"></i></span></div>
+                  <div style="position:absolute;left:8px;bottom:6px;font-size:8.5px;color:rgba(255,255,255,.85)">游戏截图 · 主图位</div>
+                </div>
+                <div style="font-size:9px;color:#B7C1CE;margin-top:4px">20:18</div>
+              </div>
+            </div>
+            <div style="text-align:center;margin:14px 0 12px"><span style="font-size:9.5px;color:#0891B2;background:#ECFEFF;padding:3px 11px;border-radius:999px">订单 OD20261016001 服务进行中</span></div>
+            <!-- 对方短句 -->
+            <div class="r" style="gap:8px;align-items:flex-start;margin-bottom:12px">
+              <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:13px;font-weight:800;flex:none">凌</span>
+              <div style="max-width:250px">
+                <div style="background:#fff;border:1px solid #E9EEF5;border-radius:4px 16px 16px 16px;padding:10px 12px;font-size:11.5px;line-height:1.6;color:#14202E;box-shadow:0 4px 12px rgba(37,99,235,.06)">第三局开始了，稳住别急</div>
+                <div style="font-size:9px;color:#B7C1CE;margin-top:4px">20:41</div>
+              </div>
+            </div>
+            <div class="r" style="justify-content:flex-end;margin-bottom:12px">
+              <div style="max-width:250px;text-align:right">
+                <div style="background:linear-gradient(135deg,#2563EB,#06B6D4);border-radius:16px 4px 16px 16px;padding:10px 12px;font-size:11.5px;line-height:1.6;color:#fff;box-shadow:0 6px 14px rgba(37,99,235,.24)">好，打完喊我一声，我一直在</div>
+                <div style="font-size:9px;color:#B7C1CE;margin-top:4px">20:42</div>
+              </div>
+              <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#F59E0B,#FB923C);color:#fff;font-size:13px;font-weight:800;flex:none;margin-left:8px">张</span>
+            </div>
+            <div class="r" style="gap:8px;align-items:flex-start;margin-bottom:12px">
+              <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:13px;font-weight:800;flex:none">凌</span>
+              <div style="max-width:250px">
+                <div style="background:#fff;border:1px solid #E9EEF5;border-radius:4px 16px 16px 16px;padding:10px 12px;font-size:11.5px;line-height:1.6;color:#14202E;box-shadow:0 4px 12px rgba(37,99,235,.06)">这单过了，仓库截图已经发你，确认一下</div>
+                <div style="font-size:9px;color:#B7C1CE;margin-top:4px">20:58</div>
+              </div>
+            </div>
+            <!-- 快捷短语 -->
+            <div class="r" style="gap:7px;flex-wrap:wrap">
+              <span class="pill" style="background:#EFF6FF;color:#2563EB;height:26px">收到</span>
+              <span class="pill" style="background:#EFF6FF;color:#2563EB;height:26px">辛苦了</span>
+              <span class="pill" style="background:#EFF6FF;color:#2563EB;height:26px">注意安全</span>
+              <span class="pill" style="background:#EFF6FF;color:#2563EB;height:26px">打完发截图</span>
+            </div>
+          </div>
+          <!-- 输入栏 -->
+          <div class="r" style="flex:none;height:62px;border-top:1px solid #E9EEF5;background:#fff;padding:0 12px;gap:9px">
+            <span class="rc" style="width:32px;height:32px;border-radius:11px;background:#F1F5FA"><i class="ic ic-palette" style="width:16px;height:16px;background:#4A5A6E"></i></span>
+            <div class="r f1" style="height:38px;border-radius:12px;background:#F1F5FA;padding:0 12px"><span style="font-size:11px;color:#8A99AB">说点什么…（最多 500 字）</span></div>
+            <span class="rc" style="width:32px;height:32px;border-radius:11px;background:#F1F5FA"><i class="ic ic-image" style="width:16px;height:16px;background:#4A5A6E"></i></span>
+            <span class="rc" style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#2563EB,#06B6D4);box-shadow:0 6px 14px rgba(37,99,235,.3)"><i class="ic ic-send" style="width:17px;height:17px"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 10 · 我的页 ================= -->
+    <div class="cell">
+      <div class="cap"><b>10</b> 我的页</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span style="font-size:15px;font-weight:800">我的</span>
+            <span class="r" style="gap:8px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-bell" style="width:14px;height:14px;background:#4A5A6E"></i></span><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-settings" style="width:14px;height:14px;background:#4A5A6E"></i></span></span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:0 14px">
+            <!-- 用户行 -->
+            <div class="r" style="gap:11px;margin-bottom:12px">
+              <span class="rc" style="width:52px;height:52px;border-radius:18px;background:linear-gradient(135deg,#F59E0B,#FB923C);color:#fff;font-size:21px;font-weight:800;box-shadow:0 8px 16px rgba(245,158,11,.28)">张</span>
+              <div class="f1">
+                <div class="r" style="gap:7px"><span style="font-size:15px;font-weight:800">老张不慌</span><span class="pill" style="background:linear-gradient(135deg,#F59E0B,#FB923C);color:#fff;height:18px;padding:0 8px"><i class="ic ic-medal" style="width:11px;height:11px"></i>Lv.4</span></div>
+                <div style="font-size:10px;color:#8A99AB;margin-top:4px" class="tab">ID 38291 · 累计消费 ¥1,286.40</div>
+              </div>
+              <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#8A99AB"></i></span>
+            </div>
+            <!-- 余额卡 -->
+            <div class="card" style="border:0;background:linear-gradient(120deg,#2563EB,#06B6D4 55%,#8B5CF6);box-shadow:0 12px 24px rgba(37,99,235,.26)">
+              <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-dots)"/></svg>
+              <div style="position:relative;padding:14px 15px 13px">
+                <div class="r b">
+                  <span class="r" style="gap:6px;font-size:11px;color:rgba(255,255,255,.9)"><i class="ic ic-piggy" style="width:13px;height:13px"></i>账户余额（元）</span>
+                  <span class="r" style="gap:3px;font-size:9.5px;color:rgba(255,255,255,.85)">明细<i class="ic ic-chevR" style="width:11px;height:11px"></i></span>
+                </div>
+                <div style="font-size:29px;font-weight:800;color:#fff;letter-spacing:-.8px;margin-top:7px" class="tab">¥99,999.90</div>
+                <div class="r" style="gap:9px;margin-top:13px">
+                  <span class="rc" style="flex:1;height:36px;border-radius:12px;background:rgba(255,255,255,.95);color:#2563EB;font-size:12px;font-weight:800"><i class="ic ic-wallet" style="width:14px;height:14px;background:#2563EB;margin-right:5px"></i>充值</span>
+                  <span class="rc" style="flex:1;height:36px;border-radius:12px;background:rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:800;border:1px solid rgba(255,255,255,.4)"><i class="ic ic-banknote" style="width:14px;height:14px;margin-right:5px"></i>余额明细</span>
+                </div>
+              </div>
+            </div>
+            <!-- 我的订单四宫格 -->
+            <div class="sec"><h3>我的订单</h3><span class="more">全部订单<i class="ic ic-chevR"></i></span></div>
+            <div class="card sh-blue" style="display:flex;padding:12px 0">
+              <div class="f1 rc" style="flex-direction:column;gap:5px">
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#F59E0B,#FB923C)"><i class="ic ic-hour" style="width:17px;height:17px"></i></span>
+                <span style="font-size:10.5px;color:#4A5A6E">待接单</span>
+                <span style="font-size:9px;color:#F59E0B;font-weight:800" class="tab">1 单</span>
+              </div>
+              <div class="f1 rc" style="flex-direction:column;gap:5px">
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#2563EB)"><i class="ic ic-play" style="width:17px;height:17px"></i></span>
+                <span style="font-size:10.5px;color:#4A5A6E">进行中</span>
+                <span style="font-size:9px;color:#8B5CF6;font-weight:800" class="tab">1 单</span>
+              </div>
+              <div class="f1 rc" style="flex-direction:column;gap:5px">
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#10B981,#22D3EE)"><i class="ic ic-cok" style="width:17px;height:17px"></i></span>
+                <span style="font-size:10.5px;color:#4A5A6E">已完成</span>
+                <span style="font-size:9px;color:#10B981;font-weight:800" class="tab">26 单</span>
+              </div>
+              <div class="f1 rc" style="flex-direction:column;gap:5px">
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#06B6D4,#22D3EE)"><i class="ic ic-headset" style="width:17px;height:17px"></i></span>
+                <span style="font-size:10.5px;color:#4A5A6E">售后</span>
+                <span style="font-size:9px;color:#0891B2;font-weight:800" class="tab">0 单</span>
+              </div>
+            </div>
+            <!-- 服务宫格 -->
+            <div class="sec"><h3>常用服务</h3><span class="more">6 项</span></div>
+            <div class="card" style="padding:13px 0">
+              <div class="r" style="padding:0 4px">
+                <div class="f1 rc" style="flex-direction:column;gap:6px"><span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#2563EB,#06B6D4)"><i class="ic ic-users" style="width:18px;height:18px"></i></span><span style="font-size:10.5px;color:#4A5A6E">找陪玩</span></div>
+                <div class="f1 rc" style="flex-direction:column;gap:6px"><span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#F472B6,#F59E0B)"><i class="ic ic-trophy" style="width:18px;height:18px"></i></span><span style="font-size:10.5px;color:#4A5A6E">排行榜</span></div>
+                <div class="f1 rc" style="flex-direction:column;gap:6px"><span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#06B6D4,#22D3EE)"><i class="ic ic-bell" style="width:18px;height:18px"></i></span><span style="font-size:10.5px;color:#4A5A6E">公告</span></div>
+              </div>
+              <div class="r" style="padding:0 4px;margin-top:14px">
+                <div class="f1 rc" style="flex-direction:column;gap:6px"><span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#A78BFA)"><i class="ic ic-bot" style="width:18px;height:18px"></i></span><span style="font-size:10.5px;color:#4A5A6E">祁小山 AI</span></div>
+                <div class="f1 rc" style="flex-direction:column;gap:6px"><span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#10B981,#22D3EE)"><i class="ic ic-shield" style="width:18px;height:18px"></i></span><span style="font-size:10.5px;color:#4A5A6E">账号安全</span></div>
+                <div class="f1 rc" style="flex-direction:column;gap:6px"><span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#8A99AB,#B7C1CE)"><i class="ic ic-settings" style="width:18px;height:18px"></i></span><span style="font-size:10.5px;color:#4A5A6E">设置</span></div>
+              </div>
+            </div>
+            <!-- 身份区 -->
+            <div class="sec"><h3>身份</h3><span class="more">一 App 双态</span></div>
+            <div class="card sh-purple" style="padding:11px 12px;display:flex;align-items:center;gap:10px">
+              <svg class="pat" style="opacity:.4"><rect width="100%" height="100%" fill="url(#p-diag)"/></svg>
+              <span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#2563EB);position:relative"><i class="ic ic-swords" style="width:18px;height:18px"></i></span>
+              <div class="f1" style="position:relative">
+                <div style="font-size:12.5px;font-weight:800">绑定打手账号</div>
+                <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">绑定后可在本 App 内切换到打手态接单</div>
+              </div>
+              <span class="price" style="background:#8B5CF6;position:relative">已绑定 凌云</span>
+            </div>
+          </div>
+          <div class="bnav">
+            <div class="it"><span class="nib"><i class="ic ic-bag" style="background:#64748B"></i></span><span>服务</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-clip" style="background:#64748B"></i></span><span>订单</span></div>
+            <div class="it"><span class="plus">＋</span><span style="margin-top:3px">下单</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-msg" style="background:#64748B"></i></span><span>消息</span></div>
+            <div class="it on"><span class="nib"><i class="ic ic-users"></i></span><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 11 · 找陪玩列表 ================= -->
+    <div class="cell">
+      <div class="cap"><b>11</b> 找陪玩列表</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span class="r" style="gap:9px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#4A5A6E;transform:rotate(180deg)"></i></span><span style="font-size:15px;font-weight:800">找陪玩</span></span>
+            <span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-search" style="width:14px;height:14px;background:#4A5A6E"></i></span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:0 14px">
+            <!-- 分部宫格 -->
+            <div class="r" style="gap:8px">
+              <div class="card f1" style="height:78px;border:0;background:linear-gradient(135deg,#2563EB,#06B6D4);padding:10px;position:relative">
+                <svg class="pat" style="opacity:.45"><rect width="100%" height="100%" fill="url(#p-diag)"/></svg>
+                <div style="position:relative">
+                  <span class="rc" style="width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.24)"><i class="ic ic-pad" style="width:15px;height:15px"></i></span>
+                  <div style="font-size:11.5px;font-weight:800;color:#fff;margin-top:7px">和平精英</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.88);margin-top:2px">手游 · 12 人在线</div>
+                </div>
+              </div>
+              <div class="card f1" style="height:78px;border:0;background:linear-gradient(135deg,#06B6D4,#22D3EE);padding:10px;position:relative">
+                <svg class="pat" style="opacity:.45"><rect width="100%" height="100%" fill="url(#p-diag)"/></svg>
+                <div style="position:relative">
+                  <span class="rc" style="width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.24)"><i class="ic ic-swords" style="width:15px;height:15px"></i></span>
+                  <div style="font-size:11.5px;font-weight:800;color:#fff;margin-top:7px">三角洲·手游</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.88);margin-top:2px">8 人在线</div>
+                </div>
+              </div>
+              <div class="card f1" style="height:78px;border:0;background:linear-gradient(135deg,#F59E0B,#FB923C);padding:10px;position:relative">
+                <svg class="pat" style="opacity:.45"><rect width="100%" height="100%" fill="url(#p-diag)"/></svg>
+                <div style="position:relative">
+                  <span class="rc" style="width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.24)"><i class="ic ic-target" style="width:15px;height:15px"></i></span>
+                  <div style="font-size:11.5px;font-weight:800;color:#fff;margin-top:7px">三角洲·端游</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.88);margin-top:2px">4 人在线</div>
+                </div>
+              </div>
+            </div>
+            <!-- 计数行 -->
+            <div class="r b" style="height:34px">
+              <span style="font-size:11.5px;font-weight:800">共 <span class="tab" style="color:#2563EB">3</span> 位陪玩可接单</span>
+              <span class="r" style="gap:4px;font-size:10px;color:#0891B2"><span style="width:5px;height:5px;border-radius:50%;background:#10B981"></span>12 人在线</span>
+            </div>
+            <!-- 陪玩卡 1 -->
+            <div class="card sh-blue" style="padding:11px 12px;margin-bottom:9px">
+              <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <div class="r" style="gap:10px;position:relative">
+                <span class="rc" style="width:50px;height:50px;border-radius:16px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:21px;font-weight:800">凌</span>
+                <div class="f1">
+                  <div class="r" style="gap:6px"><span style="font-size:13.5px;font-weight:800">凌云</span><i class="ic ic-badge" style="width:13px;height:13px;background:#2563EB"></i><span style="display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 8px;border-radius:7px;border:1px dashed #C7D5E6;font-size:9px;color:#9AA8B8">等级占位槽</span></div>
+                  <div class="r" style="gap:5px;margin-top:6px">
+                    <span class="pill" style="background:#EFF6FF;color:#2563EB;height:19px;padding:0 7px">接单 2847</span>
+                    <span class="pill" style="background:#ECFEFF;color:#0891B2;height:19px;padding:0 7px">好评率 98.6%</span>
+                    <span class="pill" style="background:#F5F3FF;color:#7C3AED;height:19px;padding:0 7px">全程录屏</span>
+                  </div>
+                </div>
+                <span class="rc" style="width:44px;height:32px;border-radius:11px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;font-size:11px;font-weight:800">选择</span>
+              </div>
+              <div class="cl2" style="font-size:10.5px;color:#4A5A6E;line-height:1.6;margin-top:9px;position:relative">主玩和平精英手游，M23 老区常驻，擅长四排保分与落地拼枪；接单 2847 单，只接本人操作不转手。</div>
+              <div class="r" style="gap:5px;margin-top:8px;position:relative;font-size:10px;color:#8A99AB"><i class="ic ic-clock" style="width:12px;height:12px;background:#8A99AB"></i>9:00-次日 2:00 在线 · 不接急单</div>
+            </div>
+            <!-- 陪玩卡 2 -->
+            <div class="card sh-cyan" style="padding:11px 12px;margin-bottom:9px">
+              <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <div class="r" style="gap:10px;position:relative">
+                <span class="rc" style="width:50px;height:50px;border-radius:16px;background:linear-gradient(135deg,#F59E0B,#F472B6);color:#fff;font-size:21px;font-weight:800">反</span>
+                <div class="f1">
+                  <div class="r" style="gap:6px"><span style="font-size:13.5px;font-weight:800">反悔</span><i class="ic ic-badge" style="width:13px;height:13px;background:#0891B2"></i><span style="display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 8px;border-radius:7px;border:1px dashed #C7D5E6;font-size:9px;color:#9AA8B8">等级占位槽</span></div>
+                  <div class="r" style="gap:5px;margin-top:6px">
+                    <span class="pill" style="background:#EFF6FF;color:#2563EB;height:19px;padding:0 7px">语音 24h</span>
+                    <span class="pill" style="background:#FEF3C7;color:#B45309;height:19px;padding:0 7px">好评率 99.1%</span>
+                    <span class="pill" style="background:#ECFEFF;color:#0891B2;height:19px;padding:0 7px">三角洲双端</span>
+                  </div>
+                </div>
+                <span class="rc" style="width:44px;height:32px;border-radius:11px;background:linear-gradient(135deg,#06B6D4,#22D3EE);color:#fff;font-size:11px;font-weight:800">选择</span>
+              </div>
+              <div class="cl2" style="font-size:10.5px;color:#4A5A6E;line-height:1.6;margin-top:9px;position:relative">三角洲行动双端都能打，主打零号大坝与长弓溪谷，全程语音报点；晚上到次日 2 点在线。</div>
+              <div class="r" style="gap:5px;margin-top:8px;position:relative;font-size:10px;color:#8A99AB"><i class="ic ic-clock" style="width:12px;height:12px;background:#8A99AB"></i>18:00-次日 2:00 在线 · 语音房可查</div>
+            </div>
+            <!-- 陪玩卡 3 -->
+            <div class="card sh-gold" style="padding:11px 12px">
+              <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <div class="r" style="gap:10px;position:relative">
+                <span class="rc" style="width:50px;height:50px;border-radius:16px;background:linear-gradient(135deg,#F472B6,#8B5CF6);color:#fff;font-size:21px;font-weight:800">清</span>
+                <div class="f1">
+                  <div class="r" style="gap:6px"><span style="font-size:13.5px;font-weight:800">清水</span><i class="ic ic-badge" style="width:13px;height:13px;background:#7C3AED"></i><span style="display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 8px;border-radius:7px;border:1px dashed #C7D5E6;font-size:9px;color:#9AA8B8">等级占位槽</span></div>
+                  <div class="r" style="gap:5px;margin-top:6px">
+                    <span class="pill" style="background:#FDF2F8;color:#BE185D;height:19px;padding:0 7px">女陪</span>
+                    <span class="pill" style="background:#DCFCE7;color:#15803D;height:19px;padding:0 7px">好评率 100%</span>
+                    <span class="pill" style="background:#FEF3C7;color:#B45309;height:19px;padding:0 7px">不接急单</span>
+                  </div>
+                </div>
+                <span class="rc" style="width:44px;height:32px;border-radius:11px;background:linear-gradient(135deg,#F59E0B,#FB923C);color:#fff;font-size:11px;font-weight:800">选择</span>
+              </div>
+              <div class="cl2" style="font-size:10.5px;color:#4A5A6E;line-height:1.6;margin-top:9px;position:relative">和平精英手游女陪，声音甜不夹，带新手很有耐心；周中 20:00 后在线，周末全天。</div>
+              <div class="r" style="gap:5px;margin-top:8px;position:relative;font-size:10px;color:#8A99AB"><i class="ic ic-clock" style="width:12px;height:12px;background:#8A99AB"></i>周中 20:00 后 · 周末全天在线</div>
+            </div>
+            <div style="text-align:center;font-size:10px;color:#B7C1CE;margin-top:2px">已展示全部 3 位陪玩 · 按在线与接单量实时排序</div>
+            <div class="card" style="margin-top:12px;padding:11px 12px;background:#EFF6FF;border-color:#DBEAFE">
+              <div class="r" style="gap:9px">
+                <span class="rc" style="width:30px;height:30px;border-radius:11px;background:linear-gradient(135deg,#2563EB,#06B6D4);flex:none"><i class="ic ic-compass" style="width:15px;height:15px"></i></span>
+                <div class="f1">
+                  <div style="font-size:11.5px;font-weight:800">列表只显示当前可接单的陪玩</div>
+                  <div style="font-size:10px;color:#4A5A6E;line-height:1.65;margin-top:3px">按分部授权实时过滤；点「选择」即可指定 TA 下单，也可以先进主页看老板评价。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bnav">
+            <div class="it on"><span class="nib"><i class="ic ic-bag"></i></span><span>服务</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-clip" style="background:#64748B"></i></span><span>订单</span></div>
+            <div class="it"><span class="plus">＋</span><span style="margin-top:3px">下单</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-msg" style="background:#64748B"></i></span><span>消息</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-users" style="background:#64748B"></i></span><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 12 · 打手主页 ================= -->
+    <div class="cell">
+      <div class="cap"><b>12</b> 打手主页</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <!-- 头部渐变块 -->
+          <div style="height:214px;flex:none;position:relative;overflow:hidden;background:linear-gradient(125deg,#8B5CF6,#2563EB 45%,#06B6D4)">
+            <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-diag)"/></svg>
+            <!-- 24dp 斜切角装饰 -->
+            <div style="position:absolute;right:0;bottom:0;width:24px;height:24px;background:rgba(255,255,255,.3);clip-path:polygon(100% 0,100% 100%,0 100%)"></div>
+            <div style="position:absolute;right:24px;bottom:0;width:24px;height:24px;background:rgba(255,255,255,.14);clip-path:polygon(100% 0,100% 100%,0 100%)"></div>
+            <div style="position:absolute;left:0;top:0;width:24px;height:24px;background:rgba(255,255,255,.3);clip-path:polygon(0 0,100% 0,0 100%)"></div>
+            <div class="r b" style="position:relative;padding:12px 14px 0">
+              <span class="rc" style="width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.24)"><i class="ic ic-chevR" style="width:14px;height:14px;background:#fff;transform:rotate(180deg)"></i></span>
+              <span class="r" style="gap:7px">
+                <span class="rc" style="width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.24)"><i class="ic ic-heart" style="width:14px;height:14px"></i></span>
+                <span class="rc" style="width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.24)"><i class="ic ic-share" style="width:14px;height:14px"></i></span>
+              </span>
+            </div>
+            <div class="r" style="position:relative;padding:14px 16px 0;gap:14px">
+              <!-- 刻度环 -->
+              <div style="width:82px;height:82px;border-radius:50%;flex:none;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.95) 0deg 2.4deg,rgba(255,255,255,0) 2.4deg 12deg);display:flex;align-items:center;justify-content:center">
+                <span class="rc" style="width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.96);color:#2563EB;font-size:26px;font-weight:800">凌</span>
+              </div>
+              <div class="f1" style="color:#fff">
+                <div class="r" style="gap:7px"><span style="font-size:21px;font-weight:800;letter-spacing:.5px">凌云</span><span class="price" style="background:rgba(255,255,255,.24);height:20px"><i class="ic ic-badge" style="width:11px;height:11px"></i>官方认证</span></div>
+                <div class="r" style="gap:7px;margin-top:8px">
+                  <span class="pill" style="background:rgba(255,255,255,.22);color:#fff;height:21px"><i class="ic ic-pad"></i>和平精英·手游</span>
+                  <span class="pill" style="background:rgba(255,255,255,.22);color:#fff;height:21px"><i class="ic ic-film"></i>全程录屏</span>
+                </div>
+                <div style="font-size:10.5px;color:rgba(255,255,255,.88);margin-top:9px">9:00 - 次日 2:00 在线 · 不接急单</div>
+              </div>
+            </div>
+            <!-- 统计三格（数字 tabular，禁金） -->
+            <div style="position:absolute;left:16px;right:16px;bottom:12px;display:flex;background:rgba(255,255,255,.16);border-radius:14px;padding:9px 0;border:1px solid rgba(255,255,255,.22)">
+              <div class="f1" style="text-align:center;border-right:1px solid rgba(255,255,255,.22)">
+                <div class="tab" style="font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px">2847</div>
+                <div style="font-size:9px;color:rgba(255,255,255,.85);margin-top:2px">接单</div>
+              </div>
+              <div class="f1" style="text-align:center;border-right:1px solid rgba(255,255,255,.22)">
+                <div class="tab" style="font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px">98.6%</div>
+                <div style="font-size:9px;color:rgba(255,255,255,.85);margin-top:2px">好评率</div>
+              </div>
+              <div class="f1" style="text-align:center">
+                <div class="tab" style="font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px">17h</div>
+                <div style="font-size:9px;color:rgba(255,255,255,.85);margin-top:2px">日均在线</div>
+              </div>
+            </div>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:0 14px">
+            <div class="sec"><h3>个人介绍</h3><span class="more">管理端填写</span></div>
+            <div style="background:#EFF6FF;border-radius:14px;padding:11px 13px;font-size:10.5px;color:#4A5A6E;line-height:1.65;position:relative;overflow:hidden">
+              <svg class="pat" style="opacity:.35"><rect width="100%" height="100%" fill="url(#p-dots)"/></svg>
+              <span style="position:relative">主玩和平精英手游 M23 老区，四排保分和落地拼枪都熟；只接本人操作，不转手不代打，全程录屏留档。</span>
+            </div>
+            <div class="sec"><h3>老板评价</h3><span class="more">共 2847 条</span></div>
+            <div class="card" style="padding:0 12px">
+              <div style="padding:11px 0;border-bottom:1px solid #F3F6FA">
+                <div class="r b"><span class="r" style="gap:7px"><span class="rc" style="width:26px;height:26px;border-radius:9px;background:linear-gradient(135deg,#2563EB,#3B82F6);color:#fff;font-size:11px;font-weight:800">老</span><span style="font-size:11px;font-weight:700">老张不慌</span></span><span class="r" style="gap:2px"><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i></span></div>
+                <div style="font-size:10.5px;color:#4A5A6E;line-height:1.6;margin-top:6px">打得很稳，说 10 分钟上线真的 10 分钟就进来了，录屏一段不落。</div>
+              </div>
+              <div style="padding:11px 0;border-bottom:1px solid #F3F6FA">
+                <div class="r b"><span class="r" style="gap:7px"><span class="rc" style="width:26px;height:26px;border-radius:9px;background:linear-gradient(135deg,#06B6D4,#22D3EE);color:#fff;font-size:11px;font-weight:800">阿</span><span style="font-size:11px;font-weight:700">阿哲</span></span><span class="r" style="gap:2px"><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i></span></div>
+                <div style="font-size:10.5px;color:#4A5A6E;line-height:1.6;margin-top:6px">保 400w 那单一次过，中途掉线还主动补了一局，人不油。</div>
+              </div>
+              <div style="padding:11px 0;border-bottom:1px solid #F3F6FA">
+                <div class="r b"><span class="r" style="gap:7px"><span class="rc" style="width:26px;height:26px;border-radius:9px;background:linear-gradient(135deg,#F59E0B,#F472B6);color:#fff;font-size:11px;font-weight:800">默</span><span style="font-size:11px;font-weight:700">默然</span></span><span class="r" style="gap:2px"><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#E9EEF5"></i></span></div>
+                <div style="font-size:10.5px;color:#4A5A6E;line-height:1.6;margin-top:6px">技术没问题，就是语音话少，想热闹的可以换一个。</div>
+              </div>
+              <div style="padding:11px 0">
+                <div class="r b"><span class="r" style="gap:7px"><span class="rc" style="width:26px;height:26px;border-radius:9px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:11px;font-weight:800">小</span><span style="font-size:11px;font-weight:700">小满</span></span><span class="r" style="gap:2px"><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i><i class="ic ic-star" style="width:11px;height:11px;background:#F59E0B"></i></span></div>
+                <div style="font-size:10.5px;color:#4A5A6E;line-height:1.6;margin-top:6px">凌晨两点还在线，临时找人救场找的他，40 分钟就把单子打完了。</div>
+              </div>
+            </div>
+          </div>
+          <div style="flex:none;height:70px;border-top:1px solid #E9EEF5;background:#fff;display:flex;align-items:center;gap:10px;padding:0 14px">
+            <span class="rc" style="width:46px;height:46px;border-radius:14px;background:#EFF6FF"><i class="ic ic-heart" style="width:20px;height:20px;background:#2563EB"></i></span>
+            <span class="rc" style="flex:1;height:46px;border-radius:14px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:14px;font-weight:800;box-shadow:0 9px 20px rgba(139,92,246,.3)">选择 TA · 指定护航</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 13 · 排行榜 ================= -->
+    <div class="cell">
+      <div class="cap"><b>13</b> 排行榜</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span class="r" style="gap:9px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#4A5A6E;transform:rotate(180deg)"></i></span><span style="font-size:15px;font-weight:800">排行榜</span></span>
+            <span style="font-size:10.5px;color:#8A99AB">和平精英 · 手游</span>
+          </div>
+          <!-- 周 / 月切换 -->
+          <div style="padding:2px 14px 0;flex:none">
+            <div class="r" style="background:#F1F5FA;border-radius:12px;padding:3px;gap:3px">
+              <span class="rc f1" style="height:30px;border-radius:10px;background:#fff;font-size:11.5px;font-weight:800;color:#2563EB;box-shadow:0 3px 8px rgba(37,99,235,.16)">本周榜</span>
+              <span class="rc f1" style="height:30px;border-radius:10px;font-size:11.5px;font-weight:700;color:#8A99AB">本月榜</span>
+            </div>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:11px 14px 0">
+            <!-- 冠军大卡（金渐变） -->
+            <div class="card" style="border:0;background:linear-gradient(120deg,#F59E0B,#FB923C 60%,#F472B6);box-shadow:0 10px 22px rgba(245,158,11,.28);margin-bottom:9px">
+              <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-dots)"/></svg>
+              <span class="stk" style="right:12px;top:11px;background:rgba(255,255,255,.92);color:#B45309;transform:rotate(6deg)">周冠军</span>
+              <div class="r" style="position:relative;padding:13px 14px;gap:12px">
+                <span class="rc" style="width:28px;height:28px;border-radius:10px;background:rgba(255,255,255,.26);color:#fff;font-size:14px;font-weight:800" class="tab">1</span>
+                <span class="rc" style="width:50px;height:50px;border-radius:16px;background:rgba(255,255,255,.95);color:#B45309;font-size:21px;font-weight:800">凌</span>
+                <div class="f1" style="color:#fff">
+                  <div class="r" style="gap:6px"><span style="font-size:15px;font-weight:800">凌云</span><i class="ic ic-crown" style="width:14px;height:14px"></i></div>
+                  <div style="font-size:10px;color:rgba(255,255,255,.9);margin-top:4px">接单 2847 · 好评率 98.6%</div>
+                </div>
+                <div style="text-align:right;color:#fff">
+                  <div class="tab" style="font-size:20px;font-weight:800;letter-spacing:-.4px">2847</div>
+                  <div style="font-size:9px;color:rgba(255,255,255,.9)">本周接单</div>
+                </div>
+              </div>
+            </div>
+            <!-- 亚军 / 季军（银 / 铜渐变） -->
+            <div class="r" style="gap:9px;margin-bottom:9px">
+              <div class="card f1" style="border:0;background:linear-gradient(135deg,#94A3B8,#CBD5E1);box-shadow:0 8px 18px rgba(148,163,184,.3);padding:11px 12px">
+                <div class="r" style="gap:8px">
+                  <span class="rc" style="width:22px;height:22px;border-radius:8px;background:rgba(255,255,255,.9);color:#475569;font-size:11px;font-weight:800" class="tab">2</span>
+                  <span class="rc" style="width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.95);color:#475569;font-size:15px;font-weight:800">反</span>
+                  <div class="f1"><div style="font-size:12px;font-weight:800;color:#fff">反悔</div><div class="tab" style="font-size:9.5px;color:rgba(255,255,255,.92);margin-top:2px">2610 单</div></div>
+                </div>
+                <div style="height:4px;border-radius:2px;background:rgba(255,255,255,.35);margin-top:9px;overflow:hidden"><i style="display:block;height:100%;width:92%;background:#fff;border-radius:2px"></i></div>
+              </div>
+              <div class="card f1" style="border:0;background:linear-gradient(135deg,#B45309,#D97706);box-shadow:0 8px 18px rgba(180,83,9,.28);padding:11px 12px">
+                <div class="r" style="gap:8px">
+                  <span class="rc" style="width:22px;height:22px;border-radius:8px;background:rgba(255,255,255,.9);color:#B45309;font-size:11px;font-weight:800" class="tab">3</span>
+                  <span class="rc" style="width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.95);color:#B45309;font-size:15px;font-weight:800">清</span>
+                  <div class="f1"><div style="font-size:12px;font-weight:800;color:#fff">清水</div><div class="tab" style="font-size:9.5px;color:rgba(255,255,255,.92);margin-top:2px">2384 单</div></div>
+                </div>
+                <div style="height:4px;border-radius:2px;background:rgba(255,255,255,.35);margin-top:9px;overflow:hidden"><i style="display:block;height:100%;width:84%;background:#fff;border-radius:2px"></i></div>
+              </div>
+            </div>
+            <!-- 后续名次行 -->
+            <div class="card" style="padding:0 12px">
+              <div class="r" style="height:52px;gap:11px;border-bottom:1px solid #F3F6FA">
+                <span class="tab" style="width:20px;font-size:13px;font-weight:800;color:#8A99AB">4</span>
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#2563EB,#3B82F6);color:#fff;font-size:14px;font-weight:800">夜</span>
+                <div class="f1"><div style="font-size:12px;font-weight:800">夜航</div><div style="font-size:9.5px;color:#8A99AB;margin-top:2px">和平精英 · 手游</div></div>
+                <span class="tab" style="font-size:14px;font-weight:800;color:#2563EB">1902</span>
+              </div>
+              <div class="r" style="height:52px;gap:11px;border-bottom:1px solid #F3F6FA">
+                <span class="tab" style="width:20px;font-size:13px;font-weight:800;color:#8A99AB">5</span>
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#06B6D4,#22D3EE);color:#fff;font-size:14px;font-weight:800">半</span>
+                <div class="f1"><div style="font-size:12px;font-weight:800">半糖</div><div style="font-size:9.5px;color:#8A99AB;margin-top:2px">和平精英 · 手游</div></div>
+                <span class="tab" style="font-size:14px;font-weight:800;color:#2563EB">1788</span>
+              </div>
+              <div class="r" style="height:52px;gap:11px;border-bottom:1px solid #F3F6FA">
+                <span class="tab" style="width:20px;font-size:13px;font-weight:800;color:#8A99AB">6</span>
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#A78BFA);color:#fff;font-size:14px;font-weight:800">白</span>
+                <div class="f1"><div style="font-size:12px;font-weight:800">白露</div><div style="font-size:9.5px;color:#8A99AB;margin-top:2px">和平精英 · 手游</div></div>
+                <span class="tab" style="font-size:14px;font-weight:800;color:#2563EB">1651</span>
+              </div>
+              <div class="r" style="height:52px;gap:11px;border-bottom:1px solid #F3F6FA">
+                <span class="tab" style="width:20px;font-size:13px;font-weight:800;color:#8A99AB">7</span>
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#10B981,#22D3EE);color:#fff;font-size:14px;font-weight:800">拾</span>
+                <div class="f1"><div style="font-size:12px;font-weight:800">拾光</div><div style="font-size:9.5px;color:#8A99AB;margin-top:2px">和平精英 · 手游</div></div>
+                <span class="tab" style="font-size:14px;font-weight:800;color:#2563EB">1430</span>
+              </div>
+              <div class="r" style="height:52px;gap:11px;border-bottom:1px solid #F3F6FA">
+                <span class="tab" style="width:20px;font-size:13px;font-weight:800;color:#8A99AB">8</span>
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#F59E0B,#FB923C);color:#fff;font-size:14px;font-weight:800">岩</span>
+                <div class="f1"><div style="font-size:12px;font-weight:800">阿岩</div><div style="font-size:9.5px;color:#8A99AB;margin-top:2px">和平精英 · 手游</div></div>
+                <span class="tab" style="font-size:14px;font-weight:800;color:#2563EB">1207</span>
+              </div>
+              <div class="r" style="height:52px;gap:11px;border-bottom:1px solid #F3F6FA">
+                <span class="tab" style="width:20px;font-size:13px;font-weight:800;color:#8A99AB">9</span>
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#F472B6,#8B5CF6);color:#fff;font-size:14px;font-weight:800">满</span>
+                <div class="f1"><div style="font-size:12px;font-weight:800">小满</div><div style="font-size:9.5px;color:#8A99AB;margin-top:2px">和平精英 · 手游</div></div>
+                <span class="tab" style="font-size:14px;font-weight:800;color:#2563EB">1094</span>
+              </div>
+              <div class="r" style="height:52px;gap:11px">
+                <span class="tab" style="width:20px;font-size:13px;font-weight:800;color:#8A99AB">10</span>
+                <span class="rc" style="width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#0EA5E9,#06B6D4);color:#fff;font-size:14px;font-weight:800">林</span>
+                <div class="f1"><div style="font-size:12px;font-weight:800">林深</div><div style="font-size:9.5px;color:#8A99AB;margin-top:2px">和平精英 · 手游</div></div>
+                <span class="tab" style="font-size:14px;font-weight:800;color:#2563EB">986</span>
+              </div>
+            </div>
+            <div class="card sh-blue" style="margin-top:9px;padding:11px 12px;display:flex;align-items:center;gap:10px;background:#EFF6FF;border-color:#DBEAFE">
+              <svg class="pat" style="opacity:.4"><rect width="100%" height="100%" fill="url(#p-dots)"/></svg>
+              <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#2563EB,#06B6D4);position:relative"><i class="ic ic-userplus" style="width:16px;height:16px"></i></span>
+              <div class="f1" style="position:relative">
+                <div style="font-size:11.5px;font-weight:800">我的排名：暂未上榜</div>
+                <div style="font-size:10px;color:#4A5A6E;margin-top:3px">老板不下榜，去「找陪玩」点单支持喜欢的陪玩</div>
+              </div>
+              <span class="rc" style="height:28px;padding:0 12px;border-radius:10px;background:#fff;color:#2563EB;font-size:10.5px;font-weight:800;position:relative">去找陪玩</span>
+            </div>
+            <div style="text-align:center;font-size:10px;color:#B7C1CE;margin-top:10px">榜单每周一 00:00 重算 · 只统计已结算订单</div>
+          </div>
+          <div class="bnav">
+            <div class="it"><span class="nib"><i class="ic ic-bag" style="background:#64748B"></i></span><span>服务</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-clip" style="background:#64748B"></i></span><span>订单</span></div>
+            <div class="it"><span class="plus">＋</span><span style="margin-top:3px">下单</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-msg" style="background:#64748B"></i></span><span>消息</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-users" style="background:#64748B"></i></span><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 14 · 公告 ================= -->
+    <div class="cell">
+      <div class="cap"><b>14</b> 公告</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span class="r" style="gap:9px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#4A5A6E;transform:rotate(180deg)"></i></span><span style="font-size:15px;font-weight:800">公告</span></span>
+            <span class="r" style="gap:7px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-search" style="width:14px;height:14px;background:#4A5A6E"></i></span><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-bell" style="width:14px;height:14px;background:#4A5A6E"></i></span></span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:2px 14px 0">
+            <!-- 置顶公告 -->
+            <div class="card" style="border:0;background:linear-gradient(120deg,#2563EB,#06B6D4 60%,#8B5CF6);box-shadow:0 10px 22px rgba(37,99,235,.24);margin-bottom:10px">
+              <svg class="pat" style="opacity:.5"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+              <span class="stk" style="right:12px;top:11px;background:#FFB020;color:#3B2400;transform:rotate(-5deg)">置顶</span>
+              <div style="position:relative;padding:14px 15px 13px">
+                <div class="r" style="gap:8px"><i class="ic ic-flag" style="width:16px;height:16px"></i><span style="font-size:15px;font-weight:800;color:#fff;letter-spacing:.3px">欢迎来到 祁连山电竞</span></div>
+                <div style="font-size:10.5px;color:rgba(255,255,255,.9);line-height:1.7;margin-top:8px">全站只做官方自营：三个分部 · 全程录屏 · 不满意重打。余额充值走线下扫码，管理员核对后发放；下单前请先看清商品须知。</div>
+                <div class="r b" style="margin-top:11px">
+                  <span style="font-size:9.5px;color:rgba(255,255,255,.85)">2026-10-16 09:00 · 官方</span>
+                  <span class="rc" style="height:26px;padding:0 12px;border-radius:10px;background:rgba(255,255,255,.95);color:#2563EB;font-size:10.5px;font-weight:800">查看详情</span>
+                </div>
+              </div>
+            </div>
+            <!-- 公告列表 -->
+            <div class="card" style="padding:0 13px">
+              <div class="r" style="padding:12px 0;gap:9px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#06B6D4,#22D3EE);flex:none"><i class="ic ic-rocket" style="width:16px;height:16px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800">新赛季护航服务上线通知</div><div class="ell" style="font-size:10px;color:#8A99AB;margin-top:3px">三个分部的护航档位已全部上架，含送装与录屏说明</div></div>
+                <span style="font-size:9.5px;color:#B7C1CE;flex:none">10-16</span>
+              </div>
+              <div class="r" style="padding:12px 0;gap:9px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#2563EB,#3B82F6);flex:none"><i class="ic ic-target" style="width:16px;height:16px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800">三角洲行动分部开放端游接单</div><div class="ell" style="font-size:10px;color:#8A99AB;margin-top:3px">端游打手已完成授权校验，可在接单大厅按分部筛选</div></div>
+                <span style="font-size:9.5px;color:#B7C1CE;flex:none">10-15</span>
+              </div>
+              <div class="r" style="padding:12px 0;gap:9px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);flex:none"><i class="ic ic-wallet" style="width:16px;height:16px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800">余额充值流程说明（线下扫码）</div><div class="ell" style="font-size:10px;color:#8A99AB;margin-top:3px">线下扫码付款 → 上传截图 → 管理员核对后发放余额</div></div>
+                <span style="font-size:9.5px;color:#B7C1CE;flex:none">10-14</span>
+              </div>
+              <div class="r" style="padding:12px 0;gap:9px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#10B981,#22D3EE);flex:none"><i class="ic ic-film" style="width:16px;height:16px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800">打手守则更新：全程录屏与凭证留存</div><div class="ell" style="font-size:10px;color:#8A99AB;margin-top:3px">录屏保留 7 天，售后争议以录屏为唯一凭证</div></div>
+                <span style="font-size:9.5px;color:#B7C1CE;flex:none">10-12</span>
+              </div>
+              <div class="r" style="padding:12px 0;gap:9px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#F59E0B,#FB923C);flex:none"><i class="ic ic-headset" style="width:16px;height:16px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800">客服在线时间调整通知</div><div class="ell" style="font-size:10px;color:#8A99AB;margin-top:3px">客服调整为 9:00 - 次日 2:00，夜间仍可下单</div></div>
+                <span style="font-size:9.5px;color:#B7C1CE;flex:none">10-10</span>
+              </div>
+              <div class="r" style="padding:12px 0;gap:9px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#10B981,#22D3EE);flex:none"><i class="ic ic-trend" style="width:16px;height:16px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800">平台抽成比例公示（当前 25%）</div><div class="ell" style="font-size:10px;color:#8A99AB;margin-top:3px">比例由管理端配置，结算按当时比例落库，可回溯</div></div>
+                <span style="font-size:9.5px;color:#B7C1CE;flex:none">10-08</span>
+              </div>
+              <div class="r" style="padding:12px 0;gap:9px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#2563EB,#8B5CF6);flex:none"><i class="ic ic-banknote" style="width:16px;height:16px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800">打手提现流程上线说明</div><div class="ell" style="font-size:10px;color:#8A99AB;margin-top:3px">申请即锁定金额 → 管理员线下打款 → 回填凭证</div></div>
+                <span style="font-size:9.5px;color:#B7C1CE;flex:none">10-05</span>
+              </div>
+              <div class="r" style="padding:12px 0;gap:9px;border-bottom:1px solid #F3F6FA">
+                <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#F472B6,#F59E0B);flex:none"><i class="ic ic-lock" style="width:16px;height:16px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800">账号安全与登录提醒</div><div class="ell" style="font-size:10px;color:#8A99AB;margin-top:3px">同一账号仅允许一台设备在线，异地登录会被顶下线</div></div>
+                <span style="font-size:9.5px;color:#B7C1CE;flex:none">09-28</span>
+              </div>
+              <div class="r" style="padding:12px 0;gap:9px">
+                <span class="rc" style="width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,#06B6D4,#2563EB);flex:none"><i class="ic ic-badge" style="width:16px;height:16px"></i></span>
+                <div class="f1"><div style="font-size:11.5px;font-weight:800">未成年人保护与实名提示</div><div class="ell" style="font-size:10px;color:#8A99AB;margin-top:3px">未成年人不建议下单，家长可联系客服申请退款</div></div>
+                <span style="font-size:9.5px;color:#B7C1CE;flex:none">09-20</span>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:10px;color:#B7C1CE;margin-top:10px">已展示全部公告 · 系统通知与公告都归这里</div>
+          </div>
+          <div class="bnav">
+            <div class="it"><span class="nib"><i class="ic ic-bag" style="background:#64748B"></i></span><span>服务</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-clip" style="background:#64748B"></i></span><span>订单</span></div>
+            <div class="it"><span class="plus">＋</span><span style="margin-top:3px">下单</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-msg" style="background:#64748B"></i></span><span>消息</span></div>
+            <div class="it"><span class="nib"><i class="ic ic-users" style="background:#64748B"></i></span><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 15 · 充值页 ================= -->
+    <div class="cell">
+      <div class="cap"><b>15</b> 充值页</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span class="r" style="gap:9px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-chevR" style="width:14px;height:14px;background:#4A5A6E;transform:rotate(180deg)"></i></span><span style="font-size:15px;font-weight:800">充值</span></span>
+            <span class="r" style="gap:3px;font-size:10.5px;color:#4A5A6E">充值记录<i class="ic ic-chevR" style="width:12px;height:12px;background:#4A5A6E"></i></span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:0 14px">
+            <!-- 合规说明条 -->
+            <div class="card" style="border:0;background:linear-gradient(120deg,#8B5CF6,#2563EB 60%,#06B6D4);box-shadow:0 8px 18px rgba(37,99,235,.24);padding:11px 13px;display:flex;gap:10px;align-items:center;position:relative">
+              <svg class="pat" style="opacity:.45"><rect width="100%" height="100%" fill="url(#p-diag)"/></svg>
+              <span class="rc" style="width:32px;height:32px;border-radius:11px;background:rgba(255,255,255,.22);position:relative"><i class="ic ic-shield" style="width:16px;height:16px"></i></span>
+              <div style="position:relative;flex:1">
+                <div style="font-size:12.5px;font-weight:800;color:#fff">线下扫码付款，管理员核对后发放余额</div>
+                <div style="font-size:9.5px;color:rgba(255,255,255,.88);margin-top:3px">平台不经手资金 · 无自动到账 · 到账后站内通知</div>
+              </div>
+            </div>
+            <!-- 金额档位胶囊 -->
+            <div class="sec"><h3>选择金额</h3><span class="more">1 元 = 1 元余额</span></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+              <span class="rc" style="height:46px;border-radius:14px;background:#F1F5FA;font-size:14px;font-weight:800;color:#4A5A6E" class="tab">¥6</span>
+              <span class="rc" style="height:46px;border-radius:14px;background:#F1F5FA;font-size:14px;font-weight:800;color:#4A5A6E" class="tab">¥10</span>
+              <span class="rc" style="height:46px;border-radius:14px;background:#F1F5FA;font-size:14px;font-weight:800;color:#4A5A6E" class="tab">¥20</span>
+              <span class="rc" style="height:46px;border-radius:14px;background:#F1F5FA;font-size:14px;font-weight:800;color:#4A5A6E" class="tab">¥38</span>
+              <span class="rc" style="height:46px;border-radius:14px;background:linear-gradient(135deg,#2563EB,#06B6D4);font-size:14px;font-weight:800;color:#fff;box-shadow:0 8px 16px rgba(37,99,235,.3);position:relative" class="tab">¥68<span class="stk" style="right:-4px;top:-6px;background:#FFB020;color:#3B2400;transform:rotate(6deg)">常充</span></span>
+              <span class="rc" style="height:46px;border-radius:14px;background:#F1F5FA;font-size:14px;font-weight:800;color:#4A5A6E" class="tab">¥98</span>
+              <span class="rc" style="height:46px;border-radius:14px;background:#F1F5FA;font-size:14px;font-weight:800;color:#4A5A6E" class="tab">¥128</span>
+              <span class="rc" style="height:46px;border-radius:14px;background:#F1F5FA;font-size:14px;font-weight:800;color:#4A5A6E" class="tab">¥198</span>
+              <span class="rc" style="height:46px;border-radius:14px;background:#F1F5FA;font-size:14px;font-weight:800;color:#4A5A6E" class="tab">¥328</span>
+              <span class="rc" style="height:46px;border-radius:14px;background:#F1F5FA;font-size:14px;font-weight:800;color:#4A5A6E" class="tab">¥648</span>
+              <span class="rc" style="height:46px;border-radius:14px;border:1.4px dashed #C7D5E6;font-size:12px;font-weight:800;color:#8A99AB">自定义</span>
+              <span class="rc" style="height:46px;border-radius:14px;background:#F8FAFD;border:1px solid #E9EEF5;font-size:12px;font-weight:800;color:#B7C1CE">1-10000</span>
+            </div>
+            <!-- 收款码卡 -->
+            <div class="sec"><h3>扫码付款</h3><span class="more">管理端指定的收款码</span></div>
+            <div class="card sh-blue" style="padding:13px;display:flex;gap:13px;align-items:center">
+              <svg class="pat" style="opacity:.4"><rect width="100%" height="100%" fill="url(#p-dots)"/></svg>
+              <div class="rc" style="width:96px;height:96px;border-radius:14px;background:#fff;border:1px solid #E9EEF5;position:relative;flex:none">
+                <i class="ic ic-qr" style="width:56px;height:56px;background:#14202E"></i>
+              </div>
+              <div class="f1" style="position:relative">
+                <div style="font-size:12.5px;font-weight:800">扫码付款 ¥68.00</div>
+                <div style="font-size:10px;color:#4A5A6E;line-height:1.6;margin-top:6px">付款备注：祁连山 + ID 38291<br>付款完成后请保留截图，用于核对</div>
+                <div class="r" style="gap:5px;margin-top:8px">
+                  <span class="pill" style="background:#EFF6FF;color:#2563EB;height:20px"><i class="ic ic-lock"></i>仅用于核对</span>
+                  <span class="pill" style="background:#FEF3C7;color:#B45309;height:20px"><i class="ic ic-timer"></i>30 分钟内提交</span>
+                </div>
+              </div>
+            </div>
+            <!-- 上传截图入口 -->
+            <div class="sec"><h3>上传付款截图</h3><span class="more">必传 · 1 张</span></div>
+            <div class="r" style="gap:10px">
+              <div class="rc" style="width:74px;height:74px;border-radius:14px;border:1.4px dashed #C7D5E6;background:#F8FAFD;flex-direction:column;gap:5px;position:relative;overflow:hidden">
+                <i class="ic ic-upload" style="width:20px;height:20px;background:#2563EB"></i>
+                <span style="font-size:9px;color:#8A99AB">上传截图</span>
+              </div>
+              <div class="f1" style="font-size:10px;color:#8A99AB;line-height:1.7">
+                支持 JPG / PNG，单张 ≤ 5 MB<br>
+                提交后由管理员人工核对，<span style="color:#2563EB;font-weight:700">核对通过才会发放余额</span>
+              </div>
+            </div>
+            <!-- 提示 -->
+            <div style="background:#ECFEFF;border-radius:14px;padding:10px 12px;margin-top:12px;position:relative;overflow:hidden">
+              <svg class="pat" style="opacity:.35"><rect width="100%" height="100%" fill="url(#p-dots)"/></svg>
+              <div class="r" style="gap:7px;position:relative"><i class="ic ic-hour" style="width:14px;height:14px;background:#0891B2;flex:none"></i><span style="font-size:10px;color:#0E7490;line-height:1.55">余额只可由管理员核对后发放，用户无法自行加分；同一申请不会重复到账。</span></div>
+            </div>
+          </div>
+          <div style="flex:none;height:74px;border-top:1px solid #E9EEF5;background:#fff;padding:11px 14px 0">
+            <div class="btn gp" style="height:46px">提交充值申请 · <span class="tab">¥68.00</span></div>
+          </div>
+          <div style="flex:none;height:26px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:9.5px;color:#8A99AB">当前余额 <span class="tab" style="color:#F59E0B;font-weight:800;margin-left:3px">¥99,999.90</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 屏 16 · 打手态 · 接单大厅 ================= -->
+    <div class="cell">
+      <div class="cap"><b>16</b> 打手态 · 接单大厅</div>
+      <div class="phone">
+        <div class="st"><b>9:41</b><span class="sr"><i class="bar" style="height:4px"></i><i class="bar" style="height:6px"></i><i class="bar" style="height:8px"></i><span class="bat"><i></i></span></span></div>
+        <div class="page">
+          <!-- 身份细带 28dp：出现即表示当前在打手态 -->
+          <div style="height:28px;flex:none;background:linear-gradient(120deg,#8B5CF6,#2563EB 55%,#06B6D4);display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:relative;overflow:hidden">
+            <svg class="pat" style="opacity:.4"><rect width="100%" height="100%" fill="url(#p-diag)"/></svg>
+            <span class="r" style="gap:6px;position:relative"><i class="ic ic-swords" style="width:12px;height:12px"></i><span style="font-size:10px;font-weight:800;color:#fff;letter-spacing:.4px">打手态 · 凌云</span></span>
+            <span class="r" style="gap:4px;position:relative;font-size:9.5px;color:rgba(255,255,255,.9)">已授权 3 个分部<i class="ic ic-chevR" style="width:10px;height:10px"></i></span>
+          </div>
+          <div class="r b" style="height:44px;flex:none;padding:0 14px">
+            <span class="r" style="gap:9px"><span style="font-size:15px;font-weight:800">接单大厅</span><span class="pill" style="background:#DCFCE7;color:#15803D;height:19px"><i class="ic ic-zap"></i>实时刷新</span></span>
+            <span class="r" style="gap:7px"><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-refresh" style="width:14px;height:14px;background:#4A5A6E"></i></span><span class="rc" style="width:28px;height:28px;border-radius:10px;background:#F1F5FA"><i class="ic ic-clip" style="width:14px;height:14px;background:#4A5A6E"></i></span></span>
+          </div>
+          <!-- 分部筛选 -->
+          <div class="r" style="gap:7px;flex:none;padding:2px 14px 0">
+            <span class="pill" style="height:28px;padding:0 12px;font-size:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;box-shadow:0 6px 13px rgba(139,92,246,.32)">全部</span>
+            <span class="pill" style="height:28px;padding:0 12px;font-size:11px;background:#F1F5FA;color:#4A5A6E">和平精英·手游</span>
+            <span class="pill" style="height:28px;padding:0 12px;font-size:11px;background:#F1F5FA;color:#4A5A6E">三角洲·手游</span>
+            <span class="pill" style="height:28px;padding:0 12px;font-size:11px;background:#F1F5FA;color:#4A5A6E">端游</span>
+          </div>
+          <div class="r b" style="flex:none;padding:9px 15px 0">
+            <span style="font-size:10.5px;color:#8A99AB">待接订单 <span class="tab" style="color:#2563EB;font-weight:800">7</span> 单 · 我的余额 <span class="tab" style="color:#F59E0B;font-weight:800">¥1,286.40</span></span>
+            <span style="font-size:10.5px;color:#0891B2">按距离/时间排序</span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:9px 14px 0;display:flex;flex-direction:column;gap:9px">
+            <!-- 订单卡 1 -->
+            <div class="card sh-blue" style="padding:11px 12px">
+              <div class="r b">
+                <span style="font-size:10px;color:#8A99AB" class="tab">OD20261016021 · 30 秒前</span>
+                <span class="pill" style="background:#EDE9FE;color:#6D28D9"><i class="ic ic-pad"></i>和平精英 · 手游</span>
+              </div>
+              <div class="r" style="gap:9px;margin-top:9px">
+                <span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#06B6D4,#8B5CF6)"><i class="ic ic-snow" style="width:18px;height:18px"></i></span>
+                <div class="f1">
+                  <div class="ell" style="font-size:11.5px;font-weight:800">9.9 新人体验单 保 400w（送 7 套＋aug）</div>
+                  <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">需 1 人 · 约 30 分钟 · 全程录屏</div>
+                </div>
+                <div style="text-align:right"><div class="tab" style="font-size:15px;font-weight:800;color:#F59E0B">¥9.90</div><div style="font-size:9px;color:#10B981;font-weight:700" class="tab">到手 ¥7.43</div></div>
+              </div>
+              <div class="r b" style="margin-top:10px">
+                <span style="font-size:9.5px;color:#8A99AB">老板：老张不慌 · 已下单 26 次</span>
+                <span class="rc" style="height:32px;padding:0 16px;border-radius:11px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;font-size:12px;font-weight:800;box-shadow:0 7px 15px rgba(37,99,235,.3)">抢单</span>
+              </div>
+            </div>
+            <!-- 订单卡 2 -->
+            <div class="card sh-gold" style="padding:11px 12px">
+              <div class="r b">
+                <span style="font-size:10px;color:#8A99AB" class="tab">OD20261016022 · 2 分钟前</span>
+                <span class="pill" style="background:#FEF3C7;color:#B45309"><i class="ic ic-crown"></i>高端局</span>
+              </div>
+              <div class="r" style="gap:9px;margin-top:9px">
+                <span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#F59E0B,#FB923C)"><i class="ic ic-crown" style="width:18px;height:18px"></i></span>
+                <div class="f1">
+                  <div class="ell" style="font-size:11.5px;font-weight:800">233 保 1 亿（送小金人＋金 Aug/雪隼二选一）</div>
+                  <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">需 2 人 · 约 90 分钟 · 全程录屏</div>
+                </div>
+                <div style="text-align:right"><div class="tab" style="font-size:15px;font-weight:800;color:#F59E0B">¥233.00</div><div style="font-size:9px;color:#10B981;font-weight:700" class="tab">到手 ¥174.75</div></div>
+              </div>
+              <div class="r b" style="margin-top:10px">
+                <span style="font-size:9.5px;color:#8A99AB">老板：默然 · 已下单 8 次</span>
+                <span class="rc" style="height:32px;padding:0 16px;border-radius:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:12px;font-weight:800;box-shadow:0 7px 15px rgba(139,92,246,.3)">抢单</span>
+              </div>
+            </div>
+            <!-- 订单卡 3 -->
+            <div class="card sh-cyan" style="padding:11px 12px">
+              <div class="r b">
+                <span style="font-size:10px;color:#8A99AB" class="tab">OD20261016023 · 4 分钟前</span>
+                <span class="pill" style="background:#E0F2FE;color:#0369A1"><i class="ic ic-swords"></i>三角洲 · 手游</span>
+              </div>
+              <div class="r" style="gap:9px;margin-top:9px">
+                <span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#2563EB,#0EA5E9)"><i class="ic ic-target" style="width:18px;height:18px"></i></span>
+                <div class="f1">
+                  <div class="ell" style="font-size:11.5px;font-weight:800">30 保 1000w（送 7 级套＋强化 74u/妹控/Aug 四选一）</div>
+                  <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">需 1 人 · 约 45 分钟 · 需指定护航</div>
+                </div>
+                <div style="text-align:right"><div class="tab" style="font-size:15px;font-weight:800;color:#F59E0B">¥30.00</div><div style="font-size:9px;color:#10B981;font-weight:700" class="tab">到手 ¥22.50</div></div>
+              </div>
+              <div class="r b" style="margin-top:10px">
+                <span style="font-size:9.5px;color:#8A99AB">老板：阿哲 · 指定了 凌云</span>
+                <span class="rc" style="height:32px;padding:0 16px;border-radius:11px;background:linear-gradient(135deg,#06B6D4,#22D3EE);color:#fff;font-size:12px;font-weight:800;box-shadow:0 7px 15px rgba(6,182,212,.3)">抢单</span>
+              </div>
+            </div>
+            <!-- 订单卡 4 -->
+            <div class="card sh-purple" style="padding:11px 12px">
+              <div class="r b">
+                <span style="font-size:10px;color:#8A99AB" class="tab">OD20261016024 · 6 分钟前</span>
+                <span class="pill" style="background:#EDE9FE;color:#6D28D9"><i class="ic ic-target"></i>三角洲 · 端游</span>
+              </div>
+              <div class="r" style="gap:9px;margin-top:9px">
+                <span class="rc" style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#10B981,#22D3EE)"><i class="ic ic-flame" style="width:18px;height:18px"></i></span>
+                <div class="f1">
+                  <div class="ell" style="font-size:11.5px;font-weight:800">18.8 保 500w（送 7 级套＋aug）</div>
+                  <div style="font-size:9.5px;color:#8A99AB;margin-top:3px">需 1 人 · 约 40 分钟 · 走量单</div>
+                </div>
+                <div style="text-align:right"><div class="tab" style="font-size:15px;font-weight:800;color:#F59E0B">¥18.80</div><div style="font-size:9px;color:#10B981;font-weight:700" class="tab">到手 ¥14.10</div></div>
+              </div>
+              <div class="r b" style="margin-top:10px">
+                <span style="font-size:9.5px;color:#8A99AB">老板：小满 · 已下单 14 次</span>
+                <span class="rc" style="height:32px;padding:0 16px;border-radius:11px;background:linear-gradient(135deg,#8B5CF6,#2563EB);color:#fff;font-size:12px;font-weight:800;box-shadow:0 7px 15px rgba(139,92,246,.3)">抢单</span>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:10px;color:#B7C1CE;padding:1px 0 2px">无权限的分部不会出现在这里</div>
+          </div>
+          <!-- 打手态底部导航（三项） -->
+          <div class="bnav" style="justify-content:space-around">
+            <div class="it on" style="flex:none;width:96px"><span class="nib"><i class="ic ic-clip"></i></span><span>接单大厅</span></div>
+            <div class="it" style="flex:none;width:96px"><span class="nib"><i class="ic ic-msg" style="background:#64748B"></i></span><span>消息</span></div>
+            <div class="it" style="flex:none;width:96px"><span class="nib"><i class="ic ic-swords" style="background:#64748B"></i></span><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="ft">
+    <span>方案 F · 潮玩 —— 16 屏全览（4 列 × 4 行）</span>
+    <span>图案底纹：<b>#p-wave 彩浪</b> / <b>#p-dots 圆点</b> / <b>#p-diag 斜纹</b>（均低对比铺底）</span>
+    <span>组件：卡片 16 圆角 + 1px #E9EEF5 描边 + 色相柔和阴影 · 图标双色实底 · 贴纸角标 · 价格气囊</span>
+    <span>全站金额 ¥ 两位小数</span>
+  </div>
+</div>
+</body>
+</html>

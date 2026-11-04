@@ -1,0 +1,4 @@
+# 库包：构建产物与锁文件不入库（应用工程各自的 .gitignore 由 flutter create 生成）
+.dart_tool/
+build/
+pubspec.lock

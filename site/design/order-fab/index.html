@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>「立即下单」浮标 5 套方案对比（4 状态）— 祁连山电竞</title>
+<style>
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #EEF1F6; }
+body { font-family: "Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif; color: #0F172A; -webkit-font-smoothing: antialiased; }
+.wrap { padding: 26px 32px 44px; }
+.pagehead h1 { font-size: 21px; font-weight: 800; margin: 0 0 6px; letter-spacing: .2px; }
+.pagehead .sub { font-size: 12.5px; color: #475569; line-height: 1.75; max-width: 1180px; }
+.pagehead .sub b { color: #0F172A; }
+.badge-row { display: flex; gap: 8px; margin: 12px 0 22px; flex-wrap: wrap; }
+.badge { font-size: 11.5px; padding: 4px 9px; border-radius: 6px; background: #fff;
+         border: 1px solid #E2E8F0; color: #475569; }
+.badge.warn { border-color: #FCD9A8; background: #FEF7EC; color: #B45309; }
+.badge.ok { border-color: #BBE5C8; background: #F1FBF4; color: #15803D; }
+
+.frames { display: flex; gap: 26px; align-items: flex-start; }
+.frame { width: 390px; }
+.frame .cap { display: flex; align-items: baseline; gap: 7px; margin: 0 0 9px; }
+.frame .cap .n { font-size: 12.5px; font-weight: 800; color: #2563EB; }
+.frame .cap .t { font-size: 13px; font-weight: 700; }
+.frame .cap .d { font-size: 11px; color: #94A3B8; }
+.annot { margin-top: 10px; padding: 10px 12px; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px;
+         font-size: 11px; color: #475569; line-height: 1.85; }
+.annot b { color: #0F172A; }
+
+/* ---------------- 手机（390×844，与真实页面同框） ---------------- */
+/* 边框用 inset 阴影画：保证 padding box == 390×844，标注数值与实测值完全对齐 */
+.phone { position: relative; width: 390px; height: 844px; background: #F5F7FB; overflow: hidden;
+         box-shadow: inset 0 0 0 1px #DFE5EE; }
+.status { height: 28px; display: flex; align-items: center; justify-content: space-between;
+          padding: 0 14px; font-size: 11.5px; font-weight: 700; color: #0F172A; }
+.status .right { display: flex; align-items: center; gap: 5px; }
+.sig { display: flex; align-items: flex-end; gap: 2px; }
+.sig i { display: block; width: 2.5px; background: #0F172A; border-radius: 1px; }
+.batt { width: 20px; height: 10px; border: 1px solid #0F172A; border-radius: 2.5px; padding: 1.5px; }
+.batt i { display: block; height: 100%; width: 72%; background: #0F172A; border-radius: 1px; }
+
+.content { position: absolute; left: 0; right: 0; top: 28px; bottom: 0; padding-bottom: 150px;
+           transition: transform .22s ease; }
+.st3 .content { transform: translateY(-268px); }
+
+.topnav { display: flex; align-items: center; gap: 13px; padding: 2px 16px 10px; }
+.topnav .brand { font-size: 19px; font-weight: 800; }
+.topnav .it { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #475569; }
+.topnav .sp { flex: 1; }
+
+.supportbar { margin: 0 16px 10px; background: #fff; border: 1px solid #E2E8F0; border-radius: 6px;
+              display: flex; align-items: stretch; }
+.supportbar .cell { flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+                    padding: 9px 0; font-size: 12.5px; font-weight: 600; }
+.supportbar .div { width: 1px; background: #E2E8F0; margin: 8px 0; }
+
+.headline { display: flex; gap: 8px; padding: 4px 16px 12px; }
+.headline .txt { flex: 1; font-size: 11.5px; color: #475569; line-height: 1.55; }
+.headline .online { font-size: 11.5px; color: #94A3B8; white-space: nowrap; }
+
+.sechead { display: flex; align-items: baseline; gap: 8px; padding: 14px 16px 8px; }
+.sechead .h { font-size: 13.5px; font-weight: 800; }
+.sechead .s { font-size: 11px; color: #94A3B8; }
+
+.card { background: #fff; border: 1px solid #E5E9F0; border-radius: 10px; }
+.wide { margin: 0 16px 10px; padding: 14px; }
+.wide .row1 { display: flex; align-items: center; gap: 10px; }
+.gametile { width: 36px; height: 36px; border-radius: 10px; background: #EFF6FF; display: flex;
+            align-items: center; justify-content: center; position: relative; }
+.gametile .pc { position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%);
+                font-size: 8px; line-height: 1; padding: 1.5px 3px; border-radius: 3px;
+                background: #2563EB; color: #fff; font-weight: 700; }
+.tag { font-size: 9.5px; font-weight: 700; padding: 1.5px 5px; border-radius: 4px;
+       background: #E7EEFE; border: 1px solid #C7D8FB; color: #2563EB; }
+.wide .name { font-size: 15px; font-weight: 800; }
+.hr { height: 1px; background: #E5E9F0; margin: 12px 0 10px; }
+.metaline { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #94A3B8; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: #16A34A; }
+.metaline .go { margin-left: auto; font-weight: 700; color: #2563EB; }
+.halfrow { display: flex; gap: 10px; margin: 0 16px; }
+.halfrow .card { flex: 1; padding: 12px; }
+.halfrow .gametile { width: 32px; height: 32px; border-radius: 11px; }
+.halfrow .nm { font-size: 12.5px; font-weight: 700; margin: 8px 0 6px; }
+.halfrow .meta { font-size: 10px; color: #94A3B8; display: flex; align-items: center; gap: 5px; margin-top: 8px; }
+.halfrow .meta .dot { width: 5px; height: 5px; }
+.club { margin: 0 16px 10px; padding: 12px; display: flex; gap: 12px; }
+.cover { width: 72px; height: 72px; border-radius: 12px; background: #EFF6FF; display: flex;
+         align-items: center; justify-content: center; flex: none; }
+.club .nm { font-size: 13.5px; font-weight: 800; }
+.club .ds { font-size: 10.5px; color: #94A3B8; line-height: 1.5; margin: 6px 0 8px; }
+.club .bt { display: flex; align-items: center; gap: 3px; font-size: 11.5px; font-weight: 800; color: #D97706; }
+.club .bt .ord { margin-left: auto; font-size: 10.5px; font-weight: 400; color: #94A3B8; }
+.foot { padding: 14px 16px 0; font-size: 10.5px; color: #94A3B8; }
+
+/* ---------------- 底栏（含中间凸起祁小山） ---------------- */
+.nav { position: absolute; left: 0; right: 0; bottom: 0; height: 84px; background: #fff;
+       border-top: 1px solid #E2E8F0; z-index: 4; }
+.nav .row { height: 60px; display: flex; }
+.nav .item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+             gap: 3px; font-size: 10.5px; color: #94A3B8; }
+.nav .item.on { color: #2563EB; font-weight: 700; }
+.nav .bulge { position: absolute; left: 50%; top: -16px; transform: translateX(-50%); width: 54px;
+              height: 54px; border-radius: 50%; background: #fff; border: 1px solid #E2E8F0;
+              box-shadow: 0 6px 16px rgba(15,23,42,.12); display: flex; align-items: center;
+              justify-content: center; }
+.nav .homebar { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 120px;
+                height: 4px; border-radius: 2px; background: #CBD5E1; }
+
+/* ---------------- 浮标骨架（皮肤由每套的 .sX 规则给） ---------------- */
+.fab { position: absolute; right: 16px; z-index: 6; display: flex; align-items: center;
+       justify-content: center; transition: all .18s ease; }
+.fab .mk { display: block; }
+.fab .mk svg { width: 100%; height: 100%; display: block; }
+.fab .lab { line-height: 1; white-space: nowrap; }
+/* 特写条里浮标改为静态居中 */
+.chip .fab, .stage .fab { position: static; right: auto; bottom: auto; }
+
+/* ---------------- 4 状态特写（总览页） ---------------- */
+.chips { display: flex; flex-direction: column; border: 1px solid #E5E9F0; border-radius: 10px;
+         overflow: hidden; background: #fff; }
+.chip { padding: 8px 10px 10px; background: #fff; border-bottom: 1px solid #EEF1F6; }
+.chip:last-child { border-bottom: 0; }
+.chip .lb { font-size: 10.5px; color: #475569; margin-bottom: 6px; }
+.chip .lb b { color: #0F172A; }
+.chip .stage { height: 62px; background: #F5F7FB; border: 1px solid #EEF1F6; border-radius: 6px;
+               display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; }
+
+/* ---------------- 标注 ---------------- */
+.guides { position: absolute; left: 0; top: 0; width: 390px; height: 844px; z-index: 8; pointer-events: none; }
+.guides text { font-family: "Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif; font-size: 9px; fill: #334155;
+               paint-order: stroke; stroke: #F5F7FB; stroke-width: 2.6px; stroke-linejoin: round; }
+.guides .gl { stroke: #475569; stroke-width: 1; stroke-dasharray: 3 3; fill: none; }
+.guides .gl2 { stroke: #B45309; stroke-width: 1.2; fill: none; }
+
+/* ---------------- 表格 / 文字 ---------------- */
+h2.sec { font-size: 15px; font-weight: 800; margin: 34px 0 10px; }
+table { border-collapse: collapse; background: #fff; border: 1px solid #E2E8F0; border-radius: 8px;
+        overflow: hidden; font-size: 11.5px; }
+table th, table td { border-bottom: 1px solid #EEF1F6; padding: 7px 10px; text-align: left;
+                     vertical-align: top; line-height: 1.6; }
+table th { background: #F8FAFC; font-weight: 700; color: #334155; white-space: nowrap; }
+table tr:last-child td { border-bottom: 0; }
+table td.k { color: #475569; white-space: nowrap; }
+.mono { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: #0F172A; }
+.note { font-size: 11.5px; color: #475569; line-height: 1.8; max-width: 1180px; }
+.note b { color: #0F172A; }
+ul.tight { margin: 6px 0 0; padding-left: 18px; font-size: 11.5px; color: #475569; line-height: 1.85; }
+ul.tight b { color: #0F172A; }
+a { color: #2563EB; text-decoration: none; }
+
+
+.sA .fab { width: 92px; height: 40px; border-radius: 20px; bottom: 100px; background: #FFFFFF;
+             border: 1px solid #E2E8F0; box-shadow: 0 4px 12px rgba(15,23,42,.06); gap: 6px; padding: 0 14px; }
+.sA .fab .mk { width: 16px; height: 16px; }
+.sA .fab .lab { font-size: 13px; font-weight: 600; color: #2563EB; }
+
+
+.sA.st2 .fab { background: #F1F5F9; border-color: #CBD5E1; box-shadow: none; transform: scale(.97); }
+.sA.st2 .fab .lab { color: #1D4ED8; }
+.sA.st2 .fab .mk svg g { stroke: #1D4ED8; }
+
+
+.sA.st3 .fab { box-shadow: none; opacity: .88; }
+
+.sB .fab { width: 44px; height: 44px; border-radius: 22px; bottom: 108px; background: #D97706;
+             border: 1px solid #D97706; box-shadow: 0 4px 10px rgba(217,119,6,.28); flex-direction: column; gap: 2px; }
+.sB .fab .mk { width: 16px; height: 16px; }
+.sB .fab .lab { font-size: 9px; font-weight: 700; color: #FFFFFF; }
+
+
+.sB.st2 .fab { background: #B45309; border-color: #B45309;
+                 box-shadow: 0 2px 5px rgba(180,83,9,.30); transform: scale(.96); }
+
+
+.sB.st3 .fab { width: 38px; height: 38px; bottom: 112px;
+                 box-shadow: 0 2px 6px rgba(217,119,6,.20); opacity: .92; }
+.sB.st3 .fab .mk { width: 15px; height: 15px; }
+
+.sC .fab { width: 48px; height: 48px; border-radius: 24px; bottom: 106px; background: #0F172A;
+             border: 1px solid #0F172A; box-shadow: 0 4px 12px rgba(15,23,42,.20); flex-direction: column; gap: 2px; }
+.sC .fab .mk { width: 20px; height: 20px; }
+.sC .fab .lab { font-size: 9px; font-weight: 700; color: #FFFFFF; }
+
+
+.sC.st2 .fab { background: #1E293B; border-color: #1E293B;
+                 box-shadow: 0 2px 6px rgba(15,23,42,.24); transform: scale(.97); }
+
+
+.sC.st3 .fab { width: 40px; height: 40px; bottom: 112px; opacity: .88; box-shadow: none; }
+.sC.st3 .fab .mk { width: 18px; height: 18px; }
+.sC.st3 .fab .lab { display: none; }
+
+.sD .fab { width: 48px; height: 48px; border-radius: 24px; bottom: 104px; background: #FFFFFF;
+             border: 1.5px solid #2563EB; box-shadow: none; flex-direction: column; gap: 2px; }
+.sD .fab .mk { width: 20px; height: 20px; }
+.sD .fab .lab { font-size: 9px; font-weight: 700; color: #2563EB; }
+
+
+.sD.st2 .fab { background: #EFF6FF; border-width: 2px; transform: scale(.97); }
+
+
+.sD.st3 .fab { width: 40px; height: 40px; bottom: 110px; border-width: 1px;
+                 border-color: #93B4F5; opacity: .85; }
+.sD.st3 .fab .mk { width: 18px; height: 18px; }
+.sD.st3 .fab .lab { display: none; }
+
+.sE .fab { width: 128px; height: 44px; border-radius: 22px; bottom: 116px; background: #FFFFFF;
+             border: 1px solid #E2E8F0; box-shadow: 0 4px 14px rgba(15,23,42,.08); gap: 7px; padding: 0 15px; }
+.sE .fab .mk { width: 18px; height: 18px; }
+.sE .fab .lab { font-size: 13px; font-weight: 700; color: #2563EB; }
+
+
+.sE.st2 .fab { background: #F1F5F9; border-color: #CBD5E1; box-shadow: none; transform: scale(.97); }
+.sE.st2 .fab .lab { color: #1D4ED8; }
+.sE.st2 .fab .mk svg g { stroke: #1D4ED8; }
+
+
+.sE.st3 .fab { width: 44px; height: 44px; gap: 0; padding: 0;
+                 box-shadow: 0 3px 10px rgba(15,23,42,.10); }
+.sE.st3 .fab .mk { width: 19px; height: 19px; }
+.sE.st3 .fab .lab { display: none; }
+
+.five { display: flex; gap: 18px; align-items: flex-start; }
+.col { width: 246px; }
+.colhead { display: flex; align-items: baseline; gap: 6px; margin: 0 0 8px; }
+.colhead .k { font-size: 15px; font-weight: 800; color: #2563EB; }
+.colhead .t { font-size: 12.5px; font-weight: 700; }
+.ph-scaled { width: 242px; height: 523px; overflow: hidden; }
+.ph-scaled .phone { transform: scale(.62); transform-origin: top left; }
+.col .chips { margin-top: 12px; }
+.colnote { font-size: 11px; color: #475569; line-height: 1.65; margin-top: 8px; }
+.rec { border: 1px solid #BBE5C8; background: #F1FBF4; border-radius: 8px; padding: 13px 15px;
+        font-size: 12px; color: #14532D; line-height: 1.9; }
+.rec b { color: #065F46; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="pagehead">
+    <h1>「立即下单」浮标：5 套方案 × 4 状态（390×844）</h1>
+    <div class="sub">
+      负责人要求：<b>立即下单按钮重新设计，不要一坨蓝</b>。现状 = <span class="mono">AppOrderFab</span>
+      （⌀54 圆 + 青蓝渐变 <span class="mono">#06B6D4 → #2563EB</span> + 白雪山标 20dp + 9dp「下单」+
+      蓝阴影 18px/20% + right 16 / bottom 96），使用点
+      <span class="mono">apps/boss-app/lib/pages/services_page.dart:210</span>。
+      五套方案的共同硬约束：<b>不用渐变做主视觉</b>、<b>实色或纯描边</b>、<b>只给浮标一层轻阴影</b>、
+      <b>图标统一自绘雪山标</b>、<b>点击热区 ≥48dp</b>、<b>右下角与真实服务页同框</b>，
+      并且每套都处理了与底部导航中间凸起「祁小山」（⌀54 白圆）的关系 —— 这是本页最关键的一条约束。
+    </div>
+    <div class="badge-row">
+      <span class="badge ok">单页 4 状态：默认 / 按下 / 滚动中 / 与底部导航同屏（带标注）</span>
+      <span class="badge">底栏模型 60 + 手势区 24 = 84；凸起 ⌀54 / top:-16 / 居中</span>
+      <span class="badge warn">design-only：本稿不改 apps/** 业务代码</span>
+    </div>
+  </div>
+
+  <div class="five">
+  <div class="col">
+    <div class="colhead"><span class="k">A</span><span class="t">白底描边胶囊</span></div>
+    <div class="ph-scaled">
+    <div class="phone st1 sA">
+      <div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div>
+      
+<div class="content">
+  <div class="topnav">
+    <span class="brand">服务</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,20 L4,12 M10,20 L10,6 M16,20 L16,9 M22,20 L22,4"/></g></svg>排行榜</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20,13 L20,6 A1,1 0 0 0 19,5 L4,5 A1,1 0 0 0 3,6 L3,15 A1,1 0 0 0 4,16 L7,16 L7,20 L11,16 L17,16"/></g></svg>玩家圈</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18,9 A6,6 0 1 0 6,9 C6,14 4,16 4,16 L20,16 C20,16 18,14 18,9 Z"/><path d="M10,19.5 A2,2 0 0 0 14,19.5"/></g></svg>公告</span>
+    <span class="sp"></span>
+    <svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5,16.5 L21,21"/></g></svg>
+  </div>
+
+  <div class="supportbar">
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L22,20 L2,20 Z"/><path d="M12,9 L12,14"/><path d="M12,17 L12,17.3"/></g></svg>投诉</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,20 C12,20 4,15.5 4,10.2 A4.4,4.4 0 0 1 12,7.6 A4.4,4.4 0 0 1 20,10.2 C20,15.5 12,20 12,20 Z"/></g></svg>打赏</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,8 L20,8 L20,20 L4,20 Z"/><path d="M9,8 L10.6,4 L13.4,4 L15,8"/><path d="M14,14 L10,14 M12,12 L10,14 L12,16"/></g></svg>退款</div>
+  </div>
+
+  <div class="headline">
+    <div class="txt">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+    <div class="online">49 位在线</div>
+  </div>
+
+  <div class="sechead"><span class="h">选择分部</span></div>
+
+  <div class="card wide">
+    <div class="row1">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div style="flex:1"><span class="name">和平精英</span>
+        <span class="tag" style="margin-left:8px">手游</span></div>
+      <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9,5 L16,12 L9,19"/></g></svg>
+    </div>
+    <div class="hr"></div>
+    <div class="metaline"><span class="dot"></span>28 人在线 · 高峰 20:00-次日 1:00
+      <span class="go">进入分部 ›</span></div>
+  </div>
+
+  <div class="halfrow">
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">手游</span>
+      <div class="meta"><span class="dot"></span>12 人在线</div>
+    </div>
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span class="pc">端</span></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">端游</span>
+      <div class="meta"><span class="dot"></span>9 人在线</div>
+    </div>
+  </div>
+
+  <div class="sechead"><span class="h">祁连山官方</span><span class="s">平台直营 · 无第三方</span></div>
+
+  <div class="card club">
+    <div class="cover"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+    <div style="flex:1">
+      <div class="nm">祁连山官方自营馆</div>
+      <div class="ds">和平精英上分陪练 · 不接急单 · 客服 9:00-次日 2:00 在线</div>
+      <div class="bt"><svg viewBox="0 0 24 24" width="11" height="11" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#D97706" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12,4 L14.3,9.2 L20,9.8 L15.7,13.6 L16.9,19.2 L12,16.3 L7.1,19.2 L8.3,13.6 L4,9.8 L9.7,9.2 Z" fill="#D97706" stroke="none"/></g></svg>4.8<span class="ord">2,847 单</span></div>
+    </div>
+  </div>
+
+  <div class="foot">先服务后结算 · 不满意可申诉 · 积分由平台发放</div>
+</div>
+
+      
+<div class="nav">
+  <div class="bulge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7,19 L10.4,4.2 L18.7,19"/><path d="M9.1,14.5 L12.3,14.5"/><path d="M10.7,14.5 L10.7,19"/><rect x="15.9" y="2.1" width="4.5" height="4.5" stroke-linejoin="miter"/></g></svg></div>
+  <div class="row">
+    <div class="item on"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></g></svg>服务</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8 M9,12 L15,12 M9,16 L13,16"/></g></svg>订单</div>
+    <div class="item">祁小山</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21,11.5 A8.5,8.5 0 0 1 12.5,20 L8,21.5 L9,17.8 A8.5,8.5 0 1 1 21,11.5 Z"/></g></svg>消息</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="4"/><path d="M4.5,20 C4.5,16.2 8,13.8 12,13.8 C16,13.8 19.5,16.2 19.5,20"/></g></svg>我的</div>
+  </div>
+  <div class="homebar"></div>
+</div>
+
+      <div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div>
+      
+    </div></div>
+    
+      <div class="chips">
+        <div class="chip st1 sA"><div class="lb"><b>① 默认</b> · 92 × 40</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+        <div class="chip st2 sA"><div class="lb"><b>② 按下</b> · bg #F1F5F9</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+        <div class="chip st3 sA"><div class="lb"><b>③ 滚动中</b> · 不收起（40 × 92 不变）</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+      </div>
+    <div class="colnote">最小、最克制：零实色面积，靠 1px 发丝线 + 主色图标与文字立住</div>
+  </div>
+  <div class="col">
+    <div class="colhead"><span class="k">B</span><span class="t">琥珀金实心小圆</span></div>
+    <div class="ph-scaled">
+    <div class="phone st1 sB">
+      <div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div>
+      
+<div class="content">
+  <div class="topnav">
+    <span class="brand">服务</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,20 L4,12 M10,20 L10,6 M16,20 L16,9 M22,20 L22,4"/></g></svg>排行榜</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20,13 L20,6 A1,1 0 0 0 19,5 L4,5 A1,1 0 0 0 3,6 L3,15 A1,1 0 0 0 4,16 L7,16 L7,20 L11,16 L17,16"/></g></svg>玩家圈</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18,9 A6,6 0 1 0 6,9 C6,14 4,16 4,16 L20,16 C20,16 18,14 18,9 Z"/><path d="M10,19.5 A2,2 0 0 0 14,19.5"/></g></svg>公告</span>
+    <span class="sp"></span>
+    <svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5,16.5 L21,21"/></g></svg>
+  </div>
+
+  <div class="supportbar">
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L22,20 L2,20 Z"/><path d="M12,9 L12,14"/><path d="M12,17 L12,17.3"/></g></svg>投诉</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,20 C12,20 4,15.5 4,10.2 A4.4,4.4 0 0 1 12,7.6 A4.4,4.4 0 0 1 20,10.2 C20,15.5 12,20 12,20 Z"/></g></svg>打赏</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,8 L20,8 L20,20 L4,20 Z"/><path d="M9,8 L10.6,4 L13.4,4 L15,8"/><path d="M14,14 L10,14 M12,12 L10,14 L12,16"/></g></svg>退款</div>
+  </div>
+
+  <div class="headline">
+    <div class="txt">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+    <div class="online">49 位在线</div>
+  </div>
+
+  <div class="sechead"><span class="h">选择分部</span></div>
+
+  <div class="card wide">
+    <div class="row1">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div style="flex:1"><span class="name">和平精英</span>
+        <span class="tag" style="margin-left:8px">手游</span></div>
+      <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9,5 L16,12 L9,19"/></g></svg>
+    </div>
+    <div class="hr"></div>
+    <div class="metaline"><span class="dot"></span>28 人在线 · 高峰 20:00-次日 1:00
+      <span class="go">进入分部 ›</span></div>
+  </div>
+
+  <div class="halfrow">
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">手游</span>
+      <div class="meta"><span class="dot"></span>12 人在线</div>
+    </div>
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span class="pc">端</span></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">端游</span>
+      <div class="meta"><span class="dot"></span>9 人在线</div>
+    </div>
+  </div>
+
+  <div class="sechead"><span class="h">祁连山官方</span><span class="s">平台直营 · 无第三方</span></div>
+
+  <div class="card club">
+    <div class="cover"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+    <div style="flex:1">
+      <div class="nm">祁连山官方自营馆</div>
+      <div class="ds">和平精英上分陪练 · 不接急单 · 客服 9:00-次日 2:00 在线</div>
+      <div class="bt"><svg viewBox="0 0 24 24" width="11" height="11" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#D97706" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12,4 L14.3,9.2 L20,9.8 L15.7,13.6 L16.9,19.2 L12,16.3 L7.1,19.2 L8.3,13.6 L4,9.8 L9.7,9.2 Z" fill="#D97706" stroke="none"/></g></svg>4.8<span class="ord">2,847 单</span></div>
+    </div>
+  </div>
+
+  <div class="foot">先服务后结算 · 不满意可申诉 · 积分由平台发放</div>
+</div>
+
+      
+<div class="nav">
+  <div class="bulge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7,19 L10.4,4.2 L18.7,19"/><path d="M9.1,14.5 L12.3,14.5"/><path d="M10.7,14.5 L10.7,19"/><rect x="15.9" y="2.1" width="4.5" height="4.5" stroke-linejoin="miter"/></g></svg></div>
+  <div class="row">
+    <div class="item on"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></g></svg>服务</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8 M9,12 L15,12 M9,16 L13,16"/></g></svg>订单</div>
+    <div class="item">祁小山</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21,11.5 A8.5,8.5 0 0 1 12.5,20 L8,21.5 L9,17.8 A8.5,8.5 0 1 1 21,11.5 Z"/></g></svg>消息</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="4"/><path d="M4.5,20 C4.5,16.2 8,13.8 12,13.8 C16,13.8 19.5,16.2 19.5,20"/></g></svg>我的</div>
+  </div>
+  <div class="homebar"></div>
+</div>
+
+      <div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#FFFFFF" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div>
+      
+    </div></div>
+    
+      <div class="chips">
+        <div class="chip st1 sB"><div class="lb"><b>① 默认</b> · 44 × 44</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#FFFFFF" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+        <div class="chip st2 sB"><div class="lb"><b>② 按下</b> · bg #B45309（深一档）</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#FFFFFF" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+        <div class="chip st3 sB"><div class="lb"><b>③ 滚动中</b> · 缩到 ⌀38，仍保留「下单」二字</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#FFFFFF" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+      </div>
+    <div class="colnote">用全站「价值 / 稀缺」色 #D97706，直径比现状小 10dp，白标白字</div>
+  </div>
+  <div class="col">
+    <div class="colhead"><span class="k">C</span><span class="t">深色近黑浮标</span></div>
+    <div class="ph-scaled">
+    <div class="phone st1 sC">
+      <div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div>
+      
+<div class="content">
+  <div class="topnav">
+    <span class="brand">服务</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,20 L4,12 M10,20 L10,6 M16,20 L16,9 M22,20 L22,4"/></g></svg>排行榜</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20,13 L20,6 A1,1 0 0 0 19,5 L4,5 A1,1 0 0 0 3,6 L3,15 A1,1 0 0 0 4,16 L7,16 L7,20 L11,16 L17,16"/></g></svg>玩家圈</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18,9 A6,6 0 1 0 6,9 C6,14 4,16 4,16 L20,16 C20,16 18,14 18,9 Z"/><path d="M10,19.5 A2,2 0 0 0 14,19.5"/></g></svg>公告</span>
+    <span class="sp"></span>
+    <svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5,16.5 L21,21"/></g></svg>
+  </div>
+
+  <div class="supportbar">
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L22,20 L2,20 Z"/><path d="M12,9 L12,14"/><path d="M12,17 L12,17.3"/></g></svg>投诉</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,20 C12,20 4,15.5 4,10.2 A4.4,4.4 0 0 1 12,7.6 A4.4,4.4 0 0 1 20,10.2 C20,15.5 12,20 12,20 Z"/></g></svg>打赏</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,8 L20,8 L20,20 L4,20 Z"/><path d="M9,8 L10.6,4 L13.4,4 L15,8"/><path d="M14,14 L10,14 M12,12 L10,14 L12,16"/></g></svg>退款</div>
+  </div>
+
+  <div class="headline">
+    <div class="txt">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+    <div class="online">49 位在线</div>
+  </div>
+
+  <div class="sechead"><span class="h">选择分部</span></div>
+
+  <div class="card wide">
+    <div class="row1">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div style="flex:1"><span class="name">和平精英</span>
+        <span class="tag" style="margin-left:8px">手游</span></div>
+      <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9,5 L16,12 L9,19"/></g></svg>
+    </div>
+    <div class="hr"></div>
+    <div class="metaline"><span class="dot"></span>28 人在线 · 高峰 20:00-次日 1:00
+      <span class="go">进入分部 ›</span></div>
+  </div>
+
+  <div class="halfrow">
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">手游</span>
+      <div class="meta"><span class="dot"></span>12 人在线</div>
+    </div>
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span class="pc">端</span></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">端游</span>
+      <div class="meta"><span class="dot"></span>9 人在线</div>
+    </div>
+  </div>
+
+  <div class="sechead"><span class="h">祁连山官方</span><span class="s">平台直营 · 无第三方</span></div>
+
+  <div class="card club">
+    <div class="cover"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+    <div style="flex:1">
+      <div class="nm">祁连山官方自营馆</div>
+      <div class="ds">和平精英上分陪练 · 不接急单 · 客服 9:00-次日 2:00 在线</div>
+      <div class="bt"><svg viewBox="0 0 24 24" width="11" height="11" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#D97706" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12,4 L14.3,9.2 L20,9.8 L15.7,13.6 L16.9,19.2 L12,16.3 L7.1,19.2 L8.3,13.6 L4,9.8 L9.7,9.2 Z" fill="#D97706" stroke="none"/></g></svg>4.8<span class="ord">2,847 单</span></div>
+    </div>
+  </div>
+
+  <div class="foot">先服务后结算 · 不满意可申诉 · 积分由平台发放</div>
+</div>
+
+      
+<div class="nav">
+  <div class="bulge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7,19 L10.4,4.2 L18.7,19"/><path d="M9.1,14.5 L12.3,14.5"/><path d="M10.7,14.5 L10.7,19"/><rect x="15.9" y="2.1" width="4.5" height="4.5" stroke-linejoin="miter"/></g></svg></div>
+  <div class="row">
+    <div class="item on"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></g></svg>服务</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8 M9,12 L15,12 M9,16 L13,16"/></g></svg>订单</div>
+    <div class="item">祁小山</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21,11.5 A8.5,8.5 0 0 1 12.5,20 L8,21.5 L9,17.8 A8.5,8.5 0 1 1 21,11.5 Z"/></g></svg>消息</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="4"/><path d="M4.5,20 C4.5,16.2 8,13.8 12,13.8 C16,13.8 19.5,16.2 19.5,20"/></g></svg>我的</div>
+  </div>
+  <div class="homebar"></div>
+</div>
+
+      <div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#FFFFFF" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div>
+      
+    </div></div>
+    
+      <div class="chips">
+        <div class="chip st1 sC"><div class="lb"><b>① 默认</b> · 48 × 48</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#FFFFFF" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+        <div class="chip st2 sC"><div class="lb"><b>② 按下</b> · bg #1E293B（提亮一档）</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#FFFFFF" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+        <div class="chip st3 sC"><div class="lb"><b>③ 滚动中</b> · 缩到 ⌀40，收起文字只留雪山标</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#FFFFFF" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+      </div>
+    <div class="colnote">#0F172A 实底 + 白图标 + 极轻阴影：高级感，不与页面主色争</div>
+  </div>
+  <div class="col">
+    <div class="colhead"><span class="k">D</span><span class="t">主色描边圆</span></div>
+    <div class="ph-scaled">
+    <div class="phone st1 sD">
+      <div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div>
+      
+<div class="content">
+  <div class="topnav">
+    <span class="brand">服务</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,20 L4,12 M10,20 L10,6 M16,20 L16,9 M22,20 L22,4"/></g></svg>排行榜</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20,13 L20,6 A1,1 0 0 0 19,5 L4,5 A1,1 0 0 0 3,6 L3,15 A1,1 0 0 0 4,16 L7,16 L7,20 L11,16 L17,16"/></g></svg>玩家圈</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18,9 A6,6 0 1 0 6,9 C6,14 4,16 4,16 L20,16 C20,16 18,14 18,9 Z"/><path d="M10,19.5 A2,2 0 0 0 14,19.5"/></g></svg>公告</span>
+    <span class="sp"></span>
+    <svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5,16.5 L21,21"/></g></svg>
+  </div>
+
+  <div class="supportbar">
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L22,20 L2,20 Z"/><path d="M12,9 L12,14"/><path d="M12,17 L12,17.3"/></g></svg>投诉</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,20 C12,20 4,15.5 4,10.2 A4.4,4.4 0 0 1 12,7.6 A4.4,4.4 0 0 1 20,10.2 C20,15.5 12,20 12,20 Z"/></g></svg>打赏</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,8 L20,8 L20,20 L4,20 Z"/><path d="M9,8 L10.6,4 L13.4,4 L15,8"/><path d="M14,14 L10,14 M12,12 L10,14 L12,16"/></g></svg>退款</div>
+  </div>
+
+  <div class="headline">
+    <div class="txt">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+    <div class="online">49 位在线</div>
+  </div>
+
+  <div class="sechead"><span class="h">选择分部</span></div>
+
+  <div class="card wide">
+    <div class="row1">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div style="flex:1"><span class="name">和平精英</span>
+        <span class="tag" style="margin-left:8px">手游</span></div>
+      <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9,5 L16,12 L9,19"/></g></svg>
+    </div>
+    <div class="hr"></div>
+    <div class="metaline"><span class="dot"></span>28 人在线 · 高峰 20:00-次日 1:00
+      <span class="go">进入分部 ›</span></div>
+  </div>
+
+  <div class="halfrow">
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">手游</span>
+      <div class="meta"><span class="dot"></span>12 人在线</div>
+    </div>
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span class="pc">端</span></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">端游</span>
+      <div class="meta"><span class="dot"></span>9 人在线</div>
+    </div>
+  </div>
+
+  <div class="sechead"><span class="h">祁连山官方</span><span class="s">平台直营 · 无第三方</span></div>
+
+  <div class="card club">
+    <div class="cover"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+    <div style="flex:1">
+      <div class="nm">祁连山官方自营馆</div>
+      <div class="ds">和平精英上分陪练 · 不接急单 · 客服 9:00-次日 2:00 在线</div>
+      <div class="bt"><svg viewBox="0 0 24 24" width="11" height="11" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#D97706" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12,4 L14.3,9.2 L20,9.8 L15.7,13.6 L16.9,19.2 L12,16.3 L7.1,19.2 L8.3,13.6 L4,9.8 L9.7,9.2 Z" fill="#D97706" stroke="none"/></g></svg>4.8<span class="ord">2,847 单</span></div>
+    </div>
+  </div>
+
+  <div class="foot">先服务后结算 · 不满意可申诉 · 积分由平台发放</div>
+</div>
+
+      
+<div class="nav">
+  <div class="bulge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7,19 L10.4,4.2 L18.7,19"/><path d="M9.1,14.5 L12.3,14.5"/><path d="M10.7,14.5 L10.7,19"/><rect x="15.9" y="2.1" width="4.5" height="4.5" stroke-linejoin="miter"/></g></svg></div>
+  <div class="row">
+    <div class="item on"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></g></svg>服务</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8 M9,12 L15,12 M9,16 L13,16"/></g></svg>订单</div>
+    <div class="item">祁小山</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21,11.5 A8.5,8.5 0 0 1 12.5,20 L8,21.5 L9,17.8 A8.5,8.5 0 1 1 21,11.5 Z"/></g></svg>消息</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="4"/><path d="M4.5,20 C4.5,16.2 8,13.8 12,13.8 C16,13.8 19.5,16.2 19.5,20"/></g></svg>我的</div>
+  </div>
+  <div class="homebar"></div>
+</div>
+
+      <div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div>
+      
+    </div></div>
+    
+      <div class="chips">
+        <div class="chip st1 sD"><div class="lb"><b>① 默认</b> · 48 × 48</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+        <div class="chip st2 sD"><div class="lb"><b>② 按下</b> · bg #EFF6FF（冰蓝浅底）+ 描边加到 2dp</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+        <div class="chip st3 sD"><div class="lb"><b>③ 滚动中</b> · 缩到 ⌀40 只留图标，描边降为 1dp #93B4F5</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">下单</span></div></div></div>
+      </div>
+    <div class="colnote">只描边、不填充：1.5dp 主色线 + 主色雪山标，零实色面积（与凸起同构，风险最高）</div>
+  </div>
+  <div class="col">
+    <div class="colhead"><span class="k">E</span><span class="t">胶囊 + 滚动收起</span></div>
+    <div class="ph-scaled">
+    <div class="phone st1 sE">
+      <div class="status"><span>10:24</span><span class="right"><span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span><span class="batt"><i></i></span></span></div>
+      
+<div class="content">
+  <div class="topnav">
+    <span class="brand">服务</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,20 L4,12 M10,20 L10,6 M16,20 L16,9 M22,20 L22,4"/></g></svg>排行榜</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20,13 L20,6 A1,1 0 0 0 19,5 L4,5 A1,1 0 0 0 3,6 L3,15 A1,1 0 0 0 4,16 L7,16 L7,20 L11,16 L17,16"/></g></svg>玩家圈</span>
+    <span class="it"><svg viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18,9 A6,6 0 1 0 6,9 C6,14 4,16 4,16 L20,16 C20,16 18,14 18,9 Z"/><path d="M10,19.5 A2,2 0 0 0 14,19.5"/></g></svg>公告</span>
+    <span class="sp"></span>
+    <svg viewBox="0 0 24 24" width="17" height="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#475569" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5,16.5 L21,21"/></g></svg>
+  </div>
+
+  <div class="supportbar">
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,3 L22,20 L2,20 Z"/><path d="M12,9 L12,14"/><path d="M12,17 L12,17.3"/></g></svg>投诉</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12,20 C12,20 4,15.5 4,10.2 A4.4,4.4 0 0 1 12,7.6 A4.4,4.4 0 0 1 20,10.2 C20,15.5 12,20 12,20 Z"/></g></svg>打赏</div>
+    <div class="div"></div>
+    <div class="cell"><svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4,8 L20,8 L20,20 L4,20 Z"/><path d="M9,8 L10.6,4 L13.4,4 L15,8"/><path d="M14,14 L10,14 M12,12 L10,14 L12,16"/></g></svg>退款</div>
+  </div>
+
+  <div class="headline">
+    <div class="txt">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+    <div class="online">49 位在线</div>
+  </div>
+
+  <div class="sechead"><span class="h">选择分部</span></div>
+
+  <div class="card wide">
+    <div class="row1">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div style="flex:1"><span class="name">和平精英</span>
+        <span class="tag" style="margin-left:8px">手游</span></div>
+      <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9,5 L16,12 L9,19"/></g></svg>
+    </div>
+    <div class="hr"></div>
+    <div class="metaline"><span class="dot"></span>28 人在线 · 高峰 20:00-次日 1:00
+      <span class="go">进入分部 ›</span></div>
+  </div>
+
+  <div class="halfrow">
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">手游</span>
+      <div class="meta"><span class="dot"></span>12 人在线</div>
+    </div>
+    <div class="card">
+      <div class="gametile"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg><span class="pc">端</span></div>
+      <div class="nm">三角洲行动</div>
+      <span class="tag">端游</span>
+      <div class="meta"><span class="dot"></span>9 人在线</div>
+    </div>
+  </div>
+
+  <div class="sechead"><span class="h">祁连山官方</span><span class="s">平台直营 · 无第三方</span></div>
+
+  <div class="card club">
+    <div class="cover"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></div>
+    <div style="flex:1">
+      <div class="nm">祁连山官方自营馆</div>
+      <div class="ds">和平精英上分陪练 · 不接急单 · 客服 9:00-次日 2:00 在线</div>
+      <div class="bt"><svg viewBox="0 0 24 24" width="11" height="11" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#D97706" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12,4 L14.3,9.2 L20,9.8 L15.7,13.6 L16.9,19.2 L12,16.3 L7.1,19.2 L8.3,13.6 L4,9.8 L9.7,9.2 Z" fill="#D97706" stroke="none"/></g></svg>4.8<span class="ord">2,847 单</span></div>
+    </div>
+  </div>
+
+  <div class="foot">先服务后结算 · 不满意可申诉 · 积分由平台发放</div>
+</div>
+
+      
+<div class="nav">
+  <div class="bulge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#0F172A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7,19 L10.4,4.2 L18.7,19"/><path d="M9.1,14.5 L12.3,14.5"/><path d="M10.7,14.5 L10.7,19"/><rect x="15.9" y="2.1" width="4.5" height="4.5" stroke-linejoin="miter"/></g></svg></div>
+  <div class="row">
+    <div class="item on"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></g></svg>服务</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L18,3.5 L18,20.5 L6,20.5 Z"/><path d="M9,8 L15,8 M9,12 L15,12 M9,16 L13,16"/></g></svg>订单</div>
+    <div class="item">祁小山</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21,11.5 A8.5,8.5 0 0 1 12.5,20 L8,21.5 L9,17.8 A8.5,8.5 0 1 1 21,11.5 Z"/></g></svg>消息</div>
+    <div class="item"><svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#94A3B8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="4"/><path d="M4.5,20 C4.5,16.2 8,13.8 12,13.8 C16,13.8 19.5,16.2 19.5,20"/></g></svg>我的</div>
+  </div>
+  <div class="homebar"></div>
+</div>
+
+      <div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">立即下单</span></div>
+      
+    </div></div>
+    
+      <div class="chips">
+        <div class="chip st1 sE"><div class="lb"><b>① 默认</b> · 128 × 44</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">立即下单</span></div></div></div>
+        <div class="chip st2 sE"><div class="lb"><b>② 按下</b> · bg #F1F5F9</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">立即下单</span></div></div></div>
+        <div class="chip st3 sE"><div class="lb"><b>③ 滚动中</b> · 只收宽度：128 → 44（右缘与底边不动）</div>
+          <div class="stage"><div class="fab"><span class="mk"><svg viewBox="0 0 100 72" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="#2563EB" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"><path d="M0,72 L30,12.96 L46,44.64 L66,21.6 L100,72"/></g><g fill="none" stroke="#2563EB" stroke-width="10.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19,31.68 L30,12.96 L41,31.68"/><path d="M58,33.12 L66,21.6 L74,33.12"/></g></svg></span><span class="lab">立即下单</span></div></div></div>
+      </div>
+    <div class="colnote">白底胶囊「雪山标 + 立即下单」，向下滚动收起为 ⌀44 小圆，只留图标</div>
+  </div></div>
+
+  <h2 class="sec">与 docs/21《反 AI 味设计规范》逐条对照</h2>
+  <table>
+    <thead><tr><th>docs/21 条目</th><th>A 白底胶囊</th><th>B 琥珀金小圆</th><th>C 近黑浮标</th>
+      <th>D 主色描边圆</th><th>E 胶囊 + 收起</th></tr></thead>
+    <tbody><tr><td class="k">禁渐变做主视觉</td><td>✅ 纯发丝线</td><td>✅ 实色 #D97706</td><td>✅ 实色 #0F172A</td><td>✅ 纯描边</td><td>✅ 纯发丝线</td></tr><tr><td class="k">禁阴影铺满（浮层可用轻阴影）</td><td>✅ 12px / 6%</td><td>✅ 10px / 28%（同色系）</td><td>✅ 12px / 20%</td><td>✅ 无阴影</td><td>✅ 14px / 8%</td></tr><tr><td class="k">圆角分档（4–6 / 10 / 14 / 胶囊全圆）</td><td>胶囊 r=20</td><td>正圆</td><td>正圆</td><td>正圆</td><td>胶囊 r=22</td></tr><tr><td class="k">禁 emoji / 装饰插画当图标</td><td>✅ 雪山标自绘</td><td>✅ 自绘</td><td>✅ 自绘</td><td>✅ 自绘</td><td>✅ 自绘</td></tr><tr><td class="k">实色主色（渐变只做极小面积）</td><td>主色仅在 16dp 图标 + 13dp 文字</td><td>主色缺席（改用价值色）</td><td>主色缺席（改用文字主色近黑）</td><td>主色在 1.5dp 描边 + 20dp 图标</td><td>主色在 18dp 图标 + 13dp 文字</td></tr><tr><td class="k">文案具体（禁「立即体验」式空泛 CTA）</td><td>「下单」✅</td><td>「下单」✅</td><td>「下单」✅</td><td>「下单」✅</td><td>「立即下单」⚠️ 建议改「快速下单」</td></tr><tr><td class="k">零实色面积（体量最轻）</td><td>✅</td><td>❌（实色 44dp）</td><td>❌（实色 48dp）</td><td>✅</td><td>✅（收起态为白底 44dp）</td></tr><tr><td class="k">系统大字号下的兜底</td><td>胶囊变宽，需 maxWidth + 文字可截断</td><td>9dp 到下限 → 大字号只留图标</td><td>9dp 到下限 → 大字号只留图标</td><td>9dp 到下限 → 大字号只留图标</td><td>文字 13dp，收起态无文字 → 无风险</td></tr></tbody>
+  </table>
+
+  <h2 class="sec">与底部凸起「祁小山」的关系处理（同屏不打架）</h2>
+  <div class="note">
+    同一屏右下角同时存在两个动作体：<b>中间凸起</b>（⌀54、白底、发丝线、祁山标、top:-16、居中 → 进 AI 分支）
+    与 <b>下单浮标</b>（right 16 → 进下单页）。四个可用手段：<b>①尺寸差</b>、<b>②形状差</b>（正圆 vs 胶囊）、
+    <b>③色相 / 明度差</b>、<b>④垂直抬高</b>（浮标整体抬到凸起顶边之上，或与之错开足够横向净距）。
+    共同前提：<b>绝不与凸起重叠</b> —— 五套方案的浮标底边都落在 y≤744（凸起顶边）之上；
+    横向净距 A 60dp / B 108dp / C 104dp / D 104dp / E 24dp（E 是最扁最宽的一个，靠 16dp 垂直让开兜底）。
+  </div>
+  <table>
+    <thead><tr><th>方案</th><th>尺寸关系</th><th>横向净距</th><th>垂直关系</th><th>一眼可否区分</th></tr></thead>
+    <tbody><tr><td class="k">A 白底描边胶囊</td><td class="mono">92×40 vs ⌀54（差 38dp）</td><td class="mono">横向净距 60dp</td><td class="mono">浮标底 y=744<br>凸起顶 y=744</td><td>白胶囊 vs 白圆：靠「有文字 / 无文字」+ 60dp 横向净距区分；需靠 6% 阴影把白从白卡上抬起来，否则边界弱</td></tr><tr><td class="k">B 琥珀金实心小圆</td><td class="mono">44×44 vs ⌀54（差 10dp）</td><td class="mono">横向净距 108dp</td><td class="mono">浮标底 y=736<br>凸起顶 y=744</td><td>色相最远（暖金 vs 冷白）+ 全部错开在凸起顶边之上 → 同屏最不打架</td></tr><tr><td class="k">C 深色近黑浮标</td><td class="mono">48×48 vs ⌀54（差 6dp）</td><td class="mono">横向净距 104dp</td><td class="mono">浮标底 y=738<br>凸起顶 y=744</td><td>明度差最大（墨黑 vs 白）→ 一眼区分；深色块比凸起更「重」，主次关系清楚</td></tr><tr><td class="k">D 主色描边圆</td><td class="mono">48×48 vs ⌀54（差 6dp）</td><td class="mono">横向净距 104dp</td><td class="mono">浮标底 y=740<br>凸起顶 y=744</td><td>同为白底圆 + 线稿山 → 语义最近，风险最高（本套不推荐）</td></tr><tr><td class="k">E 胶囊 + 滚动收起</td><td class="mono">128×44 vs ⌀54（差 74dp）</td><td class="mono">横向净距 24dp</td><td class="mono">浮标底 y=728<br>凸起顶 y=744</td><td>体量差最大（128 vs 54）；默认态横向只隔 24dp，靠 16dp 垂直让开兜底（浮标底边 y=728 < 凸起顶边 y=744）；收起后 44 圆净距 108dp → 形状/尺寸双维度都不同</td></tr></tbody>
+  </table>
+
+  <h2 class="sec">参考来源</h2>
+  <div class="note">
+    <ul class="tight">
+      <li><b>Material Design — Floating Action Button</b>（FAB 尺寸档位 / 一屏一个主 FAB）：
+        <a href="https://m1.material.io/components/buttons-floating-action-button.html">m1.material.io/components/buttons-floating-action-button.html</a>
+        · <a href="https://app.unpkg.com/@material/fab@14.0.0/files/README.md">@material/fab README</a></li>
+      <li><b>WCAG 2.1 技术 C44</b>（触控目标至少 44×44 CSS 像素）：
+        <a href="https://www.w3.org/WAI/WCAG21/Techniques/css/C44">w3.org/WAI/WCAG21/Techniques/css/C44</a>
+        —— 本稿按 Material 更严的 48dp 执行，热区与视觉尺寸解耦。</li>
+      <li><b>Android 无障碍</b>（触控目标 ≥48dp、深色小图标需可读、内容描述必填）：
+        <a href="https://developer.android.google.cn/design/ui/mobile/guides/foundations/accessibility">developer.android.google.cn/design/ui/mobile/guides/foundations/accessibility</a></li>
+      <li><b>项目内规范</b>：<span class="mono">docs/21-反AI味设计规范.md</span>（禁渐变主视觉 / 浮层才给阴影 /
+        圆角分档 / 禁 emoji / 文案具体 / 假数据拟真）、<span class="mono">docs/14-UI设计规范.md</span>、
+        <span class="mono">CLAUDE.md</span> 结构规则 7（底栏中间凸起 = AI 分支的位，底栏常驻）。</li>
+      <li><b>现状实现</b>：<span class="mono">apps/packages/core/lib/src/widgets/app_nav.dart</span> 的
+        <span class="mono">AppOrderFab</span>（⌀54 / brandGradient / 白雪山标 20 / 9dp「下单」/ right 16 / bottom 96）；
+        雪山标绘制 <span class="mono">AppMountainMark</span>（app_ui.dart）、凸起祁山标
+        <span class="mono">AppQishanMark</span>（qishan_mark.dart）。</li>
+    </ul>
+  </div>
+
+  <h2 class="sec">实施成本（改哪个文件、约多少行）</h2>
+  <table>
+    <thead><tr><th>方案</th><th>改动文件</th><th>改动内容</th><th>成本</th><th>备注</th></tr></thead>
+    <tbody><tr><td class="k">B 琥珀金小圆（推荐）</td><td class="mono">app_nav.dart · AppOrderFab.build</td><td>约 18 行（尺寸 54→44、gradient→#D97706、阴影换色、图标 20→16、文字 9dp、bottom 96→108）</td><td>低</td><td>不动 services_page.dart（调用签名不变，onTap/bottom/label 参数保留）</td></tr><tr><td class="k">A 白底胶囊（并列备选）</td><td class="mono">app_nav.dart · AppOrderFab.build</td><td>约 20 行（宽高 92×40、白底 + 1px 发丝线、主色图标与文字、阴影 4/12/6%）</td><td>低</td><td>同上；另需把 r 写成 h/2 并在窄屏加 maxWidth 兜底</td></tr><tr><td class="k">C 近黑浮标</td><td class="mono">app_nav.dart · AppOrderFab.build</td><td>约 18 行（⌀48、#0F172A、白标 20、阴影 4/12/20%）</td><td>低</td><td>同上</td></tr><tr><td class="k">E 胶囊 + 滚动收起</td><td class="mono">app_nav.dart（皮肤）+ services_page.dart（滚动状态）</td><td>约 60 行（新增 ScrollController 监听、AnimatedContainer、8dp 迟滞、600ms 展开延时）</td><td>中高</td><td>需新增一个 StatefulWidget 包住浮标（或让 AppOrderFab 支持 collapsed 参数）</td></tr><tr><td class="k">D 主色描边圆</td><td class="mono">app_nav.dart · AppOrderFab.build</td><td>约 16 行（⌀48、1.5dp 主色描边、无阴影）</td><td>低</td><td>成本最低，但同屏语义与凸起最近 → 不推荐</td></tr></tbody>
+  </table>
+
+  <h2 class="sec">若五套都不满意：最快能改的 6 处（互不影响，可任意组合）</h2>
+  <table>
+    <thead><tr><th>改什么</th><th>改哪里</th><th>怎么改（一行级）</th><th>影响面</th></tr></thead>
+    <tbody>
+      <tr><td class="k">颜色</td><td class="mono">app_nav.dart · AppOrderFab.build</td>
+        <td>BoxDecoration 的 <span class="mono">gradient</span> / <span class="mono">color</span> /
+          <span class="mono">border</span> / <span class="mono">boxShadow</span> 四行任换 token 色</td>
+        <td>形状与位置不变；不涉及任何其它页面</td></tr>
+      <tr><td class="k">尺寸</td><td class="mono">app_nav.dart · AppOrderFab.build</td>
+        <td><span class="mono">width: 54 / height: 54</span> 两个数字（本稿用 40 / 44 / 48）</td>
+        <td>视觉变小后热区也会变小 → 需外层加 4dp Padding 并把 right 16 调成 12（见下）</td></tr>
+      <tr><td class="k">形状</td><td class="mono">app_nav.dart · AppOrderFab.build</td>
+        <td><span class="mono">shape: BoxShape.circle</span> → <span class="mono">BorderRadius.circular(h / 2)</span>
+          + 行方向由 Column 改 Row（胶囊）；反向同理</td>
+        <td>只影响浮标自身布局；胶囊要同时给 padding 与文字</td></tr>
+      <tr><td class="k">文案</td><td class="mono">services_page.dart:210（已经是参数）</td>
+        <td><span class="mono">AppOrderFab(label: '快速下单', …)</span> —— 构造参数本来就支持，默认「下单」</td>
+        <td><b>零逻辑改动</b>；只改调用点字符串</td></tr>
+      <tr><td class="k">位置</td><td class="mono">services_page.dart:210（已经是参数）</td>
+        <td><span class="mono">AppOrderFab(bottom: 108, …)</span> —— 默认 96；也可传 right（当前是常量 16）</td>
+        <td><b>零逻辑改动</b>；right 若要可调需加一个构造参数（+2 行）</td></tr>
+      <tr><td class="k">是否收起</td><td class="mono">app_nav.dart + services_page.dart</td>
+        <td>只有这一项要动第二个文件：ScrollController 监听 + AnimatedContainer（约 60 行）</td>
+        <td>唯一涉及页面状态的改动；其余 5 项都在 app_nav.dart 一个文件内、每项 ≤4 行</td></tr>
+      <tr><td class="k">热区兜底</td><td class="mono">app_nav.dart · AppOrderFab.build</td>
+        <td>视觉 &lt; 48dp 时把 Container 包进 <span class="mono">Padding(EdgeInsets.all(4))</span>，
+          同时 <span class="mono">right: 12 / bottom: 视觉值 − 4</span>，视觉位置与大小都不变，热区 +8dp</td>
+        <td>保障 WCAG C44 / Material 48dp；不动调用点</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sec">推荐</h2>
+  <div class="rec">
+    <b>推荐 B（琥珀金实心小圆）为主选，A（白底描边胶囊）为并列备选。</b>
+    理由：B 是全站唯一自带「交易 / 价值」语义的颜色（与「董事长推荐」徽标、价格、等级同色系 #D97706），
+    直径 44 &lt; 现状 54，实色但完全不是蓝色，且与白色凸起圆的色相距离最远、垂直全部错开；
+    A 是零实色面积的克制解，适合「不想让浮标有任何分量、只留一个入口」的取向。
+    两套都只改 <span class="mono">app_nav.dart</span> 的 <span class="mono">AppOrderFab.build</span>（≤20 行），
+    不需要动 <span class="mono">services_page.dart</span>（调用签名不变）。
+    <b>E 视觉与转化最好但成本最高</b>（要加滚动监听与收起动画，涉及 services_page 状态）；
+    <b>D 不推荐</b>（与凸起同为「白底圆 + 线稿山」，同屏语义最近）。
+  </div>
+</div>
+</body>
+</html>

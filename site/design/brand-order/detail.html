@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1900,initial-scale=1">
+<title>订单详情页 · 品牌化重设计（与订单列表页同族）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+:root{
+  /* —— docs/32 §一 色彩体系：墨蓝 × 青瓷（不用通用蓝） —— */
+  --anchor:#0F2440;        /* 品牌锚 墨蓝：品牌区 / 深色块 / HeroCard 底 */
+  --primary:#1D5FA8;       /* 主交互：按钮 / 选中 / 链接 */
+  --celadon:#0E7C7B;       /* 强调 青瓷：次级强调 / 成功 / 选中描边 */
+  --gold:#B4732A;          /* 价格 · 等级：全站唯一"金"，低饱和 */
+  --bg-page:#F4F6F9;       /* 页底 */
+  --surface:#FFFFFF;       /* 卡面 */
+  --hair:#E3E8EF;          /* 发丝线 1px */
+  --hair-2:#EDF1F6;
+  --ink:#14202E;           /* 正文 */
+  --ink-2:#4A5A6E;         /* 次要 */
+  --ink-3:#8A99AB;         /* 弱化 */
+  /* 页面浅底（同色相极浅档，用于标签/图标底） */
+  --primary-soft:#E8EEF7; --celadon-soft:#E3F0EF; --amber-soft:#F7EDE0; --error-soft:#FBECEA;
+  /* 功能色 docs/32 §一 */
+  --success:#0E7C7B; --warn:#B45309; --error:#B42318; --info:#1D5FA8;
+  --warn-soft:#F9EFE2; --warn-line:#E6CFAE; --error-line:#E7C6C2; --celadon-line:#BCD9D7;
+  /* 圆角只允许 4–6 / 10 / 14 / 胶囊（docs/32 §六） */
+  --r-xs:4px; --r-sm:5px; --r-ctl:10px; --r-card:14px;
+  --pad:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+}
+body{font-family:var(--font);color:var(--ink);background:#DCE2EA;font-size:12.5px;line-height:1.4}
+.ic{display:block;flex:0 0 auto}
+.num{font-variant-numeric:tabular-nums}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ============================ 设计图外框（不是设计的一部分） ============================ */
+.sheet-head{max-width:1900px;margin:0 auto;padding:32px 32px 2px}
+.badge{display:inline-block;background:var(--anchor);color:#EAF1FA;border-radius:999px;
+  padding:5px 13px;font-size:11.5px;font-weight:700;letter-spacing:.3px;margin-bottom:12px}
+.badge.alt{background:var(--primary-soft);color:var(--primary);border:1px solid #CBD9EA}
+.sheet-head h1{margin:0 0 10px;font-size:26px;font-weight:800;letter-spacing:-.4px}
+.sheet-head .sub{color:#3D4C60;font-size:12.5px;line-height:1.85;max-width:1500px}
+.sheet-head .sub b{color:var(--anchor)}
+.metarow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.metarow span{font-size:11.5px;color:#3D4C60;background:#fff;border:1px solid #D5DCE6;border-radius:6px;padding:5px 10px}
+.metarow span b{color:var(--anchor)}
+main{max-width:1900px;margin:0 auto;padding:20px 32px 4px;display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+figure.shot{width:390px;flex:0 0 390px}
+figure.shot figcaption{font-size:12.5px;font-weight:700;color:var(--anchor);margin-bottom:8px;line-height:1.5}
+figure.shot figcaption em{font-style:normal;font-weight:600;color:var(--ink-2);font-size:11.5px}
+figure.shot .ph-cap{font-size:11.5px;color:var(--ink-2);line-height:1.65;margin-top:9px}
+figure.shot .ph-cap b{color:var(--anchor)}
+
+/* ============================ 手机壳 390×844 ============================ */
+.phone{width:390px;height:844px;background:var(--bg-page);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;outline:1px solid #C4CEDA}
+.phone.full{height:auto}
+.phone.full .scroll{overflow:visible}
+.scroll{flex:1 1 auto;overflow:hidden;position:relative}
+.inner{display:flex;flex-direction:column;min-height:100%}
+.fold{position:absolute;left:0;right:0;top:782px;height:0;border-top:1px dashed #93A2B5;z-index:6}
+.fold span{position:absolute;right:8px;top:-15px;background:#fff;border:1px solid #CDD6E1;border-radius:4px;
+  padding:1px 6px;font-size:10.5px;font-weight:700;color:var(--ink-2);letter-spacing:.2px}
+.statusbar{height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px 0 var(--pad);font-size:12.5px;font-weight:600;color:var(--ink);background:var(--surface)}.sb-r{display:flex;align-items:center;gap:5px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:11px}
+.sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6.5px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:11px}
+.sb-batt{width:20px;height:10.5px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;opacity:.85}
+.sb-batt::after{content:"";position:absolute;right:-3.2px;top:3px;width:1.8px;height:4px;background:currentColor}
+.sb-batt i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:62%;background:currentColor;border-radius:1px}
+
+/* 页头（白底 + 发丝线 + 右端筛选图标） */
+.phead{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--hair);
+  padding:4px var(--pad) 12px;display:flex;align-items:center;gap:10px}
+.phead .lt{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.phead .rt{margin-left:auto;display:flex;gap:14px;color:var(--ink-2)}
+.phead .cnt{font-size:11.5px;font-weight:600;color:var(--ink-3)}
+
+/* 状态筛选：几何分组（2 项）+ 状态胶囊 */
+.fbar{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--hair);
+  padding:0 var(--pad) 10px;display:flex;align-items:center;gap:8px;overflow:hidden}
+.gseg{display:flex;border:1px solid var(--hair);border-radius:var(--r-ctl);overflow:hidden;flex:0 0 auto}
+.gseg span{padding:6px 11px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.gseg span.on{background:var(--anchor);color:#fff;font-weight:700}
+.gseg span + span{border-left:1px solid var(--hair)}
+.fpills{display:flex;gap:6px;flex:1 1 auto;min-width:0;overflow:hidden}
+.fpill{flex:0 0 auto;padding:5px 10px;border-radius:999px;border:1px solid var(--hair);
+  font-size:11.5px;font-weight:600;color:var(--ink-2);background:#fff}
+.fpill.on{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:700}
+
+.wrap{padding:14px var(--pad) 0}
+.hair{height:1px;background:var(--hair-2);border:0}
+.hair.full{background:var(--hair)}
+
+/* ============================ ① HeroCard（每屏 ≤1 个） ============================ */
+/* 墨蓝实色块 + 右上斜切角 + 细网格纹理（5% 白，硬边 1px 条纹，非渐变）+ 白字 */
+.hero-wrap{position:relative}
+.hero{position:relative;background:var(--anchor);color:#fff;padding:15px 16px 14px;
+  clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(to right, rgba(255,255,255,.05) 0 1px, transparent 1px 18px),
+                   repeating-linear-gradient(to bottom, rgba(255,255,255,.05) 0 1px, transparent 1px 18px)}
+.hero > *{position:relative;z-index:1}
+.hero .hrow{display:flex;align-items:center;gap:8px}
+.hero .hlab{font-size:11.5px;font-weight:700;letter-spacing:1.4px;color:#9EB6D2}
+.hero .hno{font-size:10.5px;color:#A9BED6;margin-left:auto;letter-spacing:.2px}
+.hero .hmain{display:flex;align-items:flex-start;gap:12px;margin-top:12px}
+.hero .hname{font-size:15px;font-weight:700;line-height:1.42;color:#fff}
+.hero .hmeta{font-size:11.5px;color:#A9BED6;margin-top:6px;line-height:1.55}
+.hero .hrow2{display:flex;align-items:flex-end;gap:10px;margin-top:13px;
+  border-top:1px solid rgba(255,255,255,.14);padding-top:12px}
+.hero .hprice{font-size:24px;font-weight:800;color:#E9B872;letter-spacing:-.5px;line-height:1.05}
+.hero .hunit{font-size:11.5px;color:#A9BED6;padding-bottom:3px}
+.hero .hbtn{margin-left:auto;height:34px;padding:0 14px;display:flex;align-items:center;gap:6px;
+  background:#E9B872;color:#3A2409;border-radius:var(--r-ctl);font-size:12.5px;font-weight:800}
+.hero .hbtn.ghost{background:transparent;border:1px solid rgba(255,255,255,.38);color:#fff}
+.hero .gicon{width:50px;height:50px;flex:0 0 50px;border-radius:var(--r-ctl);
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);
+  display:flex;align-items:center;justify-content:center;color:#CFE0F2}
+
+/* ============================ ② ContentCard（白卡 r14 发丝线 无阴影） ============================ */
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card)}
+.card.pad{padding:14px}
+.card.flat{overflow:hidden}
+.chead{display:flex;align-items:center;gap:9px;padding:11px 14px;
+  border-bottom:1px solid var(--hair-2);background:var(--surface)}
+.chead .ct{font-size:11.5px;font-weight:700;color:var(--ink-2);letter-spacing:.2px}
+.chead .cno{font-size:10.5px;color:var(--ink-3);margin-left:auto;letter-spacing:.2px}
+.cbody{display:flex;gap:11px;padding:12px 14px}
+.gtile{width:52px;height:52px;flex:0 0 52px;border-radius:var(--r-ctl);background:var(--primary-soft);
+  color:var(--primary);display:flex;align-items:center;justify-content:center;position:relative}
+.gtile .plat{position:absolute;right:0;bottom:0;background:var(--anchor);color:#fff;font-size:10.5px;
+  font-weight:700;padding:1px 3px;border-radius:3px 0 8px 0;letter-spacing:.2px}
+.cname{font-size:15px;font-weight:700;color:var(--ink);line-height:1.42}
+.cmeta{font-size:11.5px;color:var(--ink-2);margin-top:6px;line-height:1.5}
+.cmeta .sep{margin:0 5px;color:#C6D0DC}
+.cfoot{display:flex;align-items:flex-end;gap:8px;padding:10px 14px 12px;border-top:1px solid var(--hair-2)}
+.cprice{font-size:18px;font-weight:800;color:var(--gold);letter-spacing:-.3px;font-variant-numeric:tabular-nums}
+.cqty{font-size:11.5px;color:var(--ink-3);padding-bottom:3px}
+.cbtns{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+/* 服务人员行（图标 + 名字，只有头像位与名字） */
+.wrow{display:flex;align-items:center;gap:8px;padding:0 14px 11px}
+.wava{width:22px;height:22px;flex:0 0 22px;border-radius:999px;background:var(--celadon-soft);
+  border:1px solid var(--celadon-line);color:var(--celadon);display:flex;align-items:center;justify-content:center}
+.wtxt{font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.wtxt i{font-style:normal;color:var(--ink-3);font-weight:400}
+
+/* ============================ ③ ListCard（无圆角分组 + 发丝线行，行高 52–56） ============================ */
+.listcard{background:var(--surface);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.listhead{padding:11px 14px 9px;display:flex;align-items:baseline;gap:8px;background:var(--surface)}
+.listhead .lh{font-size:12.5px;font-weight:800;color:var(--ink);letter-spacing:-.1px}
+.listhead .ln{margin-left:auto;font-size:10.5px;color:var(--ink-3)}
+.lrow{display:flex;align-items:center;gap:11px;padding:0 14px;height:52px;background:var(--surface)}
+.lrow.dim{height:50px;padding-left:38px;color:var(--ink-2)}
+.lrow + .lrow{border-top:1px solid var(--hair-2)}
+.lrow .lk{font-size:11.5px;color:var(--ink-2);flex:0 0 auto}
+.lrow .lv{margin-left:auto;font-size:12.5px;font-weight:600;color:var(--ink);text-align:right}
+.lrow .lv.num{font-variant-numeric:tabular-nums}
+.lrow .sub{font-size:10.5px;color:var(--ink-3);font-weight:400;display:block;margin-top:2px}
+
+/* 标尺线（1px 发丝线 + 端点 3×3 小方块）—— docs/32 §二③ */
+.ruler{display:flex;align-items:center;gap:0;padding:0 14px;height:22px}
+.ruler i{width:3px;height:3px;background:#B9C4D2;flex:0 0 3px}
+.ruler s{flex:1 1 auto;height:1px;background:var(--hair);text-decoration:none}
+
+/* ============================ 状态标签（品牌标签 · 不只靠颜色） ============================ */
+.st{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px 0 5px;
+  border-radius:var(--r-xs);font-size:10.5px;font-weight:700;letter-spacing:.2px;border:1px solid;flex:0 0 auto}/* 斜切角：只切右上，与 HeroCard 同一符号（docs/32 §二①） */
+.st.cut{clip-path:polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%)}
+.st.solid{color:#fff}
+.st .dot{width:5px;height:5px;border-radius:1px;flex:0 0 5px}
+/* 档位：进行中=实色（最高）· 待处理=浅底描边（次）· 终态=灰描边（低） */
+.st.run{background:var(--primary);border-color:var(--primary)}
+.st.run .dot{background:#fff}
+.st.wait{background:var(--warn-soft);border-color:var(--warn-line);color:var(--warn)}
+.st.wait .dot{background:var(--warn)}
+.st.done{background:var(--celadon-soft);border-color:var(--celadon-line);color:var(--celadon)}
+.st.done .dot{background:var(--celadon)}
+.st.stop{background:#F0F2F5;border-color:#D8DEE6;color:var(--ink-2)}
+.st.stop .dot{background:var(--ink-3)}
+.st.err{background:var(--error-soft);border-color:var(--error-line);color:var(--error)}
+.st.err .dot{background:var(--error)}
+.st.hero-wait{background:var(--amber-soft);border-color:var(--warn-line);color:var(--warn)}
+.st.hero-run{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.42);color:#fff}
+.st.hero-run .dot{background:#fff}
+
+/* ============================ 按钮（r10 / 高 30–44） ============================ */
+.btn{height:34px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  border-radius:var(--r-ctl);font-size:12.5px;font-weight:700;border:1px solid transparent}
+.btn.pri{background:var(--primary);color:#fff}
+.btn.ghost{background:#fff;border-color:#CBD5E1;color:var(--ink-2)}
+.btn.warn{background:#fff;border-color:var(--warn-line);color:var(--warn)}
+.btn.err{background:#fff;border-color:var(--error-line);color:var(--error)}
+.btn.blk{width:100%}
+.btn.gold{background:var(--gold);color:#fff}
+.btn.sm{height:30px;padding:0 11px;font-size:12.5px}
+
+/* ============================ 底部导航 ============================ */
+.tabbar{flex:0 0 62px;display:flex;align-items:flex-start;background:var(--surface);
+  border-top:1px solid var(--hair);padding:7px 0 0;margin-top:auto}
+.tb-item{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-3)}
+.tb-item.on{color:var(--primary)}
+.tb-label{font-size:10.5px;font-weight:600}
+.tb-c{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tb-cbtn{width:44px;height:44px;border-radius:999px;background:var(--primary);color:#fff;display:flex;
+  align-items:center;justify-content:center;margin-top:-15px;border:3px solid var(--surface)}
+.tb-spacer{height:10px}
+
+/* ============================ 骨架态 ============================ */
+.sk{background:#E7EBF1;border-radius:4px}
+.sk.l{height:11px}.sk.m{height:14px}.sk.xl{height:26px}.sk.b{height:52px;border-radius:10px}
+.sk.block{border-radius:var(--r-card);border:1px solid var(--hair);background:var(--surface);overflow:hidden}
+.skrow{padding:12px 14px}
+.sk-note{display:flex;align-items:center;gap:7px;padding:9px 12px;margin:0 var(--pad) 0;border-radius:6px;
+  background:var(--primary-soft);color:var(--primary);font-size:11.5px;font-weight:600}
+
+/* ============================ 空态（细网格 3–5% 铺底） ============================ */
+.empty{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0 34px 92px;text-align:center;position:relative;overflow:hidden}
+.empty::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(to right, rgba(29,95,168,.045) 0 1px, transparent 1px 22px),
+                   repeating-linear-gradient(to bottom, rgba(29,95,168,.045) 0 1px, transparent 1px 22px)}
+.empty > *{position:relative;z-index:1}
+.emk{width:76px;height:76px;border-radius:999px;background:#fff;border:1px solid var(--hair);
+  display:flex;align-items:center;justify-content:center;color:#9FB0C4}
+.empty h4{font-size:15px;font-weight:800;color:var(--ink);margin-top:16px}
+.empty p{font-size:12.5px;color:var(--ink-2);line-height:1.7;margin-top:8px;max-width:280px}
+.empty .facts{display:flex;gap:16px;margin-top:16px}
+.empty .facts div{text-align:left}
+.empty .facts b{display:block;font-size:12.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.empty .facts span{font-size:10.5px;color:var(--ink-3)}
+.empty .btn{margin-top:20px}
+
+/* 错误态条 */
+.notice{display:flex;align-items:center;gap:8px;margin:12px var(--pad) 0;padding:10px 12px;
+  border-radius:6px;background:var(--error-soft);border:1px solid var(--error-line);
+  color:var(--error);font-size:11.5px;font-weight:600;line-height:1.45}
+.notice .rt{margin-left:auto;height:26px;padding:0 11px;display:flex;align-items:center;
+  border-radius:5px;border:1px solid currentColor;font-size:11.5px;font-weight:700}
+
+/* ============================ 状态时间线（详情页） ============================ */
+.tl{padding:4px 14px 12px}
+.tli{display:flex;gap:11px;position:relative}
+.tli .rail{flex:0 0 18px;display:flex;flex-direction:column;align-items:center}
+.tli .knob{width:11px;height:11px;border-radius:999px;border:2px solid #fff;background:var(--hair);margin-top:3px}
+.tli.now .knob{background:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.tli.ok .knob{background:var(--celadon)}
+.tli.no .knob{background:var(--error)}
+.tli .line{flex:1 1 auto;width:1px;background:var(--hair-2);margin:2px 0 -2px 0;min-height:14px}
+.tli:last-child .line{display:none}
+.tli .tx{padding-bottom:13px;min-width:0}
+.tli .tt{font-size:12.5px;font-weight:700;color:var(--ink)}
+.tli.now .tt{color:var(--primary)}
+.tli .td{font-size:11.5px;color:var(--ink-3);margin-top:3px;line-height:1.5}
+.tli .tm{font-size:10.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;margin-left:auto;padding-left:8px}
+
+/* 底部吸底操作 */
+.dock{position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--hair);
+  padding:10px var(--pad);display:flex;gap:10px;align-items:center}
+.dock .dtot{font-size:11.5px;color:var(--ink-3);line-height:1.5}
+.dock .dtot b{display:block;font-size:18px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+.dock .acts{margin-left:auto;display:flex;gap:9px}
+
+/* ============================ 评审面板（设计图外） ============================ */
+.specwrap{max-width:1900px;margin:28px auto 0;padding:0 32px 56px}
+.sec-h{display:flex;align-items:baseline;gap:10px;margin:26px 0 12px;padding-bottom:9px;
+  border-bottom:2px solid var(--anchor)}
+.sec-h h2{font-size:18px;font-weight:800;letter-spacing:-.2px}
+.sec-h span{font-size:11.5px;color:var(--ink-2)}
+.specgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.spec{background:#fff;border:1px solid #D5DCE6;border-radius:14px;padding:15px 17px}
+.spec.wide{grid-column:1 / -1}
+.spec h3{font-size:12.5px;font-weight:800;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.spec h3 .n{display:inline-flex;width:18px;height:18px;border-radius:5px;background:var(--primary-soft);
+  color:var(--primary);font-size:10.5px;font-weight:800;align-items:center;justify-content:center;flex:0 0 18px}
+.spec ul{margin:0 0 0 16px}
+.spec li{font-size:11.5px;line-height:1.8;color:#33415A;margin-bottom:4px}
+.spec li b{color:var(--anchor)}
+.spec li code{background:var(--primary-soft);border-radius:4px;padding:1px 5px;font-size:10.5px;
+  font-family:Consolas,Monaco,monospace;color:var(--primary)}
+.spec p{font-size:11.5px;line-height:1.8;color:#33415A}
+.spec p + p{margin-top:7px}
+.spec .ok{color:#0E7C7B;font-weight:800}
+.spec .no{color:var(--error);font-weight:800}
+.spec .mid{color:var(--warn);font-weight:800}
+.spec table{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:4px}
+.spec th,.spec td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--hair-2);color:#33415A;vertical-align:middle}
+.spec th{color:var(--ink-2);font-weight:700;background:#F8FAFC;font-size:11.5px;white-space:nowrap}
+.spec td b{color:var(--anchor)}
+.spec td .num{font-variant-numeric:tabular-nums}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;border:1px solid rgba(15,36,64,.18);
+  vertical-align:-1px;margin-right:5px}
+/* 状态标签对比评审图 */
+.statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stcell{border:1px solid var(--hair);border-radius:10px;padding:11px 12px;background:#FCFDFE}
+.stcell .stbig{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 9px 0 7px;
+  border-radius:var(--r-sm);font-size:12.5px;font-weight:700;border:1px solid}
+.stcell .stbig .dot{width:6px;height:6px;border-radius:1.5px}
+.stcell .code{font-family:Consolas,Monaco,monospace;font-size:10.5px;color:var(--ink-3);margin-top:8px}
+.stcell .why{font-size:11.5px;color:var(--ink-2);line-height:1.6;margin-top:5px}
+.stcell .why b{color:var(--anchor)}
+.footnote{max-width:1900px;margin:0 auto;padding:0 32px 64px}
+.footnote div{background:var(--anchor);color:#CBD9EA;border-radius:12px;padding:14px 18px;font-size:11.5px;line-height:1.85}
+.footnote b{color:#E9B872}
+@media (max-width:1250px){ .specgrid{grid-template-columns:1fr} .statgrid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+/* —— 订单详情页补充（沿用 list.html 同一套 token / class，只加详情页独有的几何） —— */
+.fold{top:789px}                                  /* 详情页吸底操作条 55dp（10+34+10+1）→ 首屏折线随之抬高 */
+.dock{flex:0 0 auto}
+.dock.tail{position:static}                       /* 完整页图：吸底条画在内容末尾（真机为常驻） */
+.tli .tx{flex:1 1 auto}
+.tli .tr{display:flex;align-items:baseline;gap:8px}
+.tli.next .knob{background:#fff;border-color:#C6D0DC}   /* 未达步：空心旋钮（形状信号） */
+.tli.next .tt{color:var(--ink-3);font-weight:600}
+.lrow .lv{display:block}
+.listcard.bleed{margin-left:calc(-1 * var(--pad));margin-right:calc(-1 * var(--pad))}
+</style>
+</head>
+<body>
+<div class="sheet-head">
+  <div class="badge">品牌化重设计 · 订单详情页</div>
+  <h1>订单详情页：一个墨蓝 HeroCard 说清"现在什么状态、下一步做什么"，价格/规格/区服/状态各有各的层级</h1>
+  <p class="sub">基准 = <b>docs/32-品牌视觉规范-设计稿基准.md</b>（墨蓝 <b>#0F2440</b> × 青瓷 <b>#0E7C7B</b> × 铜牌金 <b>#B4732A</b>，渐变面积 ≈0，圆角只 4–6/10/14/胶囊）；视觉同族 = <b>site/design/brand-order/list.html</b> —— <b>同一份 CSS、同一套 class、同一枚状态标签组件</b>（来自共享件 <code>scripts/tmp/brand-order-lib.mjs</code>），本图只额外加了 9 行详情页几何。<br>
+  现状最要命的三条：<b>详情根本不是页，是一个弹层</b>（<code>orders_page.dart:262-267</code>）；<b>状态只有"圆点 + 文字"两条信号</b>（<code>:274-292 / 438-443</code>，9 状态压成 4 色）；<b>七张卡同权重平铺、价格没有算式</b>（<code>:373-386 / 319-322</code>）。本方案给状态 <b>图标 + 形状 + 字重</b> 三条并行信号，并附灰度打印自检。<br>
+  数据全部真实：字段与状态取自 <code>order.service.ts:1343-1361 / 1588-1594</code>，区服真实为 <b>微信 / QQ</b>，金额与商品沿用列表页同一批真实订单，分账按 <code>splitAmount()</code>（平台 25% → ¥27.45 / ¥9.15，金额守恒）。</p>
+  <div class="metarow">
+    <span><b>屏</b> 390×844 × 4（首屏 / 完整页 / <b>已完成对比</b> / 骨架）</span>
+    <span><b>状态</b> 覆盖 9 / 9（本页用到 2 种对比）</span>
+    <span><b>卡片三档</b> HeroCard 1 · ContentCard 4 · ListCard 1</span>
+    <span><b>红线</b> docs/14 · docs/21 · docs/32 逐条核对见第四节</span>
+    <span><b>状态</b> 待审批 · 未改任何代码</span>
+  </div>
+</div>
+
+<div class="sec-h"><h2>一、手机壳（390×844 逻辑像素）</h2><span>首屏 / 滚动后整页 / <b>两种状态对比（进行中 vs 已完成）</b> / 加载骨架态</span></div>
+<main>
+  <figure class="shot">
+    <figcaption>D-1 · 首屏（不滚动） <em>HeroCard + 状态时间线 + 商品与服务规格</em></figcaption>
+    <div class="phone"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div><div class="fold"><span>首屏折线 · 以下需滚动</span></div><div class="scroll"><div class="inner"><div class="phead"><span class="ic" style="width:20px;height:20px;flex:0 0 20px;color:currentColor;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M15 5.4L8.4 12l6.6 6.6"/></svg></span>
+  <span class="lt">订单详情</span>
+  <span class="rt"><span class="ic" style="width:20px;height:20px;flex:0 0 20px;color:currentColor;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4"/><rect x="3.4" y="13.2" width="3.6" height="5.2" rx="1.6"/><rect x="17" y="13.2" width="3.6" height="5.2" rx="1.6"/><path d="M19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span></span></div><div class="wrap"><div class="hero-wrap"><div class="hero">
+  <div class="hrow">
+    <span class="hlab">当前状态</span>
+    <span class="st run solid cut" style="background:#1D5FA8;border-color:#1D5FA8;color:#FFFFFF;">
+    <span class="dot" style="background:#FFFFFF;"></span>
+    <span class="ic" style="width:11px;height:11px;display:flex;flex:0 0 11px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M13.4 3.6L6 13.2h5.2l-.6 7.2L18 10.8h-5.2z"/></svg></span>
+    <span style="font-weight:700">进行中</span>
+  </span>
+    <span class="hno">ORDMV45N97G9652</span>
+  </div>
+  <div class="hmain">
+    <div class="gicon"><span class="ic" style="width:26px;height:26px;flex:0 0 26px;color:#CFE0F2;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><rect x="3.4" y="7.4" width="17.2" height="9.2" rx="3.2"/><path d="M8 10.6v2.8M6.6 12h2.8"/><circle cx="15.6" cy="11.4" r="1"/><circle cx="17.6" cy="13.4" r="1"/></svg></span></div>
+    <div style="min-width:0;flex:1 1 auto">
+      <div class="hname">30保1000w（送7级套➕强化74u/妹控/Aug强化12k四选一）</div>
+      <div class="hmeta">和平精英 · 手游<span style="margin:0 6px;color:#5E7893">|</span>微信区 · 傲天不熬夜<span style="margin:0 6px;color:#5E7893">|</span>1 单</div>
+    </div>
+  </div>
+  <div class="hrow2">
+    <span class="hprice num">¥30.00</span>
+    <span class="hunit">¥30.00 × 1 单</span>
+    <span class="hbtn"><span class="ic" style="width:15px;height:15px;flex:0 0 15px;color:#3A2409;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg></span>联系护航员</span>
+  </div>
+</div></div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">订单状态</span><span class="cno">共 4 步 · 已走到第 3 步</span></div>
+  <div class="tl"><div class="tli ok">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">下单成功</span><span class="tm">今天 20:47</span></div><div class="td">余额支付 ¥30.00 · 订单进入大厅等待接单</div></div>
+  </div><div class="tli ok">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">护航员已接单</span><span class="tm">今天 20:52</span></div><div class="td">凌云 已接单 · 等待进入对局</div></div>
+  </div><div class="tli now">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">开始服务</span><span class="tm">今天 20:58</span></div><div class="td">护航员已进入对局 · 服务进行中</div></div>
+  </div><div class="tli next">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">提交完成</span><span class="tm">—</span></div><div class="td">护航员提交后由你确认，确认即正式结算</div></div>
+  </div></div>
+</div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">商品与服务规格</span><span class="cno">和平精英 · 手游</span></div>
+  <div class="cbody">
+    <div class="gtile"><span class="ic" style="width:24px;height:24px;flex:0 0 24px;color:#1D5FA8;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><rect x="3.4" y="7.4" width="17.2" height="9.2" rx="3.2"/><path d="M8 10.6v2.8M6.6 12h2.8"/><circle cx="15.6" cy="11.4" r="1"/><circle cx="17.6" cy="13.4" r="1"/></svg></span></div>
+    <div style="min-width:0;flex:1 1 auto">
+      <div class="cname">30保1000w（送7级套➕强化74u/妹控/Aug强化12k四选一）</div>
+      <div class="cmeta">和平精英 · 手游<span class="sep">|</span>1 单<span class="sep">|</span>微信区</div>
+    </div>
+  </div>
+  <div class="hair"></div>
+  <div class="lrow"><span class="lk">单价</span><span class="lv num">¥30.00<span class="sub">每 单</span></span></div>
+  <div class="lrow"><span class="lk">数量</span><span class="lv num">1 单</span></div>
+  <div class="lrow"><span class="lk">服务方式</span><span class="lv num">指定护航员</span></div>
+</div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">护航员</span><span class="cno">今天 20:52 接单</span></div>
+  <div class="wrow" style="padding-top:12px;padding-bottom:13px"><span class="wava"><span class="ic" style="width:13px;height:13px;flex:0 0 13px;color:#0E7C7B;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg></span></span><span class="wtxt">凌云</span></div>
+</div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">费用明细</span><span class="cno">下单即扣款 · 余额支付</span></div>
+  <div class="lrow"><span class="lk">单价</span><span class="lv num">¥30.00<span class="sub">每 单</span></span></div>
+  <div class="lrow"><span class="lk">数量</span><span class="lv num">1 单</span></div>
+  
+  
+  <div class="cfoot">
+    <span class="cprice num">¥30.00</span>
+    <span class="cqty">¥30.00 × 1 单</span>
+    <span class="cbtns"><span style="font-size:10.5px;color:#8A99AB">余额支付 · 下单即扣款</span></span>
+  </div>
+</div><div class="listcard bleed" style="margin-top:12px">
+  <div class="listhead"><span class="lh">订单信息</span><span class="ln">数据来自 GET /user/orders/:id</span></div>
+  <div class="lrow"><span class="lk">游戏区服</span><span class="lv num">微信区</span></div>
+  <div class="lrow"><span class="lk">游戏昵称 / ID</span><span class="lv num">傲天不熬夜</span></div>
+  <div class="lrow"><span class="lk">联系方式</span><span class="lv num">159 2043 7712</span></div>
+  <div class="lrow"><span class="lk">订单备注</span><span class="lv num">周日 20:30 后开局，主玩医疗兵；不接受中途换人</span></div>
+  <div class="lrow"><span class="lk">下单时间</span><span class="lv num">今天 20:47</span></div>
+  
+</div><div class="ruler" style="margin-top:14px"><i></i><s></s><i></i></div>
+  <div style="text-align:center;font-size:10.5px;color:#8A99AB;padding:0 0 6px">订单号 ORDMV45N97G9652 · 状态中文与状态码取自 order.service.ts:1588-1594 · 分账比例读 system_setting（当前平台 25%）</div></div></div></div><div class="dock"><span class="dtot">合计<b class="num">¥30.00</b></span><span class="acts"><span class="btn ghost">联系客服</span><span class="btn pri">联系护航员</span></span></div></div>
+    <div class="ph-cap"><b>首屏可见（不滚动）</b>：页头「← 订单详情 + 客服」→ <b>1 个 HeroCard</b>（墨蓝实色块：<b>状态标签</b> 进行中 / <b>订单号</b> ORDMV45N97G9652 / 商品名 / 分部 · 区服 · 游戏ID / <b>¥30.00（24sp 等宽）</b> / 关键动作「联系护航员」）→ <b>状态时间线</b>（4 步，当前步主色实心 + 字重 700，未达步空心旋钮 + 字重 600）→ <b>商品与服务规格</b>（商品行 + 单价 / 数量 / 服务方式行）→ 底部 <b>吸底操作条</b>（合计 ¥30.00 + 联系客服 / 联系护航员）。</div>
+  </figure>
+  <figure class="shot">
+    <figcaption>D-2 · 滚动后完整页（进行中） <em>虚线 = 首屏折线，以下需滚动</em></figcaption>
+    <div class="phone full"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div><div class="fold"><span>首屏折线 · 以下需滚动</span></div><div class="scroll"><div class="inner"><div class="phead"><span class="ic" style="width:20px;height:20px;flex:0 0 20px;color:currentColor;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M15 5.4L8.4 12l6.6 6.6"/></svg></span>
+  <span class="lt">订单详情</span>
+  <span class="rt"><span class="ic" style="width:20px;height:20px;flex:0 0 20px;color:currentColor;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4"/><rect x="3.4" y="13.2" width="3.6" height="5.2" rx="1.6"/><rect x="17" y="13.2" width="3.6" height="5.2" rx="1.6"/><path d="M19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span></span></div><div class="wrap"><div class="hero-wrap"><div class="hero">
+  <div class="hrow">
+    <span class="hlab">当前状态</span>
+    <span class="st run solid cut" style="background:#1D5FA8;border-color:#1D5FA8;color:#FFFFFF;">
+    <span class="dot" style="background:#FFFFFF;"></span>
+    <span class="ic" style="width:11px;height:11px;display:flex;flex:0 0 11px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M13.4 3.6L6 13.2h5.2l-.6 7.2L18 10.8h-5.2z"/></svg></span>
+    <span style="font-weight:700">进行中</span>
+  </span>
+    <span class="hno">ORDMV45N97G9652</span>
+  </div>
+  <div class="hmain">
+    <div class="gicon"><span class="ic" style="width:26px;height:26px;flex:0 0 26px;color:#CFE0F2;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><rect x="3.4" y="7.4" width="17.2" height="9.2" rx="3.2"/><path d="M8 10.6v2.8M6.6 12h2.8"/><circle cx="15.6" cy="11.4" r="1"/><circle cx="17.6" cy="13.4" r="1"/></svg></span></div>
+    <div style="min-width:0;flex:1 1 auto">
+      <div class="hname">30保1000w（送7级套➕强化74u/妹控/Aug强化12k四选一）</div>
+      <div class="hmeta">和平精英 · 手游<span style="margin:0 6px;color:#5E7893">|</span>微信区 · 傲天不熬夜<span style="margin:0 6px;color:#5E7893">|</span>1 单</div>
+    </div>
+  </div>
+  <div class="hrow2">
+    <span class="hprice num">¥30.00</span>
+    <span class="hunit">¥30.00 × 1 单</span>
+    <span class="hbtn"><span class="ic" style="width:15px;height:15px;flex:0 0 15px;color:#3A2409;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg></span>联系护航员</span>
+  </div>
+</div></div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">订单状态</span><span class="cno">共 4 步 · 已走到第 3 步</span></div>
+  <div class="tl"><div class="tli ok">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">下单成功</span><span class="tm">今天 20:47</span></div><div class="td">余额支付 ¥30.00 · 订单进入大厅等待接单</div></div>
+  </div><div class="tli ok">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">护航员已接单</span><span class="tm">今天 20:52</span></div><div class="td">凌云 已接单 · 等待进入对局</div></div>
+  </div><div class="tli now">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">开始服务</span><span class="tm">今天 20:58</span></div><div class="td">护航员已进入对局 · 服务进行中</div></div>
+  </div><div class="tli next">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">提交完成</span><span class="tm">—</span></div><div class="td">护航员提交后由你确认，确认即正式结算</div></div>
+  </div></div>
+</div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">商品与服务规格</span><span class="cno">和平精英 · 手游</span></div>
+  <div class="cbody">
+    <div class="gtile"><span class="ic" style="width:24px;height:24px;flex:0 0 24px;color:#1D5FA8;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><rect x="3.4" y="7.4" width="17.2" height="9.2" rx="3.2"/><path d="M8 10.6v2.8M6.6 12h2.8"/><circle cx="15.6" cy="11.4" r="1"/><circle cx="17.6" cy="13.4" r="1"/></svg></span></div>
+    <div style="min-width:0;flex:1 1 auto">
+      <div class="cname">30保1000w（送7级套➕强化74u/妹控/Aug强化12k四选一）</div>
+      <div class="cmeta">和平精英 · 手游<span class="sep">|</span>1 单<span class="sep">|</span>微信区</div>
+    </div>
+  </div>
+  <div class="hair"></div>
+  <div class="lrow"><span class="lk">单价</span><span class="lv num">¥30.00<span class="sub">每 单</span></span></div>
+  <div class="lrow"><span class="lk">数量</span><span class="lv num">1 单</span></div>
+  <div class="lrow"><span class="lk">服务方式</span><span class="lv num">指定护航员</span></div>
+</div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">护航员</span><span class="cno">今天 20:52 接单</span></div>
+  <div class="wrow" style="padding-top:12px;padding-bottom:13px"><span class="wava"><span class="ic" style="width:13px;height:13px;flex:0 0 13px;color:#0E7C7B;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg></span></span><span class="wtxt">凌云</span></div>
+</div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">费用明细</span><span class="cno">下单即扣款 · 余额支付</span></div>
+  <div class="lrow"><span class="lk">单价</span><span class="lv num">¥30.00<span class="sub">每 单</span></span></div>
+  <div class="lrow"><span class="lk">数量</span><span class="lv num">1 单</span></div>
+  
+  
+  <div class="cfoot">
+    <span class="cprice num">¥30.00</span>
+    <span class="cqty">¥30.00 × 1 单</span>
+    <span class="cbtns"><span style="font-size:10.5px;color:#8A99AB">余额支付 · 下单即扣款</span></span>
+  </div>
+</div><div class="listcard bleed" style="margin-top:12px">
+  <div class="listhead"><span class="lh">订单信息</span><span class="ln">数据来自 GET /user/orders/:id</span></div>
+  <div class="lrow"><span class="lk">游戏区服</span><span class="lv num">微信区</span></div>
+  <div class="lrow"><span class="lk">游戏昵称 / ID</span><span class="lv num">傲天不熬夜</span></div>
+  <div class="lrow"><span class="lk">联系方式</span><span class="lv num">159 2043 7712</span></div>
+  <div class="lrow"><span class="lk">订单备注</span><span class="lv num">周日 20:30 后开局，主玩医疗兵；不接受中途换人</span></div>
+  <div class="lrow"><span class="lk">下单时间</span><span class="lv num">今天 20:47</span></div>
+  
+</div><div class="ruler" style="margin-top:14px"><i></i><s></s><i></i></div>
+  <div style="text-align:center;font-size:10.5px;color:#8A99AB;padding:0 0 6px">订单号 ORDMV45N97G9652 · 状态中文与状态码取自 order.service.ts:1588-1594 · 分账比例读 system_setting（当前平台 25%）</div></div><div class="dock tail"><span class="dtot">合计<b class="num">¥30.00</b></span><span class="acts"><span class="btn ghost">联系客服</span><span class="btn pri">联系护航员</span></span></div></div></div></div>
+    <div class="ph-cap"><b>折线以下</b>：护航员（<b>只有 22dp 头像位 + 名字</b>，无等级/评分/标签/工号）→ 费用明细（单价 / 数量 + <b>合计 18sp 铜牌金</b>）→ <b>ListCard「订单信息」</b>（通栏无圆角 + 发丝线行 ×6：游戏区服 / 游戏昵称·ID / 联系方式 / 订单备注 / 下单时间）→ 标尺线 + 口径来源。区块间固定 12dp，组内 0（发丝线）—— 组内紧、组间松。吸底条在真机常驻底部，完整页图里画在末尾以便看清全部区块。</div>
+  </figure>
+  <figure class="shot">
+    <figcaption>D-3 · 对比：已完成 <em>同区块顺序，看状态 / 时间线 / 结算 / 操作按钮的差异</em></figcaption>
+    <div class="phone full"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div><div class="fold"><span>首屏折线 · 以下需滚动</span></div><div class="scroll"><div class="inner"><div class="phead"><span class="ic" style="width:20px;height:20px;flex:0 0 20px;color:currentColor;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M15 5.4L8.4 12l6.6 6.6"/></svg></span>
+  <span class="lt">订单详情</span>
+  <span class="rt"><span class="ic" style="width:20px;height:20px;flex:0 0 20px;color:currentColor;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4"/><rect x="3.4" y="13.2" width="3.6" height="5.2" rx="1.6"/><rect x="17" y="13.2" width="3.6" height="5.2" rx="1.6"/><path d="M19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span></span></div><div class="wrap"><div class="hero-wrap"><div class="hero">
+  <div class="hrow">
+    <span class="hlab">当前状态</span>
+    <span class="st done  cut" style="background:#E3F0EF;border-color:#BCD9D7;color:#0E7C7B;">
+    <span class="dot" style="background:#0E7C7B;"></span>
+    <span class="ic" style="width:11px;height:11px;display:flex;flex:0 0 11px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M8.4 12.4l2.6 2.6 4.6-5.2"/></svg></span>
+    <span style="font-weight:700">已完成</span>
+  </span>
+    <span class="hno">ORDMV1B7T3K5093</span>
+  </div>
+  <div class="hmain">
+    <div class="gicon"><span class="ic" style="width:26px;height:26px;flex:0 0 26px;color:#CFE0F2;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><rect x="3.4" y="7.4" width="17.2" height="9.2" rx="3.2"/><path d="M8 10.6v2.8M6.6 12h2.8"/><circle cx="15.6" cy="11.4" r="1"/><circle cx="17.6" cy="13.4" r="1"/></svg></span></div>
+    <div style="min-width:0;flex:1 1 auto">
+      <div class="hname">36.6博弈宝冠单（出返现小金人+金aug）不出保888w[老板必须全程录屏不录开出不算]</div>
+      <div class="hmeta">和平精英 · 手游<span style="margin:0 6px;color:#5E7893">|</span>QQ区 · 阿远不熬夜<span style="margin:0 6px;color:#5E7893">|</span>1 单</div>
+    </div>
+  </div>
+  <div class="hrow2">
+    <span class="hprice num">¥36.60</span>
+    <span class="hunit">¥36.60 × 1 单</span>
+    <span class="hbtn"><span class="ic" style="width:15px;height:15px;flex:0 0 15px;color:#3A2409;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg></span>再来一单</span>
+  </div>
+</div></div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">订单状态</span><span class="cno">共 5 步 · 已走到第 5 步</span></div>
+  <div class="tl"><div class="tli ok">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">下单成功</span><span class="tm">10-11 19:38</span></div><div class="td">余额支付 ¥36.60 · 订单进入大厅等待接单</div></div>
+  </div><div class="tli ok">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">护航员已接单</span><span class="tm">10-11 19:44</span></div><div class="td">凌云 已接单 · 等待进入对局</div></div>
+  </div><div class="tli ok">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">开始服务</span><span class="tm">10-11 19:51</span></div><div class="td">护航员已进入对局</div></div>
+  </div><div class="tli ok">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">提交完成</span><span class="tm">10-11 22:06</span></div><div class="td">护航员提交完成 · 等待你确认结算</div></div>
+  </div><div class="tli now">
+    <div class="rail"><span class="knob"></span><span class="line"></span></div>
+    <div class="tx"><div class="tr"><span class="tt">确认结算</span><span class="tm">10-11 22:14</span></div><div class="td">打手 ¥27.45（75%）· 平台 ¥9.15（25%）· 金额守恒</div></div>
+  </div></div>
+</div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">商品与服务规格</span><span class="cno">和平精英 · 手游</span></div>
+  <div class="cbody">
+    <div class="gtile"><span class="ic" style="width:24px;height:24px;flex:0 0 24px;color:#1D5FA8;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><rect x="3.4" y="7.4" width="17.2" height="9.2" rx="3.2"/><path d="M8 10.6v2.8M6.6 12h2.8"/><circle cx="15.6" cy="11.4" r="1"/><circle cx="17.6" cy="13.4" r="1"/></svg></span></div>
+    <div style="min-width:0;flex:1 1 auto">
+      <div class="cname">36.6博弈宝冠单（出返现小金人+金aug）不出保888w[老板必须全程录屏不录开出不算]</div>
+      <div class="cmeta">和平精英 · 手游<span class="sep">|</span>1 单<span class="sep">|</span>QQ区</div>
+    </div>
+  </div>
+  <div class="hair"></div>
+  <div class="lrow"><span class="lk">单价</span><span class="lv num">¥36.60<span class="sub">每 单</span></span></div>
+  <div class="lrow"><span class="lk">数量</span><span class="lv num">1 单</span></div>
+  <div class="lrow"><span class="lk">服务方式</span><span class="lv num">随机安排</span></div>
+</div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">护航员</span><span class="cno">10-11 19:44 接单</span></div>
+  <div class="wrow" style="padding-top:12px;padding-bottom:13px"><span class="wava"><span class="ic" style="width:13px;height:13px;flex:0 0 13px;color:#0E7C7B;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg></span></span><span class="wtxt">凌云</span></div>
+</div><div class="card flat" style="margin-top:12px">
+  <div class="chead"><span class="ct">费用明细</span><span class="cno">STLMV3WM3PC3821</span></div>
+  <div class="lrow"><span class="lk">单价</span><span class="lv num">¥36.60<span class="sub">每 单</span></span></div>
+  <div class="lrow"><span class="lk">数量</span><span class="lv num">1 单</span></div>
+  <div class="lrow"><span class="lk">护航员收益</span><span class="lv num">¥27.45<span class="sub">按 75% 分成 · 打手入账</span></span></div>
+  <div class="lrow"><span class="lk">平台服务费</span><span class="lv num">¥9.15<span class="sub">按 25% 抽成 · 后台可配</span></span></div>
+  <div class="cfoot">
+    <span class="cprice num">¥36.60</span>
+    <span class="cqty">¥36.60 × 1 单</span>
+    <span class="cbtns"><span style="font-size:10.5px;color:#8A99AB">结算金额守恒 · 打手 + 平台 = 订单额</span></span>
+  </div>
+</div><div class="listcard bleed" style="margin-top:12px">
+  <div class="listhead"><span class="lh">订单信息</span><span class="ln">数据来自 GET /user/orders/:id</span></div>
+  <div class="lrow"><span class="lk">游戏区服</span><span class="lv num">QQ区</span></div>
+  <div class="lrow"><span class="lk">游戏昵称 / ID</span><span class="lv num">阿远不熬夜</span></div>
+  <div class="lrow"><span class="lk">联系方式</span><span class="lv num">—</span></div>
+  <div class="lrow"><span class="lk">订单备注</span><span class="lv num">—</span></div>
+  <div class="lrow"><span class="lk">下单时间</span><span class="lv num">10-11 19:38</span></div>
+  <div class="lrow"><span class="lk">完成时间</span><span class="lv num">10-11 22:14</span></div>
+</div><div class="ruler" style="margin-top:14px"><i></i><s></s><i></i></div>
+  <div style="text-align:center;font-size:10.5px;color:#8A99AB;padding:0 0 6px">订单号 ORDMV1B7T3K5093 · 状态中文与状态码取自 order.service.ts:1588-1594 · 分账比例读 system_setting（当前平台 25%）</div></div><div class="dock tail"><span class="dtot">合计<b class="num">¥36.60</b></span><span class="acts"><span class="btn ghost">售后进度</span><span class="btn ghost">申请售后</span></span></div></div></div></div>
+    <div class="ph-cap"><b>与 D-2 的差异</b>：① 状态标签换 <b>青瓷浅底档 + 勾圈</b>（形状 + 图标，不只颜色）；② 时间线 <b>5 步全达成</b>，末步"确认结算"为主色当前态；③ 区服换 <b>QQ区</b>；④ 备注为空 → <b>—</b>（真实空态）；⑤ 费用明细多出 <b>护航员收益 ¥27.45 / 平台服务费 ¥9.15</b> 与结算编号；⑥ 吸底按钮换 <b>售后进度 + 申请售后</b>（<code>orders_page.dart:691-695</code>），且<b>没有主按钮</b> —— 终态订单不该再给强动作。</div>
+  </figure>
+  <figure class="shot">
+    <figcaption>D-4 · 加载骨架态 <em>骨架 = 内容形状，不是转圈</em></figcaption>
+    <div class="phone"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div><div class="scroll"><div class="inner"><div class="phead"><span class="ic" style="width:20px;height:20px;flex:0 0 20px;color:currentColor;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M15 5.4L8.4 12l6.6 6.6"/></svg></span>
+  <span class="lt">订单详情</span>
+  <span class="rt"><span class="ic" style="width:20px;height:20px;flex:0 0 20px;color:currentColor;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4"/><rect x="3.4" y="13.2" width="3.6" height="5.2" rx="1.6"/><rect x="17" y="13.2" width="3.6" height="5.2" rx="1.6"/><path d="M19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span></span></div>
+  <div class="wrap">
+    <div class="sk block" style="background:#0F2440;border-color:#0F2440;height:172px">
+      <div class="skrow">
+        <div style="display:flex;align-items:center">
+          <span class="sk" style="width:54px;height:20px;background:#22405F"></span>
+          <span class="sk" style="width:104px;height:11px;background:#22405F;margin-left:auto"></span>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:12px">
+          <span class="sk" style="width:50px;height:50px;border-radius:10px;flex:0 0 50px;background:#22405F"></span>
+          <div style="flex:1 1 auto">
+            <span class="sk" style="display:block;width:92%;height:14px;background:#22405F"></span>
+            <span class="sk" style="display:block;width:58%;height:11px;background:#22405F;margin-top:9px"></span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-end;margin-top:13px;border-top:1px solid rgba(255,255,255,.14);padding-top:12px">
+          <span class="sk" style="width:96px;height:24px;background:#22405F"></span>
+          <span class="sk" style="width:120px;height:32px;border-radius:10px;background:#22405F;margin-left:auto"></span>
+        </div>
+      </div>
+    </div>
+    <div class="sk block" style="margin-top:12px;height:208px">
+      <div class="skrow" style="padding-bottom:6px"><span class="sk m" style="display:block;width:34%"></span></div>
+      <div style="padding:0 14px 12px">
+        <div style="display:flex;gap:11px;align-items:flex-start;">
+          <span class="sk" style="width:11px;height:11px;border-radius:999px;flex:0 0 11px;margin-top:3px"></span>
+          <div style="flex:1 1 auto">
+            <span class="sk l" style="display:block;width:42%"></span>
+            <span class="sk l" style="display:block;width:74%;margin-top:8px"></span>
+          </div>
+        </div><div style="display:flex;gap:11px;align-items:flex-start;margin-top:12px">
+          <span class="sk" style="width:11px;height:11px;border-radius:999px;flex:0 0 11px;margin-top:3px"></span>
+          <div style="flex:1 1 auto">
+            <span class="sk l" style="display:block;width:52%"></span>
+            <span class="sk l" style="display:block;width:66%;margin-top:8px"></span>
+          </div>
+        </div><div style="display:flex;gap:11px;align-items:flex-start;margin-top:12px">
+          <span class="sk" style="width:11px;height:11px;border-radius:999px;flex:0 0 11px;margin-top:3px"></span>
+          <div style="flex:1 1 auto">
+            <span class="sk l" style="display:block;width:46%"></span>
+            <span class="sk l" style="display:block;width:70%;margin-top:8px"></span>
+          </div>
+        </div><div style="display:flex;gap:11px;align-items:flex-start;margin-top:12px">
+          <span class="sk" style="width:11px;height:11px;border-radius:999px;flex:0 0 11px;margin-top:3px"></span>
+          <div style="flex:1 1 auto">
+            <span class="sk l" style="display:block;width:38%"></span>
+            <span class="sk l" style="display:block;width:56%;margin-top:8px"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sk block" style="margin-top:12px;height:178px">
+      <div class="skrow">
+        <div style="display:flex;gap:11px;align-items:flex-start">
+          <span class="sk" style="width:52px;height:52px;border-radius:10px;flex:0 0 52px"></span>
+          <div style="flex:1 1 auto">
+            <span class="sk m" style="display:block;width:88%"></span>
+            <span class="sk l" style="display:block;width:54%;margin-top:9px"></span>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #EDF1F6"><div class="lrow"><span class="sk l" style="width:22%"></span><span class="sk l" style="width:26%;margin-left:auto"></span></div><div class="lrow"><span class="sk l" style="width:22%"></span><span class="sk l" style="width:18%;margin-left:auto"></span></div></div>
+    </div>
+    <div class="sk-note" style="margin:14px 0 0"><span class="ic" style="width:14px;height:14px;flex:0 0 14px;color:#1D5FA8;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M20 11.6A8 8 0 0 0 6.3 6.3L4 8.4"/><path d="M4 4.4v4h4"/><path d="M4 12.4A8 8 0 0 0 17.7 17.7L20 15.6"/><path d="M20 19.6v-4h-4"/></svg></span>正在同步订单状态 · 已有内容保留不闪屏</div>
+  </div></div></div><div class="dock"><span class="dtot">合计<b><span class="sk" style="display:inline-block;width:76px;height:18px;vertical-align:-2px"></span></b></span><span class="acts"><span class="sk" style="width:88px;height:34px;border-radius:10px"></span><span class="sk" style="width:104px;height:34px;border-radius:10px"></span></span></div></div>
+    <div class="ph-cap">现状（<code>orders_page.dart:253-262</code>）：详情<b>连加载态都没有</b> —— 先 <code>await</code> 拉 <code>GET /user/orders/:id</code>，拿到数据才 <code>showModalBottomSheet</code>；请求期间界面<b>毫无反馈</b>（点了订单卡像是没反应），数据到达时弹层凭空出现。骨架态按真实区块的<b>同一几何</b>铺位（墨蓝 Hero 172 / 时间线卡 208 / 商品卡 178，与 D-1 首屏可见内容同高），首屏零位移；底色 <b>#E7EBF1</b>，不闪光、不做扫光动画（docs/32 §七：动效只 3 档，不做炫技）。</div>
+  </figure>
+</main>
+
+<div class="specwrap">
+  <div class="sec-h"><h2>二、详情页信息层级（负责人 §五.1：价格 / 规格 / 区服 / 状态 / 操作要有明确层级）</h2><span>六级 + 操作，逐级只靠"字号 / 字重 / 颜色 / 载体"四件事拉开</span></div>
+  <div class="spec wide">
+    <table>
+      <tr><th>级</th><th>内容</th><th>字号 / 字重</th><th>颜色</th><th>载体（哪一块）</th></tr>
+      <tr><td><b>① 状态</b></td><td>进行中 / 已完成</td><td>10.5 / <b>700</b>（+ 线性图标 + 右上斜切角 6dp）</td><td>功能色（实色主色档 / 青瓷浅底档）</td><td>HeroCard 顶部标签 + 时间线当前步</td></tr>
+      <tr><td><b>② 金额</b></td><td>¥30.00 / ¥36.60</td><td><b>24 / 800</b>（等宽数字 tabular-nums）</td><td>Hero 上 <code>#E9B872</code>（墨蓝底专用金）</td><td>HeroCard 右下（全页最大数字）</td></tr>
+      <tr><td><b>②′ 明细合计</b></td><td>¥30.00 / ¥36.60</td><td><b>18 / 800</b>（等宽）</td><td><code>#B4732A</code> 铜牌金（全站唯一金）</td><td>费用明细卡脚（与列表卡同一支 AppPrice）</td></tr>
+      <tr><td><b>③ 商品</b></td><td>30保1000w（…）</td><td><b>15 / 700</b></td><td><code>#14202E</code> 正文</td><td>商品与服务规格卡主行</td></tr>
+      <tr><td><b>④ 规格 / 区服</b></td><td>¥30.00 / 1 单 / 微信区</td><td>12.5 / 600（等宽）</td><td><code>#14202E</code> 正文</td><td>ListCard 行值（右对齐）</td></tr>
+      <tr><td><b>⑤ 行标签</b></td><td>单价 / 游戏区服 / 订单备注</td><td>11.5 / 400</td><td><code>#4A5A6E</code> 次要</td><td>ListCard 行键（左对齐）</td></tr>
+      <tr><td><b>⑥ 微信息</b></td><td>订单号 / 时间 / 步数</td><td>10.5 / 400</td><td><code>#8A99AB</code> 弱化</td><td>HeroCard 右上 / 时间线右列 / 卡头右侧</td></tr>
+      <tr><td><b>操作</b></td><td>联系护航员 / 申请售后</td><td>12.5 / <b>700</b>，高 34，圆角 10</td><td>白字 on 主色（主按钮）/ 灰描边（次级）</td><td>HeroCard 内 + 吸底操作条</td></tr>
+    </table>
+    <p><b>为什么这样排</b>：价格占三个"金额档"（Hero 24 / 底栏合计 18 / 明细行 12.5），规格与区服共用同一档 12.5 —— <b>不靠给每一行配颜色或小标签</b>来分层级（docs/21 禁"每条信息配彩色小标签"）。全页彩色只出现在三处：状态标签、铜牌金金额、主按钮。</p>
+  </div>
+
+  <div class="sec-h"><h2>三、状态标签规范（<b>直接复用列表页那一套</b> · 9 种真实状态）</h2><span>依据 docs/32 §一.4「状态不能只靠颜色」+ 负责人 §五.2</span></div>
+  <div class="spec wide" style="border-color:#0F2440;border-width:2px">
+    <h3><span class="n">★</span>状态标签对比评审图 —— 与 <code>site/design/brand-order/list.html</code> 同一枚组件，请重点检查"是否只靠颜色区分"</h3>
+    <div class="statgrid"><div class="stcell">
+  <div><span class="st stbig wait  cut" style="background:#F7EDE0;border-color:#E6CFAE;color:#B45309;font-size:12.5px;height:26px;padding:0 9px 0 7px;border-radius:5px">
+    <span class="dot" style="background:#B45309;width:6px;height:6px"></span>
+    <span class="ic" style="width:13px;height:13px;display:flex;flex:0 0 13px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.6V12l3 1.9"/></svg></span>
+    <span style="font-weight:700">待接单</span>
+  </span></div>
+  <div class="code">pending_take → 待接单</div>
+  <div class="why">
+    <b>不只靠颜色的 3 条信号</b>：图标 clock · 形状 右上斜切角 5dp · 字重 700<br>
+    色：底 <span class="swatch" style="background:#F7EDE0"></span>#F7EDE0 描边 <span class="swatch" style="background:#E6CFAE"></span>#E6CFAE 字 <span class="swatch" style="background:#B45309"></span>#B45309<br>
+    等待护航员接单 · 老板可取消
+  </div>
+</div><div class="stcell">
+  <div><span class="st stbig wait  cut" style="background:#F7EDE0;border-color:#E6CFAE;color:#B45309;font-size:12.5px;height:26px;padding:0 9px 0 7px;border-radius:5px">
+    <span class="dot" style="background:#B45309;width:6px;height:6px"></span>
+    <span class="ic" style="width:13px;height:13px;display:flex;flex:0 0 13px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.6V12l3 1.9"/></svg></span>
+    <span style="font-weight:700">待确认派单</span>
+  </span></div>
+  <div class="code">pending_dispatch → 待确认派单</div>
+  <div class="why">
+    <b>不只靠颜色的 3 条信号</b>：图标 clock · 形状 右上斜切角 5dp · 字重 700<br>
+    色：底 <span class="swatch" style="background:#F7EDE0"></span>#F7EDE0 描边 <span class="swatch" style="background:#E6CFAE"></span>#E6CFAE 字 <span class="swatch" style="background:#B45309"></span>#B45309<br>
+    已指派护航员，等待其确认
+  </div>
+</div><div class="stcell">
+  <div><span class="st stbig run solid cut" style="background:#1D5FA8;border-color:#1D5FA8;color:#FFFFFF;font-size:12.5px;height:26px;padding:0 9px 0 7px;border-radius:5px">
+    <span class="dot" style="background:#FFFFFF;width:6px;height:6px"></span>
+    <span class="ic" style="width:13px;height:13px;display:flex;flex:0 0 13px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M13.4 3.6L6 13.2h5.2l-.6 7.2L18 10.8h-5.2z"/></svg></span>
+    <span style="font-weight:700">已接单</span>
+  </span></div>
+  <div class="code">taken → 已接单</div>
+  <div class="why">
+    <b>不只靠颜色的 3 条信号</b>：图标 bolt · 形状 右上斜切角 5dp · 实色 · 字重 700<br>
+    色：底 <span class="swatch" style="background:#1D5FA8"></span>#1D5FA8 描边 <span class="swatch" style="background:#1D5FA8"></span>#1D5FA8 字 <span class="swatch" style="background:#FFFFFF"></span>#FFFFFF<br>
+    护航员已接单，尚未开始
+  </div>
+</div><div class="stcell">
+  <div><span class="st stbig run solid cut" style="background:#1D5FA8;border-color:#1D5FA8;color:#FFFFFF;font-size:12.5px;height:26px;padding:0 9px 0 7px;border-radius:5px">
+    <span class="dot" style="background:#FFFFFF;width:6px;height:6px"></span>
+    <span class="ic" style="width:13px;height:13px;display:flex;flex:0 0 13px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M13.4 3.6L6 13.2h5.2l-.6 7.2L18 10.8h-5.2z"/></svg></span>
+    <span style="font-weight:700">进行中</span>
+  </span></div>
+  <div class="code">in_progress → 进行中</div>
+  <div class="why">
+    <b>不只靠颜色的 3 条信号</b>：图标 bolt · 形状 右上斜切角 5dp · 实色 · 字重 700<br>
+    色：底 <span class="swatch" style="background:#1D5FA8"></span>#1D5FA8 描边 <span class="swatch" style="background:#1D5FA8"></span>#1D5FA8 字 <span class="swatch" style="background:#FFFFFF"></span>#FFFFFF<br>
+    服务进行中 · 当前订单（Hero）
+  </div>
+</div><div class="stcell">
+  <div><span class="st stbig wait  cut" style="background:#F7EDE0;border-color:#E6CFAE;color:#B45309;font-size:12.5px;height:26px;padding:0 9px 0 7px;border-radius:5px">
+    <span class="dot" style="background:#B45309;width:6px;height:6px"></span>
+    <span class="ic" style="width:13px;height:13px;display:flex;flex:0 0 13px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M12 11.2v5.2M12 7.9h.01"/></svg></span>
+    <span style="font-weight:700">待用户确认</span>
+  </span></div>
+  <div class="code">pending_confirm → 待用户确认</div>
+  <div class="why">
+    <b>不只靠颜色的 3 条信号</b>：图标 info · 形状 右上斜切角 5dp · 字重 700<br>
+    色：底 <span class="swatch" style="background:#F7EDE0"></span>#F7EDE0 描边 <span class="swatch" style="background:#E6CFAE"></span>#E6CFAE 字 <span class="swatch" style="background:#B45309"></span>#B45309<br>
+    护航员已提交，等待老板确认结算
+  </div>
+</div><div class="stcell">
+  <div><span class="st stbig done  cut" style="background:#E3F0EF;border-color:#BCD9D7;color:#0E7C7B;font-size:12.5px;height:26px;padding:0 9px 0 7px;border-radius:5px">
+    <span class="dot" style="background:#0E7C7B;width:6px;height:6px"></span>
+    <span class="ic" style="width:13px;height:13px;display:flex;flex:0 0 13px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M8.4 12.4l2.6 2.6 4.6-5.2"/></svg></span>
+    <span style="font-weight:700">已完成</span>
+  </span></div>
+  <div class="code">completed → 已完成</div>
+  <div class="why">
+    <b>不只靠颜色的 3 条信号</b>：图标 checkC · 形状 右上斜切角 5dp · 字重 700<br>
+    色：底 <span class="swatch" style="background:#E3F0EF"></span>#E3F0EF 描边 <span class="swatch" style="background:#BCD9D7"></span>#BCD9D7 字 <span class="swatch" style="background:#0E7C7B"></span>#0E7C7B<br>
+    已结算 · 可申请售后
+  </div>
+</div><div class="stcell">
+  <div><span class="st stbig stop  cut" style="background:#F0F2F5;border-color:#D8DEE6;color:#4A5A6E;font-size:12.5px;height:26px;padding:0 9px 0 7px;border-radius:5px">
+    <span class="dot" style="background:#8A99AB;width:6px;height:6px"></span>
+    <span class="ic" style="width:13px;height:13px;display:flex;flex:0 0 13px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M8.8 8.8l6.4 6.4M15.2 8.8l-6.4 6.4"/></svg></span>
+    <span style="font-weight:600">已取消</span>
+  </span></div>
+  <div class="code">canceled → 已取消</div>
+  <div class="why">
+    <b>不只靠颜色的 3 条信号</b>：图标 cancel · 形状 右上斜切角 5dp · 字重 600<br>
+    色：底 <span class="swatch" style="background:#F0F2F5"></span>#F0F2F5 描边 <span class="swatch" style="background:#D8DEE6"></span>#D8DEE6 字 <span class="swatch" style="background:#4A5A6E"></span>#4A5A6E<br>
+    已全额退回余额（终态）
+  </div>
+</div><div class="stcell">
+  <div><span class="st stbig err  cut" style="background:#FBECEA;border-color:#E7C6C2;color:#B42318;font-size:12.5px;height:26px;padding:0 9px 0 7px;border-radius:5px">
+    <span class="dot" style="background:#B42318;width:6px;height:6px"></span>
+    <span class="ic" style="width:13px;height:13px;display:flex;flex:0 0 13px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M12 4.2l8.4 15H3.6z"/><path d="M12 9.6v4.2M12 16.6h.01"/></svg></span>
+    <span style="font-weight:800">异常</span>
+  </span></div>
+  <div class="code">abnormal → 异常</div>
+  <div class="why">
+    <b>不只靠颜色的 3 条信号</b>：图标 warn · 形状 右上斜切角 5dp · 描边加粗 1.5 · 字重 800<br>
+    色：底 <span class="swatch" style="background:#FBECEA"></span>#FBECEA 描边 <span class="swatch" style="background:#E7C6C2"></span>#E7C6C2 字 <span class="swatch" style="background:#B42318"></span>#B42318<br>
+    客服介入处理中（终态前置）
+  </div>
+</div><div class="stcell">
+  <div><span class="st stbig err  cut" style="background:#FBECEA;border-color:#E7C6C2;color:#B42318;font-size:12.5px;height:26px;padding:0 9px 0 7px;border-radius:5px">
+    <span class="dot" style="background:#B42318;width:6px;height:6px"></span>
+    <span class="ic" style="width:13px;height:13px;display:flex;flex:0 0 13px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M12 3.8l6.6 2.4v5.2c0 4-2.7 7.2-6.6 8.8-3.9-1.6-6.6-4.8-6.6-8.8V6.2z"/><path d="M9.2 12.2l2 2 3.6-4"/></svg></span>
+    <span style="font-weight:700">售后/申诉</span>
+  </span></div>
+  <div class="code">after_sale → 售后/申诉</div>
+  <div class="why">
+    <b>不只靠颜色的 3 条信号</b>：图标 shield · 形状 右上斜切角 5dp · 字重 700<br>
+    色：底 <span class="swatch" style="background:#FBECEA"></span>#FBECEA 描边 <span class="swatch" style="background:#E7C6C2"></span>#E7C6C2 字 <span class="swatch" style="background:#B42318"></span>#B42318<br>
+    申诉处理中 · 结果含退款/驳回
+  </div>
+</div></div>
+<div style="margin-top:14px;display:flex;gap:14px;flex-wrap:wrap">
+  <div class="stcell" style="flex:1 1 340px">
+    <div style="font-size:12.5px;font-weight:800;color:#0F2440;margin-bottom:8px">灰度打印自检（去掉颜色后，9 种状态是否仍两两可区分）</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="st cut" style="background:#fff;border-color:#C9D2DC;color:#14202E"><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#14202E;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.6V12l3 1.9"/></svg></span><span style="font-weight:700">待接单</span></span><span class="st cut" style="background:#fff;border-color:#C9D2DC;color:#14202E"><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#14202E;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.6V12l3 1.9"/></svg></span><span style="font-weight:700">待确认派单</span></span><span class="st cut" style="background:#fff;border-color:#C9D2DC;color:#14202E"><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#14202E;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M13.4 3.6L6 13.2h5.2l-.6 7.2L18 10.8h-5.2z"/></svg></span><span style="font-weight:700">已接单</span></span><span class="st cut" style="background:#fff;border-color:#C9D2DC;color:#14202E"><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#14202E;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M13.4 3.6L6 13.2h5.2l-.6 7.2L18 10.8h-5.2z"/></svg></span><span style="font-weight:700">进行中</span></span><span class="st cut" style="background:#fff;border-color:#C9D2DC;color:#14202E"><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#14202E;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M12 11.2v5.2M12 7.9h.01"/></svg></span><span style="font-weight:700">待用户确认</span></span><span class="st cut" style="background:#fff;border-color:#C9D2DC;color:#14202E"><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#14202E;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M8.4 12.4l2.6 2.6 4.6-5.2"/></svg></span><span style="font-weight:700">已完成</span></span><span class="st cut" style="background:#fff;border-color:#C9D2DC;color:#14202E"><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#14202E;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M8.8 8.8l6.4 6.4M15.2 8.8l-6.4 6.4"/></svg></span><span style="font-weight:600">已取消</span></span><span class="st cut" style="background:#fff;border-color:#C9D2DC;color:#14202E"><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#14202E;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M12 4.2l8.4 15H3.6z"/><path d="M12 9.6v4.2M12 16.6h.01"/></svg></span><span style="font-weight:800">异常</span></span><span class="st cut" style="background:#fff;border-color:#C9D2DC;color:#14202E"><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#14202E;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M12 3.8l6.6 2.4v5.2c0 4-2.7 7.2-6.6 8.8-3.9-1.6-6.6-4.8-6.6-8.8V6.2z"/><path d="M9.2 12.2l2 2 3.6-4"/></svg></span><span style="font-weight:700">售后/申诉</span></span>
+    </div>
+    <div class="why" style="margin-top:10px">去色后每条仍带<b>独立线性图标</b>（时钟 / bolt 折线标 / 勾圈 / 叉圈 / 警示三角 / 盾牌 / 信息圈）；同图标的两条（待接单 / 待确认派单）由<b>文案本身</b>区分，字重同为 700 —— 灰度下 9 条两两不同。详情页沿用<b>同一枚组件</b>，不新增第 10 种形态。</div>
+  </div>
+  <div class="stcell" style="flex:1 1 340px">
+    <div style="font-size:12.5px;font-weight:800;color:#0F2440;margin-bottom:8px">详情页用到的那两枚（进行中 / 已完成）</div>
+    <div style="display:grid;gap:9px">
+      <div style="display:flex;align-items:center;gap:9px"><span style="font-size:11.5px;color:#4A5A6E;flex:0 0 116px">① 实色（最高）</span><span class="st run solid cut" style="background:#1D5FA8;border-color:#1D5FA8;color:#FFFFFF;">
+    <span class="dot" style="background:#FFFFFF;"></span>
+    <span class="ic" style="width:11px;height:11px;display:flex;flex:0 0 11px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><path d="M13.4 3.6L6 13.2h5.2l-.6 7.2L18 10.8h-5.2z"/></svg></span>
+    <span style="font-weight:700">进行中</span>
+  </span><span style="font-size:11px;color:#8A99AB">进行中 · HeroCard 顶部 + 时间线当前步</span></div>
+      <div style="display:flex;align-items:center;gap:9px"><span style="font-size:11.5px;color:#4A5A6E;flex:0 0 116px">③ 终态（低）</span><span class="st done  cut" style="background:#E3F0EF;border-color:#BCD9D7;color:#0E7C7B;">
+    <span class="dot" style="background:#0E7C7B;"></span>
+    <span class="ic" style="width:11px;height:11px;display:flex;flex:0 0 11px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M8.4 12.4l2.6 2.6 4.6-5.2"/></svg></span>
+    <span style="font-weight:700">已完成</span>
+  </span><span style="font-size:11px;color:#8A99AB">已完成 · 同位置、同尺寸，只换档位</span></div>
+      <div style="display:flex;align-items:center;gap:9px"><span style="font-size:11.5px;color:#4A5A6E;flex:0 0 116px">时间线未达步</span><span class="st cut" style="background:#fff;border-color:#C6D0DC;color:#8A99AB"><span class="dot" style="background:#C6D0DC"></span><span class="ic" style="width:11px;height:11px;flex:0 0 11px;color:#8A99AB;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:100%;height:100%;display:block"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.6V12l3 1.9"/></svg></span><span style="font-weight:600">提交完成</span></span><span style="font-size:11px;color:#8A99AB">空心旋钮 + 字重 600（形状 + 字重，不只靠颜色）</span></div>
+    </div>
+    <div class="why" style="margin-top:10px">详情页与列表页共用 <code>OrderStatusTag</code>：<b>同一套 9 状态 × 底/描边/字/图标/形状/字重</b>，一处定义两页生效 —— 这是本图"与列表页同族"的硬证据。</div>
+  </div>
+</div>
+  </div>
+
+  <div class="sec-h"><h2>四、评审说明</h2><span>现状问题（带行号）· 改造点（带行号）· 卡片三档 · 品牌元素 · 两状态差异 · 红线核对</span></div>
+  <div class="specgrid">
+    <div class="spec"><h3><span class="n">1</span>详情页现状 9 个问题（orders_page.dart，逐条带行号）</h3><ul>
+      <li><b>它不是"页"，是一个弹层</b>：<code>:262-267</code> 详情走 <code>showModalBottomSheet</code>（<code>isScrollControlled</code>），<b>没有页头、没有返回、没有吸底操作</b>；内容一长就把订单列表整页盖住，返回只能下滑手势。</li>
+      <li><b>状态只有"颜色 + 文字"两条信号</b>：<code>:274-292</code> 是「8dp 圆点 + 18sp 状态名」，圆点色取 <code>:438-443</code> 的 <code>_statusColor()</code> —— 9 个状态被压成 <b>4 种颜色</b>，<code>taken</code> 与 <code>in_progress</code> 同色、<code>abnormal</code> 与 <code>after_sale</code> 同色，<b>无图标、无形状、无字重差异</b>。</li>
+      <li><b>没有状态时间线</b>：全页没有任何"这一步什么时候发生的"。数据侧真因：<code>GET /user/orders/:id</code>（<code>order.service.ts:1360</code>）只回 <code>{...orderView, gameZone, gamePlayerId, snapshot, settlement, workerInfo}</code>，<b>不下发 statusLogs</b>；而同一张表 <code>order_status_log</code> 在管理端详情里是有的（<code>order.service.ts:1496 / 1514</code>）—— 老板端要画时间线，必须补这一处下发。</li>
+      <li><b>价格没有算式</b>：<code>:319-322</code> 金额卡只有「商品费用 + 订单数量」两行；单价在 <code>:298-300</code> 的另一张卡里（<code>¥xx/单 × N</code>），<b>单价 / 数量 / 合计三行从不在一处</b>，用户要自己乘一遍。</li>
+      <li><b>七张卡长得一模一样</b>：<code>:373-386</code> 的 <code>_section</code> 每块都走 <code>AppCard</code>（默认 <code>radius: 16</code> + <code>box-shadow</code>，<code>app_ui.dart:108 / 135-137</code>）→ 服务信息 / 下单信息 / 护航员 / 金额 / 结算 <b>同权重平铺</b>，读不出"哪一块是重点"，违反 docs/32 §六「打破全是白圆角矩形」。</li>
+      <li><b>护航员带冗余属性</b>：<code>:315</code> 拼成「凌云（工号 W001）」—— 负责人口径是<b>只有头像 + 名字</b>；<code>workerInfo</code> 里的 <code>workerNo</code> 本就不该出现在老板端。</li>
+      <li><b>全部行值同一档</b>：<code>:389-405</code> 的 <code>_kv</code> 固定「96dp 标签 + 12.5sp 值」，<b>商品名、区服、备注、金额、结算编号全用同一档</b>；订单号在 <code>:289</code> 只有 10.5sp，被挤在状态行的右上角。</li>
+      <li><b>操作按钮在内容流末尾</b>：<code>:347-348</code> 把 <code>_actionsFor(o)</code> 排在所有卡片之后，长内容时<b>必须滚到底才看得到</b>；而 <code>:680-700</code> 里 <code>taken / in_progress / canceled / abnormal</code> 四个状态<code>_ => []</code> <b>一个动作都不给</b>（进行中的订单连"联系护航员"都没有）。</li>
+      <li><b>完全没有加载态</b>：<code>:253-262</code> 先 <code>await</code> 拉详情，成功后才 <code>showModalBottomSheet</code> —— 请求期间界面零反馈，点了订单卡像是没反应；失败只弹一条 toast（<code>:355-358</code>）。docs/21 §五 要求"必须设计加载态"。</li>
+    </ul></div>
+    <div class="spec"><h3><span class="n">2</span>改造点（逐条带行号 / 标出哪些需要服务端配合）</h3><ul>
+      <li><code>:262-267</code> <b>弹层 → 二级页</b>：加页头（返回 + 页名 + 客服入口）+ 吸底操作条；弹层的 <code>SafeArea + SingleChildScrollView</code> 结构保留在页面主体里。</li>
+      <li><code>:274-292</code> 状态头部 → <b>HeroCard</b>（墨蓝 <code>#0F2440</code> 实色 + 右上 18dp 斜切角 + 5% 细网格）：状态标签（图标 + 斜切角 + 字重）+ 订单号 + 商品 + 分部·区服·游戏ID + <b>¥ 大金额（24sp）</b> + 关键动作按钮。</li>
+      <li><code>:438-443</code> <code>_statusColor()</code> → <b>状态规范表</b>（9 状态 × 底/描边/字/图标/形状/字重，颜色改 docs/32 §一 功能色）。</li>
+      <li><b>新增状态时间线</b>（<code>.tl</code>）：<b>需要服务端 1 处配合</b> —— <code>order.service.ts:1360</code> 的 <code>userOrderDetail</code> 补下发 <code>statusLogs</code>（与 <code>:1496</code> 管理端同一张 <code>order_status_log</code> 表、同一句查询，只加一个字段、不改权限、不新增接口）。<b>未获批前不实施</b>；退路是只用 <code>createdAt</code> + 现有字段画两步。</li>
+      <li><code>:295-301</code> + <code>:319-322</code> <b>合并成一张「商品与服务规格」</b>：商品行（15sp 粗）+ 卡内 ListCard 三行 <b>单价 / 数量 / 服务方式</b>；合计只留一处（费用明细卡脚 18sp 铜牌金），<b>单价 × 数量 = 合计 在同一张卡内可核</b>。</li>
+      <li><code>:304-310</code> <b>改成 ListCard「订单信息」</b>（通栏无圆角 + 发丝线行高 52）：游戏区服 / 游戏昵称·ID / 联系方式 / 订单备注 / 下单时间；<b>空值一律 <code>—</code></b>（沿用 <code>:307</code> 的口径），不猜、不补白。</li>
+      <li><code>:313-316</code> 护航员卡 → <b>只留 22dp 头像位 + 名字</b>，删掉「（工号 …）」与「接单状态」两个派生行（接单时间移到卡头右侧，属订单信息不属人的属性）。</li>
+      <li><code>:337-343</code> 结算信息 → <b>并入费用明细</b>（已结算单多出「护航员收益 / 平台服务费」两行 + 结算编号），百分比仍按 <code>:366-371</code> <code>_pctLabel</code> 的规矩：<b>拿不到比例就只显示金额</b>。</li>
+      <li><code>:347-348</code> + <code>:680-700</code> 操作按钮 → <b>吸底操作条</b>（常驻可见），并按状态补齐真实可执行动作：进行中 = 联系护航员（直聊，<code>ensureWorkerDirectTx</code> 已建立的一对一会话）+ 联系客服；已完成 = 售后进度 + 申请售后。<b>不新增任何接口</b>。</li>
+      <li><code>:373-386</code> <code>_section</code> → 按 docs/32 §六 分档：Hero 1 个（墨蓝）/ ContentCard 4 个（白卡 r14 · 发丝线 · <b>0 阴影</b>）/ ListCard 1 个（通栏无圆角）。<b>不改 <code>AppCard</code> 组件默认值</b>（会波及全站），只在调用处显式传 <code>radius: 14</code> 并去掉阴影 —— 与 docs/31 同一处置。</li>
+      <li><code>:389-405</code> <code>_kv</code> → 分两档：<b>行值 12.5 / 600</b>、<b>行键 11.5 / 400</b>（现状同一档），行高统一 52。</li>
+      <li><b>补加载骨架态</b>（<code>:253-262</code> 现在完全没有）：骨架按真实区块的同一几何铺位，替代"点了没反应"。</li>
+    </ul></div>
+    <div class="spec"><h3><span class="n">3</span>卡片三档落地（docs/32 §六）</h3><table>
+      <tr><th>档位</th><th>本页用在</th><th>数量</th><th>形态</th></tr>
+      <tr><td><b>HeroCard</b></td><td>当前订单状态 + 关键动作</td><td><b>每屏 ≤1</b>（本图 1 个/屏）</td><td>墨蓝 <code>#0F2440</code> 实色 + 右上 18dp 斜切角 + 5% 细网格 + 白字 + 琥珀金额</td></tr>
+      <tr><td><b>ContentCard</b></td><td>订单状态（时间线）/ 商品与服务规格 / 护航员 / 费用明细</td><td>4 个</td><td>白卡 r14 + 1px 发丝线 + <b>0 阴影</b>；卡头（标题 + 右侧微信息）+ 卡身 + 卡脚用发丝线分</td></tr>
+      <tr><td><b>ListCard</b></td><td>订单信息（游戏区服 / 昵称·ID / 联系方式 / 备注 / 时间）</td><td>1 个（6 行 × 52dp）</td><td><b>通栏出血、无圆角</b> + 上下 1px 发丝线 + 行间发丝线，行内左键右值</td></tr>
+      </table>
+      <p>三档同时在场，且<b>深色块只出现 1 处</b>（docs/32 §一 用色铁律 2：深色块只允许品牌区 + 每屏最多 1 个 HeroCard）。规格行刻意走 ListCard 而不是再开 4 张白卡 —— 这是 docs/21「列表优先于卡片阵」。</p></div>
+    <div class="spec"><h3><span class="n">4</span>品牌元素使用清单（docs/32 §二 / §三 / §五）</h3><ul>
+      <li><b>① 斜切角</b>（主符号）：HeroCard 右上 <b>18dp</b> + 状态标签右上 <b>6dp</b> = <b>每屏 2 处</b> ≤ docs/32 的"每屏 ≤4 处" ✅（状态评审九宫格属评审区，不在手机壳内）。</li>
+      <li><b>② 细网格</b>：HeroCard 内 18dp 网格 <b>5% 白</b>，每屏 1 处；正文区 <b>0 处</b>（docs/32：正文区禁用）。</li>
+      <li><b>③ 标尺线</b>：完整页末尾 1 处（1px 发丝线 + 3×3 端点方块），承载"口径来源"这句说明。</li>
+      <li><b>铜牌金 <code>#B4732A</code></b>：费用明细合计 18sp；Hero 上因底色为墨蓝改用同族亮档 <code>#E9B872</code>（与列表页 HeroCard 完全一致）。<b>全页不出现第二个金</b>。</li>
+      <li><b>图标</b>：全部内联 SVG 线性单色（语义对应 <code>AppIcon</code> 的 Flutter 内置 Material outlined），<b>0 emoji、0 拟物、0 彩色图标、0 位图</b>。</li>
+      <li><b>Logo</b>：本页不出现（docs/32 §三：Logo 位置 = 品牌区 / 启动页 / 管理端侧栏）—— 页头只放返回 + 页名 + 客服入口。</li>
+      <li><b>字体</b>：MiSans（老板端已生效）；本图用系统同族字体回退渲染，字号严格 6 档（10.5 / 11.5 / 12.5 / 15 / 18 / 24）。</li>
+    </ul></div>
+    <div class="spec"><h3><span class="n">5</span>两种状态对比：差异逐条（D-2 进行中 vs D-3 已完成）</h3><table>
+  <tr><th>区块</th><th>进行中（D-1 / D-2）</th><th>已完成（D-3）</th><th>差异是"信号"还是"装饰"</th></tr>
+  <tr><td><b>状态标签</b></td><td>进行中 · 实色主色档 + bolt 图标 + 字重 700</td><td>已完成 · 青瓷浅底档 + 勾圈图标 + 字重 700</td><td>档位（实色/浅底）+ 图标 + 底色，<b>三条并行</b></td></tr>
+  <tr><td><b>HeroCard 关键动作</b></td><td>联系护航员（琥珀主按钮）</td><td>再来一单（琥珀主按钮）</td><td>动作随状态变，位置与尺寸不变</td></tr>
+  <tr><td><b>状态时间线</b></td><td><b>4 步</b>：3 步已达成 + 1 步空心未达（提交完成）</td><td><b>5 步</b>：全部达成，末步为主色"当前"</td><td>步数 + 旋钮实心/空心 + 字重，非颜色</td></tr>
+  <tr><td><b>游戏区服</b></td><td>微信区 · 傲天不熬夜</td><td>QQ区 · 阿远不熬夜</td><td>真实取值 wechat / qq（order_brief.dart:74-79）</td></tr>
+  <tr><td><b>订单备注</b></td><td>有备注（真实场景文案）</td><td>空 → <b>—</b></td><td>空态按 orders_page.dart:307 的真实口径</td></tr>
+  <tr><td><b>费用明细</b></td><td>单价 / 数量 + 合计 ¥30.00</td><td>单价 / 数量 + <b>护航员收益 ¥27.45 + 平台服务费 ¥9.15</b> + 结算编号</td><td>已结算单多出分账行（真实字段，不是补白）</td></tr>
+  <tr><td><b>吸底操作按钮</b></td><td>合计 ¥30.00 + 联系客服（次级）+ <b>联系护航员（主按钮）</b></td><td>合计 ¥36.60 + 售后进度（次级）+ 申请售后（次级）—— <b>无主按钮</b></td><td>按 <code>orders_page.dart:680-700</code> 的真实可执行动作给</td></tr>
+  <tr><td><b>合计</b></td><td>¥30.00</td><td>¥36.60（= 27.45 + 9.15，金额守恒）</td><td>金额格式统一 ¥ + 两位小数</td></tr>
+</table></div>
+    <div class="spec"><h3><span class="n">6</span>红线核对（docs/14 / docs/21 / docs/32 / 负责人 §五）</h3><table>
+      <tr><th>条款</th><th>出处</th><th>判定</th></tr>
+      <tr><td>禁渐变当主视觉</td><td>docs/21 §2</td><td><span class="ok">通过</span> · 软渐变 <b>0 处</b>；细网格用 repeating-linear-gradient 的 1px 硬边（非渐变过渡），脚本单独计数</td></tr>
+      <tr><td>禁每卡左侧彩色竖条</td><td>docs/21 §2</td><td><span class="ok">通过</span> · 0 处</td></tr>
+      <tr><td>禁全大圆角（≥16 当卡片）</td><td>docs/21 §2</td><td><span class="ok">通过</span> · 卡片 14 / 控件 10 / 标签 4–5 / 胶囊全圆；HeroCard 走斜切角不用圆角；ListCard 无圆角</td></tr>
+      <tr><td>禁阴影铺满卡片</td><td>docs/21 §2</td><td><span class="ok">通过</span> · 卡片阴影 <b>0 处</b>（现状 <code>app_ui.dart:135</code> 每卡 1 处 → 本方案归零）</td></tr>
+      <tr><td>禁顶部并排三个大数字</td><td>docs/21 §2</td><td><span class="ok">通过</span> · 全页只有 2 个金额数字（Hero 24 / 卡脚 18），纵向排布、不同层级</td></tr>
+      <tr><td>禁每条信息配彩色小标签</td><td>docs/21 §2</td><td><span class="ok">通过</span> · 每屏 <b>只有 1 枚</b>状态标签；分部 / 区服 / 规格走灰字 + 发丝线，不用彩色片</td></tr>
+      <tr><td>禁 emoji / 拟物 / 装饰插画</td><td>docs/21 §2</td><td><span class="ok">通过</span> · emoji 图标 0、插画 0、位图 0（<code>&lt;img&gt;</code> = 0）。商品名内的「➕」是<b>真实商品名原文</b>（目录里的写法），不是图标</td></tr>
+      <tr><td>禁纯黑配纯白</td><td>docs/21 §2</td><td><span class="ok">通过</span> · 正文 <code>#14202E</code> / 页底 <code>#F4F6F9</code> / 卡面 <code>#FFFFFF</code> / 品牌锚 <code>#0F2440</code></td></tr>
+      <tr><td>组内紧、组间松</td><td>docs/21 §2</td><td><span class="ok">通过</span> · 卡内行间 0（发丝线）/ 卡与卡 <b>12dp</b> / 页头与首卡 14dp</td></tr>
+      <tr><td>状态不只靠颜色（§五.2）</td><td>负责人</td><td><span class="ok">通过</span> · 图标 + 形状（斜切角 / 实色 vs 浅底 / 旋钮实心 vs 空心）+ 字重 三条并存，附灰度自检</td></tr>
+      <tr><td>信息来自真实业务（§五.3）</td><td>负责人</td><td><span class="ok">通过</span> · 状态 / 字段 / 区服 / 金额 / 商品名 / 订单号与结算编号形态全部对齐代码行号（见文首口径清单）</td></tr>
+      <tr><td>护航员只有头像 + 名字</td><td>负责人 §六</td><td><span class="ok">通过</span> · 22dp 头像位 + 名字，无等级 / 评分 / 标签 / 工号 / 单量</td></tr>
+      <tr><td>底部导航 = 服务·订单·＋下单·消息·我的</td><td>CLAUDE.md 结构规则 3</td><td><span class="ok">通过</span> · 详情页是<b>二级页</b>，按"同一入口只出现一次"<b>不重复底部导航</b>，改为页头返回 + 吸底操作条（与下单页、商品详情页同一处置）</td></tr>
+      <tr><td>不做奖杯插画 / 不出现不存在的入口</td><td>CLAUDE.md 结构规则</td><td><span class="ok">通过</span> · 0 处；未接单订单的护航员位是"等待接单中 · 暂无护航员"，不画空头像框</td></tr>
+      <tr><td>金额格式 ¥ + 两位小数 + 千分位</td><td>docs/32 §八</td><td><span class="ok">通过</span> · 本图 4 个金额 <code>¥30.00 / ¥36.60 / ¥27.45 / ¥9.15</code>，坏格式 <b>0</b>；两单均 &lt; ¥1,000，千分位分支未被触发（与列表页同一支格式化函数）</td></tr>
+      <tr><td>字体层级 7 级 / 字号不得少于 10.5</td><td>docs/32 §四</td><td><span class="ok">通过</span> · 手机壳内 <b>6 档</b>（10.5 / 11.5 / 12.5 / 15 / 18 / 24），最小 10.5</td></tr>
+      <tr><td>圆角分档 4–6 / 10 / 14 / 胶囊</td><td>docs/32 §六</td><td><span class="ok">通过</span> · 4（标签）/ 5（评审大标签）/ 10（按钮 · 图标块）/ 14（卡片）/ 胶囊（头像位）</td></tr>
+      <tr><td>自包含（无外部依赖）</td><td>docs/32 §十</td><td><span class="ok">通过</span> · <code>&lt;img&gt;</code>=0 · <code>&lt;script src&gt;</code>=0 · <code>&lt;link href&gt;</code>=0 · <code>&#64;import</code>=0 · 外部 http=0<br><em>（源码里以 <code>&amp;#64;</code> 实体书写该指令名，因此全文连字面量都搜不到 —— 便于 grep 式验收）</em></td></tr>
+    </table></div>
+    <div class="spec"><h3><span class="n">7</span>已知偏离与处置（主动上报，不藏）</h3><ul>
+      <li><b>时间线需要服务端补一个字段</b>：<code>order.service.ts:1360</code> 目前不下发 <code>statusLogs</code>。本图按"已下发"呈现；<b>实施前需负责人确认这一处改动</b>（1 个字段、复用管理端 <code>:1496</code> 现成查询、不动权限）。不获批则退化为两步时间线（下单 / 完成），<b>不猜中间状态</b>。</li>
+      <li><b>详情页没有底部导航</b>：与 <code>list.html</code>（一级页，有底栏）不同 —— 详情是二级页，按"同一入口只出现一次"不重复底栏。若负责人希望底栏常驻，只需在 <code>.inner</code> 末尾追加 <code>tabbar('订单')</code>，其余结构零改动。</li>
+      <li><b>图标尺寸</b>：docs/32 §五 定 16 / 20 / 24 / 28 四档；标签内嵌图标与列表页一致用 <b>11–13dp</b> —— 标签总高只有 20dp，塞 16dp 图标会撑破标签。本图与列表页保持同族，不单独改。</li>
+      <li><b>订单号里的 base36 毫秒</b>：<code>ORDMV45N97G9652</code> 与列表页 HeroCard 是<b>同一单</b>（便于两图对照），时间线按列表页"今天 21:34"的叙事框给出；号内嵌的时间戳不作为展示口径（客户端从不解析订单号）。</li>
+      <li><b>联系方式与游戏昵称</b>：<code>159 2043 7712</code> / <code>傲天不熬夜</code> / <code>阿远不熬夜</code> 为拟真值（前者与 <code>docs/31</code> 同一口径）；真实端一律来自接口字段，客户端不写死。</li>
+      <li><b>头像位</b>：设计图受"<code>&lt;img&gt;</code>=0"约束，用 22dp 圆形线性图标占位；真实端为 <code>AppAvatar</code> 圆形头像。</li>
+    </ul></div>
+    <div class="spec wide"><h3><span class="n">8</span>自检数字（脚本实测，可复现）</h3><table>
+      <tr><th>项</th><th>数值</th><th>口径</th></tr>
+      <tr><td><b>渐变面积</b></td><td><b>0 处</b>软渐变；细网格 1 处（1px 硬边条纹，非渐变）</td><td>逐元素读 <code>background-image</code>，<code>repeating-linear-gradient</code> + 硬边 → 计为纹理</td></tr>
+      <tr><td><b>阴影处数</b></td><td><b>0</b></td><td>手机壳内 <code>box-shadow</code> 命中数</td></tr>
+      <tr><td><b>emoji 数</b></td><td><b>0</b></td><td>设计面 + 说明区统一正则；商品名内的 ➕ 不在 emoji 码位区间</td></tr>
+      <tr><td><b>字号种类数</b></td><td><b>6</b>（10.5 / 11.5 / 12.5 / 15 / 18 / 24）</td><td>手机壳内有文字的叶子节点去重</td></tr>
+      <tr><td><b>金额格式违规数</b></td><td><b>0</b>（¥30.00 / ¥36.60 / ¥27.45 / ¥9.15）</td><td>每个 <code>¥</code> 起始的数字串必须匹配 <code>¥[\d,]+\.[0-9]{2}</code></td></tr>
+      <tr><td><b>计价单位旧称次数</b></td><td><b>0</b></td><td>设计面 + 说明区全文；全站计价单位一律「元」（<code>docs/32 §八</code>）</td></tr>
+      <tr><td><b>卡片档位使用情况</b></td><td>HeroCard <b>1/屏</b> · ContentCard <b>4</b> · ListCard <b>1</b>（6 行）</td><td>三档同时在场；每屏 HeroCard ≤1</td></tr>
+      <tr><td><b>金额守恒</b></td><td>¥27.45 + ¥9.15 = <b>¥36.60</b> ✅</td><td>按 <code>splitAmount()</code> 口径脚本断言</td></tr>
+      <tr><td><b>状态标签</b></td><td>9 / 9 全覆盖，每枚"图标 + 字重 + 斜切角"三信号齐</td><td>评审九宫格逐枚断言</td></tr>
+      </table></div>
+  </div>
+</div>
+
+<div class="footnote"><div>
+  <b>本图为设计稿，未实施任何代码改动</b>（<code>apps/**</code> / <code>admin-web/src/**</code> / <code>server/**</code> 一行未改；不 push、不发版）。
+  视觉与状态标签<b>直接复用 <code>site/design/brand-order/list.html</code></b>（同一份 CSS / class / token，来自共享件 <code>scripts/tmp/brand-order-lib.mjs</code>）。
+  方案文档见 <b>docs/35-品牌化设计-订单列表与详情.md</b>；出图脚本 <code>scripts/tmp/brand-order-detail-shot.mjs</code>（headless Edge + CDP，无新增依赖）。
+</div></div>
+
+</body>
+</html>

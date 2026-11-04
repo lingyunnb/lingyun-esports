@@ -1,0 +1,9 @@
+# dart_test.yaml —— core 包测试配置
+#
+# 为什么需要它：`test/update_e2e_tunnel_test.dart` 要经**公网隧道**下载 26MB×4 次，
+# 既慢（数分钟）又消耗隧道免费额度，还可能因为隧道抖动而随机失败。
+# 这类"需要外部网络 + 吃流量"的用例不适合进日常回归，因此放默认排除名单，
+# 需要验速时显式跑：flutter test --tags e2e-tunnel
+tags:
+  e2e-tunnel:
+    skip: "需公网隧道 + 26MB 流量：flutter test --tags e2e-tunnel 显式运行"

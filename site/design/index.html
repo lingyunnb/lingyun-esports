@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>祁连山电竞 · UI 改版方案 A/B 投票</title>
+<style>
+  :root{
+    --ink:#0c0e12; --ink2:#565c68; --ink3:#8a909c; --line:#e9ecf2;
+    --a:#3d5afe; --b:#3b82f6; --gold:#f5c24b;
+    --bg:#f6f7fa; --card:#fff;
+    --sh:0 4px 14px rgba(15,20,35,.06), 0 12px 32px rgba(15,20,35,.05);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:"PingFang SC","Microsoft YaHei UI","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+       -webkit-font-smoothing:antialiased}
+  header{padding:38px 32px 6px;max-width:1560px;margin:0 auto}
+  .badge{display:inline-block;background:#fff3d6;color:#8a6212;border-radius:999px;
+         padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:14px}
+  h1{margin:0 0 10px;font-size:30px;font-weight:800}
+  .sub{color:var(--ink2);font-size:14px;line-height:1.75;max-width:1180px}
+  main{max-width:1560px;margin:0 auto;padding:8px 32px 90px}
+
+  /* 投票区 */
+  .vote{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:26px 0 8px}
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 24px;box-shadow:var(--sh);
+         position:relative;overflow:hidden}
+  .vcard.pick{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink),var(--sh)}
+  .vhead{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+  .vhead h2{margin:0;font-size:20px;font-weight:800}
+  .tag{font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 10px}
+  .tag.a{background:#ecf0ff;color:#2b3fd0}
+  .tag.b{background:#08152e;color:#8ab4ff}
+  .vcard p{margin:6px 0 14px;font-size:13px;color:var(--ink2);line-height:1.7}
+  .sw-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .sw{width:26px;height:26px;border-radius:8px;border:1px solid rgba(0,0,0,.1)}
+  button.vote-btn{border:0;border-radius:14px;padding:13px 20px;font-size:14.5px;font-weight:800;cursor:pointer;
+                  background:var(--ink);color:#fff;transition:.15s}
+  button.vote-btn:hover{transform:translateY(-1px)}
+  .vcard.pick button.vote-btn{background:#16a34a}
+  .tally{margin-top:12px;font-size:12.5px;color:var(--ink3)}
+  .tally b{color:var(--ink);font-size:15px}
+  .reset{margin-top:14px;background:none;border:1px solid var(--line);color:var(--ink3);
+         border-radius:999px;padding:6px 14px;font-size:12px;cursor:pointer}
+
+  .sec{margin:44px 0 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .sec h2{margin:0;font-size:20px;font-weight:800}
+  .sec span{font-size:13px;color:var(--ink3)}
+  .grid{display:grid;gap:24px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid.one{grid-template-columns:minmax(0,1fr)}
+  .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--sh)}
+  .card h3{margin:0 0 4px;font-size:15.5px;font-weight:800}
+  .card p{margin:0 0 12px;font-size:12.5px;color:var(--ink2);line-height:1.6}
+  .shot{display:block;width:100%;border-radius:14px;border:1px solid var(--line);cursor:zoom-in;background:#fff}
+  .dark-wrap{background:#0b0e14;border-radius:16px;padding:8px}
+
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px;background:#fff;
+        border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--sh)}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+  th{color:var(--ink3);font-weight:700;font-size:12px;background:#fbfcfe}
+  td b{color:var(--ink)}
+  .tools{display:flex;gap:10px;align-items:center;margin:20px 0 4px;flex-wrap:wrap}
+  .tools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;
+                font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2)}
+  .tools button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tools .hint{font-size:12.5px;color:var(--ink3)}
+  @media (max-width:980px){ .vote,.grid,.grid.three{grid-template-columns:1fr} header,main{padding-left:16px;padding-right:16px} }
+</style>
+</head>
+<body>
+<header>
+  <div class="badge">待投票 · 尚未改动任何代码</div>
+  <h1>祁连山电竞 · UI 改版方案 A / B</h1>
+  <div class="badge">⚠️ 本页 A/B 方案已作废 · 新方向见「照东东电竞大改」</div>
+  <h1>祁连山电竞 · UI 改版方案 A / B（已作废，仅留档）</h1>
+  <p class="sub">
+    <b style="color:#b45309">负责人 2026-10-03 定案：A 案作废，改按参考 App（东东电竞）的设计语言大改。</b>
+    <br>→ <b><a href="./new-ui.html" style="color:#3d5afe;font-size:16px">点这里看新设计方案（紫色体系 + 双游戏分部）</a></b>
+    <br>· <b><a href="./community.html" style="color:#3d5afe">频道社区设计稿（浅色 C / 深色 D 对照）→</a></b>
+    <br><span style="color:#8a909c">以下 A/B 内容仅作历史留档，不再作为实施依据。</span>
+  </p>
+</header>
+
+<main>
+  <!-- 投票 -->
+  <div class="vote">
+    <div class="vcard" id="card-a">
+      <div class="vhead"><h2>A 案 · 极简留白</h2><span class="tag a">浅色 / 克制</span></div>
+      <p>纯白卡 + 近黑文字 + 唯一强调色 #3D5AFE + 三层阴影。关键词：安静、干净、贵而不吵。</p>
+      <div class="sw-row">
+        <span class="sw" style="background:#ffffff"></span><span class="sw" style="background:#0c0e12"></span>
+        <span class="sw" style="background:#3d5afe"></span><span class="sw" style="background:#ecf0ff"></span>
+        <span class="sw" style="background:#e9ecf2"></span>
+      </div>
+      <button class="vote-btn" data-pick="A">投 A 案</button>
+      <div class="tally">当前票数：<b id="tally-a">0</b> 票</div>
+    </div>
+    <div class="vcard" id="card-b">
+      <div class="vhead"><h2>B 案 · 电竞氛围</h2><span class="tag b">深色 / 高密度</span></div>
+      <p>深色壳 #0B0E14 + 电竞蓝 #3B82F6 + 会员金 #F5C24B。关键词：带感、信息量大、像游戏 App。</p>
+      <div class="sw-row">
+        <span class="sw" style="background:#0b0e14"></span><span class="sw" style="background:#141926"></span>
+        <span class="sw" style="background:#3b82f6"></span><span class="sw" style="background:#f5c24b"></span>
+        <span class="sw" style="background:#22c55e"></span>
+      </div>
+      <button class="vote-btn" data-pick="B">投 B 案</button>
+      <div class="tally">当前票数：<b id="tally-b">0</b> 票</div>
+    </div>
+  </div>
+  <button class="reset" id="reset">重置投票</button>
+
+  <div class="tools">
+    <button data-cols="one" class="on">单列看细节</button>
+    <button data-cols="two">双列</button>
+    <button data-cols="three">三列总览</button>
+    <span class="hint">点任意图片可开原始尺寸</span>
+  </div>
+
+  <!-- A 案 -->
+  <div class="sec"><h2>A 案 · 极简留白</h2><span>浅色外壳 · 大留白 · 分层阴影</span></div>
+  <div class="grid one">
+    <div class="card">
+      <h3>A｜老板端四屏总览</h3>
+      <p>首页 / 下单 / 订单 / 我的：标题层级分明，卡片轻阴影，选中态用近黑实底。</p>
+      <a href="00-设计总览-老板端.png" target="_blank"><img class="shot" src="00-设计总览-老板端.png" alt="A 案总览" /></a>
+    </div>
+  </div>
+  <div class="grid three" style="margin-top:24px">
+    <div class="card"><h3>A1 首页</h3><p>账户卡 + 2×2 功能卡 + 打手横滑 + 公告。</p>
+      <a href="01-首页.png" target="_blank"><img class="shot" src="01-首页.png" alt="A 首页" /></a></div>
+    <div class="card"><h3>A2 下单</h3><p>游戏/分类胶囊 + 左图右文商品行（满宽）。</p>
+      <a href="02-下单.png" target="_blank"><img class="shot" src="02-下单.png" alt="A 下单" /></a></div>
+    <div class="card"><h3>A3 订单</h3><p>状态胶囊 + 订单卡 + 底部详情弹层。</p>
+      <a href="03-订单.png" target="_blank"><img class="shot" src="03-订单.png" alt="A 订单" /></a></div>
+    <div class="card"><h3>A4 我的</h3><p>通顶头部 + 数据卡 + 分组列表。</p>
+      <a href="04-我的.png" target="_blank"><img class="shot" src="04-我的.png" alt="A 我的" /></a></div>
+    <div class="card"><h3>A5 工作端大厅</h3><p>墨绿收益卡 + 高密度单卡。</p>
+      <a href="05-工作端大厅.png" target="_blank"><img class="shot" src="05-工作端大厅.png" alt="A 工作端" /></a></div>
+    <div class="card"><h3>A 规范板</h3><p>颜色 / 字号 / 间距 / 阴影 / 组件。</p>
+      <a href="06-设计规范.png" target="_blank"><img class="shot" src="06-设计规范.png" alt="A 规范" /></a></div>
+  </div>
+
+  <!-- B 案 -->
+  <div class="sec"><h2>B 案 · 电竞氛围</h2><span>深色外壳 · 图片主导 · 交易密度高</span></div>
+  <div class="grid one">
+    <div class="card">
+      <h3>B｜老板端四屏总览</h3>
+      <p>首页 / 下单 / 订单 / 我的：深色壳 + 顶部氛围光，Banner 大图，满宽打手卡（在线点/标签/评分/单价/立即下单）。</p>
+      <div class="dark-wrap"><a href="B0-设计总览-老板端.png" target="_blank"><img class="shot" style="border:0" src="B0-设计总览-老板端.png" alt="B 案总览" /></a></div>
+    </div>
+  </div>
+  <div class="grid three" style="margin-top:24px">
+    <div class="card"><h3>B1 首页</h3><p>搜索条 + 活动 Banner + 四宫格入口 + 满宽打手卡。</p>
+      <div class="dark-wrap"><a href="B1-首页.png" target="_blank"><img class="shot" style="border:0" src="B1-首页.png" alt="B 首页" /></a></div></div>
+    <div class="card"><h3>B2 下单</h3><p>游戏/分类胶囊 + 双列瀑布流商品卡（促销角标/销量/价格）。</p>
+      <div class="dark-wrap"><a href="B2-下单.png" target="_blank"><img class="shot" style="border:0" src="B2-下单.png" alt="B 下单" /></a></div></div>
+    <div class="card"><h3>B3 订单</h3><p>状态胶囊 + 数字卡（进行中/待确认/售后）+ 交易卡。</p>
+      <div class="dark-wrap"><a href="B3-订单.png" target="_blank"><img class="shot" style="border:0" src="B3-订单.png" alt="B 订单" /></a></div></div>
+    <div class="card"><h3>B4 我的</h3><p>深色头卡 + 金色会员身份 + 资产条 + 权益条。</p>
+      <div class="dark-wrap"><a href="B4-我的.png" target="_blank"><img class="shot" style="border:0" src="B4-我的.png" alt="B 我的" /></a></div></div>
+    <div class="card"><h3>B5 工作端大厅</h3><p>深绿收益卡 + 左侧色条单卡 + 绿色抢单按钮。</p>
+      <div class="dark-wrap"><a href="B5-工作端大厅.png" target="_blank"><img class="shot" style="border:0" src="B5-工作端大厅.png" alt="B 工作端" /></a></div></div>
+    <div class="card"><h3>B 案说明</h3><p>深色方案配套：状态栏/导航/弹层全部深色化，图片区域用游戏宣传图填充。</p>
+      <div class="dark-wrap"><a href="B0-设计总览-工作端.png" target="_blank"><img class="shot" style="border:0" src="B0-设计总览-工作端.png" alt="B 工作端总览" /></a></div></div>
+  </div>
+
+  <!-- 对比 -->
+  <div class="sec"><h2>两案对比（帮助投票）</h2><span>同功能、同接口，只是呈现完全不同</span></div>
+  <table>
+    <tr><th>维度</th><th>A 案 · 极简留白</th><th>B 案 · 电竞氛围</th></tr>
+    <tr><td><b>第一眼感觉</b></td><td>安静、干净、高级（像工具类 App）</td><td>带感、热闹、像游戏（像陪玩商城）</td></tr>
+    <tr><td><b>底色</b></td><td>纯白 + 极淡分割线</td><td>近黑蓝 #0B0E14 + 卡面 #141926</td></tr>
+    <tr><td><b>强调色</b></td><td>靛蓝 #3D5AFE（全局唯一）</td><td>电竞蓝 #3B82F6 + 会员金 #F5C24B</td></tr>
+    <tr><td><b>商品呈现</b></td><td>满宽横条（左图右文），一屏 3 条</td><td>双列瀑布流大图，一屏 4 条</td></tr>
+    <tr><td><b>打手呈现</b></td><td>小横滑卡（头像/评分/下单）</td><td>满宽大卡（在线点/标签/评分/单价/按钮）</td></tr>
+    <tr><td><b>信息密度</b></td><td>低（留白优先）</td><td>高（一屏看更多，减少翻页）</td></tr>
+    <tr><td><b>白天户外可读性</b></td><td>好</td><td>一般（深色在强光下偏暗）</td></tr>
+    <tr><td><b>与雪山图标/品牌</b></td><td>呼应（清冷、留白）</td><td>需要金色点缀呼应"电竞"，图标偏冷色调</td></tr>
+    <tr><td><b>实现成本</b></td><td>中（需重写组件样式）</td><td>中高（深色适配 + 图片位 + 角标体系）</td></tr>
+    <tr><td><b>风险</b></td><td>"太素"，部分用户觉得不够热闹</td><td>深色长时间浏览偏累、浅色主题需另做一套</td></tr>
+  </table>
+
+  <div class="sec"><h2>投票方式</h2><span>页面上直接点，或群里回我</span></div>
+  <table>
+    <tr><th>方式</th><th>怎么做</th></tr>
+    <tr><td>页面上投票</td><td>点上方「投 A 案 / 投 B 案」，票数记在各自浏览器（每人一台设备点一次）</td></tr>
+    <tr><td>提修改意见</td><td>直接说"B 案的首页 Banner 小一点""A 案强调色换墨绿"这类，我改脚本重出图</td></tr>
+    <tr><td>混合方案</td><td>也可以选"A 案的骨架 + B 案的打手卡"这类组合，告诉我以哪案为底</td></tr>
+  </table>
+</main>
+
+<script>
+  var KEY = 'qls-ui-vote-v1';
+  function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {A:0,B:0,mine:null}; } catch(e){ return {A:0,B:0,mine:null}; } }
+  function save(v){ try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(e){} }
+  function render(){
+    var v = load();
+    document.getElementById('tally-a').textContent = v.A;
+    document.getElementById('tally-b').textContent = v.B;
+    document.getElementById('card-a').classList.toggle('pick', v.mine === 'A');
+    document.getElementById('card-b').classList.toggle('pick', v.mine === 'B');
+    document.querySelectorAll('button.vote-btn').forEach(function(b){
+      b.textContent = (v.mine === b.dataset.pick ? '已投 ' : '投 ') + b.dataset.pick + ' 案';
+    });
+  }
+  document.querySelectorAll('button.vote-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var v = load();
+      if (v.mine === btn.dataset.pick) return;
+      if (v.mine) v[v.mine] = Math.max(0, v[v.mine] - 1);
+      v.mine = btn.dataset.pick;
+      v[v.mine] = (v[v.mine] || 0) + 1;
+      save(v); render();
+    });
+  });
+  document.getElementById('reset').addEventListener('click', function(){
+    save({A:0,B:0,mine:null}); render();
+  });
+  document.querySelectorAll('.tools button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.tools button').forEach(function(b){ b.classList.remove('on'); });
+      btn.classList.add('on');
+      document.querySelectorAll('.grid').forEach(function(g){
+        g.classList.remove('one','two','three'); g.classList.add(btn.dataset.cols);
+      });
+    });
+  });
+  render();
+</script>
+</body>
+</html>

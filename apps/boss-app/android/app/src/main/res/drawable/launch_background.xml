@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 祁连山电竞 启动图（品牌视觉衔接） -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/ic_launcher_background_color" />
+    <item>
+        <bitmap android:gravity="center" android:src="@mipmap/ic_launcher" />
+    </item>
+</layer-list>

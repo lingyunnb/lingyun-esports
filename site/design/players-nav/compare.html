@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>竞品对照 · 参考图结构还原 vs 我们的列表页 · 祁连山电竞</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#EDF1F6}
+body{font-family:"MiSans","Microsoft YaHei","PingFang SC",Helvetica,Arial,sans-serif;color:#14202E;
+     padding:24px;display:flex;flex-direction:column;gap:20px;max-width:1310px}
+h1{font-size:22px;font-weight:800;letter-spacing:.2px}
+h2{font-size:18px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+.lead{font-size:13px;line-height:1.75;color:#4A5A6E}
+.lead b{color:#1D5FA8;font-weight:700}
+.lead .sep{color:#CDD6E2;padding:0 8px}
+.lead .ok2{color:#0E7C7B;font-weight:700}
+.panel{background:#fff;border:1px solid #CDD6E2;border-radius:14px;padding:16px 20px}
+.cmp{display:flex;gap:20px;align-items:flex-start}
+.colL{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
+.colR{width:390px;flex:0 0 390px;display:flex;flex-direction:column;gap:16px}
+.bt{font-size:15px;font-weight:700;margin-bottom:8px}
+.bd{font-size:12px;line-height:1.8;color:#4A5A6E}
+.bd b{color:#14202E}
+code{font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;color:#1D5FA8}
+
+/* ---------- 1. 参考图结构还原（纯文字 + 框图，0 素材） ---------- */
+.wf{background:#fff;border:1px solid #CDD6E2;border-radius:14px;padding:16px 20px}
+.wf .wl{font-size:11px;font-weight:600;color:#8A99AB;margin-bottom:8px}
+.wf .wb{border:1px solid #CDD6E2;border-radius:4px;padding:8px 12px;font-size:12px;line-height:1.7;color:#4A5A6E;background:#F4F6F9}
+.wf .wb.t{background:#fff}
+.wf .sel{background:#3A2A6B;color:#fff;padding:0 8px;border-radius:4px;font-weight:700}
+.wf .gap{height:8px}
+.wf .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.wf .gc{height:40px;border:1px solid #CDD6E2;border-radius:4px;background:#F4F6F9;color:#4A5A6E;font-size:11px;display:flex;align-items:center;justify-content:center}
+.wf .gc.on{background:#3A2A6B;color:#fff;font-weight:700;border-color:#3A2A6B}
+.wf .card{display:flex;gap:12px;border:1px solid #CDD6E2;border-radius:4px;padding:12px;background:#fff}
+.wf .pic{width:96px;height:120px;flex:0 0 96px;background:#F4F6F9;border:1px solid #CDD6E2;border-radius:4px;font-size:11px;color:#8A99AB;display:flex;align-items:flex-end;padding:4px}
+.wf .rows{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;font-size:11px;color:#4A5A6E}
+.wf .ln{border-bottom:1px dashed #CDD6E2;padding-bottom:4px}
+.wf .tagd{display:inline-block;border:1px solid #CDD6E2;border-radius:4px;padding:0 4px;font-size:11px;background:#F4F6F9}
+.wf .memo{font-size:11px;line-height:1.7;color:#8A99AB;margin-top:8px}
+.wf .anno{color:#B42318;font-weight:700}
+
+/* ---------- 2. 手机壳（列表页局部） ---------- */
+.phone{width:390px;flex:0 0 auto;position:relative;overflow:hidden;background:#F4F6F9;
+       border-radius:14px;outline:1px solid #CDD6E2;outline-offset:-1px;height:520px}
+.sb{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.sb .t{font-size:12px;font-weight:600}
+.sb .r{display:flex;align-items:center;gap:4px;color:#14202E}
+.appbar{height:48px;background:#fff;border-bottom:1px solid #E3E8EF;display:flex;align-items:center;padding:0 16px;gap:12px}
+.appbar .bk{color:#14202E;display:flex}
+.appbar .ab-t{font-size:22px;font-weight:800}
+.appbar .ab-s{font-size:11px;color:#8A99AB}
+.gridrow{height:64px;padding:0 16px;background:#fff;display:flex;align-items:center;gap:8px}
+.gc{width:80px;height:44px;border-radius:4px;border:1px solid #E3E8EF;background:#F4F6F9;color:#4A5A6E;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.gc.on{background:#E8EEF7;border-color:#E8EEF7;color:#1D5FA8;font-weight:700}
+.meta{height:32px;display:flex;align-items:center;padding:0 16px;background:#F4F6F9}
+.meta .c{font-size:11px;color:#8A99AB}
+.meta .f{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:13px;color:#4A5A6E}
+.list{background:#fff;border-top:1px solid #E3E8EF}
+.pcard{height:116px;display:flex;align-items:flex-start;gap:12px;padding:16px;border-bottom:1px solid #E3E8EF;background:#fff}
+.pcard.tags{height:148px}
+.av{width:44px;height:44px;flex:0 0 44px;border-radius:999px;background:#E8EEF7;color:#1D5FA8;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600}
+.card-l{flex:1;min-width:0}
+.nmrow{height:20px;display:flex;align-items:center;gap:8px}
+.nm{flex:0 1 auto;min-width:0;font-size:15px;font-weight:700;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvl{flex:0 0 auto;height:20px;padding:0 8px;border-radius:4px;border:1px dashed #CDD6E2;color:#8A99AB;font-size:11px;font-weight:600;display:flex;align-items:center;white-space:nowrap}
+.ds{margin-top:4px;font-size:12px;line-height:17px;height:34px;color:#4A5A6E;display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ds.muted{color:#8A99AB}
+.mrow{margin-top:8px;height:16px;font-size:11px;line-height:16px;color:#8A99AB;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tagrow{margin-top:8px;height:20px;display:flex;align-items:center;gap:8px}
+.tgd{height:20px;padding:0 8px;border-radius:4px;background:#E8EEF7;color:#1D5FA8;font-size:11px;font-weight:600;display:flex;align-items:center;white-space:nowrap}
+.tgt{height:20px;padding:0 8px;border-radius:4px;background:#F4F6F9;border:1px solid #E3E8EF;color:#4A5A6E;font-size:11px;display:flex;align-items:center;white-space:nowrap}
+.cap{font-size:12px;line-height:1.7;color:#4A5A6E}
+.cap b{display:block;font-size:13px;font-weight:700;color:#14202E;margin-bottom:4px}
+.cap i{font-style:normal;color:#1D5FA8;font-weight:700}
+.cap u{text-decoration:none;color:#B42318;font-weight:700}
+
+/* ---------- 表 ---------- */
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #CDD6E2;border-radius:14px;overflow:hidden}
+th,td{border-bottom:1px solid #E3E8EF;padding:8px 12px;text-align:left;vertical-align:top;font-size:12px;line-height:1.7}
+th{background:#F4F6F9;font-weight:700}
+td.learn{color:#0E7C7B;font-weight:700;white-space:nowrap}
+td.avoid{color:#B42318;font-weight:700;white-space:nowrap}
+td.p{color:#1D5FA8;font-weight:700}
+td.y{color:#0E7C7B;font-weight:700}
+td.n{color:#4A5A6E;font-weight:700}
+tr:last-child td{border-bottom:0}
+</style>
+</head>
+<body>
+
+<h1>竞品对照 · 参考图结构还原 vs 我们的陪玩列表页</h1>
+
+<div class="lead">
+  <b>左</b>：负责人给的参考图 1 <b>结构还原</b>（<b>纯文字 + 框图，0 素材</b>；按负责人描述逐块还原，<b>不复制其美术素材、插画、吉祥物与文案</b>）。
+  <span class="sep">|</span>
+  <b>右</b>：我们的列表页 —— <b>A 套 = 放宽（主推，名字下方一排小胶囊）</b> 与 <b>B 套 = 严守原规则（对照，无胶囊）</b>。
+  <span class="sep">|</span>
+  <b>下</b>：逐块「学 / 不学 + 理由」· <b>规则 6 逐条对照表（结论 = 不学，逐条给理由）</b> · 视觉改造对照表。
+  <span class="sep">|</span>
+  <span class="ok2">负责人 2026-10-15：规则 6 要守、只放我们有的；「标签胶囊 / 分部副标」<b>暂时放宽</b>（我看图之后决定）→ 故 A 套为放宽版，两版并排供拍板。</span>
+</div>
+
+<div class="cmp">
+
+  <!-- ================= 左：参考图结构还原 ================= -->
+  <div class="colL">
+
+    <div class="wf">
+      <div class="bt">参考图结构还原（纯文字 + 框图）</div>
+      <div class="wl">① 顶部导航（一行 6 个文本入口 + 右侧搜索）</div>
+      <div class="wb t">首页 · <span class="sel">大神</span>（选中态 · 带<span class="anno">红色角标</span>）· 赛事 · 排行榜 · 评审团 · 公… <span style="float:right">搜索</span></div>
+
+      <div class="gap"></div>
+      <div class="wl">② 筛选胶囊一行</div>
+      <div class="wb t"><span class="sel">全部</span>（实色选中） 人气陪玩  明星大神</div>
+
+      <div class="gap"></div>
+      <div class="wl">③ 游戏宫格：2 行 4 列，第一格「全部」选中</div>
+      <div class="grid">
+        <div class="gc on">全部</div><div class="gc">三角洲</div><div class="gc">三角洲…</div><div class="gc">绝地求生</div>
+        <div class="gc">永劫无间</div><div class="gc">守望先锋</div><div class="gc">无畏契约</div><div class="gc">英雄联盟</div>
+      </div>
+
+      <div class="gap"></div>
+      <div class="wl">④ 分页圆点（5 个，第 2 个高亮） + 右侧「筛选」</div>
+      <div class="wb t">●　<span class="sel">●</span>　●　●　● <span style="float:right">筛选</span></div>
+
+      <div class="gap"></div>
+      <div class="wl">⑤ 陪玩卡：大卡纵排，左竖图 + 右 5 行信息 + 右下角「自助下单」</div>
+      <div class="card">
+        <div class="pic">大竖图（约 140dp 宽 · 圆角）<br>左下角叠「07"」语音时长小胶囊</div>
+        <div class="rows">
+          <div class="ln">名字（粗体大字） + 性别图标 + 年龄 26 <span style="float:right">空闲（绿）</span></div>
+          <div class="ln"><span class="tagd">三角洲 明星pro</span>（深底白字 · 带游戏 logo） <span class="tagd">单考</span>（浅紫底）</div>
+          <div class="ln"><span class="tagd">航天</span>（黑底白字小标签）</div>
+          <div class="ln">介绍文案（有团队可双陪 / 主玩… / 可预约）</div>
+          <div>价格 6999（金色大字）+「钻石」小字 <span style="float:right">10524 人付款（灰）</span></div>
+        </div>
+      </div>
+      <div class="memo">⑥ 卡片右下角浮着「自助下单」按钮（与价格行同一视觉层）。<b>以上仅为结构还原</b>：不含参考 App 的图片、插画、吉祥物、文案与独特装饰。</div>
+    </div>
+
+    <div class="bt">逐块：学什么 / 不学什么（每一块都给出理由）</div>
+    <table>
+      <tr><th style="width:180px">参考图区块</th><th style="width:280px">学（进我们的设计）</th><th style="width:64px">判定</th><th>理由</th></tr>
+      <tr>
+        <td>① 顶部导航 6 项 + 搜索</td>
+        <td>一枚入口 = 小图标 16 + 13 号文字，<b>同一基线、左对齐、不居中不留空位</b>；重点项用主色 + 字重加粗</td>
+        <td class="learn">学</td>
+        <td>与 <code>services_page.dart:446-470</code> 现有 <code>_topNav</code> 同构 → 只加一项、零新组件</td>
+      </tr>
+      <tr>
+        <td>① 的 6 项本身 + 搜索框</td>
+        <td>不放进顶部：我们的顶部导航只有 <b>排行榜 · 公告 + 本轮新增的选择陪玩</b></td>
+        <td class="avoid">不学</td>
+        <td>结构规则 1（底部已有的名字不上顶部）+ 规则 2（没有「赛事 / 评审团」模块）；搜索框在本页<b>无可搜内容</b>（<code>services_page.dart:589-591</code>）</td>
+      </tr>
+      <tr>
+        <td>② 筛选胶囊（全部 / 人气陪玩 / 明星大神）</td>
+        <td><b>学形态、位置并给 ③</b> —— 参考图里 ② 是「人群/排序」、③ 是「游戏」，是<b>两个维度</b>；我们只有一个可筛维度（分部）→ <b>② 这一行不渲染</b>，选中胶囊的形态由 ③ 承载（选中格浅底主色字）</td>
+        <td class="learn">学</td>
+        <td>同一维度画两遍 = 结构规则 1「同一入口只出现一次」的变体；且「人气/明星」无任何字段可支撑（规则 2）。“排序”若要留，需服务端支持 <code>sort</code>，另立一档再议</td>
+      </tr>
+      <tr>
+        <td>② 的「人气陪玩 / 明星大神」两档</td>
+        <td>只放<b>真实分部</b>（全部 / 和平精英）</td>
+        <td class="avoid">不学</td>
+        <td>「明星陪玩 / 大神」是规则 6 点名禁止的措辞；且<b>无任何字段可支撑排序</b>（<code>/public/players</code> 实测忽略 sort 参数）→ 规则 2</td>
+      </tr>
+      <tr>
+        <td>③ 游戏宫格（2 行 4 列）</td>
+        <td><b>骨架 + 内容都学</b>：每行 4 格 / 格高 44 / 选中格浅底主色字 / 多分部时自动折行；<b>本稿已画出来</b>（2 格：全部 + 和平精英）</td>
+        <td class="learn">学</td>
+        <td><b>这是列表页唯一的筛选位</b>（② 已并入），也是多分部路线的落点（<code>CLAUDE.md</code> 规则 1：和平精英 + 三角洲行动共 3 个分部）</td>
+      </tr>
+      <tr>
+        <td>③ 的 8 个游戏<b>数量</b></td>
+        <td>只画<b>真实存在</b>的格子：线上 <code>GET /divisions</code> = <b>1 个</b>（和平精英 手游）+「全部」= <b>2 格</b></td>
+        <td class="avoid">不学</td>
+        <td>照画 8 格会出现 6 个空格或 6 个我们没接入的游戏 → 规则 2「不存在的东西不出现」；骨架照学，<b>有几格画几格</b></td>
+      </tr>
+      <tr>
+        <td>④ 分页圆点（5 个）</td>
+        <td>换成一行<b>真实计数</b>「共 14 位陪玩」（取接口 <code>total</code>），右端保留「筛选」</td>
+        <td class="avoid">不学</td>
+        <td>我们没有分页/分组页签，圆点无处可指 → 规则 2；计数是<b>可验证</b>的真实信息</td>
+      </tr>
+      <tr>
+        <td>④ 右侧「筛选」入口</td>
+        <td>保留，放右端、与计数同一行；面板内含「分部 + 排序」</td>
+        <td class="learn">学</td>
+        <td>它解决真实问题（14 人以上必须能筛）；⚠️ 排序档需服务端支持 <code>sort</code>，否则是假入口（见代价表）</td>
+      </tr>
+      <tr>
+        <td>⑤ 大卡的<b>结构</b>（左图 + 右信息纵向分层、大卡纵排）</td>
+        <td>页头 → 胶囊 → 计数/筛选 → <b>大卡纵排</b>的纵向骨架；<b>信息层级 = 主（名字）→ 说明（介绍）→ 副（接单/评价）</b></td>
+        <td class="learn">学</td>
+        <td>「一屏能选人」这个信息架构是对的；我们只把<b>字段</b>按规则 6 收窄，骨架照搬</td>
+      </tr>
+      <tr>
+        <td>⑤ 卡内其余字段（竖图 / 状态 / 标签 / 年龄性别 / 价格 / 付款人数 / 语音时长）</td>
+        <td>见下方「规则 6 逐条对照表」</td>
+        <td class="avoid">不学</td>
+        <td>规则 6：允许字段只有 名字 + 介绍（本轮负责人授权追加 接单次数 + 好评率 + 等级预留位）；需要这些属性时一律进详情页</td>
+      </tr>
+      <tr>
+        <td>⑥「自助下单」</td>
+        <td><b>暂不放进列表卡</b>；下单动作走既有的「快速下单」浮标与底栏凸起入口</td>
+        <td class="avoid">不学</td>
+        <td>列表卡上再放一枚实色按钮 = 结构规则 1 的入口重复 + <code>docs/21</code>「每条信息配一个彩色小标签」的变体；且按人下单需要打手定价先落地</td>
+      </tr>
+    </table>
+
+    <div class="bt">规则 6 逐条对照表（<code>CLAUDE.md:111-115</code>）—— 结论：参考图里这些项我们<b>不学</b>，逐条给理由</div>
+    <table>
+      <tr><th style="width:120px">规则 6 被禁项</th><th style="width:220px">参考图里出现在哪</th><th style="width:240px">我们（主方案）怎么处理</th><th>不学的理由</th></tr>
+      <tr><td class="p">明星陪玩 / 大神</td><td>② 筛选胶囊「明星大神」+ ⑤ 卡内标签「明星pro」</td><td class="y">不出现。胶囊行只有真实分部；卡上只有名字 + 介绍 + 接单/评价</td><td>规则 6 点名禁止；且「人气/明星」<b>没有任何可验证的排序依据</b>（接口忽略 sort 参数）→ 做了也是假档（规则 2）</td></tr>
+      <tr><td class="p">单考</td><td>⑤ 卡内第 2 行胶囊「单考」</td><td class="y">不出现</td><td>规则 6 点名禁止的措辞；且<b>资质体系还没建表</b>，先立词等于先立一套没人维护的标签</td></tr>
+      <tr><td class="p">双考</td><td>⑤ 卡内第 2 行胶囊的另一个取值</td><td class="y">不出现</td><td>同「单考」</td></tr>
+      <tr><td class="p">空闲</td><td>⑤ 卡内第 1 行右侧绿字「空闲」</td><td class="y">不出现。状态只在下单页/详情页体现</td><td>规则 6 点名禁止；且<b>没有实时状态字段</b>（只有 <code>can_take_order</code> 派生，不准）；静态截图冻结不了实时值</td></tr>
+      <tr><td class="p">忙碌</td><td>同一状态位的另一取值</td><td class="y">不出现</td><td>同「空闲」</td></tr>
+      <tr><td class="p">等级</td><td>价格右侧「钻石」小字（付费档/等级）</td><td class="y"><b>只保留一个虚线预留位</b>（名字右侧，20dp 高）：名称与形态待负责人定案，<b>本稿不预设</b></td><td>负责人 2026-10-15：「后期我会给打手加等级 等我想好名称告诉你」→ 先把<b>位置与排布</b>定下来，不自己起名字</td></tr>
+      <tr><td class="p">评分</td><td>本次截图内未见（该 App 有评分体系）</td><td class="y">不出现。进详情页用既有 <code>satisfiedRate</code>；无评价显示「暂无评价」</td><td>负责人 2026-10-15：<b>我们本来就没有 5 星</b>（满意/不满意二元），保持现状</td></tr>
+      <tr><td class="p">单价</td><td>⑤ 卡内「6999」金色大字</td><td class="y">不出现。列表页<b>不报价</b>，价格只在下单链路出现</td><td>负责人 2026-10-15 明确；且按打手定价的表还不存在（要动下单链路）</td></tr>
+      <tr><td class="p">下单人数</td><td>⑤ 卡内「10524 人付款」</td><td class="y">不出现</td><td>负责人 2026-10-15 明确；且线上 13/14 人为 <b>0</b>，画出来就是一片「0 人付款」</td></tr>
+      <tr><td class="p">语音时长</td><td>⑤ 竖图左下角「07"」胶囊</td><td class="y">不出现</td><td>规则 6 点名禁止；且语聊/通话能力<b>已暂停</b> —— 无表、无接口、无数据源</td></tr>
+      <tr><td class="p">标签胶囊</td><td>⑤ 第 2、3 行共 3 枚胶囊</td><td class="y"><b>A 套出现</b>（放宽 · 主推，见 <code>A-list.html</code>）：名字下方一排，极浅底深字；<b>B 套不出现</b>（严守 · 对照，见 <code>B-list.html</code>）</td><td>规则 6 原列禁项；负责人 2026-10-15「<b>暂时放宽 我看图之后决定</b>」→ <b>本项待负责人看图后最终确认</b>，故两版并排</td></tr>
+      <tr><td class="p">分部副标</td><td>⑤ 用「三角洲」胶囊兼作分部信息</td><td class="y"><b>A 套出现</b>（放宽）：与标签胶囊同排；<b>B 套不出现</b>（严格说：分部由上方宫格决定，同 <code>docs/32 §九.4</code>）</td><td>同「标签胶囊」；<b>另外</b>：<code>divisionId</code> 线上 <b>13/14 为 <code>null</code></b> → 即便放宽，绝大多数卡上仍然是空的 → <b>收益极小</b>，图里已如实只给 E2E打手 画了它</td></tr>
+      <tr><td style="color:#B42318;font-weight:700">（附加）年龄 / 性别</td><td>⑤ 名字右侧「性别图标 + 26」</td><td class="y">不出现</td><td>规则 6 之外还多一层：<b>年龄属个人信息</b>，需打手授权（PIPL），值不值得为一个列表字段走这道流程</td></tr>
+      <tr><td style="color:#B42318;font-weight:700">（附加）大竖图</td><td>⑤ 左侧约 140dp 竖图</td><td class="y">换成 44dp <b>首字字标</b>兜底（<code>avatarMediaId</code> 线上全 <code>null</code>，不画空框）</td><td>规则 2（无图不画空框）+ 现连头像都还没有；竖版展示图要新增字段 + 管理端上传 + 新媒体用途</td></tr>
+      <tr><td style="color:#0E7C7B;font-weight:700">（授权追加）接单次数 + 好评率</td><td>参考图的「10524 人付款」位置</td><td class="y">出现：<code>接单 30 次 · 暂无评价</code>（11 号弱化行）</td><td>负责人 2026-10-15 明确「只放我们真实有的」→ 这两项是<b>已有真实数据</b>（<code>worker_stats.completed_orders</code> / <code>satisfiedRate</code>），口径沿用详情页既有实现，<b>无评价就写「暂无评价」</b></td></tr>
+    </table>
+
+    <div class="bt">视觉改造对照表（参考图的视觉 → 我们的品牌规范）</div>
+    <table>
+      <tr><th style="width:250px">参考图</th><th style="width:280px">我们</th><th>理由</th></tr>
+      <tr><td>选中胶囊 = <b>实色紫</b>（资源提取到 <code>#815CFF</code> / <code>#4D3194</code>）</td><td>选中 = <b>主色 <code>#1D5FA8</code> 实色小面积</b>，白底为主</td><td>品牌色板 + 2026-10-14 白底为主定案；<code>docs/38 §四</code> 明确「不学它的蓝紫配色」</td></tr>
+      <tr><td>「航天」<b>黑底白字</b>小标签</td><td>放宽版（A 套）也<b>不用黑底</b>：<b>极浅底深字</b>（<code>#E8EEF7</code> / <code>#F4F6F9</code>）</td><td>黑底在列表里是「重量级」信号，会与名字抢层级；全站不做大块深色（<code>docs/32 §一</code>）</td></tr>
+      <tr><td>价格 6999 +「<b>钻石</b>」单位</td><td>不在列表出现；<b>任何地方金额一律 <code>¥</code> + 两位小数 + 千分位</b></td><td>计价单位 2026-10-09 已定案，全站只用「元」，不引入第二套计量单位</td></tr>
+      <tr><td>状态「空闲」<b>只靠绿色</b>区分</td><td>不出现；若将来要放状态，必须<b>圆点 + 文字</b>双信号</td><td><code>docs/32 §一.4</code>：状态不能只靠颜色区分</td></tr>
+      <tr><td>顶部 tab 的<b>红色角标</b></td><td>不用红色块；如确需角标 → 主色细描边小片</td><td>红色在我们色板里是<b>错误色</b>；参考图角标是它的美术资产，禁抄（<code>CLAUDE.md</code> 规则 6）</td></tr>
+      <tr><td>约 140dp 圆角大图</td><td>44dp 圆形首字字标（无图兜底）</td><td><code>docs/21</code>：无图不画空框；4dp 网格 + <code>docs/32 §六</code> 圆角档位</td></tr>
+      <tr><td>整卡圆角接近 <b>16dp</b></td><td>无圆角 <b>ListCard</b>（发丝线行）</td><td><code>docs/21</code> 禁全大圆角（≥16）；列表优先用发丝线分组，不要「什么内容都塞进一样的圆角卡」</td></tr>
+    </table>
+
+  </div>
+
+  <!-- ================= 右：我们的两版卡片 ================= -->
+  <div class="colR">
+
+    <div class="cap"><b>A 套 · 放宽（主推）</b>卡片 = <i>首字字标 + 名字 + 等级预留位 + 一排小胶囊 + 介绍 + 接单次数 · 好评率</i>，行高恒定 <i>148dp</i>。整页 5 屏见 <code>A-list.html</code>；<b>此项待负责人看图后最终确认</b>。</div>
+    <div class="phone">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="appbar">
+        <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+        <div class="ab-t">选择陪玩</div><div class="ab-s">介绍由官方审核填写</div>
+      </div>
+      <div class="gridrow"><div class="gc on"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>全部</div><div class="gc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4zM8 12h3M9.5 10.5v3M15 11h.01M17 13h.01"/></svg>和平精英</div></div>
+      <div class="meta"><div class="c">共 14 位陪玩</div>
+        <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+      </div>
+      <div class="list">
+        <div class="pcard tags"><div class="av">E</div><div class="card-l">
+          <div class="nmrow"><span class="nm">E2E打手</span><span class="lvl">等级位</span></div>
+          <div class="tagrow"><span class="tgd">和平精英·手游</span><span class="tgt">上分</span></div>
+          <div class="ds">E2E 测试账号：和平精英手游，只跑验收流程。</div>
+          <div class="mrow">接单 30 次 · 暂无评价</div></div></div>
+        <div class="pcard tags"><div class="av">凌</div><div class="card-l">
+          <div class="nmrow"><span class="nm">凌云</span><span class="lvl">等级位</span></div>
+          <div class="tagrow"><span class="tgt">上分</span></div>
+          <div class="ds muted">介绍待补充</div>
+          <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+      </div>
+    </div>
+
+    <div class="cap"><b>B 套 · 严守原规则（对照）</b>无小胶囊，行高 <i>116dp</i>；<u>两版都不画 空闲 / 评分 / 单价 / 下单人数 / 语音时长 / 大竖图 / 价格行</u>。整页 5 屏见 <code>B-list.html</code>。</div>
+    <div class="phone">
+      <div class="sb"><div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="appbar">
+        <div class="bk"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg></div>
+        <div class="ab-t">选择陪玩</div><div class="ab-s">介绍由官方审核填写</div>
+      </div>
+      <div class="gridrow"><div class="gc on"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>全部</div><div class="gc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v12H4zM8 12h3M9.5 10.5v3M15 11h.01M17 13h.01"/></svg>和平精英</div></div>
+      <div class="meta"><div class="c">共 14 位陪玩</div>
+        <div class="f">筛选<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div>
+      </div>
+      <div class="list">
+        <div class="pcard"><div class="av">E</div><div class="card-l">
+          <div class="nmrow"><span class="nm">E2E打手</span><span class="lvl">等级位</span></div>
+          <div class="ds">E2E 测试账号：和平精英手游，只跑验收流程。</div>
+          <div class="mrow">接单 30 次 · 暂无评价</div></div></div>
+        <div class="pcard"><div class="av">凌</div><div class="card-l">
+          <div class="nmrow"><span class="nm">凌云</span><span class="lvl">等级位</span></div>
+          <div class="ds muted">介绍待补充</div>
+          <div class="mrow">暂无接单记录 · 暂无评价</div></div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="bt">决策清单</div>
+      <div class="bd">
+        <b>已定（负责人 2026-10-15）</b><br>
+        ① 规则 6 <b>守</b>，只放我们真实有的；<br>
+        ② 卡片加 <b>接单次数 + 好评率</b>；<br>
+        ③ <b>等级预留位</b>（名称待定，本稿不预设）；<br>
+        ④ 空闲/忙碌 · 评分 · 单价 · 下单人数 · 语音时长 · 明星/大神/单考/双考 <b>一律不放</b>；<br>
+        ⑤ 「标签胶囊 / 分部副标」<b>暂时放宽</b>（我看图之后决定）→ <b>A 套（放宽）为主推</b>，B 套为对照，<b>待看图后最终确认</b>。<br>
+        <b>⚠️ 实施耦合（不可拆）</b><br>
+        「加顶部导航项」+「删首页按钮」+「移快捷面板里的找陪玩」<b>必须在一次提交内同时落地</b> —— 先移除面板项会让用户彻底没有入口（功能倒退）。<br>
+        <b>待批</b><br>
+        · 放宽版额外成本：接口带 <code>divisionName</code> +0.25 人天；真标签体系 +2 人天（可后置）
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

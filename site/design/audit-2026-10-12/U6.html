@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>U6 · 消息客服段列表行缺预览与时间 · 设计图</title>
+<!--
+  U6 设计图 —— 自包含 HTML：纯 CSS + 内联 SVG，无外部依赖、无第三方截图。
+  现状证据：
+    · 真机截图 docs/验收素材/2026-10-11-客服结束/01-修复后-消息列表客服段.png
+      （打手态，身份细带「打手 · 工号 W0000」，客服段整行只有 名称 + 标签 + 红点）
+    · 渲染点 apps/packages/core/lib/src/identity/worker_messages_page.dart:553 `_row()`
+      （老板段/客服段/好友段**共用同一个 _row**，第 522 行 `_row(_current[i])`）
+    · 数据源 apps/packages/core/lib/src/identity/worker_messages_page.dart:244
+      `GET /worker/cs/conversations`（客服段）vs :283 `GET /user/conversations`（好友段）
+    · 服务端 server/src/modules/chat/chat.service.ts
+      `listUserConversations` **含** lastMessage（L493-538 子查询取 MAX(seq) 那条）
+      `workerConversations`  **不含** lastMessage（只回 updatedAt，L588-605）
+  ⚠ 本图**更正**了一条前提：时间可零服务端改动修好（updatedAt 已下发），
+    但"最后一条消息预览"服务端**没有下发** → 见下方两种改法。
+  本图只是设计示意，**未改动任何产品代码**。
+-->
+<style>
+:root{
+  --brand:#2563EB;--brand-soft:rgba(37,99,235,.10);--cyan:#06B6D4;--gold:#B45309;
+  --bg:#F5F7FB;--surface:#FFFFFF;--sunken:#F1F5F9;
+  --ink:#1F2937;--ink2:#5B6B82;--ink3:#5E7085;
+  --hair:#E5E9F2;--hair2:#DCE3EE;
+  --ok:#15803D;--warn:#C2410C;--err:#DC2626;
+  --r-sm:6px;--r-ctl:8px;--r-card:10px;--r-panel:14px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:30px 26px 64px}
+.kicker{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--r-sm);
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink2);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin:12px 0 8px}
+.lead{font-size:13.5px;color:var(--ink2);max-width:960px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:var(--ink3)}
+.meta b{color:var(--ink);font-weight:700}
+h2{font-size:16.5px;font-weight:800;letter-spacing:-.2px;padding-bottom:8px;border-bottom:1px solid var(--hair);margin:30px 0 14px}
+p{font-size:13px;color:var(--ink2)}
+code{background:#EEF2F8;border-radius:3px;padding:1px 4px;font-size:11.5px;color:#1E293B;font-family:var(--mono)}
+.stack{display:flex;flex-direction:column;gap:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:980px){.two{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:16px 17px 18px;display:flex;flex-direction:column;gap:12px}
+.panel-head{display:flex;align-items:center;gap:9px}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--r-sm);font-size:11px;font-weight:800;letter-spacing:.02em}
+.chip-before{background:var(--sunken);border:1px solid var(--hair);color:var(--ink2)}
+.chip-after{background:var(--brand-soft);border:1px solid rgba(37,99,235,.22);color:var(--brand)}
+.chip-warn{background:rgba(194,65,12,.08);border:1px solid rgba(194,65,12,.24);color:var(--warn)}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink)}
+.panel-sub{font-size:11.5px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+/* ── 手机示意（打手态消息页） ─────────────────────────── */
+.phone{width:340px;max-width:100%;margin:0 auto;border:1px solid var(--hair);border-radius:var(--r-panel);
+  background:var(--surface);overflow:hidden}
+.ph-head{padding:12px 14px 8px;display:flex;align-items:center}
+.ph-title{font-size:15px;font-weight:800}
+.ph-mark{margin-left:auto;font-size:11px;font-weight:700;color:var(--brand)}
+.band{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--brand-soft);
+  border-top:1px solid rgba(37,99,235,.16);border-bottom:1px solid rgba(37,99,235,.16);
+  font-size:11px;font-weight:700;color:var(--brand)}
+.seg{display:flex;gap:0;margin:10px 14px 0;border:1px solid var(--hair);border-radius:var(--r-ctl);overflow:hidden}
+.seg span{flex:1;text-align:center;padding:6px 0;font-size:12px;font-weight:600;color:var(--ink2);background:var(--surface)}
+.seg span.on{background:var(--surface);color:var(--brand);font-weight:800;box-shadow:inset 0 -2px 0 var(--brand)}
+.rows{padding:8px 0 14px}
+.row{display:flex;gap:10px;padding:11px 14px;align-items:flex-start}
+.row+.row{border-top:1px solid #EEF1F6;margin-left:0}
+.av{width:38px;height:38px;flex:none;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;background:#E8EEFB;color:var(--brand)}
+.av.gray{background:var(--sunken);color:var(--ink3)}
+.rbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.rline{display:flex;align-items:center;gap:6px}
+.rname{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rtag{flex:none;display:inline-flex;align-items:center;height:17px;padding:0 6px;border-radius:4px;
+  background:#E8F1FE;border:1px solid #CCE0FB;color:var(--brand);font-size:10px;font-weight:700}
+.rprev{font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rprev.empty{color:#B9C2D0;font-style:italic}
+.rtime{flex:none;font-size:10.5px;color:var(--ink3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rtime.empty{color:#D3D9E2}
+.rtail{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:5px;min-width:46px}
+.badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--err);color:#fff;
+  font-size:10.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.badge.hidden{visibility:hidden}
+.hl{background:rgba(37,99,235,.10);border-radius:3px;padding:0 2px;font-weight:700;color:var(--ink)}
+.miss{background:rgba(220,38,38,.09);border-radius:3px;padding:0 2px;color:var(--err);font-weight:700}
+/* ── 代码块 ────────────────────────────────────────────── */
+.code{background:#0B1220;border:1px solid #1E2C42;border-radius:var(--r-card);padding:11px 12px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:#CFE0FF;overflow-x:auto;white-space:pre}
+.code .c{color:#7E93B4}
+.code .k{color:#8CA3BE}
+.code .add{color:#A9E7C0}
+.code .del{color:#FFB4B4;text-decoration:line-through;text-decoration-color:rgba(255,120,120,.55)}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+.tbl th{font-size:11.5px;font-weight:800;color:var(--ink3);background:var(--sunken)}
+.tbl td{color:var(--ink2)}
+.tbl td b{color:var(--ink)}
+.tbl td.mono{font-family:var(--mono);font-size:11.5px;color:var(--ink)}
+.note{display:flex;gap:9px;border:1px solid var(--hair);border-left:3px solid var(--brand);
+  border-radius:var(--r-ctl);padding:10px 12px;background:var(--surface);font-size:12.5px;color:var(--ink2)}
+.note.warn{border-left-color:var(--warn)}
+.note.ok{border-left-color:var(--ok)}
+.note.err{border-left-color:var(--err)}
+.note b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11.5px;color:var(--ink3)}
+.legend b{color:var(--ink)}
+.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--ink3);line-height:1.8}
+.foot b{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="kicker">U6 · 信息补全 · 建议优先级 P1</span>
+  <h1>消息客服段列表行：没有预览、没有时间</h1>
+  <p class="lead">
+    打手态「消息 → 客服」段整行只有「祁连山客服」+「客服」标签 + 未读红点，<b>右侧大片空白</b>；
+    而同一页的好友段是完整的「名称 + 标签 + 预览 + 时间」。同一套行渲染、同一页，
+    却因为<b>数据源不同</b>而少两行信息。<b>本图只出方案，不改代码。</b>
+  </p>
+  <div class="meta">
+    <span>证据：<b>docs/验收素材/2026-10-11-客服结束/01-…png</b></span>
+    <span>渲染点：<b>worker_messages_page.dart:553 _row()</b></span>
+    <span>影响面：<b>打手态客服段</b>（老板态已正常）</span>
+  </div>
+
+  <h2>现状 &nbsp;vs&nbsp; 建议</h2>
+  <div class="stack">
+
+    <!-- ===================== 现状 ===================== -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">现状 · 左</span>
+        <span class="panel-title">客服段：只有名称 + 标签 + 红点</span>
+        <span class="panel-sub">_row()</span>
+      </div>
+
+      <div class="two">
+        <div>
+          <div class="legend" style="margin-bottom:7px"><span><b>客服段</b>（数据源 <code>/worker/cs/conversations</code>）</span></div>
+          <div class="phone">
+            <div class="ph-head"><span class="ph-title">消息</span><span class="ph-mark">一键已读</span></div>
+            <div class="band">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 5 6v6c0 4.2 3 7.4 7 8.5 4-1.1 7-4.3 7-8.5V6z"/></svg>
+              当前身份　打手 · 工号 W0000
+            </div>
+            <div class="seg"><span>老板</span><span class="on">客服</span></div>
+            <div class="rows">
+              <div class="row">
+                <span class="av">祁</span>
+                <span class="rbody">
+                  <span class="rline"><span class="rname">祁连山客服</span><span class="rtag">客服</span></span>
+                  <span class="rprev empty">（无预览 —— lastContent 为空）</span>
+                </span>
+                <span class="rtail">
+                  <span class="rtime empty">（无时间）</span>
+                  <span class="badge">10</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="legend" style="margin-bottom:7px"><span><b>好友段</b>（数据源 <code>/user/conversations</code>）—— 同一页、同一个 <code>_row()</code></span></div>
+          <div class="phone">
+            <div class="ph-head"><span class="ph-title">消息</span><span class="ph-mark">一键已读</span></div>
+            <div class="band">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 5 6v6c0 4.2 3 7.4 7 8.5 4-1.1 7-4.3 7-8.5V6z"/></svg>
+              当前身份　打手 · 工号 W0000
+            </div>
+            <div class="seg"><span>老板</span><span>客服</span><span class="on">好友</span></div>
+            <div class="rows">
+              <div class="row">
+                <span class="av">阿</span>
+                <span class="rbody">
+                  <span class="rline"><span class="rname">阿岩不熬夜</span><span class="rtag" style="background:var(--sunken);border-color:var(--hair);color:var(--ink2)">好友</span></span>
+                  <span class="rprev">明天晚上八点那单，我提前十分钟上线</span>
+                </span>
+                <span class="rtail">
+                  <span class="rtime">14:30</span>
+                  <span class="badge hidden">0</span>
+                </span>
+              </div>
+              <div class="row">
+                <span class="av">小</span>
+                <span class="rbody">
+                  <span class="rline"><span class="rname">小满不满</span><span class="rtag" style="background:var(--sunken);border-color:var(--hair);color:var(--ink2)">好友</span></span>
+                  <span class="rprev">[图片]</span>
+                </span>
+                <span class="rtail">
+                  <span class="rtime">昨天</span>
+                  <span class="badge hidden">0</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code"><span class="c">// worker_messages_page.dart:553-593（现状：同一个 _row 渲染三个段）</span>
+<span class="k">Widget</span> _row(ConversationSummaryModel c) {
+  …
+  Text(_preview(c), …),                        <span class="c">// ← 客服段拿到空串 → 整行空白</span>
+  …
+  Text(_timeText(c.lastAt), …),                <span class="c">// ← lastAt 为 null → 返回空串</span>
+}
+
+<span class="c">// :301-305  _preview 的实现</span>
+String _preview(c) {
+  <span class="k">if</span> (c.lastRecalled) <span class="k">return</span> '[消息已撤回]';
+  <span class="k">if</span> (c.lastMsgType == 'image') <span class="k">return</span> '[图片]';
+  <span class="k">return</span> c.lastContent;                     <span class="c">// ← 客服段这里是 ''</span>
+}
+
+<span class="c">// :307-315  _timeText 的实现</span>
+String _timeText(DateTime? t) {
+  <span class="k">if</span> (t == <span class="k">null</span>) <span class="k">return</span> '';                <span class="c">// ← 客服段这里返回空串</span>
+  … 今天 HH:mm / 更早 MM/DD
+}</div>
+
+      <div class="note err">
+        <span>⚠</span>
+        <span><b>根因不是"忘了渲染"，是数据源少一个字段</b>：两段共用同一个 <code>_row()</code>，
+        但客服段的数据来自 <code>GET /worker/cs/conversations</code>，服务端
+        <code>workerConversations()</code> <b>只回 <code>updatedAt</code>、不回 <code>lastMessage</code></b>；
+        好友段的数据来自 <code>GET /user/conversations</code>，<code>listUserConversations()</code>
+        <b>有</b> <code>lastMessage</code>（一段取 <code>MAX(seq)</code> 的子查询）。
+        → <code>lastContent</code> 为空、<code>lastAt</code> 为 null，所以预览与时间都是空的。</span>
+      </div>
+    </div>
+
+    <!-- ===================== 建议 ===================== -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-after">建议 · 右</span>
+        <span class="panel-title">补齐预览 + 时间，与好友段逐行同形</span>
+        <span class="panel-sub">_row()</span>
+      </div>
+
+      <div class="two">
+        <div>
+          <div class="legend" style="margin-bottom:7px"><span><b>客服段</b>（补后）—— 与好友段同一套行结构</span></div>
+          <div class="phone">
+            <div class="ph-head"><span class="ph-title">消息</span><span class="ph-mark">一键已读</span></div>
+            <div class="band">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 5 6v6c0 4.2 3 7.4 7 8.5 4-1.1 7-4.3 7-8.5V6z"/></svg>
+              当前身份　打手 · 工号 W0000
+            </div>
+            <div class="seg"><span>老板</span><span class="on">客服</span></div>
+            <div class="rows">
+              <div class="row">
+                <span class="av">祁</span>
+                <span class="rbody">
+                  <span class="rline"><span class="rname">祁连山客服</span><span class="rtag">客服</span></span>
+                  <span class="rprev"><span class="hl">我：明天晚上八点那单想改一下时间</span></span>
+                </span>
+                <span class="rtail">
+                  <span class="rtime"><span class="hl">14:30</span></span>
+                  <span class="badge">10</span>
+                </span>
+              </div>
+              <div class="row">
+                <span class="av">祁</span>
+                <span class="rbody">
+                  <span class="rline"><span class="rname">祁连山客服</span><span class="rtag">客服</span></span>
+                  <span class="rprev"><span class="hl">[图片]</span></span>
+                </span>
+                <span class="rtail">
+                  <span class="rtime"><span class="hl">昨天</span></span>
+                  <span class="badge hidden">0</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:11px">
+          <div class="note ok">
+            <span>✓</span>
+            <span><b>行结构完全复用现有 <code>_row()</code></b>（头像 38 · 名称 13.5/700 · 标签 · 预览 11.5 ·
+            右侧时间 10.5 · 红点 18）。<b>不新增样式、不新增组件</b> —— 补的是数据，不是版式。</span>
+          </div>
+          <div class="note">
+            <span>✓</span>
+            <span><b>时间格式沿用既有 <code>_timeText</code></b>：今天 <code>HH:mm</code>、更早 <code>MM/DD</code>。
+            与好友段、老板段、工作端逐字同一套，不引入第二种时间写法。</span>
+          </div>
+          <div class="note">
+            <span>✓</span>
+            <span><b>预览沿用既有 <code>_preview()</code> 的三条规则</b>：撤回 → <code>[消息已撤回]</code>、
+            图片 → <code>[图片]</code>、其余取正文；超长由 <code>maxLines:1 + ellipsis</code> 截断（已有）。</span>
+          </div>
+          <div class="note warn">
+            <span>⚠</span>
+            <span><b>一处必须说清</b>：<code>_timeText</code> 的入参要从 <code>c.lastAt</code> 改成
+            <code>c.lastAt ?? c.updatedAt</code> —— 这是打手态漏掉的兜底
+            （<b>老板端同一位置早就是这么写的</b>：<code>messages_page.dart:550</code>）。
+            <code>updatedAt</code> 服务端<b>已下发</b>，所以时间这一半<b>零服务端改动</b>。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>字段来源核对（这条决定要不要动服务端）</h2>
+  <table class="tbl">
+    <tr><th style="width:170px">字段</th><th style="width:250px">好友段（<code>/user/conversations</code>）</th><th style="width:250px">客服段（<code>/worker/cs/conversations</code>）</th><th>结论</th></tr>
+    <tr><td class="mono">updatedAt</td><td>✅ 下发（<code>chat.service.ts:539</code>）</td><td>✅ <b>下发</b>（<code>:604</code>）</td><td><b>已下发</b> → 时间可<b>零服务端改动</b>修好（一行：加 <code>?? c.updatedAt</code>）。</td></tr>
+    <tr><td class="mono">lastMessage<br><span style="font-size:11px">（content / msgType / recalled / createdAt）</span></td><td>✅ 下发（<code>:493-538</code>，<code>MAX(seq)</code> 子查询）</td><td>❌ <b>未下发</b>（<code>:588-605</code> 的返回对象里没有这个键）</td><td><b>未下发</b> → <b>"真预览"需要服务端补字段</b>（与好友段同一段 SQL 子查询）。</td></tr>
+    <tr><td class="mono">unread / status / lastSeq</td><td>✅</td><td>✅</td><td>红点与状态已正常，不在本次范围。</td></tr>
+  </table>
+
+  <div class="note warn">
+    <span>⚠</span>
+    <span><b>更正一条常见说法</b>：「字段服务端已下发，无需改接口」<b>只对"时间"成立，对"预览"不成立</b>。
+    若要严格做到"<b>必须与好友段行样式一致</b>"（预览 + 时间都有内容），客服段的数据源必须补
+    <code>lastMessage</code>。下面给两种改法，<b>推荐 ②</b>。</span>
+  </div>
+
+  <h2>两种改法</h2>
+  <div class="two">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">改法 ①</span>
+        <span class="panel-title">只改客户端（零服务端改动）</span>
+        <span class="panel-sub">0.5 天</span>
+      </div>
+      <div class="code"><span class="c">// worker_messages_page.dart:600（唯一改动）</span>
+Text(_timeText(c.lastAt <span class="add">?? c.updatedAt</span>), …)
+
+<span class="c">// 预览：无 lastContent 时给一句真实说明（不是空白）</span>
+String _preview(c) {
+  <span class="k">if</span> (c.lastRecalled) <span class="k">return</span> '[消息已撤回]';
+  <span class="k">if</span> (c.lastMsgType == 'image') <span class="k">return</span> '[图片]';
+  <span class="k">if</span> (c.lastContent.isEmpty) <span class="k">return</span> <span class="add">'点击查看本次咨询'</span>;
+  <span class="k">return</span> c.lastContent;
+}</div>
+      <table class="tbl">
+        <tr><td style="width:74px"><b>得到</b></td><td><b>时间有值</b>（今天 <code>HH:mm</code> / 更早 <code>MM/DD</code>）；预览位不再空白，但<b>不是真正的最后一条消息</b>。</td></tr>
+        <tr><td><b>代价</b></td><td>与好友段<b>并非逐字同形</b>（预览文案是固定句，不是内容）—— 严格说没达成"必须与好友段行样式一致"。</td></tr>
+        <tr><td><b>影响面</b></td><td><b>不需要动服务端。</b>只动一个文件的两处（约 4 行）。</td></tr>
+      </table>
+    </div>
+
+    <div class="panel" style="border-color:rgba(37,99,235,.38)">
+      <div class="panel-head">
+        <span class="chip chip-after">改法 ②</span>
+        <span class="panel-title">服务端补 lastMessage（推荐）</span>
+        <span class="panel-sub">1 天</span>
+      </div>
+      <div class="code"><span class="c">// server/src/modules/chat/chat.service.ts  workerConversations()</span>
+<span class="c">// 照抄 listUserConversations 已有的那一段（同一实现，不发明第二套）：</span>
+<span class="k">const</span> ids = rows.map(r => r.id);
+<span class="k">const</span> lastRows = <span class="k">await</span> this.convRepo.manager.query(
+  `SELECT m.conversation_id, m.content, m.msg_type, m.sender_type,
+          m.sender_id, m.recalled, m.created_at
+   FROM chat_message m
+   JOIN (SELECT conversation_id, MAX(seq) AS ms FROM chat_message
+         WHERE conversation_id IN (?) GROUP BY conversation_id) t
+     ON t.conversation_id = m.conversation_id AND t.ms = m.seq`, [ids]);
+<span class="k">const</span> lastMap = <span class="k">new</span> Map(lastRows.map(r => [String(r.conversation_id), r]));
+
+<span class="c">// 返回对象里补上（与 /user/conversations 的 lastMessage 同形）</span>
+lastMessage: last ? { content, msgType, senderType, senderId,
+                      recalled: Number(last.recalled) === 1,
+                      createdAt: last.created_at } : <span class="k">null</span>,</div>
+      <table class="tbl">
+        <tr><td style="width:74px"><b>得到</b></td><td><b>真预览 + 时间</b>，客服段与好友段<b>逐行同形</b>（同一 <code>_row()</code>、同一 <code>_preview()</code>、同一 <code>_timeText()</code>），字面达成"必须一致"。</td></tr>
+        <tr><td><b>代价</b></td><td>动服务端一处（<b>只加一个查询与一个返回字段，不改任何既有字段、不改权限、不改表结构</b>）；客户端仍需那行 <code>?? c.updatedAt</code>（因为"还没发过消息"的会话 <code>lastMessage</code> 为 null）。</td></tr>
+        <tr><td><b>影响面</b></td><td>接口<b>新增字段</b>（向后兼容：老客户端忽略未知键）。建议顺带补一条断言：客服段列表每行的 <code>lastMessage</code> 形状与 <code>/user/conversations</code> 一致。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h2>逐项口径</h2>
+  <table class="tbl">
+    <tr><th style="width:132px">项</th><th>内容</th></tr>
+    <tr><td><b>现状</b></td><td><b>打手态</b>「消息 → 客服」段整行只有名称 + 标签 + 未读红点，预览与时间都是空串（真机截图 <code>docs/验收素材/2026-10-11-客服结束/01-…png</code>）。<b>根因</b>：该段数据来自 <code>GET /worker/cs/conversations</code>，服务端 <code>workerConversations()</code> 只回 <code>updatedAt</code>、不回 <code>lastMessage</code> → <code>lastContent=''</code>、<code>lastAt=null</code>；而同一个 <code>_row()</code> 渲染的好友段（来自 <code>/user/conversations</code>）两者都有，所以只有客服段是空的。<br>
+      <b>补充</b>：<b>老板态</b>三段同走 <code>/user/conversations</code>（含 <code>lastMessage</code>），因此<b>老板态的客服段是正常的</b> —— 本项只影响打手态。</td></tr>
+    <tr><td><b>建议</b></td><td><b>改法 ②（推荐）</b>：① 服务端 <code>chat.service.ts</code> 的 <code>workerConversations()</code> 照抄 <code>listUserConversations()</code> 已有的 <code>lastMessage</code> 子查询并补进返回对象（<b>同一实现，不发明第二套</b>）；② 客户端 <code>worker_messages_page.dart</code> 的 <code>_timeText(c.lastAt)</code> 改为 <code>_timeText(c.lastAt ?? c.updatedAt)</code>（与老板端 <code>messages_page.dart:550</code> 逐字同口径）；③ <code>_preview()</code> 保留既有三条规则，对"确实一条消息都没有"的会话给一句真实说明而不是空白。<br>
+      <b>改法 ①（零服务端改动）</b>：只做 ② 与 ③ → 时间有值，预览为固定说明句。</td></tr>
+    <tr><td><b>影响面</b></td><td><b>改法 ①：不需要动服务端</b>（只动 1 个文件约 4 行）。<br>
+      <b>改法 ②：需要动服务端</b> —— 仅 <code>chat.service.ts</code> 的 <code>workerConversations()</code>：新增一段只读查询 + 返回对象新增一个键；<b>不改表结构、不改权限、不改既有字段、不改路由</b>。客户端改动同 ①。<br>
+      不新增任何数据表或字段，纯读取侧补字段。</td></tr>
+    <tr><td><b>红线</b></td><td><code>docs/14</code>：<b>否</b>。§「聊天页」要求"消息阅读与输入体验优先"，本项是列表行的信息补全；行结构、字号、间距、颜色<b>全部复用既有实现</b>，不新增视觉决策。<br>
+      <code>docs/21</code>：<b>否</b>。属<b>信息补全</b>（把服务端已有的/该有的字段显示出来），不是装饰：无渐变、无彩色竖条、无新圆角、无阴影、<b>无 emoji</b>（<code>[图片]</code>/<code>[消息已撤回]</code> 是既有文案）；反而更符合"要：文案具体可验证"—— 一行有内容的预览比空白更能说明"这条会话在讲什么"。</td></tr>
+    <tr><td><b>工时</b></td><td><b>改法 ① 半天</b>（客户端 2 处 + 出图 + 断言）。<br><b>改法 ② 1 天</b>（服务端 1 处 + 客户端 2 处 + 补一条 <code>lastMessage</code> 形状断言 + 回归 <code>chat-test</code> / <code>cs-hall</code>）。</td></tr>
+    <tr><td><b>设计图</b></td><td><code>site/design/audit-2026-10-12/U6.html</code>（本页）· 截图 <code>U6.png</code></td></tr>
+  </table>
+
+  <div class="foot">
+    <b>本图为设计示意</b>：全部图形为纯 CSS 与内联 SVG 绘制，不是产品截图，也未使用任何第三方素材。<br>
+    <b>本方案未实施任何代码改动</b> —— 等负责人审批后才做。制图日期 2026-10-12。
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,803 @@
+{
+  "generatedAt": "2026-10-06T10:33:08.568Z",
+  "viewport": [
+    390,
+    844
+  ],
+  "cost": {
+    "A": {
+      "name": "A 套 · 三宫格扩四宫格",
+      "entryBox": {
+        "t": 94,
+        "l": 285,
+        "w": 88,
+        "h": 36,
+        "b": 129,
+        "r": 373
+      },
+      "deltaFirstDivTop": 0,
+      "deltaHeadlineH": 0,
+      "divVisibleBefore": 5,
+      "divVisibleAfter": 5,
+      "navW": 390,
+      "footTopBefore": 787,
+      "footTopAfter": 787,
+      "clubTopBefore": 668,
+      "clubTopAfter": 668
+    },
+    "B": {
+      "name": "B 套 · 顶部导航右侧小入口",
+      "entryBox": {
+        "t": 59,
+        "l": 330,
+        "w": 44,
+        "h": 18,
+        "b": 77,
+        "r": 374
+      },
+      "deltaFirstDivTop": 0,
+      "deltaHeadlineH": 0,
+      "divVisibleBefore": 5,
+      "divVisibleAfter": 5,
+      "navW": 390,
+      "footTopBefore": 787,
+      "footTopAfter": 787,
+      "clubTopBefore": 668,
+      "clubTopAfter": 668
+    },
+    "C": {
+      "name": "C 套 · 独立通栏条（信息 + 动作合一）",
+      "entryBox": {
+        "t": 93,
+        "l": 16,
+        "w": 358,
+        "h": 44,
+        "b": 137,
+        "r": 374
+      },
+      "deltaFirstDivTop": 54,
+      "deltaHeadlineH": 0,
+      "divVisibleBefore": 5,
+      "divVisibleAfter": 5,
+      "navW": 390,
+      "footTopBefore": 787,
+      "footTopAfter": 841,
+      "clubTopBefore": 668,
+      "clubTopAfter": 722
+    },
+    "D": {
+      "name": "D 套 · 欢迎语行右侧积分胶囊",
+      "entryBox": {
+        "t": 144,
+        "l": 291,
+        "w": 83,
+        "h": 26,
+        "b": 170,
+        "r": 374
+      },
+      "deltaFirstDivTop": 16,
+      "deltaHeadlineH": 16,
+      "divVisibleBefore": 5,
+      "divVisibleAfter": 5,
+      "navW": 390,
+      "footTopBefore": 787,
+      "footTopAfter": 803,
+      "clubTopBefore": 668,
+      "clubTopAfter": 684
+    }
+  },
+  "manifest": [
+    {
+      "file": "A1-服务页.png",
+      "screen": "a1-services.html",
+      "state": "default",
+      "set": "A",
+      "bytes": 45450,
+      "title": "A1 服务页（入口：充值）"
+    },
+    {
+      "file": "A1-服务页-无标注.png",
+      "screen": "a1-services.html",
+      "state": "clean",
+      "set": "A",
+      "bytes": 42960,
+      "title": "A1 服务页（入口：充值）"
+    },
+    {
+      "file": "A1-服务页-现状.png",
+      "screen": "a1-services.html",
+      "state": "before",
+      "set": "A",
+      "bytes": 42511,
+      "title": "A1 服务页（入口：充值）"
+    },
+    {
+      "file": "A1-服务页-未配置收款码.png",
+      "screen": "a1-services.html",
+      "state": "noqr",
+      "set": "A",
+      "bytes": 42511,
+      "title": "A1 服务页（入口：充值）"
+    },
+    {
+      "file": "A2-充值页-未选金额.png",
+      "screen": "a2-recharge.html",
+      "state": "default",
+      "set": "A",
+      "bytes": 39963,
+      "title": "A2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "A2-充值页-未选金额-下半屏.png",
+      "screen": "a2-recharge.html",
+      "state": "lower",
+      "set": "A",
+      "bytes": 39963,
+      "title": "A2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "A2-自定义金额.png",
+      "screen": "a2-recharge.html",
+      "state": "custom",
+      "set": "A",
+      "bytes": 37094,
+      "title": "A2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "A2-金额越界.png",
+      "screen": "a2-recharge.html",
+      "state": "customerr",
+      "set": "A",
+      "bytes": 43544,
+      "title": "A2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "A2-加载中.png",
+      "screen": "a2-recharge.html",
+      "state": "loading",
+      "set": "A",
+      "bytes": 18536,
+      "title": "A2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "A2-网络失败.png",
+      "screen": "a2-recharge.html",
+      "state": "error",
+      "set": "A",
+      "bytes": 18435,
+      "title": "A2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "A2-未配置收款码.png",
+      "screen": "a2-recharge.html",
+      "state": "noconfig",
+      "set": "A",
+      "bytes": 18119,
+      "title": "A2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "A3-已选金额.png",
+      "screen": "a3-selected.html",
+      "state": "default",
+      "set": "A",
+      "bytes": 36842,
+      "title": "A3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "A3-已选金额-下半屏.png",
+      "screen": "a3-selected.html",
+      "state": "lower",
+      "set": "A",
+      "bytes": 38245,
+      "title": "A3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "A3-切换渠道.png",
+      "screen": "a3-selected.html",
+      "state": "alt",
+      "set": "A",
+      "bytes": 36608,
+      "title": "A3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "A3-未上传凭证.png",
+      "screen": "a3-selected.html",
+      "state": "err",
+      "set": "A",
+      "bytes": 36842,
+      "title": "A3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "A3-超出待审核上限.png",
+      "screen": "a3-selected.html",
+      "state": "limit",
+      "set": "A",
+      "bytes": 45224,
+      "title": "A3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "A4-提交后.png",
+      "screen": "a4-submitted.html",
+      "state": "default",
+      "set": "A",
+      "bytes": 30255,
+      "title": "A4 提交后 · 等待审核态"
+    },
+    {
+      "file": "A4-提交后-已达上限.png",
+      "screen": "a4-submitted.html",
+      "state": "locked",
+      "set": "A",
+      "bytes": 34659,
+      "title": "A4 提交后 · 等待审核态"
+    },
+    {
+      "file": "A5-充值记录.png",
+      "screen": "a5-records.html",
+      "state": "default",
+      "set": "A",
+      "bytes": 36059,
+      "title": "A5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "A5-充值记录-空态.png",
+      "screen": "a5-records.html",
+      "state": "empty",
+      "set": "A",
+      "bytes": 14652,
+      "title": "A5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "A5-充值记录-加载中.png",
+      "screen": "a5-records.html",
+      "state": "loading",
+      "set": "A",
+      "bytes": 13622,
+      "title": "A5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "A5-充值记录-网络失败.png",
+      "screen": "a5-records.html",
+      "state": "error",
+      "set": "A",
+      "bytes": 15117,
+      "title": "A5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "B1-服务页.png",
+      "screen": "b1-services.html",
+      "state": "default",
+      "set": "B",
+      "bytes": 45408,
+      "title": "B1 服务页（入口：充值）"
+    },
+    {
+      "file": "B1-服务页-无标注.png",
+      "screen": "b1-services.html",
+      "state": "clean",
+      "set": "B",
+      "bytes": 43164,
+      "title": "B1 服务页（入口：充值）"
+    },
+    {
+      "file": "B1-服务页-现状.png",
+      "screen": "b1-services.html",
+      "state": "before",
+      "set": "B",
+      "bytes": 42511,
+      "title": "B1 服务页（入口：充值）"
+    },
+    {
+      "file": "B1-服务页-未配置收款码.png",
+      "screen": "b1-services.html",
+      "state": "noqr",
+      "set": "B",
+      "bytes": 42511,
+      "title": "B1 服务页（入口：充值）"
+    },
+    {
+      "file": "B2-充值页-未选金额.png",
+      "screen": "b2-recharge.html",
+      "state": "default",
+      "set": "B",
+      "bytes": 37710,
+      "title": "B2 充值页 · 未选金额（形态 3）"
+    },
+    {
+      "file": "B2-充值页-未选金额-下半屏.png",
+      "screen": "b2-recharge.html",
+      "state": "lower",
+      "set": "B",
+      "bytes": 37710,
+      "title": "B2 充值页 · 未选金额（形态 3）"
+    },
+    {
+      "file": "B2-自定义金额.png",
+      "screen": "b2-recharge.html",
+      "state": "custom",
+      "set": "B",
+      "bytes": 45055,
+      "title": "B2 充值页 · 未选金额（形态 3）"
+    },
+    {
+      "file": "B2-金额越界.png",
+      "screen": "b2-recharge.html",
+      "state": "customerr",
+      "set": "B",
+      "bytes": 40647,
+      "title": "B2 充值页 · 未选金额（形态 3）"
+    },
+    {
+      "file": "B2-加载中.png",
+      "screen": "b2-recharge.html",
+      "state": "loading",
+      "set": "B",
+      "bytes": 18536,
+      "title": "B2 充值页 · 未选金额（形态 3）"
+    },
+    {
+      "file": "B2-网络失败.png",
+      "screen": "b2-recharge.html",
+      "state": "error",
+      "set": "B",
+      "bytes": 18435,
+      "title": "B2 充值页 · 未选金额（形态 3）"
+    },
+    {
+      "file": "B2-未配置收款码.png",
+      "screen": "b2-recharge.html",
+      "state": "noconfig",
+      "set": "B",
+      "bytes": 18119,
+      "title": "B2 充值页 · 未选金额（形态 3）"
+    },
+    {
+      "file": "B3-已选金额.png",
+      "screen": "b3-selected.html",
+      "state": "default",
+      "set": "B",
+      "bytes": 36875,
+      "title": "B3 充值页 · 已选金额（形态 3）"
+    },
+    {
+      "file": "B3-已选金额-下半屏.png",
+      "screen": "b3-selected.html",
+      "state": "lower",
+      "set": "B",
+      "bytes": 38875,
+      "title": "B3 充值页 · 已选金额（形态 3）"
+    },
+    {
+      "file": "B3-切换渠道.png",
+      "screen": "b3-selected.html",
+      "state": "alt",
+      "set": "B",
+      "bytes": 36836,
+      "title": "B3 充值页 · 已选金额（形态 3）"
+    },
+    {
+      "file": "B3-未上传凭证.png",
+      "screen": "b3-selected.html",
+      "state": "err",
+      "set": "B",
+      "bytes": 37377,
+      "title": "B3 充值页 · 已选金额（形态 3）"
+    },
+    {
+      "file": "B3-超出待审核上限.png",
+      "screen": "b3-selected.html",
+      "state": "limit",
+      "set": "B",
+      "bytes": 43530,
+      "title": "B3 充值页 · 已选金额（形态 3）"
+    },
+    {
+      "file": "B4-提交后.png",
+      "screen": "b4-submitted.html",
+      "state": "default",
+      "set": "B",
+      "bytes": 30255,
+      "title": "B4 提交后 · 等待审核态"
+    },
+    {
+      "file": "B4-提交后-已达上限.png",
+      "screen": "b4-submitted.html",
+      "state": "locked",
+      "set": "B",
+      "bytes": 34659,
+      "title": "B4 提交后 · 等待审核态"
+    },
+    {
+      "file": "B5-充值记录.png",
+      "screen": "b5-records.html",
+      "state": "default",
+      "set": "B",
+      "bytes": 36059,
+      "title": "B5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "B5-充值记录-空态.png",
+      "screen": "b5-records.html",
+      "state": "empty",
+      "set": "B",
+      "bytes": 14652,
+      "title": "B5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "B5-充值记录-加载中.png",
+      "screen": "b5-records.html",
+      "state": "loading",
+      "set": "B",
+      "bytes": 13622,
+      "title": "B5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "B5-充值记录-网络失败.png",
+      "screen": "b5-records.html",
+      "state": "error",
+      "set": "B",
+      "bytes": 15117,
+      "title": "B5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "C1-服务页.png",
+      "screen": "c1-services.html",
+      "state": "default",
+      "set": "C",
+      "bytes": 47595,
+      "title": "C1 服务页（入口：扫码付款后上传截图，超管审核发放积分）"
+    },
+    {
+      "file": "C1-服务页-有宣传图.png",
+      "screen": "c1-services.html",
+      "state": "banner",
+      "set": "C",
+      "bytes": 47110,
+      "title": "C1 服务页（入口：扫码付款后上传截图，超管审核发放积分）"
+    },
+    {
+      "file": "C1-服务页-无标注.png",
+      "screen": "c1-services.html",
+      "state": "clean",
+      "set": "C",
+      "bytes": 45361,
+      "title": "C1 服务页（入口：扫码付款后上传截图，超管审核发放积分）"
+    },
+    {
+      "file": "C1-服务页-现状.png",
+      "screen": "c1-services.html",
+      "state": "before",
+      "set": "C",
+      "bytes": 42511,
+      "title": "C1 服务页（入口：扫码付款后上传截图，超管审核发放积分）"
+    },
+    {
+      "file": "C1-服务页-未配置收款码.png",
+      "screen": "c1-services.html",
+      "state": "noqr",
+      "set": "C",
+      "bytes": 42511,
+      "title": "C1 服务页（入口：扫码付款后上传截图，超管审核发放积分）"
+    },
+    {
+      "file": "C2-充值页-未选金额.png",
+      "screen": "c2-recharge.html",
+      "state": "default",
+      "set": "C",
+      "bytes": 38869,
+      "title": "C2 充值页 · 未选金额（形态 2）"
+    },
+    {
+      "file": "C2-充值页-未选金额-下半屏.png",
+      "screen": "c2-recharge.html",
+      "state": "lower",
+      "set": "C",
+      "bytes": 43078,
+      "title": "C2 充值页 · 未选金额（形态 2）"
+    },
+    {
+      "file": "C2-自定义金额.png",
+      "screen": "c2-recharge.html",
+      "state": "custom",
+      "set": "C",
+      "bytes": 42375,
+      "title": "C2 充值页 · 未选金额（形态 2）"
+    },
+    {
+      "file": "C2-金额越界.png",
+      "screen": "c2-recharge.html",
+      "state": "customerr",
+      "set": "C",
+      "bytes": 39773,
+      "title": "C2 充值页 · 未选金额（形态 2）"
+    },
+    {
+      "file": "C2-加载中.png",
+      "screen": "c2-recharge.html",
+      "state": "loading",
+      "set": "C",
+      "bytes": 18536,
+      "title": "C2 充值页 · 未选金额（形态 2）"
+    },
+    {
+      "file": "C2-网络失败.png",
+      "screen": "c2-recharge.html",
+      "state": "error",
+      "set": "C",
+      "bytes": 18435,
+      "title": "C2 充值页 · 未选金额（形态 2）"
+    },
+    {
+      "file": "C2-未配置收款码.png",
+      "screen": "c2-recharge.html",
+      "state": "noconfig",
+      "set": "C",
+      "bytes": 18119,
+      "title": "C2 充值页 · 未选金额（形态 2）"
+    },
+    {
+      "file": "C3-已选金额.png",
+      "screen": "c3-selected.html",
+      "state": "default",
+      "set": "C",
+      "bytes": 42647,
+      "title": "C3 充值页 · 已选金额（形态 2）"
+    },
+    {
+      "file": "C3-已选金额-下半屏.png",
+      "screen": "c3-selected.html",
+      "state": "lower",
+      "set": "C",
+      "bytes": 44293,
+      "title": "C3 充值页 · 已选金额（形态 2）"
+    },
+    {
+      "file": "C3-切换渠道.png",
+      "screen": "c3-selected.html",
+      "state": "alt",
+      "set": "C",
+      "bytes": 42367,
+      "title": "C3 充值页 · 已选金额（形态 2）"
+    },
+    {
+      "file": "C3-未上传凭证.png",
+      "screen": "c3-selected.html",
+      "state": "err",
+      "set": "C",
+      "bytes": 42647,
+      "title": "C3 充值页 · 已选金额（形态 2）"
+    },
+    {
+      "file": "C3-超出待审核上限.png",
+      "screen": "c3-selected.html",
+      "state": "limit",
+      "set": "C",
+      "bytes": 47417,
+      "title": "C3 充值页 · 已选金额（形态 2）"
+    },
+    {
+      "file": "C4-提交后.png",
+      "screen": "c4-submitted.html",
+      "state": "default",
+      "set": "C",
+      "bytes": 30255,
+      "title": "C4 提交后 · 等待审核态"
+    },
+    {
+      "file": "C4-提交后-已达上限.png",
+      "screen": "c4-submitted.html",
+      "state": "locked",
+      "set": "C",
+      "bytes": 34659,
+      "title": "C4 提交后 · 等待审核态"
+    },
+    {
+      "file": "C5-充值记录.png",
+      "screen": "c5-records.html",
+      "state": "default",
+      "set": "C",
+      "bytes": 36059,
+      "title": "C5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "C5-充值记录-空态.png",
+      "screen": "c5-records.html",
+      "state": "empty",
+      "set": "C",
+      "bytes": 14652,
+      "title": "C5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "C5-充值记录-加载中.png",
+      "screen": "c5-records.html",
+      "state": "loading",
+      "set": "C",
+      "bytes": 13622,
+      "title": "C5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "C5-充值记录-网络失败.png",
+      "screen": "c5-records.html",
+      "state": "error",
+      "set": "C",
+      "bytes": 15117,
+      "title": "C5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "D1-服务页.png",
+      "screen": "d1-services.html",
+      "state": "default",
+      "set": "D",
+      "bytes": 45899,
+      "title": "D1 服务页（入口：积分 1,286）"
+    },
+    {
+      "file": "D1-服务页-无标注.png",
+      "screen": "d1-services.html",
+      "state": "clean",
+      "set": "D",
+      "bytes": 44165,
+      "title": "D1 服务页（入口：积分 1,286）"
+    },
+    {
+      "file": "D1-服务页-现状.png",
+      "screen": "d1-services.html",
+      "state": "before",
+      "set": "D",
+      "bytes": 42511,
+      "title": "D1 服务页（入口：积分 1,286）"
+    },
+    {
+      "file": "D1-服务页-未配置收款码.png",
+      "screen": "d1-services.html",
+      "state": "noqr",
+      "set": "D",
+      "bytes": 42511,
+      "title": "D1 服务页（入口：积分 1,286）"
+    },
+    {
+      "file": "D2-充值页-未选金额.png",
+      "screen": "d2-recharge.html",
+      "state": "default",
+      "set": "D",
+      "bytes": 39963,
+      "title": "D2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "D2-充值页-未选金额-下半屏.png",
+      "screen": "d2-recharge.html",
+      "state": "lower",
+      "set": "D",
+      "bytes": 39963,
+      "title": "D2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "D2-自定义金额.png",
+      "screen": "d2-recharge.html",
+      "state": "custom",
+      "set": "D",
+      "bytes": 37094,
+      "title": "D2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "D2-金额越界.png",
+      "screen": "d2-recharge.html",
+      "state": "customerr",
+      "set": "D",
+      "bytes": 43544,
+      "title": "D2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "D2-加载中.png",
+      "screen": "d2-recharge.html",
+      "state": "loading",
+      "set": "D",
+      "bytes": 18536,
+      "title": "D2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "D2-网络失败.png",
+      "screen": "d2-recharge.html",
+      "state": "error",
+      "set": "D",
+      "bytes": 18435,
+      "title": "D2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "D2-未配置收款码.png",
+      "screen": "d2-recharge.html",
+      "state": "noconfig",
+      "set": "D",
+      "bytes": 18119,
+      "title": "D2 充值页 · 未选金额（形态 1）"
+    },
+    {
+      "file": "D3-已选金额.png",
+      "screen": "d3-selected.html",
+      "state": "default",
+      "set": "D",
+      "bytes": 36842,
+      "title": "D3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "D3-已选金额-下半屏.png",
+      "screen": "d3-selected.html",
+      "state": "lower",
+      "set": "D",
+      "bytes": 38245,
+      "title": "D3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "D3-切换渠道.png",
+      "screen": "d3-selected.html",
+      "state": "alt",
+      "set": "D",
+      "bytes": 36608,
+      "title": "D3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "D3-未上传凭证.png",
+      "screen": "d3-selected.html",
+      "state": "err",
+      "set": "D",
+      "bytes": 36842,
+      "title": "D3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "D3-超出待审核上限.png",
+      "screen": "d3-selected.html",
+      "state": "limit",
+      "set": "D",
+      "bytes": 45224,
+      "title": "D3 充值页 · 已选金额（形态 1）"
+    },
+    {
+      "file": "D4-提交后.png",
+      "screen": "d4-submitted.html",
+      "state": "default",
+      "set": "D",
+      "bytes": 30255,
+      "title": "D4 提交后 · 等待审核态"
+    },
+    {
+      "file": "D4-提交后-已达上限.png",
+      "screen": "d4-submitted.html",
+      "state": "locked",
+      "set": "D",
+      "bytes": 34659,
+      "title": "D4 提交后 · 等待审核态"
+    },
+    {
+      "file": "D5-充值记录.png",
+      "screen": "d5-records.html",
+      "state": "default",
+      "set": "D",
+      "bytes": 36059,
+      "title": "D5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "D5-充值记录-空态.png",
+      "screen": "d5-records.html",
+      "state": "empty",
+      "set": "D",
+      "bytes": 14652,
+      "title": "D5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "D5-充值记录-加载中.png",
+      "screen": "d5-records.html",
+      "state": "loading",
+      "set": "D",
+      "bytes": 13622,
+      "title": "D5 充值记录（待审核 / 已到账 / 已驳回）"
+    },
+    {
+      "file": "D5-充值记录-网络失败.png",
+      "screen": "d5-records.html",
+      "state": "error",
+      "set": "D",
+      "bytes": 15117,
+      "title": "D5 充值记录（待审核 / 已到账 / 已驳回）"
+    }
+  ]
+}

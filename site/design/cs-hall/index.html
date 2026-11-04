@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440,initial-scale=1">
+<title>客服大厅（打手主动接客服）· 设计稿待审批</title>
+<style>
+:root{
+  --primary:#2563EB; --primary-soft:#E7EEFE; --ice:#EFF6FF; --gold:#D97706; --gold-soft:#FEF3C7;
+  --bg:#F5F7FB; --surface:#FFFFFF; --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8; --muted:#5B6B80;
+  --hair:#E5E9F0; --hair-2:#EEF1F6; --error:#DC2626; --error-soft:#FDECEC; --warn:#EA580C; --warn-soft:#FFF4EC;
+  --ok:#16A34A; --ok-soft:#DCFCE7;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Noto Sans CJK SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.6}
+.page{max-width:1440px;margin:0 auto;padding:34px 40px 80px}
+header.top{border-bottom:1px solid var(--hair);padding-bottom:20px;margin-bottom:26px}
+.kicker{font-size:12px;font-weight:700;letter-spacing:1.4px;color:var(--primary);text-transform:uppercase}
+h1{font-size:30px;font-weight:800;letter-spacing:-.6px;margin-top:8px}
+h2{font-size:19px;font-weight:800;letter-spacing:-.3px;margin:40px 0 6px;padding-top:12px;border-top:1px solid var(--hair)}
+h2 .n{display:inline-block;min-width:26px;color:var(--primary);font-variant-numeric:tabular-nums}
+h3{font-size:14.5px;font-weight:700;margin:22px 0 8px}
+p{margin:8px 0;color:var(--ink-2)} p.lead{color:var(--ink);font-size:14px}
+ul{margin:8px 0 8px 20px;color:var(--ink-2)} li{margin:4px 0}
+code{font-family:var(--mono);font-size:11.5px;background:#EFF2F7;border-radius:4px;padding:1px 4px;color:#334155}
+b{color:var(--ink);font-weight:700}
+.sub{font-size:14px;color:var(--muted);margin-top:9px;max-width:1060px}
+.meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--ink-3)}
+.meta b{color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--hair);
+  border-radius:10px;overflow:hidden;margin:12px 0;font-size:12.5px}
+th{background:#F7F9FC;text-align:left;font-weight:700;font-size:12px;color:var(--ink-2);
+  padding:9px 11px;border-bottom:1px solid var(--hair);white-space:nowrap}
+td{padding:10px 11px;border-bottom:1px solid var(--hair-2);vertical-align:top;color:var(--ink-2);line-height:1.62}
+tr:last-child td{border-bottom:0}
+.yes{color:var(--ok);font-weight:700} .no{color:var(--error);font-weight:700} .mid2{color:var(--warn);font-weight:700}
+.pill{display:inline-block;height:18px;line-height:17px;padding:0 7px;border-radius:4px;font-size:10.5px;
+  font-weight:700;border:1px solid var(--hair);background:#F1F5F9;color:var(--ink-2)}
+.pill.rec{background:var(--ok-soft);border-color:#BFE7CC;color:#15803D}
+.pill.alt{background:var(--gold-soft);border-color:#F5D08A;color:#92400E}
+.pill.no{background:var(--error-soft);border-color:#F3C4C4;color:var(--error)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:14px}
+.setcard{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:16px}
+.seth{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{width:24px;height:24px;border-radius:6px;background:var(--primary);color:#fff;font-weight:800;
+  font-size:13px;display:flex;align-items:center;justify-content:center}
+.badge.gray{background:#64748B}
+.setname{font-size:15px;font-weight:800}
+.setwhy{font-size:12.5px;color:var(--muted);margin-top:8px}
+.shots{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.shots.one{grid-template-columns:1fr;max-width:330px}
+.shots.three{grid-template-columns:repeat(3,1fr)}
+.shots.four{grid-template-columns:repeat(4,1fr)}
+.shot{background:#FBFCFE;border:1px solid var(--hair);border-radius:10px;overflow:hidden}
+.shot img{width:100%;display:block;border-bottom:1px solid var(--hair);background:#fff}
+.shot figcaption{padding:8px 9px;font-size:10.5px;color:var(--ink-3);line-height:1.5}
+.shot figcaption b{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:3px}
+.shot figcaption span{display:block}
+.shot .lnk{display:inline-block;margin-top:5px;color:var(--primary);font-weight:600;text-decoration:none}
+.callout{background:var(--ice);border:1px solid #CCE0FB;border-radius:10px;padding:13px 15px;margin:14px 0}
+.callout.warn{background:var(--warn-soft);border-color:#F6D3B8}
+.callout.ok{background:#F1FBF4;border-color:#BFE7CC}
+.callout.tbd{background:#F8FAFC;border-color:var(--hair)}
+.callout .t{font-size:13.5px;font-weight:800;margin-bottom:5px}
+.callout.warn .t{color:var(--warn)} .callout.ok .t{color:#15803D}
+.callout ul{margin-left:18px}
+.files{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);background:#fff;border:1px solid var(--hair);
+  border-radius:10px;padding:14px 16px;white-space:pre-wrap;line-height:1.75}
+.howto{background:#fff;border:1px solid var(--hair);border-radius:10px;padding:14px 16px;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="top">
+<div class="kicker">祁连山电竞 · 打手态（老板端 App 内）· 设计稿待审批</div>
+<h1>有人申请客服 → 有客服权限的打手在打手态主动接</h1>
+<p class="sub">把现在「有人指派才有人管」的客服，改成<b>像抢单大厅一样的待接入池</b>：老板发起咨询 → 会话建出来（<code>type='cs'</code> / <code>status='open'</code> / <b>创建时无人指派</b>）→ 有客服权限（<code>worker.customer</code>，与接单 <code>take_order</code> 完全独立）的打手在打手态看到并主动「接入」。</p>
+<div class="meta">
+<span>7 屏 HTML / <b>16 张 PNG</b></span>
+<span>画布 <b>390 × 844</b>（出图 780 × 1688，2×）</span>
+<span>配色只取 <code>app_colors.dart</code></span>
+<span>产物 <code>site/design/cs-hall/</code> + <code>docs/验收素材/2026-10-08-客服大厅设计/</code></span>
+</div>
+</header>
+
+<div class="callout ok">
+<div class="t">已定案（负责人 2026-10-08 拍板，本稿按此收敛）</div>
+<ul>
+<li><b>入口 = 方案 A：打手态底部第 4 项「客服」</b>，顺序 <code>接单 · 消息 · 客服 · 我的</code>；<b>仅当该账号有客服权限（<code>worker.customer</code>）时出现</b>，没有权限的账号底部仍是 3 项（逐像素不变）。选中态 / 未选中态 / 有权限 / 无权限四种情况见第 1 节 A1、A2。</li>
+<li><b>接单语义 = 抢占式</b>：谁先点「接入」谁得；被抢后其他人的列表自动移除该条。<b>管理端保留强制改派</b>作为兜底（出问题能救回来），改派后原客服被移出会话。</li>
+<li><b>「退回池子」= 待定</b>：本稿只画一个虚线次级样式 + 待定标签，<b>不当作已定功能</b>；三件必须先定的事见第 3 节与第 6 节。</li>
+<li>方案 B（消息页通栏条）与方案 C（接单大厅分段）<b>已否决，留档各一屏</b>，不再细化。</li>
+</ul>
+</div>
+
+<div class="callout">
+<div class="t">本稿贴合的技术现状（不凭空发明）</div>
+<ul>
+<li>老板发起咨询 → 建 <code>type='cs'</code>、<code>status='open'</code> 的会话，<b>创建时无人指派</b> → 天然就是待接入池。</li>
+<li>客服权限 = <code>worker.customer</code>（已有）：与接单 <code>take_order</code> 完全独立，一个打手可以<b>只有客服权限、不接单</b>。</li>
+<li>打手态底栏现在只有 3 项：<b>接单 / 消息 / 我的</b>；顶部常驻 28dp 身份细带（<code>WorkerIdentityBand</code>）表明"当前在打手态" —— 本稿一字不改。</li>
+<li>客服已有页面：会话列表 + 会话详情（老板/客服两段消息）+「结束本次咨询」（<code>POST /user/conversation/close</code>）—— 本稿只补"待接入池"和"接入"这两件事。</li>
+<li>本稿的版式语言取自既有页面：接单大厅（胶囊筛选 + 卡片列表 + 空态）、消息页（分段 + 会话行）、聊天页（<code>chat_v4.dart</code> 硬参数）。</li>
+</ul>
+</div>
+
+<h2><span class="n">1</span>入口三方案（核心审批项）</h2>
+<p class="lead">同一件事（待接入的咨询池）可以挂在三个位置。<b>A 已定案</b>；B / C 保留为已否决的对比留档。</p>
+
+<div class="grid2">
+<div class="setcard">
+<div class="seth"><span class="badge">A</span><span class="setname">底部第 4 项「客服」</span>
+<span class="pill rec">已定案</span></div>
+<p class="setwhy">仅当账号有客服权限时出现；点进去就是客服大厅。角标 = 待接入数。</p>
+<div class="shots">
+<figure class="shot">
+<a href="./a1-cs-tab.html?state=hall" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/A1-入口-客服tab选中-客服大厅.png" alt="A1 客服大厅（客服 tab 选中）"></a>
+<figcaption><b>A1 客服大厅（客服 tab 选中）</b><span>第 4 项 = 入口；页头「待接入 3 · 在线客服 2」</span>
+<a class="lnk" href="./a1-cs-tab.html?state=hall" target="_blank">打开 a1-cs-tab.html →</a></figcaption></figure>
+<figure class="shot">
+<a href="./a2-nav-compare.html?state=perm" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/A2-导航对照-有客服权限4项.png" alt="A2 有客服权限 = 4 项"></a>
+<figcaption><b>A2 有客服权限 = 4 项</b><span>顺序 接单 · 消息 · 客服 · 我的；未选中也带角标</span>
+<a class="lnk" href="./a2-nav-compare.html?state=perm" target="_blank">打开 a2-nav-compare.html →</a></figcaption></figure>
+</div>
+<div class="shots">
+<figure class="shot">
+<a href="./a2-nav-compare.html?state=noperm" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/A2-导航对照-无客服权限仍3项.png" alt="A2 没有客服权限 = 仍 3 项"></a>
+<figcaption><b>A2 没有客服权限 = 仍 3 项</b><span>底栏位置/字号/图标逐像素不变</span>
+<a class="lnk" href="./a2-nav-compare.html?state=noperm" target="_blank">打开 a2-nav-compare.html →</a></figcaption></figure>
+<figure class="shot">
+<a href="./a2-nav-compare.html?state=purecs" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/A2-导航对照-纯客服账号接单为空.png" alt="A2 纯客服账号的「接单」是空的"></a>
+<figcaption><b>A2 纯客服账号的「接单」是空的</b><span>只有客服权限、没有分部接单权限 → 空态</span>
+<a class="lnk" href="./a2-nav-compare.html?state=purecs" target="_blank">打开 a2-nav-compare.html →</a></figcaption></figure>
+</div>
+</div>
+<div class="setcard">
+<div class="seth"><span class="badge gray">B</span><span class="setname">消息页顶部通栏条</span>
+<span class="pill no">已否决 · 留档</span></div>
+<p class="setwhy">「待接入客服 N 条 ›」贴在消息页最上方，无待接入时整条不渲染。</p>
+<div class="shots one">
+<figure class="shot">
+<a href="./b1-msg-banner.html?state=banner" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/B1-备选已否决-消息页通栏条.png" alt="B1 通栏条"></a>
+<figcaption><b>B1 通栏条</b><span>与消息页既有「客服」段同页两个客服入口</span>
+<a class="lnk" href="./b1-msg-banner.html?state=banner" target="_blank">打开 b1-msg-banner.html →</a></figcaption></figure>
+<figure class="shot">
+<a href="./b1-msg-banner.html?state=none" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/B1-备选已否决-无待接入不显示.png" alt="B1 无待接入 = 整条不渲染"></a>
+<figcaption><b>B1 无待接入 = 整条不渲染</b><span>不留空位（虚线框只是标注）</span>
+<a class="lnk" href="./b1-msg-banner.html?state=none" target="_blank">打开 b1-msg-banner.html →</a></figcaption></figure>
+</div>
+</div>
+</div>
+
+<div class="grid2" style="margin-top:18px">
+<div class="setcard">
+<div class="seth"><span class="badge gray">C</span><span class="setname">接单大厅内分段「客服」</span>
+<span class="pill no">已否决 · 留档</span></div>
+<p class="setwhy">接单大厅顶部胶囊区加「客服 3」分段，与分部胶囊并列。</p>
+<div class="shots">
+<figure class="shot">
+<a href="./c1-hall-seg.html?state=seg" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/C1-备选已否决-接单大厅客服分段.png" alt="C1 客服分段"></a>
+<figcaption><b>C1 客服分段</b><span>同一行胶囊两种语义：分部筛选 vs 功能切换</span>
+<a class="lnk" href="./c1-hall-seg.html?state=seg" target="_blank">打开 c1-hall-seg.html →</a></figcaption></figure>
+<figure class="shot">
+<a href="./c1-hall-seg.html?state=purecs" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/C1-备选已否决-纯客服账号接单为空.png" alt="C1 纯客服账号进不来"></a>
+<figcaption><b>C1 纯客服账号进不来</b><span>接单大厅对这类账号本身就是空页</span>
+<a class="lnk" href="./c1-hall-seg.html?state=purecs" target="_blank">打开 c1-hall-seg.html →</a></figcaption></figure>
+</div>
+</div>
+<div class="setcard">
+<div class="seth"><span class="badge">取舍</span><span class="setname">三方案逐项对照</span></div>
+<table>
+<tr><th>维度</th><th>A 底栏第 4 项</th><th>B 消息页通栏条</th><th>C 接单大厅分段</th></tr>
+<tr><td>好在哪</td><td>两个活源（订单池 / 咨询池）同层各占一项，语义最直白；角标不进页面就知道有没有活</td><td>不动底栏；消息页本来就是打手最常来的页面</td><td>不给底栏加项；与接单大厅共用页头、刷新、公告</td></tr>
+<tr><td>差在哪</td><td>底栏从 3 项变 4 项（仅对有权限的账号）；单项宽 97.5dp</td><td>消息页已有「客服」段 → <b>同一页两个客服入口、两种语义</b>；把"读"的页面变成第二个工作台</td><td>同一行胶囊两种语义；选中客服后分部胶囊全失效却仍在屏上；抢占式咨询池与订单池抢同一块屏</td></tr>
+<tr><td><b>对"只有客服权限、不接单"的账号</b></td><td class="yes">最友好：底栏第 3 项直接进池子，全程不碰「接单」</td><td class="mid2">可用：消息页对它是主场，但入口在页面顶部，会话一多要滚动才看见</td><td class="no">不友好：它进「接单大厅」看到的是一张空页，<b>入口不可达</b></td></tr>
+<tr><td>底栏项数</td><td>4（有权限）/ 3（无权限）</td><td>3</td><td>3</td></tr>
+<tr><td>结论</td><td><span class="pill rec">采用</span></td><td><span class="pill no">否决</span></td><td><span class="pill no">否决</span></td></tr>
+</table>
+</div>
+</div>
+
+<h2><span class="n">2</span>客服大厅（列表态 + 三个特殊状态）</h2>
+<p class="lead">页头一眼给全：<b>待接入 3 · 在线客服 2</b>；每一行 = 老板昵称 + 首条咨询摘要（一行截断）+ 等待时长 + 右侧「接入」。</p>
+<div class="grid4">
+<figure class="shot">
+<a href="./h1-cs-hall.html?state=list" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/H1-客服大厅-列表态.png" alt="H1 列表态"></a>
+<figcaption><b>H1 列表态</b><span>等待 ≤5 分钟用灰；>5 分钟转琥珀金</span>
+<a class="lnk" href="./h1-cs-hall.html?state=list" target="_blank">打开 h1-cs-hall.html →</a></figcaption></figure>
+<figure class="shot">
+<a href="./h1-cs-hall.html?state=empty" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/H2-客服大厅-空态.png" alt="H2 空态"></a>
+<figcaption><b>H2 空态</b><span>「当前没有等待接入的咨询」+ 会实时出现、不用刷新</span>
+<a class="lnk" href="./h1-cs-hall.html?state=empty" target="_blank">打开 h1-cs-hall.html →</a></figcaption></figure>
+<figure class="shot">
+<a href="./h1-cs-hall.html?state=loading" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/H3-客服大厅-加载中.png" alt="H3 加载中"></a>
+<figcaption><b>H3 加载中</b><span>只在列表区给 3 条骨架，页头与数字先在</span>
+<a class="lnk" href="./h1-cs-hall.html?state=loading" target="_blank">打开 h1-cs-hall.html →</a></figcaption></figure>
+<figure class="shot">
+<a href="./h1-cs-hall.html?state=taken" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/H4-客服大厅-被抢走.png" alt="H4 被抢走"></a>
+<figcaption><b>H4 被抢走</b><span>该行淡出 + 一行 toast「已被 客服 老周 接入」；数字 3 → 2</span>
+<a class="lnk" href="./h1-cs-hall.html?state=taken" target="_blank">打开 h1-cs-hall.html →</a></figcaption></figure>
+</div>
+<table>
+<tr><th>状态</th><th>画面</th><th>文案/数字</th><th>为什么这么设计</th></tr>
+<tr><td>列表态</td><td>3 行咨询卡</td><td><code>待接入 3 · 在线客服 2</code>；<code>等待 2 / 6 / 13 分钟</code></td><td>数字与底栏角标同源；等待时长只有"该先接哪条"这一件事需要颜色</td></tr>
+<tr><td>空态</td><td>线性图标 + 一句事实 + 一句说明</td><td><code>当前没有等待接入的咨询</code></td><td>空态要说清"会实时出现、不用手动刷新"，否则客服会反复下拉</td></tr>
+<tr><td>加载中</td><td>3 条骨架行</td><td>页头与数字先在</td><td>不整页转圈；骨架用静态灰块（不做无限循环动画）</td></tr>
+<tr><td>被抢走</td><td>该行 opacity 0.42 → 移除 + toast 一行</td><td><code>已被 客服 老周 接入</code></td><td>抢占式必须让人知道"为什么它没了"，否则会怀疑是 bug；不弹窗、不打断</td></tr>
+</table>
+
+<h2><span class="n">3</span>接入后的会话页（客服视角）</h2>
+<p class="lead">沿用既有会话页版式（<code>chat_v4.dart</code> 硬参数），<b>只有两处差异</b>，另有一个待定能力。</p>
+<div class="grid2">
+<div class="setcard">
+<div class="shots">
+<figure class="shot">
+<a href="./s1-cs-session.html?state=view" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/S1-会话页-客服视角两处差异.png" alt="S1 客服视角（两处差异）"></a>
+<figcaption><b>S1 客服视角（两处差异）</b><span>① 页头 老板昵称 + 本次咨询时长；② 操作条 结束本次咨询</span>
+<a class="lnk" href="./s1-cs-session.html?state=view" target="_blank">打开 s1-cs-session.html →</a></figcaption></figure>
+<figure class="shot">
+<a href="./s1-cs-session.html?state=return" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/S2-会话页-退回池子待定.png" alt="S2 退回池子（待定）"></a>
+<figcaption><b>S2 退回池子（待定）</b><span>虚线次级样式 + 待定标签；弹层里列了必须先定的三件事</span>
+<a class="lnk" href="./s1-cs-session.html?state=return" target="_blank">打开 s1-cs-session.html →</a></figcaption></figure>
+</div>
+</div>
+<div class="setcard">
+<div class="seth"><span class="badge">差异</span><span class="setname">客服视角相对老板视角改了什么</span></div>
+<table>
+<tr><th>位置</th><th>老板视角（现状）</th><th>客服视角（本稿）</th></tr>
+<tr><td>页头</td><td>客服头像 + 「祁连山客服」+ 在线状态</td><td><b>老板昵称 + 「本次咨询 04:12」</b>（① 新增：时长从接入那一刻算起）</td></tr>
+<tr><td>客服信息条</td><td>显示客服是谁、工号、工作时间</td><td><b>不显示</b>：那条是给老板看客服的，客服不需要看自己</td></tr>
+<tr><td>底部操作条</td><td>「结束咨询」在客服信息条右侧</td><td><b>「结束本次咨询」常驻操作条</b>（② 既有能力，位置从「ⓘ 更多」弹层提上来）</td></tr>
+<tr><td>退回池子</td><td>—</td><td><b>待定</b>：虚线次级 + 待定标签，不与「结束」平级</td></tr>
+</table>
+<p class="setwhy">接入那一刻，会话流里插一条系统消息「客服 老周 已接入」——老板和客服都看得到，谁接的、什么时候接的，可回溯。</p>
+</div>
+</div>
+
+<h2><span class="n">4</span>老板侧（对照）：还没人接的时候</h2>
+<div class="grid2">
+<div class="setcard">
+<div class="shots">
+<figure class="shot">
+<a href="./o1-boss-waiting.html?state=waiting" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/O1-老板侧-等待接入.png" alt="O1 等待接入"></a>
+<figcaption><b>O1 等待接入</b><span>页头「等待客服接入」+ 灰点；系统消息「咨询已提交，客服会尽快接入」</span>
+<a class="lnk" href="./o1-boss-waiting.html?state=waiting" target="_blank">打开 o1-boss-waiting.html →</a></figcaption></figure>
+<figure class="shot">
+<a href="./o1-boss-waiting.html?state=assigned" target="_blank">
+<img src="../../../docs/验收素材/2026-10-08-客服大厅设计/O2-老板侧-已接入对照.png" alt="O2 已接入（对照）"></a>
+<figcaption><b>O2 已接入（对照）</b><span>绿点「在线 · 刚回过」+ 真实工号 + 「结束咨询」</span>
+<a class="lnk" href="./o1-boss-waiting.html?state=assigned" target="_blank">打开 o1-boss-waiting.html →</a></figcaption></figure>
+</div>
+</div>
+<div class="setcard">
+<div class="seth"><span class="badge">修正</span><span class="setname">现状的两句假话</span></div>
+<ul>
+<li>客服会话建出来就没有指派客服，但老板侧现在写死 <b>「在线 · 刚回过」</b> 与 <b>「在线客服 · 平均 1 分钟回复」</b> —— 没人接入时两句都是假的，还<b>承诺了时间</b>。</li>
+<li>本稿改为：页头 <b>「等待客服接入」</b>（灰点）+ 系统消息 <b>「咨询已提交，客服会尽快接入」</b>，下面小字只给可验证的事实（在线时段 <code>9:00–次日 2:00</code>、高峰期会稍等、接入后有通知），<b>不写几分钟内回</b>。</li>
+<li>等待态不显示「结束咨询」（还没接入，结束没有意义），信息条状态也改成「等待接入」。</li>
+<li>老板在接入前发的消息不会丢，客服接入后能看到全部历史 —— 这一句也要让老板知道。</li>
+</ul>
+</div>
+</div>
+
+<h2><span class="n">5</span>反 AI 味自检（docs/21 第六节六条，逐条对本稿）</h2>
+<table>
+<tr><th>#</th><th>自检问题</th><th>本稿回答</th></tr>
+<tr><td>1</td><td>把内容换成任意同行的，这版设计是否还成立？</td><td>不成立：页头「待接入 N · 在线客服 M」、等待时长琥珀阈值、老板昵称 + 咨询摘要的行结构，都只对"抢占式客服池"这件事成立。</td></tr>
+<tr><td>2</td><td>是否用了模型反射式的默认（渐变主视觉 / 卡片阵 / 全大圆角 / 满屏阴影）？</td><td>无渐变（出图实测渐变面积 = 0）、无位图装饰、圆角只用 4/6/10/14/胶囊、阴影只出现在「退回池子」确认弹层这一处。</td></tr>
+<tr><td>3</td><td>把装饰全删掉，设计还剩下什么？</td><td>剩下三件事：池子里有几条、每条等了多久、点哪个按钮接。图标只有耳机（客服）与时钟（等待）两个语义。</td></tr>
+<tr><td>4</td><td>每个颜色、圆角、间距能不能说出理由？</td><td>能：主色 <code>#2563EB</code> 只给可操作（接入按钮 / 选中态）；琥珀 <code>#D97706</code> 只给"等太久了"这一个告警；圆角 6 给控件、14 给列表卡、胶囊给筛选；组内 8–10、组间 20–24。</td></tr>
+<tr><td>5</td><td>假数据是否具体、长短不一、有业务味？</td><td>是：<code>小北</code> / <code>陈默</code> / <code>夜航0831</code>；摘要 <code>单号 8241，开打前先跟我说一下</code>、<code>保 2 红单已经付好了，随时可以开</code>；等待 <code>2 / 6 / 13 分钟</code>；工号 <code>W20260073</code>、在线时段 <code>9:00–次日 2:00</code>（非整数、长短不一）。</td></tr>
+<tr><td>6</td><td>空态 / 加载 / 错误态是否都设计了？</td><td>空态、加载中各一屏；错误态不在本轮新增范围内（沿用既有页面既有实现，本稿不发明）。</td></tr>
+</table>
+
+<h2><span class="n">6</span>待拍板（我拿不准、需要负责人定的点）</h2>
+<div class="callout tbd">
+<ul>
+<li><b>退回池子做不做</b>：要做的话得先定三件事 —— 退回次数限制（防挑单）、退回后老板是否收到提示、退回是否计入客服考核。本稿只画了虚线次级样式 + 待定标签。</li>
+<li><b>「接入」要不要二次确认</b>：抢占式 + 二次确认 = 抢不到；不做确认 = 误点就占了一条。倾向不做确认，靠"结束本次咨询"兜底。</li>
+<li><b>一个客服同时能接几条</b>：本稿画的是"接一条就进会话"，没有任何上限提示。要不要上限（比如同时 3 条）？</li>
+<li><b>「在线客服 M」的口径</b>：是"持客服权限且 App 在前台的心跳数"，还是"当前会话数 &lt; 上限的人数"？在线时段 <code>9:00–次日 2:00</code> 之外怎么显示？</li>
+<li><b>等待时长 5 分钟的阈值</b>：本稿按 &gt;5 分钟转琥珀。要不要更早（3 分钟）？</li>
+<li><b>「本次咨询时长」从哪一刻算起</b>：本稿按"接入那一刻"（<code>chat_conversation_assign.created_at</code>）。也可以按"老板发起那一刻"，两者对客服的考核含义不同。</li>
+<li><b>纯客服账号的「接单」要不要藏</b>：这类账号点「接单」永远是空页。本稿保留（不动既有底栏），要不要对它只显示 3 项（接单 → 换成别的东西）？</li>
+</ul>
+</div>
+
+<h2><span class="n">7</span>产出文件与怎么看</h2>
+<div class="howto">
+<p class="lead"><b>看稿两种方式</b>：① 直接双击 <code>site/design/cs-hall/index.html</code>（缩略图走相对路径，本地能显示）；② 打开 <code>http://127.0.0.1:3100/design/cs-hall/index.html</code>（HTML 与手机屏可看，缩略图需从 ① 或直接看 PNG 目录）。</p>
+<p>每张 PNG 都带 <code>?state=</code> 对应的 HTML 源文件，点缩略图图下方的「打开 …html →」即可切换状态；手机屏尺寸统一 <b>780 × 1688</b>（CSS 390 × 844 的 2×）。</p>
+</div>
+<div class="files">产物目录
+  site/design/cs-hall/                      7 个 HTML（a1 / a2 / b1 / c1 / h1 / s1 / o1）
+  site/design/cs-hall/index.html            本审批页
+  docs/验收素材/2026-10-08-客服大厅设计/     16 张 PNG + INDEX 长图 + shots.json
+
+生成与出图脚本（scripts/tmp/，不进业务代码）
+  cs-hall-shell.mjs      设计 token / 组件片段 / 屏清单契约
+  cs-hall-parts.mjs      接单大厅 · 客服大厅 · 消息页 · 会话页片段
+  cs-hall-screens-a.mjs  A1 / A2 / B1 / C1
+  cs-hall-screens-b.mjs  H1 / S1 / O1
+  cs-hall-index.mjs      本页生成器
+  make-cs-hall.mjs       写 HTML
+  cs-hall-shot.mjs       headless Edge 出图 + 反 AI 味与文案核验
+
+本轮**没有**改动任何业务代码（apps/**、server/** 一行未动），也没有改 site/design/** 下别人的目录。</div>
+
+</div>
+</body>
+</html>

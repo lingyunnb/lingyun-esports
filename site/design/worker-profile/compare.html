@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>竞品对照 · 东东电竞打手详情页（参考图 2）vs A 套（放宽版）/ B 套（严守版）</title>
+<style>
+:root{
+  --brand:#1D5FA8; --brand-ink:#0F2440; --brand-tint:#E8EEF7;
+  --celadon:#0E7C7B; --celadon-tint:#E3F0EF;
+  --amber:#B4732A; --amber-tint:#F7EDE0; --amber-line:#E6CFAE; --warn:#B45309;
+  --danger:#B42318; --danger-tint:#FBECEA;
+  --g1:#14202E; --g2:#4A5A6E; --g3:#8A99AB; --g4:#CDD6E2; --g5:#E3E8EF; --g6:#F4F6F9;
+  --font:"Microsoft YaHei","PingFang SC",-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--g1);background:#FFFFFF;-webkit-font-smoothing:antialiased}
+.wrapdoc{max-width:1560px;margin:0 auto;padding:32px 24px 64px}
+.doch{padding-bottom:16px;border-bottom:1px solid var(--g5)}
+.doch h1{font-size:22px;font-weight:800}
+.doch .sub{font-size:13px;color:var(--g2);margin-top:8px;line-height:1.8;max-width:1180px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--g2);margin-top:16px}
+.metarow b{color:var(--g1)}
+.shot{margin-top:32px}
+.shot h2{font-size:18px;font-weight:700;display:flex;align-items:baseline;gap:12px}
+.shot h2 em{font-style:normal;font-size:12px;font-weight:400;color:var(--g3)}
+.shot .cap{font-size:12px;color:var(--g2);margin:8px 0 16px;line-height:1.8;max-width:1180px}
+.screens{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.fig{display:flex;flex-direction:column;gap:8px}
+.figcap{font-size:12px;font-weight:600;max-width:390px}
+.figcap em{font-style:normal;font-weight:400;color:var(--g3)}
+
+/* 框图手机壳（纯 CSS 框，0 素材） */
+.phone{width:390px;background:#FFFFFF;border:1px solid var(--g4);border-radius:18px;padding:8px;
+  display:flex;flex-direction:column;gap:4px;flex:0 0 auto}
+.bx{border:1px dashed var(--g4);border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:4px;background:var(--g6)}
+.bx.solid{border-style:solid}
+.bx.dark{background:#DCE3EC;border-style:solid;border-color:var(--g4)}
+.bx.wcard{background:#FFFFFF;border-color:var(--g5)}
+.bx.cool{border-color:var(--brand);background:var(--brand-tint)}
+.bx.amber{border-color:var(--amber-line);background:var(--amber-tint)}
+.bl{font-size:11px;font-weight:700;color:var(--g2);line-height:1.5}
+.bd{font-size:11px;color:var(--g3);line-height:1.6}
+table.tb{width:100%;border-collapse:collapse;font-size:12px;color:var(--g1);margin-top:8px}
+table.tb th,table.tb td{border:1px solid var(--g5);padding:8px 12px;text-align:left;vertical-align:top;line-height:1.75;font-size:12px}
+table.tb th{background:var(--g6);font-weight:700}
+.yes{color:var(--celadon);font-weight:700}
+.no{color:var(--warn);font-weight:700}
+.mid{color:var(--brand);font-weight:700}
+code{font-family:ui-monospace,Consolas,monospace;font-size:11px;background:var(--g6);padding:0 4px;border-radius:4px}
+a{color:#1D5FA8}
+.notes{margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px}
+.note{background:#FFFFFF;border:1px solid var(--g5);border-radius:14px;padding:16px}
+.note h3{font-size:13px;font-weight:700;margin-bottom:8px}
+.note p,.note li{font-size:12px;color:var(--g2);line-height:1.9}
+.note ul{margin:0;padding-left:16px}
+</style></head>
+<body><div class="wrapdoc">
+<div class="doch">
+  <h1>竞品对照 · 东东电竞「打手详情页」（负责人参考图 2）vs A 套（放宽版）/ B 套（严守版）</h1>
+  <p class="sub">左栏是<b>参考图 2 的结构还原</b> —— <b>纯文字 + 框图，0 素材</b>（不复制竞品的图片、插画、文案、配色、装饰，CLAUDE.md 明令）；
+  中栏是 <b>A 套（放宽版 · 主推）</b>：标签胶囊与分部副标<b>暂时放宽</b>（负责人 2026-10-15：「暂时放宽 我看图之后决定」）；
+  右栏是 <b>B 套（严守原规则）</b>：不放这两项。两套<b>逐字节相同，只差那一排胶囊</b>（头部 160 → 140dp），供负责人看图后拍板。
+  像素稿：<a href="A.html">A.html</a> · <a href="B.html">B.html</a>；头部逐层拆解：<a href="header-variants.html">header-variants.html</a>。</p>
+  <div class="metarow"><span><b>左侧还原依据</b> 负责人提供的截图 + <code>docs/38</code>（竞品设计规格提取）</span>
+  <span><b>约束</b> 白底为主（2026-10-14）· 4dp 网格 · 卡片三档 · 唯一金 #B4732A · 禁渐变/阴影/emoji</span>
+  <span><b>规则 6</b> 守（2026-10-15）；仅「标签胶囊 / 分部副标」暂时放宽，<b>待最终确认</b></span>
+  <span><b>状态</b> 待审批 · 未改任何产品代码</span></div>
+</div>
+
+<div class="shot"><h2>一、三栏结构对照<em>左：参考图 2 还原（纯框）· 中：A 套（放宽 · 主推）· 右：B 套（严守）</em></h2>
+<p class="cap"><b>虚线框 = 常规块</b>；<b>深灰底框 = 参考图 2 的深色块</b>；<b>蓝框 = 我们真实拥有的字段</b>；<b>琥珀框 = 本次待负责人拍板的放宽项</b>。</p>
+<div class="screens">
+
+  <div class="fig">
+  <div class="phone">
+    <div class="bx dark"><span class="bl">顶部大横幅（游戏截图）</span><span class="bd">左上返回箭头 · 右上分享箭头 —— 大块深色</span></div>
+    <div class="bx solid"><span class="bl">头像区</span>
+      <span class="bd">大圆头像（外圈旋转光效环）+ 右下叠 LV.4 徽章</span>
+      <span class="bd">右侧：名字 GM-阿昊（白色大字）·「在线」绿胶囊</span>
+      <span class="bd">「明星打手」认证徽章 · ID 号 · 恋爱中</span></div>
+    <div class="bx solid"><span class="bl">白卡 第 1 行</span><span class="bd">46 朋友 · 71 关注 · 237 粉丝 ｜ 右侧「空闲」绿胶囊</span></div>
+    <div class="bx solid"><span class="bl">白卡 第 2 行</span><span class="bd">5 枚徽章：陪玩认证 / 清川 / 曙光 / 揽月筑梦 / LV.4</span></div>
+    <div class="bx solid"><span class="bl">白卡 第 3 行</span><span class="bd">所属俱乐部</span></div>
+    <div class="bx wcard"><span class="bl">白卡 第 4 行</span><span class="bd">介绍文案两行</span></div>
+    <div class="bx solid"><span class="bl">白卡 第 5 行</span><span class="bd">年龄 26</span></div>
+    <div class="bx solid"><span class="bl">Tab 行</span><span class="bd">帖子 0 · 吃瓜 0 · 评审团 0 · 礼物 35 · 评论 209（选中下划线）</span></div>
+    <div class="bx solid"><span class="bl">筛选行</span><span class="bd">全部 ▾ · 带图评价 · 最新</span></div>
+    <div class="bx solid"><span class="bl">评价行 ×2</span><span class="bd">头像 + 昵称 + 五颗橙星 + 标签 + 一句话 + 时间</span></div>
+    <div class="bx dark"><span class="bl">底部固定条</span><span class="bd">[关注] 浅底 · [找 TA 开黑] 深底主按钮 · [礼物] 粉色圆钮</span></div>
+  </div>
+  <div class="figcap">参考图 2 结构还原<em>纯文字 + 框图 · 0 素材 · 未复制任何图片/文案/配色</em></div>
+  </div>
+
+  <div class="fig">
+  <div class="phone">
+    <div class="bx solid"><span class="bl">返回栏 56（白底 + 发丝线）</span><span class="bd">返回 · 打手信息 · 分享</span></div>
+    <div class="bx cool"><span class="bl">头部网格场 160（浅底 + 1px 细网格，非深色）</span>
+      <span class="bd">80dp 字标头像 + 4 枚静态刻度环</span>
+      <span class="bd">名字 22/800 + <b>L-SLOT 72×20</b>（同行 · 距名字 8dp · 垂直居中）</span>
+      <span class="bd">一行真实事实：接单 76 次 · 好评率 98.2%</span>
+      <span class="bd">来源小字：资料与介绍由官方审核填写</span></div>
+    <div class="bx amber"><span class="bl">名字下方一排小胶囊（本次放宽项 · 待拍板）</span>
+      <span class="bd">[和平精英 · 手游]（分部副标，数据已有）[上分] [四排]（打手标签，需新增字段）· 最多 3 枚 · 高 24dp</span></div>
+    <div class="bx"><span class="bl">标尺线（1px + 两端 3×3 方块）</span><span class="bd">头部与内容区的分界</span></div>
+    <div class="bx wcard"><span class="bl">介绍卡（ContentCard）</span><span class="bd">11px 标签「打手介绍」+ 13/1.8 正文（不截断）</span></div>
+    <div class="bx wcard"><span class="bl">统计卡</span><span class="bd">接单次数 ｜ 好评率（中间 1px 发丝线；右端状态位留空不塌）</span></div>
+    <div class="bx wcard"><span class="bl">Tab 行（只一项）</span><span class="bd">「评价 55」选中态 + 2dp 下划线</span></div>
+    <div class="bx wcard"><span class="bl">评价区（ListCard：无圆角 + 发丝线行）</span>
+      <span class="bd">行：昵称脱敏 + 满意（青瓷勾：图标 + 字重 + 文案三重信号）</span>
+      <span class="bd">备注（长短不一）· 时间 · 查看更多评价</span></div>
+    <div class="bx solid"><span class="bl">底部固定条 72（单一主操作）</span><span class="bd">[找 TA 下单] 全宽主按钮（右上斜切角）</span></div>
+  </div>
+  <div class="figcap">A 套 · 放宽版（主推）<em>头部 160dp · 与 B 套只差那排胶囊</em></div>
+  </div>
+
+  <div class="fig">
+  <div class="phone">
+    <div class="bx solid"><span class="bl">返回栏 56（白底 + 发丝线）</span><span class="bd">返回 · 打手信息 · 分享</span></div>
+    <div class="bx cool"><span class="bl">头部网格场 140（浅底 + 1px 细网格，非深色）</span>
+      <span class="bd">80dp 字标头像 + 4 枚静态刻度环</span>
+      <span class="bd">名字 22/800 + <b>L-SLOT 72×20</b>（同行 · 距名字 8dp · 垂直居中）</span>
+      <span class="bd">一行真实事实：接单 76 次 · 好评率 98.2%</span>
+      <span class="bd">来源小字：资料与介绍由官方审核填写</span></div>
+    <div class="bx"><span class="bl">标尺线（1px + 两端 3×3 方块）</span><span class="bd">头部与内容区的分界</span></div>
+    <div class="bx wcard"><span class="bl">介绍卡（ContentCard）</span><span class="bd">11px 标签「打手介绍」+ 13/1.8 正文（不截断）</span></div>
+    <div class="bx wcard"><span class="bl">统计卡</span><span class="bd">接单次数 ｜ 好评率（中间 1px 发丝线；右端状态位留空不塌）</span></div>
+    <div class="bx wcard"><span class="bl">Tab 行（只一项）</span><span class="bd">「评价 55」选中态 + 2dp 下划线</span></div>
+    <div class="bx wcard"><span class="bl">评价区（ListCard：无圆角 + 发丝线行）</span>
+      <span class="bd">行：昵称脱敏 + 满意（青瓷勾：图标 + 字重 + 文案三重信号）</span>
+      <span class="bd">备注（长短不一）· 时间 · 查看更多评价</span></div>
+    <div class="bx solid"><span class="bl">底部固定条 72（单一主操作）</span><span class="bd">[找 TA 下单] 全宽主按钮（右上斜切角）</span></div>
+  </div>
+  <div class="figcap">B 套 · 严守原规则<em>头部 140dp · 列表行与字段一字不多</em></div>
+  </div>
+
+</div>
+<div class="shot"><h2>一（附）、明确不画清单<em>参考图 2 有、按规则与数据我们都不放</em></h2>
+<table class="tb">
+  <tr><th>参考图 2 的块</th><th>为什么不放</th><th>指到哪一条</th></tr>
+  <tr><td>大块深色横幅（游戏截图）</td><td>与「白底为主 · 不做大块深色/蓝色块」冲突；且用它的截图＝复制竞品素材</td><td>2026-10-14 定案 · CLAUDE.md</td></tr>
+  <tr><td>外圈旋转光效 / 发光 / 粒子</td><td>廉价电竞风，无功能理由的装饰</td><td><code>docs/32</code> §二 · <code>docs/21</code></td></tr>
+  <tr><td>等级 LV.4（值）</td><td>规则 6 禁「等级」；负责人已说后期会加、<b>名称待定</b> → 现在只留 <b>L-SLOT 72×20</b> 几何位（琥珀虚线空框 + 尺寸标注），不画形态、不起名字</td><td>规则 6 · 负责人 2026-10-15</td></tr>
+  <tr><td>在线 / 空闲 / 忙碌胶囊</td><td>规则 6 明令禁；且 <code>worker.status</code> 是「在职 / 停用」，不是「当前忙不忙」；状态会过期，看到假状态比没有状态更糟</td><td>规则 6</td></tr>
+  <tr><td>认证徽章 /「明星打手」头衔</td><td>规则 6 禁「明星陪玩 / 大神」类头衔；认证字段也不存在</td><td>规则 6</td></tr>
+  <tr><td>五颗橙星（评分）</td><td>规则 6 禁「评分」；我们的评价是<b>二元</b>（满意 / 不满意），只给「好评率 N%」一个数字</td><td>规则 6 · <code>order_review.satisfied</code></td></tr>
+  <tr><td>朋友 / 关注 / 粉丝数</td><td>规则 6 禁「下单人数」同类面子数；关注关系表也不存在（要做得 4 人日）</td><td>规则 6</td></tr>
+  <tr><td>徽章墙（5 枚）</td><td>规则 6 禁「标签胶囊」；徽章定义表 + 授予 + 图形资源都没有（5 人日）</td><td>规则 6</td></tr>
+  <tr><td>所属俱乐部</td><td>打手与 club 无关联字段；平台只有官方自营（不出现多档俱乐部）</td><td>结构规则 4</td></tr>
+  <tr><td>年龄 / 关系状态 / ID 号</td><td>字段不存在；年龄与关系状态还属个人信息（PIPL）</td><td>—</td></tr>
+  <tr><td>Tab：帖子 / 吃瓜 / 评审团 / 礼物</td><td>四个模块都不存在（社区模块 2026-10-05 已下线）→ Tab 只留「评价」一项</td><td>负责人 2026-10-15 指示</td></tr>
+  <tr><td>筛选行：全部 ▾ / 带图评价 / 最新</td><td>无评价图片能力，<code>/reviews</code> 也无排序参数 —— 摆了就是点不动的死控件</td><td>—</td></tr>
+  <tr><td>底部 [关注] [礼物圆钮]</td><td>两个能力都不存在（4 / 3 人日）；粉色圆钮也不在品牌色板里。画一个点不动的按钮＝告诉用户 App 坏了</td><td><code>docs/21</code> §三</td></tr>
+</table>
+</div>
+</div>
+
+<div class="shot"><h2>二、逐块「学 / 不学 + 理由」</h2>
+<p class="cap">下表「本套做法」列写 <b>A / B</b> 的地方就是两套的差异；没写的就是两套一致。除那排胶囊外，<b>A、B 两套逐字节相同</b>。</p>
+<table class="tb">
+<tr><th>块</th><th>参考图 2 的做法</th><th>本套做法</th><th>结论</th><th>理由</th></tr>
+
+<tr><td>顶部大横幅</td><td>深色大块 + 游戏截图</td><td>浅底细网格场 <b>140（B）/ 160（A）</b>dp</td><td class="mid">学结构 · 不学深色</td><td>2026-10-14 定案白底为主、不做大块深色/蓝色块。横幅原本只提供「这是一个独立区块」这一条信息 —— <b>明度可以浅，边界必须在</b>；用它的游戏截图还等于复制竞品素材。</td></tr>
+<tr><td>返回 / 分享</td><td>左上返回 + 右上分享</td><td>同样两枚（白底 56 栏）</td><td class="yes">学</td><td>二级页的基础导航，与规则 6 无关。</td></tr>
+<tr><td>大圆头像 + 装饰环</td><td>外圈旋转光效</td><td>80dp 字标头像 + 4 枚 6×1dp 静态刻度环</td><td class="mid">学结构 · 不学光效</td><td>旋转光效属 <code>docs/32</code> §二「发光堆砌」；刻度环保留「头像是这一屏主角、有装饰环」这一结构信息，成本为 0。</td></tr>
+<tr><td>头像右下 LV.4 徽章</td><td>一枚等级徽章叠在头像上</td><td><b>L-SLOT 等级预留位</b>：高 20 × 最长 72 · <b>名字行内</b>、距名字 8dp、<b>同行垂直居中</b>；琥珀虚线空框 + 尺寸标注</td><td class="mid">只留位 · 不画形态 · <b>换位置</b></td><td>负责人 2026-10-15 给的规格。放在<b>名字行</b>而不是头像右下：①「名字 + 等级」读起来是一句话；②<b>不遮挡头像</b>（头像上已有字标，再叠一枚 72dp 的框会把字压掉）；③ 框宽 72 比头像窄，放头像上会头重脚轻。<b>名称待负责人定，此处只占几何位</b>。</td></tr>
+<tr><td><b>名字下方一排小胶囊</b>（放宽项）</td><td>无此块（它的徽章墙在别处）</td><td><b>A：画</b>（最多 3 枚 · 高 24dp · 圆角 6px · 11px/600 · 主色浅底）<br><b>B：不画</b></td><td class="mid">A：学「名字下方可有一排轻量标签」· <b>待负责人拍板</b><br>B：不学（原规则口径）</td><td>规则 6 原文把「标签胶囊」「分部副标」列在禁止清单里；负责人 2026-10-15 说「暂时放宽 我看图之后决定」→ 所以两套都画出来给他看。若批 A：分部副标数据已有（<code>division</code>，需补名字 ≈ 0.2 人日）+ 打手标签需新增 <code>worker_tag</code> 与管理端录入 ≈ 1.5 人日。风险：这类标签一旦放开，很容易变成「每条信息配一个彩色小标签」（<code>docs/21</code>），所以必须<b>限死 3 枚 + 单一主色浅底</b>。</td></tr>
+<tr><td>在线 / 空闲胶囊</td><td>名字右一枚 + 白卡右端一枚</td><td>名字行只有名字 + L-SLOT；白卡右端<b>保留位置、内容留空</b></td><td class="no">不学</td><td>规则 6 明令禁「空闲 / 忙碌」；数据上也没有「当前忙不忙」。右端那个位置留白而不是硬塞东西。</td></tr>
+<tr><td>认证徽章 / 头衔</td><td>「明星打手」认证标</td><td>不画</td><td class="no">不学</td><td>规则 6 点名禁「明星陪玩 / 大神」这类头衔；认证字段也不存在。</td></tr>
+<tr><td>ID 号</td><td>ID 靓 12345678</td><td>不画</td><td class="no">不学</td><td>中文 ID 能力有（v0.2.0），但公开接口未下发；把用户 ID 摆上公开页还需产品决策。</td></tr>
+<tr><td>关系状态「恋爱中」</td><td>名字下方</td><td>不画</td><td class="no">不学</td><td>与陪玩交易无关，属个人信息，公开页不该出现。</td></tr>
+<tr><td>朋友 / 关注 / 粉丝</td><td>白卡第一行三个数</td><td><b>换掉内容</b>：接单次数 / 好评率</td><td class="mid">学「一行数字」的排布 · 不学这三个数</td><td>三个社交数与交易无关，属规则 6「下单人数」那一类面子数。这个位置该给「唯一能证明这个打手的两件事」—— <b>接过多少单、好评率多少</b>（都是既有字段，零成本）。</td></tr>
+<tr><td>右侧「空闲」胶囊</td><td>白卡第一行右端</td><td>位置保留、内容留空</td><td class="mid">学「右端有一个状态位」</td><td>承认这个位置是对的（一行数字 + 右端状态），但没数据就留白，不编。</td></tr>
+<tr><td>徽章墙（5 枚）</td><td>一排小徽章图</td><td>整排删除</td><td class="no">不学</td><td>规则 6 禁「标签胶囊」；徽章要从零建（定义表 + 授予 + 图形资源 = 5 人日），决策价值低于「接单次数」。</td></tr>
+<tr><td>所属俱乐部</td><td>一行俱乐部名</td><td>删除</td><td class="no">不学</td><td>打手与 club 无关联字段；平台只有官方自营（结构规则 4）。</td></tr>
+<tr><td><b>介绍</b></td><td>两行文案</td><td><b>核心字段</b>：11px 标签 + 13/1.8 正文、<b>不截断</b></td><td class="yes">学</td><td>规则 6 允许的两个字段之一；本页是它的完整展示位（列表里只有 2 行截断）。</td></tr>
+<tr><td>年龄 26</td><td>白卡最后一行</td><td>删除</td><td class="no">不学</td><td>无出生日期字段；属个人信息。</td></tr>
+<tr><td>Tab 行</td><td>帖子 / 吃瓜 / 评审团 / 礼物 / 评论</td><td><b>只保留一项「评价 N」</b>（选中态 + 2dp 下划线）</td><td class="mid">学骨架 · 只留一项</td><td>负责人指示 Tab 只留「评价」；做五个 Tab 会留四个「点进去是空页」的入口。</td></tr>
+<tr><td>筛选行</td><td>全部 ▾ / 带图评价 / 最新</td><td><b>不做</b></td><td class="no">不学</td><td><code>/reviews</code> 只支持 page/pageSize，没有排序参数；更没有「带图评价」的数据能力。<b>摆了就是死控件</b> —— 这是唯一一处主动不照骨架做的地方，请在审批表确认。</td></tr>
+<tr><td><b>评价行</b></td><td>头像 + 昵称 + 五颗橙星 + 标签 + 文字 + 时间</td><td>头像字标 + 昵称脱敏 + <b>满意 / 不满意</b>（图标 + 字重 + 文案三重信号）+ 备注 + 时间</td><td class="mid">学「行内分层结构」· 不学 5 星</td><td>我们的评价模型就是<b>二元</b>（<code>order_review.satisfied</code> bool）；规则 6 也明令禁「评分」。满意度用「图标 + 字重 + 文案 + 颜色」四重表达，不只靠颜色（<code>docs/21</code>）。</td></tr>
+<tr><td>底部固定条</td><td>[关注] [找 TA 开黑] [礼物圆钮]</td><td><b>单一全宽主按钮 [找 TA 下单]</b></td><td class="mid">学「有一个实底主操作」· 不学另外两个</td><td>「关注」要 4 人日、「礼物」要 3 人日，两个能力都不存在；粉色圆钮也不在品牌色板里。本页是二级页（无底栏），所以这一个按钮与底栏「＋下单」不在同一屏出现，<b>不构成结构规则 1 的重复</b>。</td></tr>
+</table>
+</div>
+
+<div class="shot"><h2>三、结构规则 6 逐条对照表<em>CLAUDE.md:111（负责人 2026-10-03 定；2026-10-15 重申「这个要守」）</em></h2>
+<p class="cap">规则 6 有<b>三部分</b>：①「<b>允许的字段只有 名字 + 介绍</b>」；②「<b>禁止出现</b>」清单；③ 末句「<b>需要这些属性时，一律进详情页</b>」。
+第 ③ 句对我们有利 —— 本页就是详情页，所以「详情页放更多」是规则 6 自己留的口子；但第 ② 句的词<b>在任何页面都不许出现</b>（唯一例外是本次「暂时放宽」的两项）。</p>
+<table class="tb">
+<tr><th>规则 6 条目</th><th>类别</th><th>A 套（放宽）</th><th>B 套（严守）</th><th>判读</th></tr>
+<tr><td>允许的字段只有「名字」+「介绍」</td><td>允许</td><td class="yes">两者都在</td><td class="yes">两者都在</td><td>满足。接单次数 / 好评率 / 评价列表放在<b>详情页</b>，依据是第 ③ 句（「需要这些属性时，一律进详情页」）—— <b>不是在列表/榜单里堆</b>：「找陪玩」列表行本轮一个字段都没加。</td></tr>
+<tr><td>禁止「明星陪玩」</td><td>禁止</td><td class="yes">不出现</td><td class="yes">不出现</td><td>「认证打手 / 明星打手」这类头衔一律不画（也不做认证字段）。</td></tr>
+<tr><td>禁止「大神」</td><td>禁止</td><td class="yes">不出现</td><td class="yes">不出现</td><td>参考图 2 里也没有，不涉及。</td></tr>
+<tr><td>禁止「单考 / 双考」</td><td>禁止</td><td class="yes">不出现</td><td class="yes">不出现</td><td>不涉及。</td></tr>
+<tr><td>禁止「空闲 / 忙碌」</td><td>禁止</td><td class="yes">不出现（白卡右端留空）</td><td class="yes">不出现（白卡右端留空）</td><td>参考图 2 有两枚这样的胶囊，明确不学。</td></tr>
+<tr><td>禁止「等级」</td><td>禁止</td><td class="mid">不画形态，只留 L-SLOT 72×20</td><td class="mid">同</td><td>负责人 2026-10-15：「后期我会给打手加等级，等我想好名称告诉你」。<b>L-SLOT 不是等级</b>：不显示等级值、不命名、不带颜色语义，只是一块几何空位（琥珀虚线 + 尺寸标注）。<b>本条仍然算「守」。</b></td></tr>
+<tr><td>禁止「评分」</td><td>禁止</td><td class="yes">不出现</td><td class="yes">不出现</td><td>只有「好评率 N%」一个数字 + 二元判定。好评率是既有已上线口径（<code>satisfiedRateText()</code>，无评价时为「暂无评价」，绝不编 100%），不等于「评分体系」；评价列表也不画星。</td></tr>
+<tr><td>禁止「单价」</td><td>禁止</td><td class="yes">整页零 ¥ 符号</td><td class="yes">整页零 ¥ 符号</td><td>本页无价格位；价格只在下单链路出现。</td></tr>
+<tr><td>禁止「下单人数」</td><td>禁止</td><td class="mid">显示「接单次数」</td><td class="mid">显示「接单次数」</td><td>「接单次数」是打手<b>自己的累计服务量</b>（<code>worker_stats.completed_orders</code>），既非别人的下单排行、也不带社交属性；参考图 2 的「朋友 / 关注 / 粉丝」那类面子数完全不画。</td></tr>
+<tr><td>禁止「语音时长」</td><td>禁止</td><td class="yes">不出现</td><td class="yes">不出现</td><td>不涉及。</td></tr>
+<tr><td>禁止「标签胶囊」</td><td>禁止</td><td class="no">画了（名字下方一排，最多 3 枚）</td><td class="yes">不画</td><td><b>本次唯一的放宽项</b>：负责人原话「暂时放宽 我看图之后决定」→ A 套先画出来给他看，<b>此项待负责人看图后最终确认</b>。</td></tr>
+<tr><td>禁止「分部副标」</td><td>禁止</td><td class="no">画了（<code>[和平精英 · 手游]</code> 一枚）</td><td class="yes">不画</td><td>同上。若批，建议把它限制为「胶囊排里的第一枚」，不在页面别处再出现分部。</td></tr>
+<tr><td>末句「需要这些属性时，一律进详情页」</td><td>口子</td><td class="yes">本页就是详情页</td><td class="yes">本页就是详情页</td><td>这句话就是「接单次数 / 好评率 / 评价列表」能放在本页的全部依据。</td></tr>
+</table>
+<div class="notes">
+  <div class="note"><h3>为什么「接单次数 + 好评率」不算破规则 6</h3>
+    <p>规则 6 的立法意图写在它自己末句里：<b>列表与榜单要极简，需要更多属性时进详情页</b>。
+    所以它禁的不是「详情页有信息」，而是「把属性堆在列表行里」。本页把两个数字放在详情页、列表行一个字段没加 ——
+    <b>这正是规则 6 的执行方式，不是它的例外</b>。</p></div>
+  <div class="note"><h3>为什么「L-SLOT 预留位」也不算破</h3>
+    <p>L-SLOT 里没有等级值、没有名称、没有颜色语义 —— 它只是名字行里一块 <b>72×20dp</b> 的几何空位（琥珀虚线空框 + 尺寸标注）。
+    它的唯一作用是把位置先占住，让将来加等级时<b>不会引起整页重排</b>。上线时可两选：<b>先不渲染</b>（等级还没做）或 <b>渲染为琥珀虚线占位</b>，两者几何完全相同。</p></div>
+  <div class="note"><h3>本轮实际砍掉的能力（省钱清单）</h3>
+    <ul>
+      <li>等级体系（1.5 人日）→ 只留 L-SLOT 72×20 空位</li>
+      <li>5 星评价模型改造（2.5 人日 + 历史数据映射）→ 不做，用既有二元</li>
+      <li>关注关系表 + 粉丝计数（4 人日）→ 不做</li>
+      <li>徽章定义与授予（5 人日）→ 不做</li>
+      <li>礼物流水（3 人日）→ 不做</li>
+      <li>Tab 对应的社区 / 评审团模块（≥15 人日）→ 不做（社区模块已下线）</li>
+      <li><b>合计砍掉约 31 人日</b>，本页只依赖两条已上线的接口</li>
+    </ul></div>
+  <div class="note"><h3>若批 A 套要加的两件事</h3>
+    <ul>
+      <li>分部副标：<code>division</code> 表已有，公开接口补下发名字 ≈ <b>0.2 人日</b></li>
+      <li>打手标签：新表 <code>worker_tag</code> + 管理端录入界面（与「找陪玩」的介绍一样由运营填写）+ 公开接口下发 ≈ <b>1.5 人日</b></li>
+      <li>同时要把规则 6 的「标签胶囊 / 分部副标」两条改成<b>有条件的允许</b>：写清「仅详情页、最多 3 枚、单一主色浅底、不得作为主信息」</li>
+    </ul></div>
+</div>
+</div>
+</div></body></html>

@@ -1,0 +1,57 @@
+﻿# FISH 开发环境：MySQL 8.4 + Redis 7
+# 使用：npm run infra:start / infra:stop（配置在 infra/.env）
+#
+# 双项目隔离（本机同时运行 OtherProject 项目）：
+#   - compose 项目名显式固定为 fish（网络 fish_default、与 OtherProject-server_default 隔离）
+#   - 容器名 fish-mysql / fish-redis（与 OtherProject-* 不冲突）
+#   - 数据用 D 盘 bind mount（data/database、data/redis），不进 WSL vhdx（C 盘）
+#   - 端口：3306 / 6380（OtherProject 用 5432 / 6379，互不干扰）
+name: fish
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: fish-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+00:00
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      # 数据持久化到 D 盘（相对 compose 文件：infra/../data/database）
+      - "${DATA_DIR:-../data/database}:/var/lib/mysql"
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: fish-redis
+    restart: unless-stopped
+    environment:
+      # 供 healthcheck 使用
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    ports:
+      - "${REDIS_PORT:-6380}:6379"
+    volumes:
+      # AOF 持久化到 D 盘
+      - "${DATA_DIR:-../data/redis}:/data"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+

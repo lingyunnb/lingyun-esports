@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>祁连山电竞 · 图标大改 + 商品列表装饰 + 图案系统（方案 D / E / F）</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#E7EBF2;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#14202E;padding:20px 22px 30px}
+  h1{font-size:20px;font-weight:800;margin-bottom:3px}
+  .sub{font-size:12px;color:#5A6B80;margin-bottom:14px}
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:12px}
+  .ch{padding:10px 12px;border-radius:12px;color:#fff;font-size:14px;font-weight:800}
+  .ch small{display:block;font-weight:400;font-size:11px;opacity:.88;margin-top:2px}
+  .chD{background:linear-gradient(135deg,#0F2440,#1D5FA8 60%,#0E7C7B)}
+  .chE{background:#0B1226;border:1px solid rgba(0,229,255,.45)}
+  .chF{background:linear-gradient(120deg,#2563EB,#06B6D4 45%,#8B5CF6)}
+  .panel{background:#fff;border-radius:14px;padding:12px;box-shadow:0 3px 10px rgba(15,36,64,.07)}
+  .panel h3{font-size:12px;font-weight:800;color:#0F2440;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+  .panel h3 em{font-style:normal;font-size:10px;font-weight:400;color:#8A99AB}
+  .panel.dark{background:#0B1226;color:#E6EEFF}
+  .panel.dark h3{color:#9FD9FF}
+  /* 图标：真实素材 assets/*.svg，用 background-image + SVG feColorMatrix 精确上色（与 planF 同一套已验证写法）
+     本机 headless Edge 不支持 mask-image（那样三列图标全不渲染、出图全是空槽），故弃用 mask；
+     !important 用来压掉内联 `background:` 简写对 background-image 的重置，内联 background 的色值继续当"选色器"用。 */
+  .ic{display:inline-block;background-repeat:no-repeat!important;background-position:center!important;background-size:contain!important;background-color:transparent!important;filter:url(#t-white);-webkit-mask-image:none!important;mask-image:none!important}
+  .ic-bag{background-image:url(assets/lu-shopping-bag.svg)!important}
+  .ic-clip{background-image:url(assets/lu-clipboard-list.svg)!important}
+  .ic-msg{background-image:url(assets/lu-message-circle.svg)!important}
+  .ic-users{background-image:url(assets/lu-users.svg)!important}
+  .ic-wallet{background-image:url(assets/lu-wallet.svg)!important}
+  .ic-coins{background-image:url(assets/lu-coins.svg)!important}
+  .ic-headset{background-image:url(assets/lu-headset.svg)!important}
+  .ic-sparkles{background-image:url(assets/lu-sparkles.svg)!important}
+  .ic-trophy{background-image:url(assets/lu-trophy.svg)!important}
+  .ic-shield{background-image:url(assets/lu-shield-check.svg)!important}
+  .ic-swords{background-image:url(assets/lu-swords.svg)!important}
+  .ic-snow{background-image:url(assets/lu-mountain-snow.svg)!important}
+  .ic-qr{background-image:url(assets/lu-qr-code.svg)!important}
+  .ic-camera{background-image:url(assets/lu-camera.svg)!important}
+  .ic-gift{background-image:url(assets/lu-gift.svg)!important}
+  .ic-compass{background-image:url(assets/lu-compass.svg)!important}
+  .ic-crown{background-image:url(assets/lu-crown.svg)!important}
+  .ic-rocket{background-image:url(assets/lu-rocket.svg)!important}
+  .ic-target{background-image:url(assets/lu-target.svg)!important}
+  .ic-zap{background-image:url(assets/lu-zap.svg)!important}
+  .ic-flame{background-image:url(assets/lu-flame.svg)!important}
+  /* 图标上色：内联 background 的色值当"选色器"（色块本身已被 base 的 transparent!important 关掉），默认 = 白 */
+  .ic[style*="#00E5FF"]{filter:url(#t-00E5FF)}
+  .ic[style*="#0E7C7B"]{filter:url(#t-0E7C7B)}
+  .ic[style*="#1D5FA8"]{filter:url(#t-1D5FA8)}
+  .ic[style*="#5C6C96"]{filter:url(#t-5C6C96)}
+  .ic[style*="#64748B"]{filter:url(#t-64748B)}
+  .ic[style*="#9FD9FF"]{filter:url(#t-9FD9FF)}
+  .ic[style*="#A78BFA"]{filter:url(#t-A78BFA)}
+  .ic[style*="#B4732A"]{filter:url(#t-B4732A)}
+  .ic[style*="#FF6B9D"]{filter:url(#t-FF6B9D)}
+  .ic[style*="#FFC857"]{filter:url(#t-FFC857)}
+  .icons{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .icons .slot{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:#F4F6F9}
+  .navrow{display:flex;justify-content:space-between;background:#F8FAFC;border-radius:12px;padding:8px 6px;margin-bottom:10px}
+  .navrow .n{flex:1;text-align:center;font-size:10px;color:#8A99AB}
+  .navrow .n .slot{width:34px;height:34px;margin:0 auto 3px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+  .navrow .n.on{color:#1D5FA8;font-weight:700}
+  /* 图案瓦片 */
+  .patwall{display:grid;grid-template-columns:repeat(8,1fr);gap:10px}
+  .pat{border-radius:10px;overflow:hidden;border:1px solid #DDE4EC;background:#fff}
+  .pat svg{display:block;width:100%;height:64px}
+  .pat span{display:block;font-size:9px;text-align:center;padding:3px 0 4px;color:#5A6B80}
+  /* 商品列表卡 */
+  .plist{display:flex;flex-direction:column;gap:9px}
+  .pcard{border-radius:14px;padding:10px 11px;position:relative;overflow:hidden;display:flex;gap:10px;align-items:center}
+  .pcard .thumb{width:62px;height:62px;border-radius:12px;flex:none;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .pcard .info{flex:1;min-width:0}
+  .pcard .nm{font-size:12px;font-weight:700;line-height:1.35}
+  .pcard .meta{font-size:10px;color:#7A8798;margin-top:4px;display:flex;gap:6px;align-items:center}
+  .pcard .pr{font-size:14px;font-weight:800;white-space:nowrap}
+  .pcard .unit{font-size:10px;font-weight:400}
+  .mini{font-size:9px;padding:1px 6px;border-radius:999px;white-space:nowrap}
+  .hotbar{height:3px;border-radius:2px;margin-top:6px;overflow:hidden}
+  .hotbar i{display:block;height:100%;border-radius:2px}
+  .sticker{position:absolute;top:6px;right:6px;font-size:9px;font-weight:800;padding:2px 7px;border-radius:999px;transform:rotate(6deg)}
+  /* 文字 */
+  .legend{font-size:10px;color:#7A8798;margin-top:8px;line-height:1.6}
+  .panel.dark .legend{color:#7C8DB5}
+</style>
+</head>
+<body>
+
+<!-- 图案定义（一次定义，全页复用） -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- 图标上色滤镜：feColorMatrix 把 RGB 换成常量、保留 alpha，等于给 SVG 图标精确上色 -->
+    <filter id="t-white" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"/></filter>
+    <filter id="t-00E5FF" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 .898  0 0 0 0 1  0 0 0 1 0"/></filter>
+    <filter id="t-0E7C7B" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .055  0 0 0 0 .486  0 0 0 0 .482  0 0 0 1 0"/></filter>
+    <filter id="t-1D5FA8" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .114  0 0 0 0 .373  0 0 0 0 .659  0 0 0 1 0"/></filter>
+    <filter id="t-5C6C96" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .361  0 0 0 0 .424  0 0 0 0 .588  0 0 0 1 0"/></filter>
+    <filter id="t-64748B" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .392  0 0 0 0 .455  0 0 0 0 .545  0 0 0 1 0"/></filter>
+    <filter id="t-9FD9FF" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .624  0 0 0 0 .851  0 0 0 0 1  0 0 0 1 0"/></filter>
+    <filter id="t-A78BFA" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .655  0 0 0 0 .545  0 0 0 0 .98  0 0 0 1 0"/></filter>
+    <filter id="t-B4732A" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .706  0 0 0 0 .451  0 0 0 0 .165  0 0 0 1 0"/></filter>
+    <filter id="t-FF6B9D" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 .42  0 0 0 0 .616  0 0 0 1 0"/></filter>
+    <filter id="t-FFC857" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 .784  0 0 0 0 .341  0 0 0 1 0"/></filter>
+    <pattern id="p-topo" width="160" height="90" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#1D5FA8" stroke-opacity=".22" stroke-width="1.1">
+        <path d="M-10,20 C30,-4 70,44 110,20 C130,8 150,14 170,24"/>
+        <path d="M-10,50 C30,26 70,74 110,50 C130,38 150,44 170,54"/>
+        <path d="M-10,80 C30,56 70,104 110,80 C130,68 150,74 170,84"/>
+      </g>
+    </pattern>
+    <pattern id="p-diag" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="10" height="10" fill="#1D5FA8" fill-opacity=".08"/>
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#1D5FA8" stroke-opacity=".26" stroke-width="2"/>
+    </pattern>
+    <pattern id="p-hex" width="28" height="24" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#1D5FA8" stroke-opacity=".2" stroke-width="1.1">
+        <path d="M7,1 L21,1 L28,12 L21,23 L7,23 L0,12 Z"/>
+        <path d="M35,1 L35,23 M28,12 L42,12"/>
+      </g>
+    </pattern>
+    <pattern id="p-dots" width="12" height="12" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.3" fill="#1D5FA8" fill-opacity=".28"/>
+    </pattern>
+    <pattern id="p-grid" width="14" height="14" patternUnits="userSpaceOnUse">
+      <path d="M0,0 H14 M0,0 V14" stroke="#0E7C7B" stroke-opacity=".22" stroke-width=".9" fill="none"/>
+    </pattern>
+    <pattern id="p-mount" width="60" height="34" patternUnits="userSpaceOnUse">
+      <path d="M0,34 L18,10 L30,24 L44,4 L60,26 L60,34 Z" fill="#0F2440" fill-opacity=".09"/>
+      <polyline points="0,30 20,12 34,22 46,8 60,22" fill="none" stroke="#1D5FA8" stroke-opacity=".26" stroke-width="1.2"/>
+    </pattern>
+    <pattern id="p-wave" width="40" height="16" patternUnits="userSpaceOnUse">
+      <path d="M0,12 Q10,2 20,12 T40,12" fill="none" stroke="#06B6D4" stroke-opacity=".34" stroke-width="1.4"/>
+    </pattern>
+    <pattern id="p-scale" width="18" height="12" patternUnits="userSpaceOnUse">
+      <path d="M0,12 A9,9 0 0,1 18,12" fill="none" stroke="#B4732A" stroke-opacity=".3" stroke-width="1.1"/>
+      <path d="M9,12 A9,9 0 0,1 27,12" fill="none" stroke="#B4732A" stroke-opacity=".18" stroke-width="1.1"/>
+    </pattern>
+  </defs>
+</svg>
+
+<h1>祁连山电竞 · 图标大改 + 商品列表装饰 + 图案系统</h1>
+<div class="sub">素材来源：本机抓取的真实开源图标 <b>96 个</b>（Lucide ISC / Tabler MIT，可商用）+ 8 套自绘图案系统。三列 = 三套方向（D 雪岭 / E 暗夜 / F 潮玩）。</div>
+
+<div class="board">
+
+  <!-- ================= D ================= -->
+  <div class="col">
+    <div class="ch chD">方案 D · 雪岭<small>墨蓝→青 渐变 + 等高线/山形图案 + 金色徽标（稳重高级）</small></div>
+
+    <div class="panel">
+      <h3>① 图标大改 · 细描边圆头 <em>1.6px / 圆角端点 / 24dp 网格</em></h3>
+      <div class="navrow">
+        <div class="n on"><div class="slot" style="background:linear-gradient(135deg,#1D5FA8,#0E7C7B)"><i class="ic ic-bag" style="width:19px;height:19px;background:#fff"></i></div>服务</div>
+        <div class="n"><div class="slot" style="background:#F4F6F9"><i class="ic ic-clip" style="width:19px;height:19px;background:#1D5FA8"></i></div>订单</div>
+        <div class="n"><div class="slot" style="background:linear-gradient(135deg,#B4732A,#E8B24C)"><b style="color:#fff;font-size:19px;line-height:1">＋</b></div>下单</div>
+        <div class="n"><div class="slot" style="background:#F4F6F9"><i class="ic ic-msg" style="width:19px;height:19px;background:#1D5FA8"></i></div>消息</div>
+        <div class="n"><div class="slot" style="background:#F4F6F9"><i class="ic ic-users" style="width:19px;height:19px;background:#1D5FA8"></i></div>我的</div>
+      </div>
+      <div class="icons">
+        <div class="slot"><i class="ic ic-wallet" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-coins" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-headset" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-sparkles" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-trophy" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-shield" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-swords" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-snow" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-qr" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-camera" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-gift" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+        <div class="slot"><i class="ic ic-compass" style="width:19px;height:19px;background:#1D5FA8"></i></div>
+      </div>
+      <div class="legend">选中态 = 渐变实底 + 白色镂空图标；未选中 = 描边图标 墨蓝 60%</div>
+    </div>
+
+    <div class="panel">
+      <h3>② 商品列表装饰 <em>等高线水印 + 金色徽标 + 热度条</em></h3>
+      <div class="plist">
+        <div class="pcard" style="background:#fff;border:1px solid #E3E8EF">
+          <svg style="position:absolute;inset:0;opacity:.5"><rect width="100%" height="100%" fill="url(#p-topo)"/></svg>
+          <div class="sticker" style="background:linear-gradient(135deg,#B4732A,#E8B24C);color:#fff">董事长推荐</div>
+          <div class="thumb" style="background:linear-gradient(135deg,#DBEAFE,#CFFAFE)"><i class="ic ic-snow" style="width:26px;height:26px;background:#1D5FA8"></i></div>
+          <div class="info">
+            <div class="nm">9.9 新人体验单 保 400w</div>
+            <div class="meta"><span class="mini" style="background:#E8F1FB;color:#1D5FA8">已售 19</span><span class="mini" style="background:#FDF3E3;color:#B4732A">限 2 单</span></div>
+            <div class="hotbar" style="background:#EDF1F6"><i style="width:78%;background:linear-gradient(90deg,#1D5FA8,#06B6D4)"></i></div>
+          </div>
+          <div class="pr" style="color:#B4732A">¥9.90<span class="unit">/单</span></div>
+        </div>
+        <div class="pcard" style="background:#fff;border:1px solid #E3E8EF">
+          <div class="thumb" style="background:linear-gradient(135deg,#E8F1FB,#E6F5F4)"><i class="ic ic-swords" style="width:26px;height:26px;background:#0E7C7B"></i></div>
+          <div class="info">
+            <div class="nm">44.6 博弈鹰雕单 不出保 1200w</div>
+            <div class="meta"><span class="mini" style="background:#E6F5F4;color:#0E7C7B">全程录屏</span><span class="mini" style="background:#F4F6F9;color:#4A5A6E">30 分钟</span></div>
+            <div class="hotbar" style="background:#EDF1F6"><i style="width:42%;background:linear-gradient(90deg,#0E7C7B,#06B6D4)"></i></div>
+          </div>
+          <div class="pr" style="color:#B4732A">¥44.60<span class="unit">/单</span></div>
+        </div>
+        <div class="pcard" style="background:#fff;border:1px solid #E3E8EF">
+          <div class="thumb" style="background:linear-gradient(135deg,#FDF3E3,#F6E8D8)"><i class="ic ic-crown" style="width:26px;height:26px;background:#B4732A"></i></div>
+          <div class="info">
+            <div class="nm">233 保 1 亿 送小金人</div>
+            <div class="meta"><span class="mini" style="background:#FDF3E3;color:#B4732A">高端局</span></div>
+            <div class="hotbar" style="background:#EDF1F6"><i style="width:22%;background:linear-gradient(90deg,#B4732A,#E8B24C)"></i></div>
+          </div>
+          <div class="pr" style="color:#B4732A">¥233.00<span class="unit">/单</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= E ================= -->
+  <div class="col">
+    <div class="ch chE">方案 E · 暗夜<small>深空底 + 霓虹发光 + 六边/网格图案（电竞感）</small></div>
+
+    <div class="panel dark">
+      <h3>① 图标大改 · 霓虹描边 <em>1.8px / 青蓝发光 / 深底反白</em></h3>
+      <div class="navrow" style="background:#0D1530">
+        <div class="n on" style="color:#00E5FF"><div class="slot" style="background:rgba(0,229,255,.14);box-shadow:0 0 12px rgba(0,229,255,.6)"><i class="ic ic-bag" style="width:19px;height:19px;background:#00E5FF;filter:url(#t-00E5FF) drop-shadow(0 0 5px #00E5FF)"></i></div>服务</div>
+        <div class="n"><div class="slot" style="background:#121A33"><i class="ic ic-clip" style="width:19px;height:19px;background:#5C6C96"></i></div>订单</div>
+        <div class="n"><div class="slot" style="background:linear-gradient(135deg,#00E5FF,#2563EB);box-shadow:0 0 14px rgba(0,229,255,.8)"><b style="color:#06202A;font-size:19px;line-height:1">＋</b></div>下单</div>
+        <div class="n"><div class="slot" style="background:#121A33"><i class="ic ic-msg" style="width:19px;height:19px;background:#5C6C96"></i></div>消息</div>
+        <div class="n"><div class="slot" style="background:#121A33"><i class="ic ic-users" style="width:19px;height:19px;background:#5C6C96"></i></div>我的</div>
+      </div>
+      <div class="icons">
+        <div class="slot" style="background:#121A33"><i class="ic ic-wallet" style="width:19px;height:19px;background:#00E5FF"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-coins" style="width:19px;height:19px;background:#FFC857"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-headset" style="width:19px;height:19px;background:#9FD9FF"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-sparkles" style="width:19px;height:19px;background:#A78BFA"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-trophy" style="width:19px;height:19px;background:#FFC857"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-shield" style="width:19px;height:19px;background:#00E5FF"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-swords" style="width:19px;height:19px;background:#FF6B9D"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-rocket" style="width:19px;height:19px;background:#00E5FF"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-target" style="width:19px;height:19px;background:#5C6C96"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-zap" style="width:19px;height:19px;background:#FFC857"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-flame" style="width:19px;height:19px;background:#FF6B9D"></i></div>
+        <div class="slot" style="background:#121A33"><i class="ic ic-compass" style="width:19px;height:19px;background:#00E5FF"></i></div>
+      </div>
+      <div class="legend">图标按语义分组上色（资金=金 / 安全=青 / 社交=粉），非统一色 —— 一眼能认出功能类别</div>
+    </div>
+
+    <div class="panel dark">
+      <h3>② 商品列表装饰 <em>六边图案底 + 霓虹描边 + 发光价格</em></h3>
+      <div class="plist">
+        <div class="pcard" style="background:#121A33;border:1px solid rgba(0,229,255,.32);box-shadow:0 0 14px rgba(0,229,255,.12)">
+          <svg style="position:absolute;inset:0;opacity:.55"><rect width="100%" height="100%" fill="url(#p-hex)"/></svg>
+          <div class="sticker" style="background:linear-gradient(135deg,#FFC857,#E8832B);color:#14101E">董事长推荐</div>
+          <div class="thumb" style="background:linear-gradient(135deg,#1E3A8A,#155E75);border:1px solid rgba(0,229,255,.4)"><i class="ic ic-snow" style="width:26px;height:26px;background:#00E5FF;filter:url(#t-00E5FF) drop-shadow(0 0 6px #00E5FF)"></i></div>
+          <div class="info">
+            <div class="nm" style="color:#E6EEFF">9.9 新人体验单 保 400w</div>
+            <div class="meta"><span class="mini" style="background:rgba(0,229,255,.14);color:#00E5FF;border:1px solid rgba(0,229,255,.45)">已售 19</span><span class="mini" style="background:rgba(255,200,87,.14);color:#FFC857;border:1px solid rgba(255,200,87,.4)">限 2 单</span></div>
+            <div class="hotbar" style="background:#1B2748"><i style="width:78%;background:linear-gradient(90deg,#00E5FF,#2563EB);box-shadow:0 0 8px #00E5FF"></i></div>
+          </div>
+          <div class="pr" style="color:#FFC857;text-shadow:0 0 10px rgba(255,200,87,.6)">¥9.90<span class="unit">/单</span></div>
+        </div>
+        <div class="pcard" style="background:#121A33;border:1px solid rgba(124,141,181,.28)">
+          <div class="thumb" style="background:linear-gradient(135deg,#0E7490,#06B6D4);border:1px solid rgba(0,229,255,.3)"><i class="ic ic-swords" style="width:26px;height:26px;background:#fff"></i></div>
+          <div class="info">
+            <div class="nm" style="color:#E6EEFF">44.6 博弈鹰雕单 不出保 1200w</div>
+            <div class="meta"><span class="mini" style="background:rgba(0,229,255,.12);color:#9FD9FF">全程录屏</span><span class="mini" style="background:#1B2748;color:#7C8DB5">30 分钟</span></div>
+            <div class="hotbar" style="background:#1B2748"><i style="width:42%;background:linear-gradient(90deg,#00E5FF,#A78BFA)"></i></div>
+          </div>
+          <div class="pr" style="color:#FFC857">¥44.60<span class="unit">/单</span></div>
+        </div>
+        <div class="pcard" style="background:#121A33;border:1px solid rgba(124,141,181,.28)">
+          <div class="thumb" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)"><i class="ic ic-crown" style="width:26px;height:26px;background:#fff"></i></div>
+          <div class="info">
+            <div class="nm" style="color:#E6EEFF">233 保 1 亿 送小金人</div>
+            <div class="meta"><span class="mini" style="background:rgba(255,200,87,.14);color:#FFC857;border:1px solid rgba(255,200,87,.35)">高端局</span></div>
+            <div class="hotbar" style="background:#1B2748"><i style="width:22%;background:linear-gradient(90deg,#FFC857,#E8832B)"></i></div>
+          </div>
+          <div class="pr" style="color:#FFC857">¥233.00<span class="unit">/单</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= F ================= -->
+  <div class="col">
+    <div class="ch chF">方案 F · 潮玩<small>大色块 + 贴纸角标 + 彩浪图案（年轻活泼）</small></div>
+
+    <div class="panel">
+      <h3>① 图标大改 · 双色实底 <em>色块底 + 白色镂空 / 圆角 12</em></h3>
+      <div class="navrow">
+        <div class="n on" style="color:#2563EB"><div class="slot" style="background:linear-gradient(135deg,#2563EB,#06B6D4);box-shadow:0 6px 12px rgba(37,99,235,.35)"><i class="ic ic-bag" style="width:19px;height:19px;background:#fff"></i></div>服务</div>
+        <div class="n"><div class="slot" style="background:#EEF2F7"><i class="ic ic-clip" style="width:19px;height:19px;background:#64748B"></i></div>订单</div>
+        <div class="n"><div class="slot" style="background:linear-gradient(135deg,#8B5CF6,#2563EB);box-shadow:0 6px 14px rgba(139,92,246,.45)"><b style="color:#fff;font-size:19px;line-height:1">＋</b></div>下单</div>
+        <div class="n"><div class="slot" style="background:#EEF2F7"><i class="ic ic-msg" style="width:19px;height:19px;background:#64748B"></i></div>消息</div>
+        <div class="n"><div class="slot" style="background:#EEF2F7"><i class="ic ic-users" style="width:19px;height:19px;background:#64748B"></i></div>我的</div>
+      </div>
+      <div class="icons">
+        <div class="slot" style="background:linear-gradient(135deg,#2563EB,#3B82F6)"><i class="ic ic-wallet" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#F59E0B,#FB923C)"><i class="ic ic-coins" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#06B6D4,#22D3EE)"><i class="ic ic-headset" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#8B5CF6,#A78BFA)"><i class="ic ic-sparkles" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#F472B6,#F59E0B)"><i class="ic ic-trophy" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#10B981,#22D3EE)"><i class="ic ic-shield" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#2563EB,#8B5CF6)"><i class="ic ic-swords" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#0EA5E9,#06B6D4)"><i class="ic ic-snow" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#F59E0B,#F472B6)"><i class="ic ic-gift" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#22C55E,#10B981)"><i class="ic ic-qr" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#6366F1,#8B5CF6)"><i class="ic ic-camera" style="width:19px;height:19px;background:#fff"></i></div>
+        <div class="slot" style="background:linear-gradient(135deg,#EF4444,#F59E0B)"><i class="ic ic-flame" style="width:19px;height:19px;background:#fff"></i></div>
+      </div>
+      <div class="legend">每个功能区一个专属色相（资金=橙 / 客服=青 / AI=紫 / 安全=绿），图标 = 色块底 + 白镂空</div>
+    </div>
+
+    <div class="panel">
+      <h3>② 商品列表装饰 <em>彩浪底纹 + 贴纸角标 + 价格气泡</em></h3>
+      <div class="plist">
+        <div class="pcard" style="background:#fff;border:1px solid #E9EEF5;box-shadow:0 6px 16px rgba(37,99,235,.09)">
+          <svg style="position:absolute;inset:0;opacity:.6"><rect width="100%" height="100%" fill="url(#p-wave)"/></svg>
+          <div class="sticker" style="background:#FFB020;color:#3B2400;transform:rotate(-5deg)">董事长推荐</div>
+          <div class="thumb" style="background:linear-gradient(135deg,#06B6D4,#8B5CF6)"><i class="ic ic-snow" style="width:26px;height:26px;background:#fff"></i></div>
+          <div class="info">
+            <div class="nm">9.9 新人体验单 保 400w</div>
+            <div class="meta"><span class="mini" style="background:#E0F2FE;color:#0369A1">已售 19</span><span class="mini" style="background:#FEF3C7;color:#B45309">限 2 单</span></div>
+            <div class="hotbar" style="background:#EEF2F7"><i style="width:78%;background:linear-gradient(90deg,#2563EB,#8B5CF6)"></i></div>
+          </div>
+          <div class="pr" style="background:#F59E0B;color:#fff;padding:4px 9px;border-radius:999px">¥9.90</div>
+        </div>
+        <div class="pcard" style="background:#fff;border:1px solid #E9EEF5;box-shadow:0 6px 16px rgba(6,182,212,.09)">
+          <div class="thumb" style="background:linear-gradient(135deg,#F59E0B,#F472B6)"><i class="ic ic-swords" style="width:26px;height:26px;background:#fff"></i></div>
+          <div class="info">
+            <div class="nm">44.6 博弈鹰雕单 不出保 1200w</div>
+            <div class="meta"><span class="mini" style="background:#E0F2FE;color:#0369A1">全程录屏</span><span class="mini" style="background:#EEE9FE;color:#6D28D9">30 分钟</span></div>
+            <div class="hotbar" style="background:#EEF2F7"><i style="width:42%;background:linear-gradient(90deg,#06B6D4,#22D3EE)"></i></div>
+          </div>
+          <div class="pr" style="background:#8B5CF6;color:#fff;padding:4px 9px;border-radius:999px">¥44.60</div>
+        </div>
+        <div class="pcard" style="background:#fff;border:1px solid #E9EEF5;box-shadow:0 6px 16px rgba(245,158,11,.1)">
+          <div class="thumb" style="background:linear-gradient(135deg,#2563EB,#0EA5E9)"><i class="ic ic-crown" style="width:26px;height:26px;background:#fff"></i></div>
+          <div class="info">
+            <div class="nm">233 保 1 亿 送小金人</div>
+            <div class="meta"><span class="mini" style="background:#FEF3C7;color:#B45309">高端局</span></div>
+            <div class="hotbar" style="background:#EEF2F7"><i style="width:22%;background:linear-gradient(90deg,#F59E0B,#EF4444)"></i></div>
+          </div>
+          <div class="pr" style="background:#2563EB;color:#fff;padding:4px 9px;border-radius:999px">¥233.00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 图案素材墙 ================= -->
+<div class="panel" style="margin-top:16px">
+  <h3>③ 图案系统 · 8 套自绘（可无限平铺，纯 SVG 零体积） <em>同一套图案在三列里换色即换风格</em></h3>
+  <div class="patwall">
+    <div class="pat"><svg><rect width="100%" height="100%" fill="url(#p-topo)"/></svg><span>等高线 · 山岭</span></div>
+    <div class="pat"><svg><rect width="100%" height="100%" fill="url(#p-mount)"/></svg><span>山形 · 层叠</span></div>
+    <div class="pat"><svg><rect width="100%" height="100%" fill="url(#p-hex)"/></svg><span>六边 · 蜂巢</span></div>
+    <div class="pat"><svg><rect width="100%" height="100%" fill="url(#p-diag)"/></svg><span>斜纹 · 45°</span></div>
+    <div class="pat"><svg><rect width="100%" height="100%" fill="url(#p-dots)"/></svg><span>圆点 · 矩阵</span></div>
+    <div class="pat"><svg><rect width="100%" height="100%" fill="url(#p-grid)"/></svg><span>网格 · 精密</span></div>
+    <div class="pat"><svg><rect width="100%" height="100%" fill="url(#p-wave)"/></svg><span>波浪 · 潮汐</span></div>
+    <div class="pat"><svg><rect width="100%" height="100%" fill="url(#p-scale)"/></svg><span>雪鳞 · 金线</span></div>
+  </div>
+  <div class="legend">图案一律做 <b>低对比底纹</b>（不透明度 18–30%）铺在卡片/分区底，绝不压过文字；且全部是 SVG 矢量，平铺零成本。</div>
+</div>
+
+</body>
+</html>

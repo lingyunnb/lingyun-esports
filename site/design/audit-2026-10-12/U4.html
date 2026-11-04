@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>U4 · 空态未统一 · 设计图</title>
+<!--
+  U4 设计图 —— 自包含 HTML：纯 CSS + 内联 SVG，无外部依赖、无第三方截图。
+  三种现状逐条取自真实源码：
+    · 纯文字（无操作）  → AppealsView.vue:112（无 #empty 插槽 → Naive 默认「暂无数据」）
+    · 带按钮（较完整）  → IdentityBindingsView.vue:228-245（标题 + 说明 + 「重置筛选」按钮）
+    · 空白/纯文字       → ChatView.vue:143（无 #empty 插槽）/ AuditView / LeaderboardView / UsersView
+  覆盖统计：24 个页面有 n-data-table，其中只有 3 个写了 #empty 插槽（IdentityBindings / Recharge / Withdraw）。
+  本图只是设计示意，**未改动任何产品代码**。
+-->
+<style>
+:root{
+  --brand:#2563EB;--brand-soft:rgba(37,99,235,.10);--cyan:#06B6D4;--gold:#B45309;
+  --bg:#F5F7FB;--surface:#FFFFFF;--sunken:#F1F5F9;
+  --ink:#1F2937;--ink2:#5B6B82;--ink3:#5E7085;
+  --hair:#E5E9F2;--hair2:#DCE3EE;
+  --ok:#15803D;--warn:#C2410C;--err:#DC2626;
+  --r-sm:6px;--r-ctl:8px;--r-card:10px;--r-panel:14px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:30px 26px 64px}
+.kicker{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--r-sm);
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink2);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin:12px 0 8px}
+.lead{font-size:13.5px;color:var(--ink2);max-width:960px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:var(--ink3)}
+.meta b{color:var(--ink);font-weight:700}
+h2{font-size:16.5px;font-weight:800;letter-spacing:-.2px;padding-bottom:8px;border-bottom:1px solid var(--hair);margin:30px 0 14px}
+p{font-size:13px;color:var(--ink2)}
+code{background:#EEF2F8;border-radius:3px;padding:1px 4px;font-size:11.5px;color:#1E293B;font-family:var(--mono)}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:980px){.three{grid-template-columns:1fr}}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:960px){.two{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:16px 17px 18px;display:flex;flex-direction:column;gap:12px}
+.panel-head{display:flex;align-items:center;gap:9px}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--r-sm);font-size:11px;font-weight:800;letter-spacing:.02em}
+.chip-before{background:var(--sunken);border:1px solid var(--hair);color:var(--ink2)}
+.chip-after{background:var(--brand-soft);border:1px solid rgba(37,99,235,.22);color:var(--brand)}
+.chip-bad{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.22);color:var(--err)}
+.chip-ok{background:rgba(21,128,61,.08);border:1px solid rgba(21,128,61,.24);color:var(--ok)}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink)}
+.panel-sub{font-size:11.5px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+.var{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:14px 15px;display:flex;flex-direction:column;gap:10px}
+.var-head{display:flex;align-items:center;gap:8px}
+.var-name{font-size:12.5px;font-weight:800}
+.var-src{font-size:11px;color:var(--ink3);font-family:var(--mono);line-height:1.6}
+/* ── 迷你表格 / 空态舞台 ──────────────────────────────── */
+.mini{border:1px solid var(--hair2);border-radius:var(--r-ctl);overflow:hidden;background:var(--surface)}
+.mini-hd{display:flex;background:var(--sunken);border-bottom:1px solid var(--hair2)}
+.mini-hd span{font-size:10.5px;font-weight:800;color:var(--ink3);padding:6px 9px;flex:1}
+.stage{padding:22px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:126px;text-align:center}
+.stage .plain{font-size:12.5px;color:var(--ink3)}
+.stage .t{font-size:13.5px;font-weight:700;color:var(--ink)}
+.stage .d{font-size:12px;line-height:1.75;color:var(--ink2);max-width:330px}
+.btn{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:var(--r-ctl);
+  border:1px solid var(--hair2);background:var(--surface);color:var(--ink);font-size:12px;font-weight:600}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.ico-circle{width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink3)}
+/* ── 代码块 ────────────────────────────────────────────── */
+.code{background:#0B1220;border:1px solid #1E2C42;border-radius:var(--r-card);padding:11px 12px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:#CFE0FF;overflow-x:auto;white-space:pre}
+.code .c{color:#7E93B4}
+.code .k{color:#8CA3BE}
+.code .add{color:#A9E7C0}
+.code .del{color:#FFB4B4;text-decoration:line-through;text-decoration-color:rgba(255,120,120,.55)}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+.tbl th{font-size:11.5px;font-weight:800;color:var(--ink3);background:var(--sunken)}
+.tbl td{color:var(--ink2)}
+.tbl td b{color:var(--ink)}
+.tbl td.mono{font-family:var(--mono);font-size:11.5px;color:var(--ink)}
+.note{display:flex;gap:9px;border:1px solid var(--hair);border-left:3px solid var(--brand);
+  border-radius:var(--r-ctl);padding:10px 12px;background:var(--surface);font-size:12.5px;color:var(--ink2)}
+.note.warn{border-left-color:var(--warn)}
+.note.ok{border-left-color:var(--ok)}
+.note b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11.5px;color:var(--ink3)}
+.legend b{color:var(--ink)}
+.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--ink3);line-height:1.8}
+.foot b{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="kicker">U4 · 组件统一 · 建议优先级 P2</span>
+  <h1>空态没有统一：三种样子并存</h1>
+  <p class="lead">
+    24 个页面用了 <code>n-data-table</code>，其中<b>只有 3 个</b>写了 <code>#empty</code> 插槽。
+    其余页面吃 Naive 默认的「暂无数据」四个字 —— 用户看不出"是没数据，还是我筛错了，还是坏了"。
+    <b>本图只出方案，不改代码。</b>
+  </p>
+  <div class="meta">
+    <span>有表格的页面：<b>24 个</b></span>
+    <span>写了 <code>#empty</code>：<b>3 个</b></span>
+    <span>落点：<b>admin-web/src/components/</b></span>
+  </div>
+
+  <h2>三种现状空态</h2>
+  <div class="three">
+
+    <!-- ============ ① 纯文字 ============ -->
+    <div class="var">
+      <div class="var-head"><span class="chip chip-bad">① 纯文字</span><span class="var-name">Naive 默认「暂无数据」</span></div>
+      <div class="var-src">AppealsView.vue:112 · ChatView.vue:143<br>AuditView · LeaderboardView · UsersView · WorkersView …</div>
+      <div class="mini">
+        <div class="mini-hd"><span>订单号</span><span>用户</span><span>状态</span></div>
+        <div class="stage">
+          <span class="plain">暂无数据</span>
+        </div>
+      </div>
+      <div class="note warn" style="font-size:11.5px"><span>⚠</span><span>
+        <b>四个字，零信息</b>。既不说是"本来就没有"还是"筛掉了"，也不给下一步动作。
+        在<b>有筛选条</b>的页面上尤其糟：用户刚点了「待处理」，看到"暂无数据"会怀疑自己点错了。
+      </span></div>
+    </div>
+
+    <!-- ============ ② 带按钮 ============ -->
+    <div class="var">
+      <div class="var-head"><span class="chip chip-ok">② 带按钮</span><span class="var-name">已有较好实践</span></div>
+      <div class="var-src">IdentityBindingsView.vue:228-245（唯一区分"筛不出来"与"还没有记录"的页面）</div>
+      <div class="mini">
+        <div class="mini-hd"><span>老板</span><span>打手</span><span>状态</span></div>
+        <div class="stage">
+          <span class="t">没有符合筛选条件的绑定记录</span>
+          <span class="d">换个状态或清空关键词试试；只记得工号时可以直接搜工号（如 MI109660A）。</span>
+          <span class="btn">重置筛选</span>
+        </div>
+      </div>
+      <div class="note ok" style="font-size:11.5px"><span>✓</span><span>
+        <b>这是全站最好的一个</b>：标题说结论、说明给下一步、按钮可直接点。
+        但它只存在于一个页面 —— 而且<b>没有图标</b>（视觉上仍是一块空白的白卡）。
+      </span></div>
+    </div>
+
+    <!-- ============ ③ 空白 ============ -->
+    <div class="var">
+      <div class="var-head"><span class="chip chip-bad">③ 空白</span><span class="var-name">写了但更含糊</span></div>
+      <div class="var-src">RechargeView.vue:92-100 / 132-140 · WithdrawView.vue:92-100<br>（有标题有说明，但<b>无可点动作</b>；BannersView 的 <code>fmt</code> 还会返回 <code>''</code>）</div>
+      <div class="mini">
+        <div class="mini-hd"><span>金额</span><span>状态</span><span>时间</span></div>
+        <div class="stage">
+          <span class="t">还没有充值申请</span>
+          <span class="d">老板在 App 里选金额、扫码付款、上传截图提交后，申请会出现在这里等着核对。</span>
+        </div>
+      </div>
+      <div class="note warn" style="font-size:11.5px"><span>⚠</span><span>
+        <b>说明写得好，但收尾是断的</b>：文字说"如果刚有人提交却看不到，先点「重置」清掉上面的筛选条件" ——
+        却<b>没给「重置」按钮</b>，让人自己回头去工具栏找。
+      </span></div>
+    </div>
+  </div>
+
+  <h2>统一空态组件</h2>
+  <div class="two">
+    <div class="panel" style="border-color:rgba(37,99,235,.38)">
+      <div class="panel-head">
+        <span class="chip chip-after">建议</span>
+        <span class="panel-title">图标 + 一句话 + 可选操作按钮</span>
+        <span class="panel-sub">AdminEmpty</span>
+      </div>
+
+      <div class="mini">
+        <div class="mini-hd"><span>老板</span><span>打手</span><span>状态</span></div>
+        <div class="stage">
+          <span class="ico-circle">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17a2 2 0 0 1 2 2v1M4 7.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5M4 7.5h13M21 11.5h-4.5a2.25 2.25 0 0 0 0 4.5H21z"/></svg>
+          </span>
+          <span class="t">还没有任何绑定记录</span>
+          <span class="d">老板在老板端「我的」里绑定打手账号后，这里会出现一条记录：老板、打手、绑定时间与上限占用。</span>
+          <span class="btn">刷新</span>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span>① 图标：<b>38px 圆形 + 发丝描边</b>（不是彩色实心块）</span>
+        <span>② 一句话：<b>说结论</b></span>
+        <span>③ 说明：<b>给下一步</b>（可省略）</span>
+        <span>④ 按钮：<b>可选</b>，且必须是真能解决问题的那个</span>
+      </div>
+
+      <div class="note ok" style="font-size:11.5px"><span>✓</span><span>
+        <b>为什么必须有图标</b>：空态是一块大白卡，纯文字会让人以为"页面没加载完"。
+        一个<b>灰调线性图标</b>就能把"这里是空的、但功能正常"说清楚 —— 且它是<b>结构</b>而非装饰（docs/21 第六条自检）。
+      </span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">API</span>
+        <span class="panel-title">组件接口建议</span>
+        <span class="panel-sub">components/AdminEmpty.vue</span>
+      </div>
+      <div class="code"><span class="c">// admin-web/src/components/AdminEmpty.vue</span>
+<span class="k">interface</span> Props {
+  <span class="c">/** ① 图标：复用各页已有的线性图标体系（不引第三方图标库） */</span>
+  icon?: <span class="add">'inbox' | 'search' | 'wallet' | 'user' | 'chat' | 'chart'</span>;
+  <span class="c">/** ② 一句话结论（必填）：说清"现在是什么状态" */</span>
+  title: <span class="k">string</span>;
+  <span class="c">/** ③ 补充说明（可选）：给"下一步该做什么" */</span>
+  desc?: <span class="k">string</span>;
+  <span class="c">/** ④ 操作按钮（可选）：真能解决问题的那一个 */</span>
+  actionText?: <span class="k">string</span>;
+  <span class="c">/** 紧凑模式：表格行数少/抽屉内嵌时用（padding 减半） */</span>
+  compact?: <span class="k">boolean</span>;
+}
+<span class="k">emit</span>: { action: [] }   <span class="c">// 父组件决定点了做什么</span></div>
+      <div class="code" style="margin-top:-2px"><span class="c">// 用法：表格里一行接上（替代 Naive 默认「暂无数据」）</span>
+&lt;n-data-table :columns="columns" :data="rows"&gt;
+  &lt;template #empty&gt;
+    &lt;AdminEmpty
+      icon="search"
+      title="没有符合筛选条件的工单"
+      desc="换个状态或清空关键词试试。"
+      action-text="重置筛选"
+      @action="reset" /&gt;
+  &lt;/template&gt;
+&lt;/n-data-table&gt;</div>
+    </div>
+  </div>
+
+  <h2>必须区分两种"空"（这是统一的前提）</h2>
+  <table class="tbl">
+    <tr><th style="width:150px">状态</th><th style="width:290px">标题（结论）</th><th>说明与动作</th></tr>
+    <tr><td><b>筛不出来</b><br><span style="font-size:11px;color:var(--ink3)">有筛选条件 / 有关键词</span></td>
+      <td>没有符合筛选条件的<b>&lt;对象&gt;</b></td>
+      <td>说明：提示可放宽条件；<b>动作 = 重置筛选</b>（IdentityBindingsView 的既有做法，推广到全部页面）。</td></tr>
+    <tr><td><b>还没有记录</b><br><span style="font-size:11px;color:var(--ink3)">无任何筛选条件</span></td>
+      <td>还没有<b>&lt;对象&gt;</b></td>
+      <td>说明：讲清"这条记录是怎么产生的"（如"老板绑定打手后会出现一条"）；<b>动作可选</b>（有明确去处才给按钮）。</td></tr>
+    <tr><td><b>无权限</b><br><span style="font-size:11px;color:var(--ink3)">不是空，是拿不到</span></td>
+      <td>需要 <code>admin:xxx</code> 权限点</td>
+      <td><b>不要用空态组件</b>：权限缺失是另一类状态，必须明说缺哪个权限点（AuditView 已按这个口径修过，F1）。</td></tr>
+  </table>
+
+  <h2>逐项口径</h2>
+  <table class="tbl">
+    <tr><th style="width:132px">项</th><th>内容</th></tr>
+    <tr><td><b>现状</b></td><td>24 个有表格的页面里，<b>21 个</b>用 Naive 默认「暂无数据」（四个字、无图标、无动作）；3 个写了 <code>#empty</code>（<code>IdentityBindingsView</code> / <code>RechargeView</code> / <code>WithdrawView</code>），其中只有 <code>IdentityBindingsView</code> 区分了"筛不出来"与"还没有记录"并给了按钮。工作台的 <code>.nav-empty</code> / <code>.stat-empty</code> 又是另一种（虚线框 + 一行字）。</td></tr>
+    <tr><td><b>建议</b></td><td>① 新增 <code>admin-web/src/components/AdminEmpty.vue</code>：<b>图标（38px 圆形线性）+ 一句话结论（必填）+ 可选说明 + 可选操作按钮</b>，props 见上；<br>
+      ② 逐页把 <code>#empty</code> 插槽接上它（先做 <b>6 个高频页</b>：<code>OrdersView</code> / <code>UsersView</code> / <code>WorkersView</code> / <code>WalletsView</code> / <code>AppealsView</code> / <code>ComplaintsView</code>），其余页面后续批量替换；<br>
+      ③ 统一按上表区分三种状态，<b>权限缺失不用这个组件</b>；<br>
+      ④ 顺手把工作台的 <code>.nav-empty</code> / <code>.stat-empty</code> 也换成它（<code>compact</code> 模式）。</td></tr>
+    <tr><td><b>影响面</b></td><td><b>不需要动服务端。</b>纯展示层；不动接口、不动数据结构、不动分页与筛选逻辑。<br>
+      改动面广（21 个页面）但风险低 —— 每个空态只在 <code>rows.length === 0</code> 时渲染，不影响有数据的路径。建议<b>分两批</b>：先 6 个高频页，验证后再铺开。</td></tr>
+    <tr><td><b>红线</b></td><td><code>docs/14</code>：<b>否</b>。§「页面设计检查清单」第 5 条"状态是否容易理解"、第 6 条"页面是否拥挤/过于空"，本项正是照这两条做。<br>
+      <code>docs/21</code>：<b>否，且是正向合规</b>。§五「交互层」明文要求"<b>必须设计空态 / 加载态 / 错误态</b>（只有 happy path = 真实使用时会像坏了）"、"空态给<b>下一步动作</b>"—— 本项就是补上这条。<br>
+      图标为<b>灰调线性</b>（<code>--color-text-tertiary</code> + 发丝描边圆底）：<b>不是</b>彩色实心块、<b>不是</b> emoji、<b>不是</b>装饰插画。</td></tr>
+    <tr><td><b>工时</b></td><td><b>1 天</b>（组件 0.5 天 + 6 个高频页接入 0.5 天；其余 15 页约 0.5 天可另批）。</td></tr>
+    <tr><td><b>设计图</b></td><td><code>site/design/audit-2026-10-12/U4.html</code>（本页）· 截图 <code>U4.png</code></td></tr>
+  </table>
+
+  <div class="foot">
+    <b>本图为设计示意</b>：全部图形为纯 CSS 与内联 SVG 绘制，不是产品截图，也未使用任何第三方素材。<br>
+    <b>本方案未实施任何代码改动</b> —— 等负责人审批后才做。制图日期 2026-10-12。
+  </div>
+</div>
+</body>
+</html>

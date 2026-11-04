@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body {
+    background:#E9EDF3; font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    padding:40px 32px; display:flex; gap:40px; align-items:flex-start;
+  }
+  .col { display:flex; flex-direction:column; gap:14px; }
+  .cap { font-size:14px; font-weight:700; color:#0F2440; }
+  .cap span { font-weight:500; color:#6B7A8D; font-size:12px; margin-left:8px; }
+  .phone {
+    width:390px; height:844px; background:#F6F7F9; border-radius:34px; overflow:hidden;
+    box-shadow:0 18px 50px rgba(15,36,64,.16); display:flex; flex-direction:column;
+  }
+  .bar { padding:14px 16px 10px; display:flex; align-items:center; gap:12px; }
+  .back { width:22px; height:22px; color:#0F2440; }
+  .title { font-size:19px; font-weight:700; color:#0F2440; }
+  .search {
+    margin:0 16px 10px; height:38px; background:#fff; border:1px solid #E8ECF2; border-radius:999px;
+    display:flex; align-items:center; padding:0 14px; gap:8px;
+  }
+  .search svg { width:15px; height:15px; color:#98A6B8; }
+  .search .ph { font-size:13px; color:#A8B4C4; }
+  .chips { display:flex; gap:8px; padding:0 16px 10px; overflow:hidden; }
+  .chip {
+    height:32px; padding:0 14px; border-radius:999px; background:#fff; border:1px solid #E8ECF2;
+    display:flex; align-items:center; font-size:12.5px; color:#4A5A6E; white-space:nowrap; font-weight:500;
+  }
+  .chip.on { background:#111827; border-color:#111827; color:#fff; font-weight:600; }
+  .sortrow { display:flex; align-items:center; justify-content:space-between; padding:0 16px 10px; }
+  .count { font-size:12px; color:#8492A4; }
+  .filter {
+    height:30px; padding:0 12px; border-radius:999px; background:#fff; border:1px solid #E8ECF2;
+    display:flex; align-items:center; gap:5px; font-size:12px; color:#4A5A6E; font-weight:500;
+  }
+  .filter svg { width:13px; height:13px; }
+  .list { flex:1; overflow:hidden; padding:0 16px; display:flex; flex-direction:column; gap:10px; }
+
+  /* 素版卡 */
+  .row {
+    background:#fff; border:1px solid #E8ECF2; border-radius:14px; padding:12px;
+    display:flex; gap:12px; align-items:center;
+  }
+  .av {
+    width:64px; height:64px; border-radius:20px; flex:none; display:flex; align-items:center; justify-content:center;
+    font-size:26px; font-weight:700; background:#EEF1FE; color:#5B6BD6;
+  }
+  .info { flex:1; min-width:0; }
+  .nameRow { display:flex; align-items:center; gap:6px; margin-bottom:5px; }
+  .name { font-size:15px; font-weight:700; color:#0F2440; }
+  .badge {
+    height:20px; padding:0 7px; border-radius:999px; display:flex; align-items:center; gap:3px;
+    font-size:10.5px; font-weight:700; background:#F1F3F7; color:#5A6879;
+  }
+  .badge i { width:9px; height:9px; border-radius:50%; background:currentColor; opacity:.75; display:block; }
+  .intro { font-size:12.5px; color:#6B7A8D; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .meta { margin-top:6px; font-size:11px; color:#98A6B8; }
+  .meta b { color:#4A5A6E; font-weight:600; }
+  .btn {
+    width:56px; height:56px; border-radius:16px; flex:none; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:2px; background:#2563EB; color:#fff;
+    font-size:11px; font-weight:700; letter-spacing:.5px;
+  }
+  .btn svg { width:16px; height:16px; }
+
+  /* ===== 彩色版：分部色 + 彩色头像 + 数据色阶 ===== */
+  /* 分部主题色 */
+  .t-pubg  { --c:#F59E0B; --cbg:#FEF3E2; --cink:#935F06; }  /* 和平精英 · 橙金 */
+  .t-dm    { --c:#2563EB; --cbg:#E8F0FE; --cink:#1E4FA8; }  /* 三角洲手游 · 蓝 */
+  .t-dpc   { --c:#7C4DE0; --cbg:#F1EAFE; --cink:#5B2FA8; }  /* 三角洲端游 · 紫 */
+
+  .chipC { color:var(--c); border-color:var(--c); background:var(--cbg); font-weight:600; }
+  .chipC.on { background:var(--c); border-color:var(--c); color:#fff; }
+
+  /* 卡片：左侧分部色条 + 头像环 */
+  .rowC {
+    position:relative; background:#fff; border:1px solid #E8ECF2; border-radius:14px;
+    padding:12px 12px 12px 14px; display:flex; gap:12px; align-items:center; overflow:hidden;
+  }
+  .rowC::before {
+    content:""; position:absolute; left:0; top:12px; bottom:12px; width:3px; border-radius:0 3px 3px 0;
+    background:var(--c);
+  }
+  /* 彩色头像：按打手取色，饱和度压低（专业不幼稚） */
+  .avC {
+    width:64px; height:64px; border-radius:20px; flex:none; display:flex; align-items:center; justify-content:center;
+    font-size:26px; font-weight:700; position:relative;
+  }
+  .a1 { background:#E8F0FE; color:#1E4FA8; }   /* 蓝 */
+  .a2 { background:#E6F7F2; color:#0E7A5F; }   /* 青绿 */
+  .a3 { background:#FEF3E2; color:#935F06; }   /* 橙金 */
+  .a4 { background:#F1EAFE; color:#5B2FA8; }   /* 紫 */
+  .a5 { background:#FDEAF3; color:#9C2A63; }   /* 玫红 */
+  .a6 { background:#EAF1FE; color:#2452A8; }   /* 深蓝 */
+  /* 在线点 */
+  .dot {
+    position:absolute; right:-2px; bottom:-2px; width:14px; height:14px; border-radius:50%;
+    background:#22C55E; border:2.5px solid #fff;
+  }
+  .dot.off { background:#C7D0DC; }
+
+  /* 等级徽章（五档色，已有体系） */
+  .b1 { background:#F1F3F7; color:#5A6879; }
+  .b2 { background:#E6F7F2; color:#0E7A5F; }
+  .b3 { background:#E8F0FE; color:#1E4FA8; }
+  .b4 { background:#F1EAFE; color:#5B2FA8; }
+  .b5 { background:#FDF3E0; color:#935F06; border:1px solid #E8C07A; }
+
+  /* 好评率色阶 */
+  .r-hi  { color:#0E7A5F; font-weight:700; }   /* ≥98% 绿 */
+  .r-mid { color:#1E4FA8; font-weight:700; }   /* 95–98% 蓝 */
+  .r-low { color:#B45309; font-weight:700; }   /* <95% 橙 */
+  .r-na  { color:#98A6B8; font-weight:500; }   /* 无评价 灰 */
+
+  /* 选 TA 按钮：分部色 */
+  .btnC { background:var(--c); }
+  .btnC.off { background:#C7D0DC; }
+
+  /* 底栏（彩色版：选中项用主色） */
+  .nav {
+    height:60px; background:#fff; border-top:1px solid #EDF1F6; display:flex; align-items:center;
+    justify-content:space-around; flex:none;
+  }
+  .nav .it { display:flex; flex-direction:column; align-items:center; gap:3px; font-size:10px; color:#98A6B8; }
+  .nav .it.on { color:#2563EB; font-weight:700; }
+  .nav svg { width:21px; height:21px; }
+  .note { width:390px; font-size:12.5px; color:#4A5A6E; line-height:1.75; background:#fff;
+          border:1px solid #E8ECF2; border-radius:12px; padding:12px 14px; }
+  .note b { color:#0F2440; }
+  .note .k { font-weight:700; }
+  .sw { display:inline-block; width:10px; height:10px; border-radius:3px; vertical-align:-1px; margin-right:3px; }
+</style>
+</head>
+<body>
+
+<!-- ============ 左：现在（素） ============ -->
+<div class="col">
+  <div class="cap">现在<span>只有一个蓝 + 一个灰</span></div>
+  <div class="phone">
+    <div class="bar"><svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><div class="title">选择陪玩</div></div>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="ph">搜名字或介绍</span></div>
+    <div class="chips"><div class="chip on">全部</div><div class="chip">和平精英</div><div class="chip">三角洲·手游</div></div>
+    <div class="sortrow"><span class="count">共 3 位陪玩</span><div class="filter">接单量</div></div>
+    <div class="list">
+      <div class="row">
+        <div class="av">凌</div>
+        <div class="info">
+          <div class="nameRow"><span class="name">凌云</span><span class="badge">LV5 宗师</span></div>
+          <div class="intro">和平精英双排老手，稳定上分不墨迹。工作日 20:00 - 次日 1:00 在线。</div>
+          <div class="meta">接单 <b>2,847</b> 次 · 好评 <b>98.6%</b></div>
+        </div>
+        <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选 TA</div>
+      </div>
+      <div class="row">
+        <div class="av">反</div>
+        <div class="info">
+          <div class="nameRow"><span class="name">反悔</span><span class="badge">LV3 扬名</span></div>
+          <div class="intro">三角洲手游护航，带打不墨迹，全场录屏。</div>
+          <div class="meta">接单 <b>1,204</b> 次 · 好评 <b>97.2%</b></div>
+        </div>
+        <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选 TA</div>
+      </div>
+      <div class="row">
+        <div class="av">清</div>
+        <div class="info">
+          <div class="nameRow"><span class="name">清水</span><span class="badge">LV1 初出</span></div>
+          <div class="intro">新人陪玩，声音好听，听话能配合。</div>
+          <div class="meta">接单 <b>18</b> 次 · 好评 <b>暂无评价</b></div>
+        </div>
+        <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选 TA</div>
+      </div>
+      <div class="row">
+        <div class="av">夜</div>
+        <div class="info">
+          <div class="nameRow"><span class="name">夜行者</span><span class="badge">LV4 称雄</span></div>
+          <div class="intro">三角洲端游，凌晨场专精，能带新手。</div>
+          <div class="meta">接单 <b>2,031</b> 次 · 好评 <b>98.1%</b></div>
+        </div>
+        <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选 TA</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>首页</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.4a2 2 0 002 1.6h8.4a2 2 0 002-1.6L22 7H6"/></svg>下单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>订单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/></svg>祁小山</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>消息</div>
+      <div class="it on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>我的</div>
+    </div>
+  </div>
+  <div class="note">
+    所有卡一个样、头像一个色、按钮一个蓝。<br>
+    用户扫一眼分不出<b>谁强、谁打什么游戏、谁在线</b>。
+  </div>
+</div>
+
+<!-- ============ 右：改后（彩色体系） ============ -->
+<div class="col">
+  <div class="cap">改后<span>颜色有规则，不是乱加</span></div>
+  <div class="phone">
+    <div class="bar"><svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><div class="title">选择陪玩</div></div>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="ph">搜名字或介绍</span></div>
+    <!-- 胶囊带分部色 -->
+    <div class="chips">
+      <div class="chip on">全部</div>
+      <div class="chip t-pubg chipC">和平精英</div>
+      <div class="chip t-dm chipC">三角洲·手游</div>
+      <div class="chip t-dpc chipC">三角洲·端游</div>
+    </div>
+    <div class="sortrow"><span class="count">共 4 位陪玩</span><div class="filter">接单量</div></div>
+    <div class="list">
+
+      <!-- 和平精英 · 橙金 -->
+      <div class="rowC t-pubg">
+        <div class="avC a3">凌<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">凌云</span><span class="badge b5"><i></i>LV5 宗师</span></div>
+          <div class="intro">和平精英双排老手，稳定上分不墨迹。工作日 20:00 - 次日 1:00 在线。</div>
+          <div class="meta">接单 <b>2,847</b> 次 · 好评 <span class="r-hi">98.6%</span></div>
+        </div>
+        <div class="btn btnC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选 TA</div>
+      </div>
+
+      <!-- 三角洲手游 · 蓝 -->
+      <div class="rowC t-dm">
+        <div class="avC a2">反<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">反悔</span><span class="badge b3"><i></i>LV3 扬名</span></div>
+          <div class="intro">三角洲手游护航，带打不墨迹，全场录屏。</div>
+          <div class="meta">接单 <b>1,204</b> 次 · 好评 <span class="r-mid">97.2%</span></div>
+        </div>
+        <div class="btn btnC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选 TA</div>
+      </div>
+
+      <!-- 三角洲端游 · 紫 -->
+      <div class="rowC t-dpc">
+        <div class="avC a4">夜<span class="dot"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">夜行者</span><span class="badge b4"><i></i>LV4 称雄</span></div>
+          <div class="intro">三角洲端游，凌晨场专精，能带新手。</div>
+          <div class="meta">接单 <b>2,031</b> 次 · 好评 <span class="r-hi">98.1%</span></div>
+        </div>
+        <div class="btn btnC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>选 TA</div>
+      </div>
+
+      <!-- 新人 · 离线灰 -->
+      <div class="rowC t-dm" style="opacity:.72">
+        <div class="avC a5">清<span class="dot off"></span></div>
+        <div class="info">
+          <div class="nameRow"><span class="name">清水</span><span class="badge b1"><i></i>LV1 初出</span></div>
+          <div class="intro">新人陪玩，声音好听，听话能配合。</div>
+          <div class="meta">接单 <b>18</b> 次 · 好评 <span class="r-na">暂无评价</span></div>
+        </div>
+        <div class="btn btnC off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>离线</div>
+      </div>
+
+    </div>
+    <div class="nav">
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-6 9 6v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>首页</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.4a2 2 0 002 1.6h8.4a2 2 0 002-1.6L22 7H6"/></svg>下单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>订单</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/></svg>祁小山</div>
+      <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>消息</div>
+      <div class="it on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>我的</div>
+    </div>
+  </div>
+  <div class="note">
+    <b>三条上色规则（不是随手加彩）</b><br>
+    <span class="sw" style="background:#F59E0B"></span><b>分部＝颜色</b>　和平精英橙金 · 三角洲手游蓝 · 三角洲端游紫<br>
+    　　胶囊、卡片左色条、「选 TA」按钮<b>三处同色</b> → 一眼分清谁打什么<br>
+    <span class="sw" style="background:#22C55E"></span><b>状态＝绿灰</b>　在线绿点 / 离线灰点 + 整卡降透明度<br>
+    <span class="sw" style="background:#0E7A5F"></span><b>好评率＝色阶</b>　≥98 绿 · 95–98 蓝 · &lt;95 橙 · 无评价灰<br><br>
+    头像 8 色轮转（蓝青橙紫玫靛），<b>同一人永远同色</b>；<br>
+    等级徽章沿用已有五档色（灰青蓝紫金）。
+  </div>
+</div>
+
+</body>
+</html>

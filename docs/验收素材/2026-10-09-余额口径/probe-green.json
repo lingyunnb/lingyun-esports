@@ -1,0 +1,96 @@
+[
+  {
+    "page": "/users",
+    "fails": [],
+    "shots": [
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-users.png"
+    ],
+    "yuanCount": 20,
+    "cells": 6,
+    "jifen": 0
+  },
+  {
+    "page": "/wallets",
+    "fails": [],
+    "shots": [
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-wallets-t1.png",
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-wallets-t2.png"
+    ],
+    "yuanCount": 100,
+    "cells": 30,
+    "jifen": 0
+  },
+  {
+    "page": "/recharge",
+    "fails": [
+      "金额列「金额」在本页所有 tab 里都没量到单元格（列没渲染？没数据行？列名变了？）",
+      "金额列「应得余额」在本页所有 tab 里都没量到单元格（列没渲染？没数据行？列名变了？）",
+      "列表里没找到「发放」按钮（夹具数据行缺失？先跑 scripts/tmp/balance-fixture-recharge.js）",
+      "点了「发放」但没有弹出二次确认"
+    ],
+    "shots": [
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-recharge-t1.png",
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-recharge-t2.png",
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-recharge-t3.png"
+    ],
+    "yuanCount": 2,
+    "cells": 0,
+    "jifen": 0
+  },
+  {
+    "page": "/catalog",
+    "fails": [],
+    "shots": [
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-catalog-t1.png",
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-catalog-t2.png",
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-catalog-t3.png"
+    ],
+    "yuanCount": 34,
+    "cells": 6,
+    "jifen": 0
+  },
+  {
+    "page": "/orders",
+    "fails": [],
+    "shots": [
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-orders.png"
+    ],
+    "yuanCount": 20,
+    "cells": 6,
+    "jifen": 0
+  },
+  {
+    "page": "/commission",
+    "fails": [],
+    "shots": [
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-commission.png"
+    ],
+    "yuanCount": 65,
+    "cells": 18,
+    "jifen": 0
+  },
+  {
+    "page": "/settings",
+    "fails": [],
+    "shots": [
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-settings.png"
+    ],
+    "yuanCount": 7,
+    "cells": 0,
+    "jifen": 0
+  },
+  {
+    "page": "/leaderboard",
+    "fails": [
+      "金额列「真实金额」在本页所有 tab 里都没量到单元格（列没渲染？没数据行？列名变了？）",
+      "金额列「有效金额」在本页所有 tab 里都没量到单元格（列没渲染？没数据行？列名变了？）",
+      "页面只出现 0 处 ¥ 金额（期望 ≥ 2）"
+    ],
+    "shots": [
+      "D:\\fish\\docs\\验收素材\\2026-10-09-余额口径\\green-leaderboard.png"
+    ],
+    "yuanCount": 0,
+    "cells": 0,
+    "jifen": 0
+  }
+]

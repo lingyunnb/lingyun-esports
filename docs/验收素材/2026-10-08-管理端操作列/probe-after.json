@@ -1,0 +1,260 @@
+[
+  {
+    "width": 1280,
+    "page": "/users",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-1280-users.png",
+    "viewWidth": 999,
+    "contentWidth": 1465,
+    "hasHScroll": true,
+    "contentArea": 1045,
+    "cols": "ID:115 | 账号:130 | 昵称:110 | 角色:80 | 身份绑定:240 | 等级:60 | 余额:110 | 状态:170 | 最近登录:150 | 注册时间:150 | 操作:150(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "封号",
+        "w": 48,
+        "h": 28,
+        "left": 1104,
+        "right": 1152,
+        "top": 235,
+        "insideClip": true
+      },
+      {
+        "text": "删除",
+        "w": 48,
+        "h": 28,
+        "left": 1160,
+        "right": 1208,
+        "top": 235,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 150,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/admins",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-1280-admins.png",
+    "viewWidth": 1014,
+    "contentWidth": 1014,
+    "hasHScroll": false,
+    "contentArea": 1060,
+    "cols": "账号:151 | 昵称:151 | 角色:151 | 状态:97 | 创建时间:183 | 操作:281(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "编辑",
+        "w": 48,
+        "h": 28,
+        "left": 989,
+        "right": 1037,
+        "top": 290,
+        "insideClip": true
+      },
+      {
+        "text": "重置密码",
+        "w": 76,
+        "h": 28,
+        "left": 1045,
+        "right": 1121,
+        "top": 290,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 281,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/workers",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-1280-workers.png",
+    "viewWidth": 999,
+    "contentWidth": 1280,
+    "hasHScroll": true,
+    "contentArea": 1045,
+    "cols": "工号:90 | 账号:130 | 昵称:120 | 身份绑定:240 | 接单权限（按分部）:250 | 客服权限:110 | 陪玩介绍:250(fixedR) | 状态:90",
+    "actionCol": "陪玩介绍",
+    "actionBtns": [
+      {
+        "text": "编辑介绍",
+        "w": 60,
+        "h": 22,
+        "left": 1048,
+        "right": 1108,
+        "top": 239,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 250,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/orders",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-1280-orders.png",
+    "viewWidth": 999,
+    "contentWidth": 999,
+    "hasHScroll": false,
+    "contentArea": 1045,
+    "cols": "订单号:189 | 用户:122 | 金额:122 | 状态:122 | 创建时间:178 | 操作:266(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "详情",
+        "w": 48,
+        "h": 28,
+        "left": 988,
+        "right": 1036,
+        "top": 226,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 266,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/catalog",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-1280-catalog.png",
+    "viewWidth": 1014,
+    "contentWidth": 1014,
+    "hasHScroll": false,
+    "contentArea": 1060,
+    "cols": "Code:199 | 名称:233 | 排序:116 | 状态:133 | 操作:332(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "编辑",
+        "w": 48,
+        "h": 28,
+        "left": 937,
+        "right": 985,
+        "top": 280,
+        "insideClip": true
+      },
+      {
+        "text": "下架",
+        "w": 48,
+        "h": 28,
+        "left": 993,
+        "right": 1041,
+        "top": 280,
+        "insideClip": true
+      },
+      {
+        "text": "删除",
+        "w": 48,
+        "h": 28,
+        "left": 1049,
+        "right": 1097,
+        "top": 280,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 332,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/recharge",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-1280-recharge.png",
+    "viewWidth": 982,
+    "contentWidth": 1070,
+    "hasHScroll": true,
+    "contentArea": 1060,
+    "cols": "用户:150 | 金额:110 | 应得余额:120 | 付款凭证:96 | 提交时间:150 | 状态:96 | 审核人 / 时间:168 | 操作:180(fixedR)",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/wallets",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-1280-wallets.png",
+    "viewWidth": 999,
+    "contentWidth": 999,
+    "hasHScroll": false,
+    "contentArea": 1045,
+    "cols": "账号:138 | ID:128 | 昵称:128 | 等级:117 | 累计消费:117 | 余额:117 | 操作:255(fixedR)",
+    "actionCol": "操作",
+    "actionBtns": [
+      {
+        "text": "发放",
+        "w": 48,
+        "h": 28,
+        "left": 999,
+        "right": 1047,
+        "top": 288,
+        "insideClip": true
+      },
+      {
+        "text": "回收",
+        "w": 48,
+        "h": 28,
+        "left": 1055,
+        "right": 1103,
+        "top": 288,
+        "insideClip": true
+      },
+      {
+        "text": "调级",
+        "w": 48,
+        "h": 28,
+        "left": 1111,
+        "right": 1159,
+        "top": 288,
+        "insideClip": true
+      }
+    ],
+    "actionTdW": 255,
+    "wrapped": false,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/refunds",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-1280-refunds.png",
+    "viewWidth": 1014,
+    "contentWidth": 1235,
+    "hasHScroll": true,
+    "contentArea": 1060,
+    "cols": "申请单号:150 | 订单号:170 | 订单状态:100 | 申请人:130 | 退款金额:120 | 退款原因:200 | 状态:90 | 申请时间:165 | 操作:110(fixedR)",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  },
+  {
+    "width": 1280,
+    "page": "/complaints",
+    "shot": "D:\\fish\\docs\\验收素材\\2026-10-08-管理端操作列\\after-1280-complaints.png",
+    "viewWidth": 1014,
+    "contentWidth": 1155,
+    "hasHScroll": true,
+    "contentArea": 1060,
+    "cols": "工单号:150 | 投诉人:130 | 对象:130 | 类型:100 | 问题描述:220 | 截图:70 | 状态:90 | 提交时间:165 | 操作:100(fixedR)",
+    "actionCol": null,
+    "actionBtns": [],
+    "actionTdW": null,
+    "wrapped": null,
+    "clipped": [],
+    "exceptions": []
+  }
+]

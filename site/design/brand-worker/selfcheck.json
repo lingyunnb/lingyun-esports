@@ -1,0 +1,335 @@
+{
+  "generatedAt": "2026-10-13T17:48:23.987Z",
+  "baseline": "docs/32-品牌视觉规范-设计稿基准.md",
+  "report": {
+    "hall": {
+      "grad": {
+        "count": 0,
+        "area": 0
+      },
+      "shadow": 0,
+      "emoji": 0,
+      "fontSizes": {
+        "11": 139,
+        "12": 47,
+        "13": 7,
+        "14": 27,
+        "15": 8,
+        "18": 14
+      },
+      "radii": {
+        "4px": 6,
+        "14px": 28,
+        "6px": 37,
+        "999px": 12,
+        "10px": 16
+      },
+      "cards": {
+        "hero": 3,
+        "content": 25,
+        "listRows": 4
+      },
+      "colorUsage": {
+        "bgBrand": 3,
+        "bgCeladon": 2,
+        "bgGold": 0,
+        "bgPrimary": 17,
+        "textPrimary": 14,
+        "textGold": 14,
+        "textCeladon": 0
+      },
+      "brandElements": {
+        "brandRuler": 2,
+        "gridLayers": 0,
+        "brandBlocks": 3
+      },
+      "amounts": {
+        "count": 14,
+        "violations": 0
+      },
+      "jifen": 1,
+      "selfContained": {
+        "img": 0,
+        "scriptSrc": 0,
+        "cssImport": 0,
+        "httpRefs": 0
+      },
+      "geometry": {
+        "phones": 3,
+        "bodyW": 1320,
+        "bodyH": 1911,
+        "scrollH": 1911
+      }
+    },
+    "messages": {
+      "grad": {
+        "count": 1,
+        "area": 25488
+      },
+      "shadow": 0,
+      "emoji": 0,
+      "fontSizes": {
+        "11": 102,
+        "12": 44,
+        "13": 13,
+        "14": 34,
+        "18": 5
+      },
+      "radii": {
+        "4px": 23,
+        "14px": 20,
+        "10px": 29,
+        "6px": 34,
+        "999px": 14
+      },
+      "cards": {
+        "hero": 4,
+        "content": 16,
+        "listRows": 18
+      },
+      "colorUsage": {
+        "bgBrand": 4,
+        "bgCeladon": 3,
+        "bgGold": 0,
+        "bgPrimary": 4,
+        "textPrimary": 47,
+        "textGold": 0,
+        "textCeladon": 6
+      },
+      "brandElements": {
+        "brandRuler": 3,
+        "gridLayers": 1,
+        "brandBlocks": 4
+      },
+      "amounts": {
+        "count": 2,
+        "violations": 0
+      },
+      "jifen": 0,
+      "selfContained": {
+        "img": 0,
+        "scriptSrc": 0,
+        "cssImport": 0,
+        "httpRefs": 0
+      },
+      "geometry": {
+        "phones": 4,
+        "bodyW": 1320,
+        "bodyH": 2188,
+        "scrollH": 2188
+      }
+    },
+    "profile": {
+      "grad": {
+        "count": 3,
+        "area": 221187
+      },
+      "shadow": 0,
+      "emoji": 0,
+      "fontSizes": {
+        "11": 87,
+        "12": 46,
+        "13": 7,
+        "14": 27,
+        "15": 14,
+        "18": 8,
+        "22": 2
+      },
+      "radii": {
+        "4px": 14,
+        "14px": 24,
+        "10px": 6,
+        "6px": 59
+      },
+      "cards": {
+        "hero": 6,
+        "content": 18,
+        "listRows": 16
+      },
+      "colorUsage": {
+        "bgBrand": 6,
+        "bgCeladon": 0,
+        "bgGold": 0,
+        "bgPrimary": 5,
+        "textPrimary": 20,
+        "textGold": 4,
+        "textCeladon": 6
+      },
+      "brandElements": {
+        "brandRuler": 2,
+        "gridLayers": 3,
+        "brandBlocks": 6
+      },
+      "amounts": {
+        "count": 17,
+        "violations": 0
+      },
+      "jifen": 1,
+      "selfContained": {
+        "img": 0,
+        "scriptSrc": 0,
+        "cssImport": 0,
+        "httpRefs": 0
+      },
+      "geometry": {
+        "phones": 3,
+        "bodyW": 1320,
+        "bodyH": 1844,
+        "scrollH": 1844
+      }
+    },
+    "dashboard": {
+      "grad": {
+        "count": 1,
+        "area": 244065
+      },
+      "shadow": 0,
+      "emoji": 0,
+      "fontSizes": {
+        "11": 24,
+        "12": 42,
+        "13": 81,
+        "14": 8,
+        "15": 6,
+        "18": 5,
+        "26": 1,
+        "15.21": 1
+      },
+      "radii": {
+        "6px": 21,
+        "4px": 8,
+        "14px": 8,
+        "999px": 7
+      },
+      "cards": {
+        "hero": 1,
+        "content": 8,
+        "listRows": 0
+      },
+      "colorUsage": {
+        "bgBrand": 1,
+        "bgCeladon": 1,
+        "bgGold": 0,
+        "bgPrimary": 5,
+        "textPrimary": 5,
+        "textGold": 7,
+        "textCeladon": 1
+      },
+      "brandElements": {
+        "brandRuler": 0,
+        "gridLayers": 1,
+        "brandBlocks": 1
+      },
+      "amounts": {
+        "count": 23,
+        "violations": 0
+      },
+      "jifen": 1,
+      "selfContained": {
+        "img": 0,
+        "scriptSrc": 0,
+        "cssImport": 0,
+        "httpRefs": 0
+      },
+      "geometry": {
+        "phones": 0,
+        "bodyW": 1520,
+        "bodyH": 1625,
+        "scrollH": 1625
+      }
+    },
+    "orders": {
+      "grad": {
+        "count": 1,
+        "area": 298437
+      },
+      "shadow": 0,
+      "emoji": 5,
+      "fontSizes": {
+        "11": 27,
+        "12": 125,
+        "13": 234,
+        "14": 7,
+        "15": 5,
+        "18": 3,
+        "26": 1,
+        "15.21": 2
+      },
+      "radii": {
+        "6px": 114,
+        "4px": 24,
+        "999px": 22,
+        "14px": 6,
+        "10px": 2
+      },
+      "cards": {
+        "hero": 3,
+        "content": 6,
+        "listRows": 0
+      },
+      "colorUsage": {
+        "bgBrand": 3,
+        "bgCeladon": 4,
+        "bgGold": 0,
+        "bgPrimary": 15,
+        "textPrimary": 8,
+        "textGold": 20,
+        "textCeladon": 4
+      },
+      "brandElements": {
+        "brandRuler": 0,
+        "gridLayers": 1,
+        "brandBlocks": 3
+      },
+      "amounts": {
+        "count": 24,
+        "violations": 0
+      },
+      "jifen": 0,
+      "selfContained": {
+        "img": 0,
+        "scriptSrc": 0,
+        "cssImport": 0,
+        "httpRefs": 0
+      },
+      "geometry": {
+        "phones": 0,
+        "bodyW": 1520,
+        "bodyH": 2519,
+        "scrollH": 2519
+      }
+    }
+  },
+  "manifest": [
+    {
+      "file": "hall.png",
+      "width": 1320,
+      "height": 1911,
+      "bytes": 185009
+    },
+    {
+      "file": "messages.png",
+      "width": 1320,
+      "height": 2188,
+      "bytes": 191531
+    },
+    {
+      "file": "profile.png",
+      "width": 1320,
+      "height": 1844,
+      "bytes": 230074
+    },
+    {
+      "file": "dashboard.png",
+      "width": 1440,
+      "height": 1625,
+      "bytes": 217344
+    },
+    {
+      "file": "orders.png",
+      "width": 1440,
+      "height": 2519,
+      "bytes": 410101
+    }
+  ]
+}

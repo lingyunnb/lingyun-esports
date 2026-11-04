@@ -1,0 +1,204 @@
+/**
+ * 祁连山电竞 · H5 设计 token
+ * ============================================================================
+ * 与三端逐值对齐（`docs/32-品牌视觉规范-设计稿基准.md`）：
+ *   品牌锚墨蓝 #0F2440（**只给极小面积**）· 主交互 #1D5FA8 · 强调青瓷 #0E7C7B · 价格/等级琥珀 #B4732A
+ *   正文 #14202E · 次要 #4A5A6E · 弱化 #8A99AB · 描边 #CDD6E2 · 分割 #E3E8EF · 页底 #F4F6F9
+ *
+ * ## 两条定案（必须遵守）
+ * 1. **白底为主**（负责人 2026-10-14）：页面大面积白；品牌色**只用于**按钮/选中/链接/少量标签；
+ *    **不做大块深色或蓝色块**、不做渐变做主视觉。
+ * 2. **4dp 网格**（负责人 2026-10-15）：所有间距只允许 4 / 8 / 12 / 16 / 20 / 24 / 32 / 48 / 64。
+ *
+ * ## 变量同时供 Vant 复用
+ * 末尾把值灌进 Vant 的 CSS 变量，这样 Vant 组件（表单/弹层/下拉/上传）自动跟随我们的品牌色，
+ * 不必逐个组件写覆写样式 —— 这是"快"与"不跑偏"的平衡点。
+ */
+
+:root {
+  /* ---------- 色板 ---------- */
+  --brand-ink: #0f2440;      /* 品牌锚：只给极小面积（字标底/徽章边） */
+  --pri: #1d5fa8;            /* 主交互：按钮底 / 选中 / 链接 */
+  --pri-hover: #17518f;
+  --pri-pressed: #123f70;
+  --pri-soft: #e8eef7;       /* 主色浅底（选中底/浅标签底） */
+  --celadon: #0e7c7b;        /* 强调青瓷：成功 / 会员进度 */
+  --celadon-soft: #e3f0ef;
+  --gold: #b4732a;           /* 价格 / 等级 —— **全站唯一"金"** */
+  --gold-soft: #f7ede0;
+  --danger: #b42318;
+  --danger-soft: #f7e7e5;
+  --warn: #b45309;
+  --warn-soft: #f7ede0;
+
+  /* 6 档灰阶（从竞品研究补全的层级；2026-10-15 定案） */
+  --g1: #14202e;   /* 正文 14.8:1 */
+  --g2: #4a5a6e;   /* 次要 7.5:1 */
+  --g3: #8a99ab;   /* 弱化 3.1:1 */
+  --g4: #cdd6e2;   /* 描边（非文字） */
+  --g5: #e3e8ef;   /* 分割（非文字） */
+  --g6: #f4f6f9;   /* 页底（非文字） */
+  --card: #ffffff;
+
+  /* ---------- 4dp 网格（只允许这些值） ---------- */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s12: 48px;
+  --s16: 64px;
+  --page-x: 16px;      /* 页边距（对齐设计稿） */
+  --card-pad-x: 16px;
+  --card-pad-y: 12px;
+
+  /* ---------- 高度档 ---------- */
+  --h-btn: 44px;
+  --h-btn-sm: 32px;
+  --h-row: 48px;
+  --h-bar: 56px;       /* 页头 / 底栏 */
+
+  /* ---------- 圆角（只允许 4/10/14/胶囊） ---------- */
+  --r-sm: 4px;
+  --r-ctrl: 10px;
+  --r-card: 14px;
+  --r-pill: 999px;
+
+  /* ---------- 字号（6 档） ---------- */
+  --f1: 22px;
+  --f2: 18px;
+  --f3: 15px;
+  --f4: 13px;
+  --f5: 12px;
+  --f6: 11px;
+
+  /* ---------- 安全区（iPhone 刘海/底部横条） ---------- */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* ---------- Vant 主题灌入（让它跟随我们的品牌色） ---------- */
+  --van-primary-color: var(--pri);
+  --van-danger-color: var(--danger);
+  --van-text-color: var(--g1);
+  --van-text-color-2: var(--g2);
+  --van-text-color-3: var(--g3);
+  --van-background: var(--g6);
+  --van-background-2: var(--card);
+  --van-border-color: var(--g5);
+  --van-radius-md: var(--r-ctrl);
+  --van-radius-lg: var(--r-card);
+  --van-font-size-md: var(--f4);
+  --van-font-size-lg: var(--f3);
+  --van-cell-vertical-padding: 12px;
+  --van-cell-horizontal-padding: var(--card-pad-x);
+  --van-button-default-height: var(--h-btn);
+  --van-button-primary-background: var(--pri);
+  --van-button-primary-border-color: var(--pri);
+  --van-nav-bar-height: var(--h-bar);
+  --van-nav-bar-background: var(--card);
+  --van-nav-bar-title-text-color: var(--g1);
+  --van-tabs-bottom-bar-color: var(--pri);
+  --van-tab-active-text-color: var(--g1);
+  --van-tab-text-color: var(--g2);
+  --van-field-label-color: var(--g2);
+  --van-toast-background: rgba(20, 32, 46, 0.9);
+}
+
+/* ============ 基础重置 ============ */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--g6);
+  color: var(--g1);
+  font: var(--f4)/1.6 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--pri); text-decoration: none; }
+img { display: block; max-width: 100%; }
+#app-boot { display: none; }   /* Vue 挂载后隐藏首屏骨架 */
+
+/* ============ 通用块 ============ */
+.h5-page { min-height: 100vh; padding-bottom: calc(var(--h-bar) + var(--safe-bottom) + var(--s4)); }
+.h5-page--nobar { padding-bottom: var(--safe-bottom); }
+
+/* 页头：白底 + 发丝线（白底为主，不做彩色标题栏） */
+.h5-head {
+  position: sticky; top: 0; z-index: 20;
+  height: var(--h-bar); padding: 0 var(--page-x);
+  padding-top: var(--safe-top);
+  display: flex; align-items: center; gap: var(--s2);
+  background: var(--card); border-bottom: 1px solid var(--g5);
+}
+.h5-head__title { font-size: var(--f2); font-weight: 800; letter-spacing: .2px; flex: 1 1 auto; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 卡片：白底 + 发丝线 + 无阴影（"白底为主"的核心形态） */
+.h5-card {
+  background: var(--card); border: 1px solid var(--g5); border-radius: var(--r-card);
+  padding: var(--card-pad-y) var(--card-pad-x); margin: 0 var(--page-x) var(--s3);
+}
+.h5-card--flush { padding: 0; overflow: hidden; }
+
+/* 分组标题 */
+.h5-sec { display: flex; align-items: center; gap: var(--s2);
+  margin: var(--s5) var(--page-x) var(--s3); }
+.h5-sec__t { font-size: var(--f3); font-weight: 700; color: var(--g1); }
+.h5-sec__x { margin-left: auto; font-size: var(--f5); color: var(--pri); }
+
+/* 发丝线行（列表用，不用卡片） */
+.h5-row { display: flex; align-items: center; gap: var(--s3); min-height: var(--h-row);
+  padding: var(--s3) var(--card-pad-x); background: var(--card); border-bottom: 1px solid var(--g5); }
+.h5-row:last-child { border-bottom: 0; }
+.h5-row__main { flex: 1 1 auto; min-width: 0; }
+
+/* 状态标签（五档形态；对齐 App 的 OrderStatusTag —— 去色也能两两分辨） */
+.stag { display: inline-flex; align-items: center; gap: var(--s1); height: 24px; padding: 0 var(--s2);
+  border-radius: var(--r-sm); border: 1px solid transparent; font-size: var(--f6); font-weight: 600; white-space: nowrap; }
+.stag--wait { background: var(--warn-soft); border-color: #e6cfae; color: var(--warn); font-weight: 700; }
+.stag--live { background: var(--pri); border-color: var(--pri); color: #fff; font-weight: 700; }
+.stag--ok   { background: var(--celadon-soft); border-color: #bcd9d7; color: var(--celadon); font-weight: 700; }
+.stag--off  { background: #f0f2f5; border-color: #d8dee6; color: var(--g2); }
+.stag--bad  { background: var(--danger-soft); border-color: #e7c6c2; color: var(--danger); font-weight: 700; }
+.stag--bad-hi { background: var(--danger-soft); border-color: #d8a9a3; color: var(--danger);
+  font-weight: 800; border-width: 2px; }
+
+/* 价格：唯一"金" */
+.h5-price { color: var(--gold); font-weight: 800; font-variant-numeric: tabular-nums; }
+.h5-price__sym { font-size: .72em; margin-right: 1px; }
+
+/* 文字档 */
+.t1 { color: var(--g1); } .t2 { color: var(--g2); } .t3 { color: var(--g3); }
+
+/* 主按钮（实色，44 高，胶囊 10 圆角 —— 白底上唯一的大色块就靠它） */
+.h5-btn { display: flex; align-items: center; justify-content: center; gap: var(--s1);
+  height: var(--h-btn); border: 0; border-radius: var(--r-ctrl);
+  background: var(--pri); color: #fff; font-size: var(--f3); font-weight: 700; width: 100%;
+  cursor: pointer; transition: background .12s; }
+.h5-btn:active { background: var(--pri-pressed); }
+.h5-btn[disabled] { background: var(--g4); color: #fff; cursor: not-allowed; }
+.h5-btn--ghost { background: var(--card); color: var(--pri); border: 1px solid var(--g4); }
+.h5-btn--sm { height: var(--h-btn-sm); font-size: var(--f5); border-radius: var(--r-ctrl); width: auto; padding: 0 var(--s3); }
+
+/* 底部固定操作条（详情/下单页用） */
+.h5-fixedbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) var(--page-x) calc(var(--s3) + var(--safe-bottom));
+  background: var(--card); border-top: 1px solid var(--g5); }
+
+/* 底部导航（服务·订单·＋下单·消息·我的） */
+.h5-nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex;
+  height: calc(var(--h-bar) + var(--safe-bottom)); padding-bottom: var(--safe-bottom);
+  background: var(--card); border-top: 1px solid var(--g5); }
+.h5-nav__i { flex: 1 1 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; font-size: 10px; color: var(--g3); background: none; border: 0; cursor: pointer; }
+.h5-nav__i--on { color: var(--pri); font-weight: 700; }
+.h5-nav__i--mid .dot { width: 32px; height: 32px; border-radius: var(--r-pill); background: var(--pri);
+  color: #fff; display: grid; place-items: center; font-size: 20px; line-height: 1; margin-top: -12px;
+  border: 1px solid var(--pri); }
+
+/* 空态 / 加载 */
+.h5-empty { padding: var(--s16) var(--page-x); text-align: center; color: var(--g3); font-size: var(--f5); }
+.h5-skel { background: var(--g6); border-radius: var(--r-ctrl); animation: h5pulse 1.2s ease-in-out infinite; }
+@keyframes h5pulse { 0%,100% { opacity: 1 } 50% { opacity: .55 } }

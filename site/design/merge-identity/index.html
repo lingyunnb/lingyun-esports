@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>合并双端 · 身份切换 · 设计稿与架构方案（待审批）</title>
+<style>
+:root{
+  --primary:#2563EB;--primary-soft:#E7EEFE;--ice:#EFF6FF;--gold:#D97706;--gold-soft:#FEF3C7;
+  --bg:#F5F7FB;--surface:#FFFFFF;--ink:#0F172A;--ink-2:#475569;--muted:#5B6B80;--ink-3:#94A3B8;
+  --hair:#E5E9F0;--hair-2:#EEF1F6;--error:#DC2626;--error-soft:#FDECEC;--warn:#EA580C;--warn-soft:#FFF4EC;
+  --success:#16A34A;--success-soft:#DCFCE7;--r-sm:6px;--r-ctl:10px;--r-card:14px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1360px;margin:0 auto;padding:0 28px 90px}
+header.top{background:var(--surface);border-bottom:1px solid var(--hair);padding:26px 0 22px;margin-bottom:26px}
+header.top .wrap{padding-bottom:0}
+.kicker{display:inline-flex;align-items:center;gap:7px;height:22px;padding:0 9px;border-radius:var(--r-sm);
+  background:var(--warn-soft);border:1px solid #F6D3B8;color:var(--warn);font-size:11.5px;font-weight:700}
+h1{font-size:25px;font-weight:700;letter-spacing:-.4px;margin:11px 0 8px}
+.lead{font-size:13.5px;color:var(--ink-2);max-width:960px}
+.meta{display:flex;flex-wrap:wrap;gap:16px;margin-top:13px;font-size:12px;color:var(--muted)}
+nav.toc{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+nav.toc a{font-size:12px;font-weight:600;color:var(--ink-2);text-decoration:none;border:1px solid var(--hair);
+  background:var(--surface);border-radius:999px;padding:4px 11px}
+nav.toc a:hover{border-color:var(--primary);color:var(--primary)}
+section{margin:34px 0 0}
+h2{font-size:19px;font-weight:700;letter-spacing:-.2px;padding-bottom:9px;border-bottom:1px solid var(--hair);margin-bottom:15px}
+h2 .n{color:var(--ink-3);font-weight:700;margin-right:8px}
+h3{font-size:15px;font-weight:700;margin:20px 0 9px}
+h4{font-size:13.5px;font-weight:700;margin:15px 0 7px}
+p{font-size:13px;color:var(--ink-2);margin-bottom:9px}
+code{background:#EEF2F8;border-radius:3px;padding:1px 4px;font-size:11.5px;color:#1E293B;
+  font-family:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--hair);
+  border-radius:var(--r-card);overflow:hidden;font-size:12.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--hair-2);vertical-align:top}
+th{background:#F7F9FC;font-weight:700;font-size:12px;color:var(--ink);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td{color:var(--ink-2)}
+td:first-child{color:var(--ink);font-weight:600}
+.tbl-wrap{overflow-x:auto;border-radius:var(--r-card)}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);padding:15px 16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:1100px){.grid2,.grid3{grid-template-columns:1fr}}
+.badge{display:inline-flex;align-items:center;height:19px;padding:0 7px;border-radius:var(--r-sm);
+  font-size:10.5px;font-weight:700;border:1px solid transparent}
+.b-p{background:var(--primary-soft);color:var(--primary);border-color:#C7D8FB}
+.b-g{background:var(--gold-soft);color:#92400E;border-color:#F5D08A}
+.b-e{background:var(--error-soft);color:var(--error);border-color:#F3C4C4}
+.b-w{background:var(--warn-soft);color:var(--warn);border-color:#F6D3B8}
+.b-ok{background:var(--success-soft);color:#15803D;border-color:#BFE7CC}
+.b-m{background:#F1F5F9;color:var(--muted);border-color:var(--hair)}
+.callout{border-left:3px solid var(--primary);background:var(--surface);border-radius:0 var(--r-card) var(--r-card) 0;
+  padding:13px 15px;margin:13px 0}
+.callout.warn{border-left-color:var(--warn);background:#FFFDFA}
+.callout.err{border-left-color:var(--error);background:#FFFCFC}
+.callout.ok{border-left-color:var(--success);background:#FCFFFD}
+.callout b{color:var(--ink)}
+.callout p:last-child{margin-bottom:0}
+.shotgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:15px 0 4px}
+@media(max-width:1220px){.shotgrid{grid-template-columns:repeat(3,1fr)}}
+.shot{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);overflow:hidden;
+  display:flex;flex-direction:column}
+.shot img{width:100%;display:block;border-bottom:1px solid var(--hair);background:#DDE3EC}
+.shot figcaption{padding:9px 10px 10px;font-size:11.5px;color:var(--muted);display:flex;flex-direction:column;gap:5px}
+.shot figcaption b{font-size:11.5px;color:var(--ink);font-weight:700;line-height:1.35}
+.shot figcaption .lk{color:var(--primary);text-decoration:none;font-weight:600;font-size:11px}
+.sethead{display:flex;align-items:flex-start;gap:13px;flex-wrap:wrap;margin:24px 0 4px}
+.sethead h3{margin:0;font-size:16.5px}
+.ul{margin:6px 0 0 17px}
+.ul li{font-size:12.5px;color:var(--ink-2);margin-bottom:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+.pill-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pill{font-size:11.5px;font-weight:600;border:1px solid var(--hair);background:var(--surface);border-radius:999px;padding:3px 10px;color:var(--ink-2)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border:1px solid var(--hair);border-radius:var(--r-ctl);background:var(--surface)}
+.chk .bx{width:17px;height:17px;flex:0 0 17px;border:1.5px solid #CFD8E6;border-radius:var(--r-sm);margin-top:2px;background:#fff}
+.stack{display:flex;flex-direction:column;gap:11px}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--hair);font-size:12px;color:var(--muted)}
+.kv{display:flex;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px dashed var(--hair-2)}
+.kv:last-child{border-bottom:0}
+.kv b{flex:0 0 132px;color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <span class="kicker">待负责人审批 · 设计阶段（未改任何 apps/** / server/** / admin-web/**）</span>
+  <h1>把老板端与工作端合并成一个 App · 身份切换方案</h1>
+  <p class="lead">老板端「我的」页绑定自己的打手端账密 → 一键切到打手态；打手态<b>只显示三处</b>（接单大厅 / 老板&客服私聊 / 我的），
+  没有任何老板端元素。本页给出 <b>3 套设计（各 6 屏，390×844）</b>、<b>3 个架构方案对比与推荐</b>、改动清单、回归面与<b>10 条待拍板问题</b>。</p>
+  <div class="meta">
+    <span>产物目录 <code>site/design/merge-identity/</code></span>
+    <span>25 屏 HTML（A/B/C 各 6 + A+ 7） + PNG + 本页</span>
+    <span>生成器 <code>make-merge-identity.mjs</code> / <code>make-merge-identity-aplus.mjs</code></span>
+    <span>出图/核验 <code>merge-identity-shot.mjs</code></span>
+    <span>参考截图只学信息架构与交互范式，未复制图片/插画/文案/VIP 体系/配色</span>
+  </div>
+  <nav class="toc">
+    <a href="#s1">1 现状对照</a><a href="#s2">2 冲突点</a><a href="#s3">3 架构方案</a>
+    <a href="#s4">4 三套设计</a><a href="#s5">5 大厅信息架构</a><a href="#s6">6 错误态矩阵</a>
+    <a href="#s7">7 打手态干净度</a><a href="#s8">8 改动清单</a><a href="#s9">9 风险与回归面</a>
+    <a href="#s10">10 docs/21 自检</a><a href="#s11">11 待拍板清单</a><a href="#s12">12 成本与最快可改点</a>
+    <a href="#s13"><b>13 A+ 稿：A 套 + 当前身份显示</b></a>
+  </nav>
+</div></header>
+
+<div class="wrap">
+
+<section id="s1">
+  <h2><span class="n">1</span>两套 App 现状对照（只读摸查结论）</h2>
+  <table class=""><thead><tr><th>维度</th><th>老板端 apps/boss-app</th><th>工作端 apps/worker-app</th></tr></thead>
+<tbody><tr><td>App 名称 / 包名</td><td>祁连山电竞（boss_app）</td><td>祁连山电竞内部（worker_app）</td></tr><tr><td>lib/pages 页面数</td><td>30 个页面文件</td><td>18 个页面文件</td></tr><tr><td>底部导航</td><td><b>5 位</b>：服务 · 订单 · <b>凸起＋（AI 祁小山分支）</b> · 消息 · 我的<br><code>HomeShell.pageAi=4</code>，导航位 2；底栏常驻、凸起有选中态</td><td><b>5 位</b>：首页 · 订单 · 排行榜 · 消息 · 我的<br><code>AppPlainBottomNav</code>，<code>badgeIndex=3</code></td></tr><tr><td>顶部导航</td><td>排行榜 · 公告 + 搜索（玩家圈已下线）</td><td>无顶部导航</td></tr><tr><td>登录方式</td><td><code>POST /auth/login</code> <b>role=user</b>；可自助注册（可选邮箱验证码）</td><td><code>POST /auth/login</code> <b>role=worker</b>；不可注册，账号由管理员创建</td></tr><tr><td>独有能力</td><td>下单 / 商品 / 找陪玩 / 排行榜 / AI 祁小山 / 积分 / 会员成长 / 好友 / 客服 / 主题</td><td>接单大厅（抢单）/ 我的订单（派单确认、开始服务、提交完成）/ 排行榜 / 收益 my-wallet / 客服会话 / 老板直聊 / 好友</td></tr><tr><td>pubspec 差异</td><td><code>name: boss_app</code>；多 <code>flutter_miuix</code> 与 MiSans 字体资源</td><td><code>name: worker_app</code>；无 MiSans（走系统字体）；其余依赖与 core 完全一致</td></tr><tr><td>共享代码</td><td><code>apps/packages/core</code>（fish_core）：AppColors/AppTheme 设计 token、ApiClient、AuthStore、OrderBrief、AppBottomNav/AppPlainBottomNav、UpdateCenter</td><td>同一份 core，零分叉</td></tr><tr><td>云端更新通道</td><td><code>UpdateCenter.configure('boss')</code></td><td><code>UpdateCenter.configure('worker')</code>（两端通道相互独立）</td></tr><tr><td>当前线上版本</td><td>v1.11.18（码 75，日志记录最新）</td><td>v1.7.4（码 51，日志记录最新；负责人所述 v1.7.8 略高，以线上通道为准）</td></tr></tbody></table>
+  <div class="callout">
+    <p><b>结论</b>：两端<b>页面逻辑高度同构</b>（共享 <code>fish_core</code>：设计 token、ApiClient、AuthStore、OrderBrief、底部导航组件、UpdateCenter），
+    差异集中在<b>导航骨架</b>、<b>登录 role</b>、<b>独有业务页</b>三处。这意味着"合并"在客户端不是重写，而是<b>把工作端的 3 个核心页面下沉到 core，再按身份挂载</b>。</p>
+  </div>
+</section>
+
+<section id="s2">
+  <h2><span class="n">2</span>关键冲突点清单（本方案的核心风险）</h2>
+  <table class=""><thead><tr><th>冲突</th><th>代码/数据现状（可验证）</th><th>对本方案的影响</th></tr></thead>
+<tbody><tr><td>① 单设备登录会互相顶号（最高风险）</td><td><code>POST /auth/login</code> 成功后 <code>issueTokens(replaceOthers=true)</code> 会把该账号所有 <code>revoked=0</code> 的会话置为 <code>revoked=2</code>；<code>JwtAuthGuard</code>、<code>refresh</code>、WS 握手/心跳都会因此返回「账号已在其他设备登录」，客户端 <code>AuthStore.onSessionKicked</code> 全局踢出。</td><td><b>结论</b>：如果在老板端 App 里用打手账密登录，真正的**工作端 App 会被立刻顶下线**。这不是 bug，是既有安全设计。合并方案必须先决定"工作端 App 是否还保留"以及"是否给合并端一条不相斥的会话"。</td></tr><tr><td>② 老板账号 ↔ 打手账号没有任何关联模型</td><td><code>user</code> 表单表三端（<code>role ∈ user/worker/admin</code>），<code>worker.user_id</code> 是 <b>UNIQUE</b>（一个账号至多一条打手档案）；全库<b>不存在</b>任何"老板↔打手"绑定表或字段。</td><td><b>结论</b>：绑定关系必须新建（表 + 接口 + 解绑 + 审计）。同时要拍板：一人能绑几个打手账号、能否解绑、解绑后是否撤销会话。</td></tr><tr><td>③ 切换后的权限：按分部，已经实现但客户端要照着渲染</td><td>权威表 <code>worker_division_permission(worker_id, division_id, can_take_order)</code>；<code>worker.can_take_order</code> 只是"是否有任一授权"的派生汇总。抢单/派单/指定护航/找陪玩/AI 候选人全部按分部实时查库。</td><td><b>结论</b>：打手态的分部胶囊、订单可见范围、"无权限"提示全部由 <code>/auth/me</code> 的 <code>divisionPermissions</code> + <code>/worker/division-permissions</code> 驱动，客户端不得缓存判定，也不得自绘未授权分部。</td></tr><tr><td>④ 切换后的数据边界：只显示三处，且不能有老板端残留</td><td>打手态 = 接单大厅 + 消息（老板/客服）+ 我的。老板端元素包括：凸起＋（AI 祁小山）、下单浮标、服务页、找陪玩、排行榜、玩家圈（已下线）、积分卡/会员成长、订单页与三状态计数。</td><td><b>结论</b>：不只是"隐藏 UI"——老板态那些页面如果在 <code>IndexedStack</code> 里继续挂着，未读轮询、WS 订阅、缓存刷新都还在跑，红点会串到打手态。必须**按身份真正不挂载**，见改动清单 C4/R3。</td></tr><tr><td>⑤ 打手账号是"内部账号"，把它引进 C 端 App 是安全边界的移动</td><td>工作端是内部 App（账号由管理员创建、可停用）。打手账号能看到客户下单信息、能接单、能提现。单设备登录正是为了限制内部账号被共享。</td><td><b>结论</b>：不建议简单"豁免单设备"。推荐给合并端签发<b>受限的 companion（伴随）会话</b>：不参与 primary 互斥、TTL 更短、每次请求校验绑定、可在打手侧一键撤销。见方案甲-2。</td></tr><tr><td>⑥ 额外发现：大厅"无任何分部权限"是报错页而不是空态</td><td><code>order.service.workerHall</code>：<code>worker.canTakeOrder !== 1</code> 时直接 <code>ForbiddenException('无接单权限')</code>（403）。只有"有权限但传了无权限分部"才返回空列表 + <code>divisionDenied</code> + 中文提示。而 CLAUDE.md 的约定是"大厅无权限返回空列表 + 中文提示（不是报错页）"。</td><td><b>结论</b>：新绑定的打手很可能一个分部权限都没有——这是高频路径，却会撞上 403 → 客户端 <code>orders_page</code> 落到红字 + 重试按钮的错误分支。建议一并修（改动清单 D4）。</td></tr><tr><td>⑦ 额外发现：商品 price 与名称里的数字不一致</td><td>线上 <code>product.price</code> 是 DECIMAL(10,2) 真实字段，如「9.9新人体验单保200w不卡保底」存 <b>99</b>、「人机爆红单15.88」存 <b>158.8</b>；App 直接 <code>fmtPoints(price)</code> 展示，于是出现"名字 9.9 / 价格 99"。</td><td><b>结论</b>：本次设计稿<b>按线上真实字段值展示</b>（不美化）。是否按 ×10 口径重录数据请负责人拍板（待拍板第 7 条）。</td></tr></tbody></table>
+</section>
+
+<section id="s3">
+  <h2><span class="n">3</span>架构方案（3 个可选 + 推荐与代价）</h2>
+  <div class="grid3">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+        <span class="badge b-p">方案 甲</span>
+        <b style="font-size:13.5px">一 App 双态</b>
+      </div>
+      <p style="font-size:12.5px;margin:0">同一个 App 内两种身份状态：老板态不变；绑定打手账号后切到打手态（3 项导航）。服务端加一张绑定表 + 一条"伴随会话"（companion），既不动单设备规则，也不顶掉工作端。</p>
+    </div><div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+        <span class="badge b-m">方案 乙</span>
+        <b style="font-size:13.5px">一账号双角色</b>
+      </div>
+      <p style="font-size:12.5px;margin:0">把打手能力并进 <code>user</code> 账号：登录一次即两身份，切换只切界面。要从根上改 <code>role</code> 单值模型与所有 <code>@Roles(&#39;worker&#39;)</code> 守卫。</p>
+    </div><div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+        <span class="badge b-m">方案 丙</span>
+        <b style="font-size:13.5px">保持两 App + 统一入口</b>
+      </div>
+      <p style="font-size:12.5px;margin:0">两个 App 不改，只在老板端加"打开工作端"入口（深链 / 应用商店）。</p>
+    </div>
+  </div>
+
+  <h3>3.1 七维度对比</h3>
+  <div class="tbl-wrap"><table class=""><thead><tr><th>维度</th><th><b>方案甲</b> 一 App 双态（推荐）</th><th><b>方案乙</b> 一账号双角色</th><th><b>方案丙</b> 两 App + 统一入口</th></tr></thead>
+<tbody><tr><td><b>数据模型改动</b></td><td><b>中</b>：新增 1 张绑定表 <code>worker_identity_binding</code>；<code>auth_token</code> 加 <code>kind/device_id</code> 两列（存量行默认 primary，行为不变）。<code>worker</code> 与 <code>worker_division_permission</code> <b>零改动</b></td><td><b>极大</b>：<code>user</code> 要承载"一个账号两种身份"——要么把 <code>worker</code> 并入 <code>user</code>，要么把 <code>role</code> 单值列改成多角色/角色集合；<code>auth_token.role</code>、订单归属、聊天 actor、排行榜、管理端筛选全部跟着改</td><td><b>零</b>：不改表；只加一个跳转入口与（可选）深链</td></tr><tr><td><b>认证改动</b></td><td><b>中</b>：新增 <code>POST /auth/identity/bind</code> 与 <code>/auth/identity/switch-worker</code>；<code>issueTokens</code> 增加 <code>kind</code> 参数（companion 不顶 primary）；guard 对 companion 校验绑定有效性 + 更短 TTL；<code>/auth/me</code> 附绑定信息。<b>阶段 1 可零改动</b>（直接复用 /auth/login）</td><td><b>极大</b>：登录一次要同时产出两种身份上下文；<code>@Roles('worker')</code> 守卫的语义要重写（是"角色"还是"当前激活身份"）；JWT <code>role</code> 单值要改成激活身份；单设备登录的粒度要重新定义（按账号还是按身份）</td><td><b>零</b>：完全不动认证</td></tr><tr><td><b>客户端改动量</b></td><td><b>中</b>：core 的 <code>AuthStore</code> 从单 token 槽改成双槽（<code>activeIdentity</code>）+ <code>ApiCache</code> 会话隔离按身份 + <code>RealtimeClient</code> 按身份建 socket + boss-app 新增打手态 3 页（建议把 worker-app 的页面逻辑下沉到 core 共用）+ HomeShell 身份分支 + 「我的」页身份分组</td><td><b>极大</b>：两端所有依赖 <code>AuthMe.role</code> 的页面都要改成"看 activeIdentity"；工作端 App 的整套登录/守卫语义要重写；两端 UI 都要新增身份切换器</td><td><b>极小</b>：加一个入口按钮 + 应用商店/深链跳转（1 小时内可完成）</td></tr><tr><td><b>回归风险</b></td><td><b>中</b>：最大风险点是 core <code>AuthStore</code>（两端所有页面都依赖它，改坏=两端都登不上）+ 单设备语义变化 + 红点/WS 串味。可控：阶段 1 把双槽做成"单身份路径逐字节不变"，并追加双身份切换专项测试</td><td><b>极高</b>：动的是账号体系地基（登录、守卫、订单归属、聊天 actor、管理端筛选）。全量回归 14 套件 + 三端都要重测，且线上老板端 v1.11.18 / 工作端 v1.7.x 的真实用户全部受影响</td><td><b>极低</b>：不碰任何既有链路</td></tr><tr><td><b>对已上线功能的影响</b></td><td>老板端既有功能<b>不受影响</b>（老板态零改动）；工作端 App 在阶段 1 会被"顶号"（需提前告知打手），阶段 2 用 companion 会话后<b>不再互相影响</b></td><td><b>影响全部</b>：已上线的两端都要发新版；工作端 v1.7.x 那批真实打手必须迁移；<code>revoked=2</code> 单设备语义变化会影响正在用多设备的所有人</td><td><b>无影响</b>：两个 App 都不改代码（除老板端加一个入口）</td></tr><tr><td><b>开发量估算</b></td><td>阶段 1 <b>1-2 天</b>（可先内部试用）；阶段 2 <b>4-6 天</b>（正式版）；阶段 3 <b>2-3 天</b>（可选增强）。合计 7-11 天</td><td><b>3-4 周起</b>，且必须冻结其他需求；一次做错会同时影响三端</td><td><b>0.5 天</b></td></tr><tr><td><b>长期维护成本</b></td><td><b>低</b>：两套骨架共用一个 App，页面逻辑下沉 core 后两端可共用；工作端 App 若下线只需停通道 + 发通知</td><td><b>低（终局）</b>：一个账号一套身份，长期最干净；但迁移代价今天就要付</td><td><b>高</b>：两个 App 要各自发版、各自修 bug、各自维护更新通道；打手要装两个 App</td></tr></tbody></table></div>
+
+  <h3>3.2 推荐：方案甲（分两阶段落地，正式版采用「伴随会话」）</h3>
+  <div class="callout ok">
+    <p><b>推荐方案甲</b>，理由四条：</p>
+    <p>① <b>对已上线功能影响最小</b>：老板态一屏不动；工作端 App v1.7.x 的既有打手用户<b>不需要迁移、不需要重新习惯</b>（阶段 2 用 companion 会话后连登录状态都不受影响）。</p>
+    <p>② <b>不破坏单设备登录这条安全设计</b>：companion 会话不参与 primary 互斥，但独立受限（绑定关系签发、TTL 12h、每次请求校验绑定有效、可撤销）。打手账号在"多台工作端 App 上同时登录"依然被禁止。</p>
+    <p>③ <b>复用度最高、开发量最低</b>：两端共用 <code>fish_core</code>，把工作端 3 页下沉 core 后 boss-app 直接引用；服务端只新增 1 张表、1 个枚举列、2 个接口。</p>
+    <p>④ <b>可回退</b>：阶段 1 是纯客户端改动 + 1 处服务端缺陷修复，任何问题都能只发一版老板端回滚；不需要冻结其他需求。</p>
+  </div>
+  <div class="callout warn">
+    <p><b>方案甲的代价（必须知道）</b>：</p>
+    <p>① <code>AuthStore</code> 双 token 槽是<b>两端共用代码</b>的改造，回归面覆盖两端所有页面（R1）。</p>
+    <p>② 引入 companion 会话后，"单设备登录"从"一句话规则"变成"两类会话 + 一张绑定表"，<b>规则复杂度上升</b>，必须在文档与测试里写死（R2）。</p>
+    <p>③ 阶段 1（复用 <code>/auth/login</code>）会顶掉工作端登录 → 只适合内部试用，<b>不建议直接给全部打手</b>。</p>
+    <p>④ <b>不做方案乙</b>的原因：乙要重写账号体系地基（role 单值、守卫语义、订单归属、聊天 actor、管理端筛选），三端同时受影响、3-4 周起，而收益只是"少一张绑定表"。<b>不做方案丙</b>的原因：不是负责人要的"合并成一个"，且要求打手装两个 App、深链在国产 ROM 上不可靠；但丙可以作为<b>今天的临时兜底</b>（0.5 天）。</p>
+  </div>
+</section>
+
+<section id="s4">
+  <h2><span class="n">4</span>三套设计（各 6 屏 · 390×844）</h2>
+  <p>六屏固定覆盖：① 老板态「我的」（含切换入口）② 切换身份弹层（含全部错误态）③ 打手态·接单大厅 ④ 打手态·消息 ⑤ 打手态·我的 ⑥ 切回老板态「我的」（已绑定/解绑）。
+  每屏 HTML 支持 <code>?state=</code> 变体，本页每个变体都已出 PNG。</p>
+  
+  <div class="sethead">
+    <h3>A · 同 App 双态</h3>
+    <span class="badge b-p">推荐落地形态</span>
+  </div>
+  <p style="max-width:1000px">老板态一屏不动；打手态是同一 App 内另一套骨架（3 项导航、无凸起）。<br><b>适合</b>：常规形态：以接单为主、偶尔切回下单的打手。</p>
+  <div class="two">
+    <div class="card"><h4 style="margin-top:0;color:#15803D">优点</h4><ul class="ul"><li>改动最小：老板态 0 改动（只多一个「身份」分组）</li><li>认知成本最低：切换后"少了两个 tab"，一眼看懂身份变了</li><li>打手态骨架天然干净：没有凸起位就放不进 AI 与下单</li><li>与线上工作端 App 的操作习惯最接近（打手无需重新学）</li></ul></div>
+    <div class="card"><h4 style="margin-top:0;color:var(--warn)">代价 / 风险</h4><ul class="ul"><li>打手态与老板态两套底部导航，需要在 HomeShell 里做分支挂载（否则老板态页面/轮询仍在后台跑）</li><li>打手要回老板态下单，得先切身份；无法"边接单边下单"</li></ul></div>
+  </div>
+  <div class="shotgrid" data-set="A"><figure class="shot">
+  <a href="a1-boss-mine.html" target="_blank"><img src="p-a1.png" alt="A1 老板态 · 我的（含「切换身份」入口）" loading="lazy"></a>
+  <figcaption><b>A1 老板态 · 我的（含「切换身份」入口）</b>
+  <span>变体：<code>default</code></span>
+  <a class="lk" href="a1-boss-mine.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="a2-switch-sheet.html" target="_blank"><img src="p-a2.png" alt="A2 切换身份 · 底部弹层" loading="lazy"></a>
+  <figcaption><b>A2 切换身份 · 底部弹层</b>
+  <span>变体：<code>default</code> <code>error</code> <code>role</code> <code>banned</code> <code>conflict</code> <code>noperm</code> <code>bound</code></span>
+  <a class="lk" href="a2-switch-sheet.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="a3-worker-hall.html" target="_blank"><img src="p-a3.png" alt="A3 打手态 · 接单大厅" loading="lazy"></a>
+  <figcaption><b>A3 打手态 · 接单大厅</b>
+  <span>变体：<code>default</code> <code>empty</code> <code>noperm</code> <code>kicked</code></span>
+  <a class="lk" href="a3-worker-hall.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="a4-worker-messages.html" target="_blank"><img src="p-a4.png" alt="A4 打手态 · 消息（老板 / 客服）" loading="lazy"></a>
+  <figcaption><b>A4 打手态 · 消息（老板 / 客服）</b>
+  <span>变体：<code>default</code> <code>cs</code></span>
+  <a class="lk" href="a4-worker-messages.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="a5-worker-mine.html" target="_blank"><img src="p-a5.png" alt="A5 打手态 · 我的" loading="lazy"></a>
+  <figcaption><b>A5 打手态 · 我的</b>
+  <span>变体：<code>default</code></span>
+  <a class="lk" href="a5-worker-mine.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="a6-boss-mine-bound.html" target="_blank"><img src="p-a6.png" alt="A6 切回老板态 · 我的（已绑定 / 解绑）" loading="lazy"></a>
+  <figcaption><b>A6 切回老板态 · 我的（已绑定 / 解绑）</b>
+  <span>变体：<code>default</code> <code>unbind</code></span>
+  <a class="lk" href="a6-boss-mine-bound.html" target="_blank">打开 HTML</a></figcaption></figure></div>
+  <div class="sethead">
+    <h3>B · 态内二级（全屏工作台）</h3>
+    <span class="badge b-w">重度接单备选</span>
+  </div>
+  <p style="max-width:1000px">打手态是一整块全屏工作区：顶部工具条（返回老板端 / 打手工作台 / 工号）+ 文字 tab，没有底部导航。<br><b>适合</b>：长时间蹲大厅、批量抢单的重度打手。</p>
+  <div class="two">
+    <div class="card"><h4 style="margin-top:0;color:#15803D">优点</h4><ul class="ul"><li>信息密度最高：一屏约 11 条单（A 约 5-6 条）</li><li>"工作区"心智清晰：进入即专注接单，老板端界面整体收起</li><li>顶部常驻返回出口，回到下单只要一次点击（不用先切身份）</li></ul></div>
+    <div class="card"><h4 style="margin-top:0;color:var(--warn)">代价 / 风险</h4><ul class="ul"><li>没有底部导航＝打手必须记住顶部文字 tab 的位置，学习成本高于 A</li><li>返回出口只有一个（左上角），可用性风险最高（本稿用"页内再加一个大按钮"兜底）</li><li>老板态「我的」页多了一个常驻入口条，对纯老板用户是噪音</li></ul></div>
+  </div>
+  <div class="shotgrid" data-set="B"><figure class="shot">
+  <a href="b1-boss-mine.html" target="_blank"><img src="p-b1.png" alt="B1 老板态 · 我的（工作台入口条）" loading="lazy"></a>
+  <figcaption><b>B1 老板态 · 我的（工作台入口条）</b>
+  <span>变体：<code>default</code></span>
+  <a class="lk" href="b1-boss-mine.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="b2-switch-sheet.html" target="_blank"><img src="p-b2.png" alt="B2 切换身份 · 弹层（全屏工作区告知）" loading="lazy"></a>
+  <figcaption><b>B2 切换身份 · 弹层（全屏工作区告知）</b>
+  <span>变体：<code>default</code> <code>error</code> <code>conflict</code> <code>bound</code></span>
+  <a class="lk" href="b2-switch-sheet.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="b3-worker-hall.html" target="_blank"><img src="p-b3.png" alt="B3 打手工作台 · 接单大厅（高密度）" loading="lazy"></a>
+  <figcaption><b>B3 打手工作台 · 接单大厅（高密度）</b>
+  <span>变体：<code>default</code> <code>empty</code> <code>noperm</code></span>
+  <a class="lk" href="b3-worker-hall.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="b4-worker-messages.html" target="_blank"><img src="p-b4.png" alt="B4 打手工作台 · 消息" loading="lazy"></a>
+  <figcaption><b>B4 打手工作台 · 消息</b>
+  <span>变体：<code>default</code> <code>cs</code></span>
+  <a class="lk" href="b4-worker-messages.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="b5-worker-mine.html" target="_blank"><img src="p-b5.png" alt="B5 打手工作台 · 我的" loading="lazy"></a>
+  <figcaption><b>B5 打手工作台 · 我的</b>
+  <span>变体：<code>default</code></span>
+  <a class="lk" href="b5-worker-mine.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="b6-boss-mine-bound.html" target="_blank"><img src="p-b6.png" alt="B6 切回老板态 · 我的（已绑定）" loading="lazy"></a>
+  <figcaption><b>B6 切回老板态 · 我的（已绑定）</b>
+  <span>变体：<code>default</code> <code>unbind</code></span>
+  <a class="lk" href="b6-boss-mine-bound.html" target="_blank">打开 HTML</a></figcaption></figure></div>
+  <div class="sethead">
+    <h3>C · 双身份并列</h3>
+    <span class="badge b-ok">语义最清楚，老板态有代价</span>
+  </div>
+  <p style="max-width:1000px">身份是并列的两个：老板态「我的」页顶部常驻两格切换器，两态共用同一套底部导航组件，项按身份渲染。<br><b>适合</b>：双身份都很常用（既接单又下单）的老用户。</p>
+  <div class="two">
+    <div class="card"><h4 style="margin-top:0;color:#15803D">优点</h4><ul class="ul"><li>任何时刻都能看见"我现在是谁"（两态顶部都有身份标识）</li><li>切回老板最快：顶部一键，不用找页面内按钮</li><li>两态骨架一致，切换时视觉不跳</li></ul></div>
+    <div class="card"><h4 style="margin-top:0;color:var(--warn)">代价 / 风险</h4><ul class="ul"><li>老板态「我的」页多一个常驻板块（约 92px），纯老板用户会觉得是无效信息</li><li>"共用骨架"与"打手态不得有任何老板端元素"存在张力：必须严格用状态位改写导航项，稍有不慎就会残留</li><li>底部导航同位置换项，用户可能误以为"订单 tab 不见了"而不是"我换身份了"</li></ul></div>
+  </div>
+  <div class="shotgrid" data-set="C"><figure class="shot">
+  <a href="c1-boss-mine.html" target="_blank"><img src="p-c1.png" alt="C1 老板态 · 我的（顶部身份切换器）" loading="lazy"></a>
+  <figcaption><b>C1 老板态 · 我的（顶部身份切换器）</b>
+  <span>变体：<code>default</code></span>
+  <a class="lk" href="c1-boss-mine.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="c2-switch-sheet.html" target="_blank"><img src="p-c2.png" alt="C2 切换身份 · 弹层（两枚身份卡）" loading="lazy"></a>
+  <figcaption><b>C2 切换身份 · 弹层（两枚身份卡）</b>
+  <span>变体：<code>default</code> <code>error</code> <code>noperm</code> <code>bound</code></span>
+  <a class="lk" href="c2-switch-sheet.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="c3-worker-hall.html" target="_blank"><img src="p-c3.png" alt="C3 打手态 · 接单大厅（同骨架改写）" loading="lazy"></a>
+  <figcaption><b>C3 打手态 · 接单大厅（同骨架改写）</b>
+  <span>变体：<code>default</code> <code>empty</code></span>
+  <a class="lk" href="c3-worker-hall.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="c4-worker-messages.html" target="_blank"><img src="p-c4.png" alt="C4 打手态 · 消息（含好友段条件显示对比）" loading="lazy"></a>
+  <figcaption><b>C4 打手态 · 消息（含好友段条件显示对比）</b>
+  <span>变体：<code>default</code> <code>cs</code> <code>withfriend</code></span>
+  <a class="lk" href="c4-worker-messages.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="c5-worker-mine.html" target="_blank"><img src="p-c5.png" alt="C5 打手态 · 我的" loading="lazy"></a>
+  <figcaption><b>C5 打手态 · 我的</b>
+  <span>变体：<code>default</code></span>
+  <a class="lk" href="c5-worker-mine.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="c6-boss-mine-bound.html" target="_blank"><img src="p-c6.png" alt="C6 切回老板态 · 我的（身份切换器选中老板）" loading="lazy"></a>
+  <figcaption><b>C6 切回老板态 · 我的（身份切换器选中老板）</b>
+  <span>变体：<code>default</code> <code>unbind</code></span>
+  <a class="lk" href="c6-boss-mine-bound.html" target="_blank">打开 HTML</a></figcaption></figure></div>
+
+  <h3>4.1 打手态"干净度"在结构上怎么保证</h3>
+  <div class="grid3">
+    <div class="card"><h4 style="margin-top:0">A · 换骨架</h4><p style="font-size:12.5px;margin:0">老板态 <code>AppBottomNav</code>（5 位，含凸起＋）→ 打手态 <code>AppPlainBottomNav</code> 只传 3 项。凸起位不存在，AI 与下单浮标<b>物理上放不进来</b>。</p></div>
+    <div class="card"><h4 style="margin-top:0">B · 无导航</h4><p style="font-size:12.5px;margin:0">全屏工作区，底部导航整块不渲染；老板态页面（服务/订单/AI）不入 <code>IndexedStack</code>。返回出口只有顶部工具条 + 页内大按钮。</p></div>
+    <div class="card"><h4 style="margin-top:0">C · 同骨架改项</h4><p style="font-size:12.5px;margin:0">导航组件与几何完全相同，导航项按 <code>actingIdentity</code> 渲染（5 项 ↔ 3 项），凸起位在打手态<b>整体不渲染</b>（不留空位、不置灰）。顶部 30px 身份细带兜住"我现在是谁"。</p></div>
+  </div>
+  <div class="callout err">
+    <p><b>关键实现要求（三套共用）</b>：干净度不能只靠"隐藏 UI"。老板态的页面若仍挂在 <code>IndexedStack</code> 里，
+    未读轮询 / WS 订阅 / 缓存刷新会继续跑，<b>红点会串到打手态</b>。必须按身份<b>真正不构建</b>老板态页面，并在切身份时断旧 WS、建新 WS（改动清单 C2/C4，风险 R3）。</p>
+  </div>
+</section>
+
+<section id="s5">
+  <h2><span class="n">5</span>接单大厅的信息架构：参考图 → 我们的取舍</h2>
+  <table class=""><thead><tr><th>参考图元素</th><th>参考图有什么</th><th>我们的决定</th><th>依据</th></tr></thead>
+<tbody><tr><td>顶部搜索框</td><td>有（搜索订单标题/商家名/订单号）</td><td><b>不做</b></td><td>线上 <code>/worker/order-hall</code> 只有 <code>page/pageSize/divisionId</code>，没有 keyword 参数。按 docs/21「不存在的东西不出现」不画；要做需后端加过滤（过滤 <code>order_no</code> + 快照商品名），列入待拍板第 6 条</td></tr><tr><td>轮播 banner</td><td>有（HOT 大图 + 分页点）</td><td><b>不做</b></td><td>线上 <code>/public/banners</code> 当前返回<b>空数组</b>。真要做也该在公告位而不是大厅顶部（大厅是工作界面，不是营销位）</td></tr><tr><td>游戏分类胶囊 + VIP 角标</td><td>有（全部/绿洲/三角洲/暗区/地铁/装备，5 个带 VIP）</td><td><b>换成：分部筛选胶囊</b></td><td>我们真实有的是 <code>division</code> 表 + <code>worker_division_permission</code>。胶囊<b>只出该打手已授权且在营的分部</b>（示例：和平精英 / 三角洲行动·手游 / 三角洲行动·端游）；无畏契约两个分部建设中 → 不出现。<b>VIP 角标无对应业务，一律不画</b></td></tr><tr><td>"开通会员后才能抢单"+ 立即开通</td><td>有</td><td><b>不做（我们没有会员体系）</b></td><td>平台没有 VIP/会员购买，接单能力 100% 由管理员按分部授予。画一条"开通会员"按钮等于承诺一个不存在的功能</td></tr><tr><td>微信区 / QQ区 胶囊</td><td>有（放在列表上方）</td><td><b>不做"选大区"，改成一句事实说明</b></td><td>参考图那两个胶囊是"老板在哪个大区下单"的口径，打手大厅不按大区筛。线上 <code>order.game_zone</code> 真实存在（qq/wechat），但 <code>/worker/order-hall</code> <b>刻意不下发</b>（老板游戏区服与 ID 只有抢单成功后才可见，隐私铁律）。因此大厅卡片上不放区服标签，改为一行事实：<b>「接单后可见老板游戏区服与 ID」</b>——把"看不到的原因"说出来，比放一个空标签好</td></tr><tr><td>公告行</td><td>有（"欢迎使用嘉楠系统…"）</td><td><b>保留，接真实公告</b></td><td>线上 <code>/public/announcements</code> 真实数据：「欢迎来到 祁连山电竞 · 祁连山电竞俱乐部正式上线，快来体验专业陪玩服务。」（置顶优先 + 时间倒序）</td></tr><tr><td>列表</td><td>有（空态"没有更多了"）</td><td><b>保留，换真实字段</b></td><td>真实字段：商品名（<code>order_price_snapshot.product_name</code>）× 数量、金额 <code>fmtPoints(total_amount)</code>、分部（<code>divisionId</code> → <code>/divisions</code> 名称）、单号后 4 位、相对时间（<code>createdAt</code>）。<b>不展示老板游戏 ID</b>（服务端大厅本就不返回）</td></tr><tr><td>底部导航</td><td>4 位（首页/订单/消息/我的）</td><td><b>打手态 3 位</b>（接单/消息/我的）</td><td>参考图的"订单"是老板侧订单；打手态的「我的订单」并进「我的」页，保持"只显示三处"</td></tr></tbody></table>
+  <div class="callout">
+    <p><b>真实数据落点（全部来自本机 3100 实读，2026-10-05）</b>：</p>
+    <div class="kv"><b>分部</b><span>和平精英（在线 3） · 三角洲行动 · 手游（在线 3） · 三角洲行动 · 端游（在线 3） · 无畏契约 · 端游（在线 2，建设中） · 无畏契约 · 手游（在线 2，建设中）</span></div>
+    <div class="kv"><b>该打手已授权</b><span>和平精英 · 三角洲行动 · 手游 · 三角洲行动 · 端游（示例；服务端实时查库）</span></div>
+    <div class="kv"><b>公告</b><span>「欢迎来到 祁连山电竞」— 祁连山电竞俱乐部正式上线，快来体验专业陪玩服务。（2026-10-04 16:15）</span></div>
+    <div class="kv"><b>订单商品</b><span>保2红单48.8 · 68.8清图绝密 · 25清图机密 · 36.6博弈宝冠单（出返现小金人+金aug）不出保888w · 49.9包1000万（绝密）· 人机爆红单15.88 …（线上全部 37 个商品，取 8 个）</span></div>
+    <div class="kv"><b>金额</b><span><code>fmtPoints(price × quantity)</code>，如 488 / 1376 / 158.8 —— <b>非整数、长短不一</b></span></div>
+    <div class="kv"><b>大厅卡片的区服</b><span><b>不展示</b>：<code>game_zone</code> / <code>game_player_id</code> 只有抢单成功后才由服务端下发（隐私铁律），卡片上改为一行事实「接单后可见老板游戏区服与 ID」</span></div>
+    <div class="kv"><b>一处数据瑕疵</b><span>线上有个商品名里带了 emoji 字符 <code>➕</code>（U+2795，例：<code>38.8保1000w（送7级套➕强化74u/妹控/Aug强化12k四选一）</code>）。本稿为满足 docs/21「无 emoji」改用同分部的另一条真实商品（<code>44.6博弈鹰雕单…</code>）。<b>建议管理端在商品名保存时过滤 emoji 字符</b>（管理端改动，不在本次范围）</span></div>
+  </div>
+</section>
+
+<section id="s6">
+  <h2><span class="n">6</span>错误态矩阵（6 类，文案 + 下一步 + 对应屏）</h2>
+  <table class=""><thead><tr><th>场景</th><th>服务端真实响应</th><th>中文提示（设计定稿）</th><th>下一步与布局</th><th>对应屏</th></tr></thead>
+<tbody><tr><td>账密错误</td><td><code>401</code></td><td><b>账号或密码错误</b>，请重新输入。连续 5 次会锁定 1 分钟。</td><td>留在弹层，两个输入框转 <code>.err</code> 态，主按钮文案变「重新绑定」</td><td>A2 <code>error</code> / B2 <code>error</code> / C2 <code>error</code></td></tr><tr><td>填了老板账号（角色不符）</td><td><code>403</code>「账号角色不符」</td><td><b>这个账号是老板账号，不是打手账号</b>：你填的 <code>ayuan_2026</code> 是老板端账号。打手端账号由管理员创建分配，通常形如 wangye_go；如果你本身是打手，请向客服要自己的工号与密码。</td><td>橙色提示条（不是红色错误行）——这不是"你输错了"，而是"你拿错了账号"；主按钮置灰，副按钮改成「联系客服」</td><td>A2 <code>role</code></td></tr><tr><td>账号已被禁用/封禁</td><td><code>403</code> <code>errorCode=ACCOUNT_BANNED</code></td><td><b>该打手账号已被停用</b>：王野 · 工号 W20260118 · 停用时间 2026-10-04 18:20。停用期间无法接单，请联系管理员恢复后再绑定。</td><td>红色提示条 + 具体时间与工号（服务端已下发结束时间）；主按钮置灰，副按钮「联系管理员」</td><td>A2 <code>banned</code></td></tr><tr><td>该账号已在别处登录（单设备冲突）</td><td>登录成功但旧端收到 <code>revoked=2</code></td><td><b>该账号正在另一台设备上登录</b>：平台是单设备登录，继续绑定会让那台设备（通常是工作端 App）立刻退出登录，并提示"账号已在其他设备登录"。</td><td>橙色<b>事前告知</b>条 + 账号信息卡（账号/工号昵称/可接分部）+ 主按钮明确写成「仍然绑定，让那台设备下线」，副按钮「先不绑定」。<b>反向情形</b>（本机被别的设备顶掉）→ 大厅顶部红色提示 + 两个动作：「重新登录打手账号」/「切回老板身份」（A3 <code>kicked</code>）</td><td>A2 <code>conflict</code> / B2 <code>conflict</code> / A3 <code>kicked</code></td></tr><tr><td>无任何接单权限</td><td>服务端 <code>/worker/order-hall</code> 当前返回 <code>403</code>「无接单权限」</td><td><b>你暂无任何分部的接单权限</b>：绑定成功了，但管理员还没给你开通分部。请让管理员在「分部管理 → 打手权限」里勾选至少一个分部；开通后这里会自动出现订单，不用重新绑定。</td><td><b>在进入打手态之前就拦住</b>（弹层内提示 + 主按钮置灰 + 「留在老板态」）；若用户仍进入了打手态，大厅给同文案的空态 + 「联系客服」，<b>不要给红字报错页</b></td><td>A2 <code>noperm</code> / C2 <code>noperm</code> / A3 <code>noperm</code> / B3 <code>noperm</code></td></tr><tr><td>已是绑定状态</td><td>无需请求</td><td><b>已绑定打手端账号</b>：王野 · 工号 W20260118 · 已授权 2 个分部（和平精英、三角洲行动 · 手游）。</td><td>弹层显示绑定卡 + 两个动作：「立即切换为打手」（免密）与「解除绑定」（带影响说明）；不再要求输密码</td><td>A2 <code>bound</code> / B2 <code>bound</code> / C2 <code>bound</code></td></tr></tbody></table>
+  <div class="callout warn">
+    <p><b>文案原则</b>：① 不说"操作失败"这种无信息的话，说清<b>是什么问题</b>（谁的账号、什么时候被停用、哪台设备）；② 每条错误都给<b>一个明确的下一步</b>（重新输入 / 联系客服 / 联系管理员 / 仍然绑定）；③ <b>区分"你输错了"与"你拿错了账号"</b>——后者用橙色告知条而不是红色错误行（<code>role</code> 态）。</p>
+  </div>
+</section>
+
+<section id="s7">
+  <h2><span class="n">7</span>打手态干净度：核验器的黑名单与结构断言</h2>
+  <div class="two">
+    <div class="card">
+      <h4 style="margin-top:0">文本黑名单（9 张打手态屏逐屏断言，只查可见文本）</h4>
+      <div class="pill-list"><span class="pill">下单</span><span class="pill">找陪玩</span><span class="pill">快速下单</span><span class="pill">祁小山</span><span class="pill">排行榜</span><span class="pill">玩家圈</span><span class="pill">社区</span><span class="pill">发帖</span><span class="pill">会员</span><span class="pill">VIP</span><span class="pill">积分卡</span><span class="pill">开通会员</span><span class="pill">我的积分卡</span><span class="pill">优惠券</span><span class="pill">猫粮</span><span class="pill">尊享</span><span class="pill">赛事</span><span class="pill">俱乐部招募</span><span class="pill">陪玩列表</span><span class="pill">商品</span><span class="pill">购物车</span><span class="pill">积分商城</span></div>
+      <p style="font-size:12px;margin:10px 0 0">命中任意一个 → 该屏核验 <b>FAIL</b>。审批说明块 <code>.spec</code> 位于手机壳外，不计入断言范围。</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">结构断言</h4>
+      <ul class="ul">
+        <li>打手态屏内不得存在 <code>.tb-c</code>（底部凸起位）与 <code>.fab</code>（下单浮标）</li>
+        <li>打手态底部导航文字项必须 <b>⊆ {接单, 消息, 我的}</b>；B 方案必须<b>没有</b> <code>.tabbar3</code>，改由 <code>.ws-top</code>（工作台工具条）承担导航</li>
+        <li>老板态屏必须仍有 5 项（服务/订单/消息/我的）+ 凸起位，且老板态<b>不得</b>出现「接单」字样</li>
+        <li>每屏：<code>innerWidth=390</code>、无横向溢出、无 <code>U+FFFD</code>、无 emoji、<code>document.images.length=0</code>（无位图/插画）</li>
+        <li>每屏：<code>linear-gradient</code> 面积为 0；<code>box-shadow</code> 只允许出现在 <code>.sheet</code> 弹层内</li>
+        <li>关键真实数据必须出现：大厅屏含「和平精英」「三角洲行动」「欢迎来到 祁连山电竞」；消息屏含「祁连山客服」；我的屏含「工号」</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s8">
+  <h2><span class="n">8</span>改动清单（数据 / 认证 / 客户端 / 运维）</h2>
+  <div class="tbl-wrap"><table class=""><thead><tr><th>#</th><th>层</th><th>改动</th><th>文件</th><th>影响 / 风险</th><th>阶段</th></tr></thead>
+<tbody><tr><td>D1</td><td>数据</td><td>新增 <code>worker_identity_binding(id, user_id, worker_user_id, device_id, status, bound_at, last_used_at, revoked_at)</code>，唯一键 <code>(user_id, worker_user_id, device_id)</code></td><td><code>server/src/modules/auth/</code>（或 worker/）+ migration</td><td>仅新增表，存量数据零影响</td><td>阶段 2</td></tr><tr><td>D2</td><td>数据</td><td><code>auth_token</code> 增 <code>kind</code>（<code>primary</code>/<code>companion</code>，默认 <code>primary</code>）与 <code>device_id</code>（可空）</td><td><code>auth-token.entity.ts</code> + migration</td><td>存量行默认 primary → 单设备语义保持不变</td><td>阶段 2</td></tr><tr><td>D3</td><td>数据</td><td><b>不动</b>：<code>worker</code>、<code>worker_division_permission</code>、<code>chat_conversation</code>、<code>order</code> 全部保持原样</td><td>—</td><td>—</td><td>—</td></tr><tr><td>D4</td><td>服务端</td><td><b>建议修复</b>：<code>workerHall</code> 在"无任何分部权限"时由 <code>403</code> 改为返回空列表 + <code>divisionDenied:true</code> + 中文提示（与 CLAUDE.md 约定一致）</td><td><code>order.service.ts → workerHall()</code></td><td>老客户端也兼容（同样得到空列表）；避免新绑定打手看到报错页</td><td><b>阶段 1</b></td></tr><tr><td>A1</td><td>认证</td><td>新增 <code>POST /auth/identity/bind</code>（校验打手账密 + 建绑定）与 <code>POST /auth/identity/switch-worker</code>（签发 companion 会话）</td><td><code>auth.controller.ts</code> / <code>auth.service.ts</code> / <code>dto/auth.dto.ts</code></td><td>新增接口；阶段 1 可<b>先不实现</b>，直接复用 <code>/auth/login</code>（代价是会顶掉工作端）</td><td>阶段 1/2</td></tr><tr><td>A2</td><td>认证</td><td><code>issueTokens(user, replaceOthers, kind)</code>：<code>kind=companion</code> 时<b>不</b>顶掉 primary 会话，且只顶掉"同一 device_id 的旧 companion"</td><td><code>auth.service.ts → issueTokens()</code></td><td>单设备语义保持：primary 之间仍互斥；companion 每设备最多 1 条</td><td>阶段 2</td></tr><tr><td>A3</td><td>认证</td><td><code>JwtAuthGuard</code>：companion 会话每次请求校验绑定仍有效（<code>status=1</code>），TTL 更短（建议 12h），过期后需重新切换</td><td><code>common/guards/jwt-auth.guard.ts</code></td><td>解绑/管理员停用后立即失效；不影响 primary 校验路径</td><td>阶段 2</td></tr><tr><td>A4</td><td>认证</td><td><code>GET /auth/me</code> 追加绑定信息（<code>companion: {bindingId, workerUserId, deviceId, expiresAt}</code>）或新增 <code>GET /auth/identity</code></td><td><code>auth.service.ts → me()</code></td><td>纯新增字段，老客户端忽略即可</td><td>阶段 2</td></tr><tr><td>A5</td><td>审计</td><td>绑定 / 解绑 / 切换 写 <code>login_log</code> 或 <code>operation_log</code>（谁、哪个老板账号、哪个打手账号、哪台设备）</td><td><code>auth.service.ts</code> + <code>log</code> 模块</td><td>可追溯"内部打手账号在 C 端 App 的使用"</td><td>阶段 2</td></tr><tr><td>C1</td><td>客户端</td><td><code>AuthStore</code> 单 token 槽 → 双槽：<code>auth_access_token</code> 与 <code>auth_access_token#worker</code> + <code>activeIdentity</code>；<b>单身份路径必须逐字节不变</b></td><td><code>apps/packages/core/lib/src/auth/auth_store.dart</code></td><td><b>最大风险点</b>：两端所有页面都依赖它。必须补 core 测试 + 双身份切换专项</td><td>阶段 1</td></tr><tr><td>C2</td><td>客户端</td><td><code>ApiCache</code> 会话隔离维度改为 <code>(identity, token)</code>；<code>RealtimeClient</code> 按身份建/拆 socket，切身份时断旧连新</td><td><code>api_cache.dart</code> / <code>realtime_client.dart</code></td><td>串号与红点串味的主要来源；需 20 次切换压力校验</td><td>阶段 1</td></tr><tr><td>C3</td><td>客户端</td><td>boss-app 新增打手态 3 页。建议先把 worker-app 的 <code>orders_page</code> / <code>messages_page</code> / <code>profile_page</code> 逻辑下沉到 core 共用组件，<b>避免复制两份</b></td><td><code>apps/worker-app/lib/pages/*</code> → <code>apps/packages/core/lib/src/worker/*</code> → boss-app 引用</td><td>下沉会同时影响工作端（同源），需工作端回归 13/13</td><td>阶段 1</td></tr><tr><td>C4</td><td>客户端</td><td><code>HomeShell</code> 增加身份分支：老板态挂 5 位导航（含凸起 AI 分支）；打手态<b>只挂 3 页</b>（接单/消息/我的），<b>服务页 / 订单页 / AI 页完全不构建</b></td><td><code>apps/boss-app/lib/pages/home_shell.dart</code></td><td>只隐藏不卸载 → 老板态轮询与 WS 仍在跑，红点会串味（见 R3）</td><td>阶段 1</td></tr><tr><td>C5</td><td>客户端</td><td>大厅订单卡补「分部名 + 相对时间」：<code>OrderBrief</code> 加 <code>divisionName</code>（用 <code>divisionId</code> 对 <code>/divisions</code> 映射即可，无需改接口）与时间格式化（当前工作端订单卡<b>根本没有渲染 <code>createdAt</code></b>）；<b>游戏分区（QQ区/微信区）大厅不展示</b>（服务端本就不下发，抢单后才有），改为一行事实说明</td><td><code>apps/packages/core/lib/src/models/order_brief.dart</code> + 打手态大厅页</td><td>纯展示；本稿已按此结论出图</td><td>阶段 1</td></tr><tr><td>C6</td><td>客户端</td><td>切换/解绑/5 类错误态 UI（底部弹层 + 提示条 + 输入错误行），统一放 core 供两端复用</td><td><code>apps/packages/core/lib/src/widgets/</code></td><td>纯新增组件</td><td>阶段 1</td></tr><tr><td>C7</td><td>客户端</td><td>老板端「我的」页新增「身份」分组（入口 + 绑定状态 + 说明行）</td><td><code>apps/boss-app/lib/pages/profile_page.dart</code></td><td>老板态唯一改动，位置在积分卡与「常用」之间</td><td>阶段 1</td></tr><tr><td>U1</td><td>运维</td><td>工作端更新通道的处置（保留并行 / 停用并通知 / 观察期后停用）→ 取决于待拍板第 1 条</td><td>管理端「App 更新」页 + <code>scripts/release-worker.js</code></td><td>停用通道后存量打手收不到更新，必须提前公告</td><td>阶段 2/3</td></tr></tbody></table></div>
+  <div class="callout">
+    <p><b>本轮已完成的部分</b>：只读摸查 + 设计稿 + 生成器 + 出图核验脚本。<b>未改</b> <code>apps/**</code>、<code>server/**</code>、<code>admin-web/**</code> 任何文件；未动既有 <code>site/design/**</code>；未新增依赖；未 commit、未打包、未发云端。</p>
+  </div>
+</section>
+
+<section id="s9">
+  <h2><span class="n">9</span>风险与回归面</h2>
+  <div class="tbl-wrap"><table class=""><thead><tr><th>#</th><th>风险</th><th>等级</th><th>后果</th><th>缓解</th></tr></thead>
+<tbody><tr><td>R1</td><td>core <code>AuthStore</code> 改造波及两端所有页面</td><td>高</td><td>改坏 = 两端都登不上、串号。</td><td>阶段 1 先把双槽实现成"只有 worker 槽为空时路径与今天完全一致"；补 core 单元测试（32 项全过）+ 双身份切换 20 次串号检查 + 两端 widget 测试</td></tr><tr><td>R2</td><td>单设备登录语义变化（引入 companion 会话）</td><td>高</td><td>若实现不当，可能变成"打手账号可无限多设备在线"，等于取消内部账号的风控。</td><td>companion 仅由绑定关系签发（UK 约束 <code>user_id+worker_user_id+device_id</code>）+ TTL 12h + 每次请求校验绑定有效 + 打手侧可撤销；primary 之间仍严格互斥；补专项用例：primary 顶 primary、companion 不顶 primary、解绑后 companion 立即 401</td></tr><tr><td>R3</td><td>红点 / WS / 未读在两种身份间串味</td><td>中</td><td>打手态看到老板的未读，或老板态冒出"老板私聊"未读——用户会认为 App 有 bug。</td><td>切身份时断旧 WS 建新 WS；<code>ApiCache</code> 按身份隔离；HomeShell 按身份真正不挂载另一态页面；<code>badge</code> 只取当前身份的数据源</td></tr><tr><td>R4</td><td>大厅"无任何分部权限"落到 403 报错页（现状缺陷）</td><td>中</td><td>新绑定打手第一次进大厅就看到红字 + 重试按钮，体验等于"坏了"。</td><td>按 D4 修服务端；客户端同时补空态分支（三套设计都已画）</td></tr><tr><td>R5</td><td>商品 price 与名称数字不一致</td><td>低（数据问题）</td><td>大厅出现"人机爆红单15.88 / 158.8 积分"，用户会怀疑价格被改。</td><td>待拍板第 7 条；本稿按线上真实字段展示，不做美化</td></tr><tr><td>R6</td><td>工作端 App 是否保留未定</td><td>高</td><td>决定了单设备方案、更新通道、存量打手迁移、以及本方案阶段 2 的必要性。</td><td>必须先拍板（待拍板第 1 条）；本方案按"保留并行"设计，若确定停用可省掉 companion 会话（阶段 2 可缩为 1-2 天）</td></tr><tr><td>R7</td><td>打手账密输入框进入 C 端 App 带来新的攻击面</td><td>中</td><td>键盘记录 / 截屏 / 恶意输入法可窃取内部账号。</td><td>复用既有 <code>/auth/login</code> 的限流（5 次/分/(IP+账号)）与封禁逻辑；密码框默认遮蔽 + 显示切换；<code>flutter_secure_storage</code> 存 companion token；<b>不在本地保存打手密码</b>（只在切换时用一次）；建议后续加设备指纹与绑定数量上限</td></tr><tr><td>R8</td><td>老板端 App 的更新通道会把打手态一起推给全部老板用户</td><td>低</td><td>纯老板用户会看到一个用不到的身份入口。</td><td>入口文案与位置按待拍板第 8 条确认；必要时用远端开关（<code>system_setting</code>）灰度</td></tr></tbody></table></div>
+  <h3>9.1 回归清单（实施阶段必须跑）</h3>
+  <ul class="ul">
+    <li>core 单元测试 32/32、老板端 19/19、工作端 13/13；三端 <code>flutter analyze</code> 0 issue</li>
+    <li>后端全量回归 14 套件 / 310 项断言 0 失败</li>
+    <li><b>单设备专项</b>：primary 顶 primary（老行为不变）、companion 不顶 primary、解绑后 companion 下一次请求 401、refresh 轮换竞态、WS 握手/心跳校验</li>
+    <li><b>双身份专项</b>：连续切换 20 次无串号（订单列表 / 会话列表 / 未读 / 头像昵称）、切身份时缓存与 WS 重建、冷启动恢复到上次身份</li>
+    <li><b>边界专项</b>：无任何分部权限、被撤销分部权限后大厅即时变化、打手被停用、绑定账号被删除/封禁、本机 companion 被顶</li>
+    <li>真机：Android 至少 2 台（一台老板账号、一台打手账号交叉验证顶号提示）</li>
+  </ul>
+</section>
+
+<section id="s10">
+  <h2><span class="n">10</span>与 docs/21《反 AI 味设计规范》逐条对照</h2>
+  <table class=""><thead><tr><th>docs/21 第六节自检问题</th><th>结论</th><th>依据（可在本页与 HTML 里逐条验证）</th></tr></thead>
+<tbody><tr><td>1. 把内容换成同行的，这版设计还成立吗？</td><td>成立度低</td><td>分部胶囊取自真实 <code>division</code> 表；金额取自真实 <code>price×qty</code>；公告取自真实公告接口；打手态"只有三处"是业务规则不是排版选择。换一家平台，这些字段与约束都对不上</td></tr><tr><td>2. 是否用了模型反射式默认？</td><td>否</td><td>全稿 <code>linear-gradient</code> 使用次数 <b>0</b>（核验器逐屏断言）；圆角只用 4/6/10/14 + 胶囊；阴影只出现在 <code>.sheet</code>（核验器断言"非弹层元素不得有 box-shadow"）；没有居中对称的 hero、没有把三个大数字做成顶部 hero 区（A5/C5 收益卡里的三个数字是同一张卡内的明细项，字号 14px，非 hero 级）</td></tr><tr><td>3. 把装饰全删掉，还剩什么？</td><td>剩结构</td><td>删掉全部图标后剩下的仍是：身份与绑定状态、接单权限按分部、金额与数量、单号与时间、四种非 happy path 状态。没有一张装饰插画、没有一个 emoji</td></tr><tr><td>4. 每个颜色/圆角/间距能说理由吗？</td><td>能</td><td>主色 <code>#2563EB</code>=选中态与主按钮（唯一强调色）；琥珀金 <code>#D97706</code>=金额；绿 <code>#16A34A</code>=在线/已授权；橙 <code>#EA580C</code>="需要你注意但没坏"（冲突告知/无权限）；红 <code>#DC2626</code>=错误；灰=禁用。间距组内 8–10、组间 20–22（与线上 token 一致）</td></tr><tr><td>5. 假数据是否具体、长短不一、有业务味？</td><td>是</td><td>商品名 8 个全部是线上真实商品（含"36.6博弈宝冠单（出返现小金人+金aug）不出保888w"这种长名与"25清图机密"这种短名）；金额是非整数（488 / 158.8 / 1376 / 1497）；时间"3 分钟前 / 26 分钟前 / 1 小时前 / 昨天"；公告是真实公告原文（「欢迎来到 祁连山电竞」）；客服昵称是线上真实昵称「祁连山客服」</td></tr><tr><td>6. 空态/加载/错误态是否都设计了？</td><td>是（4 类）</td><td>空态（大厅无单 / 该分部无单）、无权限态、错误态（账密错 / 角色不符 / 封禁 / 顶号 / 无权限，共 5 类文案）、被顶下线态（<code>kicked</code>）。仅"加载态"沿用线上既有 shimmer/骨架（未在本稿重复出图）</td></tr></tbody></table>
+  <h3>10.1 设计 token 与理由（每个取值都要能说出理由）</h3>
+  <div class="tbl-wrap"><table class=""><thead><tr><th>token</th><th>值</th><th>用在哪 / 为什么</th></tr></thead>
+<tbody><tr><td>主色</td><td><code>#2563EB</code>（实色）</td><td>选中态、主按钮、身份标识。<b>全稿唯一强调色</b>；不用渐变做主视觉（doc21 第一条禁止项）</td></tr><tr><td>琥珀金</td><td><code>#D97706</code></td><td>金额（订单价格、收益）。与主色分工明确：蓝=可操作，金=钱</td></tr><tr><td>绿</td><td><code>#16A34A</code></td><td>在线/已授权/成功（可接单打手数、权限"已开通"、在职中）</td></tr><tr><td>橙</td><td><code>#EA580C</code></td><td>"需要你注意但没坏"：单设备冲突事前告知、无接单权限告知（<b>不是错误</b>）</td></tr><tr><td>红</td><td><code>#DC2626</code></td><td>真错误：账密错、被停用、被顶下线</td></tr><tr><td>灰</td><td><code>#94A3B8 / #5B6B80</code></td><td>图标与发丝线用 #94A3B8；白底说明文字用 #5B6B80（对比度 5.44:1，达 WCAG AA）</td></tr><tr><td>圆角</td><td>4 / 6 / 10 / 14 + 胶囊</td><td>小标签 4、控件与输入 6、分段与切换器 10、卡片与弹层 14、胶囊全圆 —— 分档，不做"全部大圆角"</td></tr><tr><td>阴影</td><td><b>只有</b> <code>.sheet</code></td><td>列表与卡片一律发丝线（<code>1px #E5E9F0 / #EEF1F6</code>）；核验器断言非弹层元素无 box-shadow</td></tr><tr><td>间距</td><td>组内 8–10 / 组间 20–22</td><td>与线上 <code>AppSpacing</code> 一致；左对齐为主，不做居中对称</td></tr></tbody></table></div>
+</section>
+
+<section id="s11">
+  <h2><span class="n">11</span>待拍板问题清单（10 条，每条含选项与影响）</h2>
+  <div class="stack">
+    <div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 1 条 · <b>合并后工作端 App 是否保留？</b></div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：A 保留并行（推荐）/ B 直接停用，只发合并端 / C 先并行 3 个月再停用</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：保留 → 必须做阶段 2 的 companion 会话，否则会互相顶号；停用 → 阶段 2 可缩到 1-2 天，但要给存量打手迁移期与公告</div>
+      </div>
+    </div><div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 2 条 · 一个老板账号能绑几个打手账号？</div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：1 个（推荐）/ 最多 3 个 / 不限</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：1 个 → 绑定表与 UI 最简单（本稿画的形态）；多个 → 「我的」页要变成身份列表，切换器从 2 格变 3+ 格，UI 需重画</div>
+      </div>
+    </div><div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 3 条 · 绑定关系能否解绑？</div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：随时可解（推荐）/ 需管理员批准 / 不可解</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：随时可解 → 需解绑确认 + 撤销 companion 会话（本稿已画 <code>unbind</code> 态）；不可解 → 用户换机/换号会永久卡住，不建议</div>
+      </div>
+    </div><div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 4 条 · <b>打手态消息的「好友私聊」去留？</b></div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：A 严格两段（老板/客服）（推荐，符合"只显示三处"）/ B 有好友会话时条件显示第三段（C4 的 <code>withfriend</code> 态）/ C 把好友并入客服段</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：A → 该账号好友消息在本机无入口（未读仍在服务端累积）；B → 不漏消息，但"只有两段"的规则出现例外；C → 语义混淆（好友 ≠ 客服）</div>
+      </div>
+    </div><div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 5 条 · <b>单设备登录怎么处理？</b></div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：A 阶段 1"绑定即顶号"（零服务端改动）/ B companion 伴随会话 + 绑定表（推荐正式版）/ C 同一打手账号允许多设备（放弃单设备）</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：A → 打手工作端会掉线，需提前告知（可作内部试用）；B → 工作端不受影响，开发量 4-6 天；C → 破坏内部账号风控，不建议</div>
+      </div>
+    </div><div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 6 条 · 接单大厅要不要搜索？</div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：不接（推荐）/ 接（后端 <code>workerHall</code> 加 keyword）</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：不接 → 与线上接口现状一致，零后端改动；接 → 后端加过滤（<code>order_no</code> + 快照商品名）+ 客户端搜索框 + 回归，约 1 天</div>
+      </div>
+    </div><div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 7 条 · 商品 price 与名称数字不一致，是否重录？</div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：按 ×10 重录（名称 9.9 → price 9.9）/ 保持现状 / 改商品名让它与 price 一致</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：重录 → 影响结算口径与历史订单快照，需核对；保持 → 大厅金额继续"看着不对"</div>
+      </div>
+    </div><div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 8 条 · 身份入口放哪？</div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：老板端「我的」页（推荐）/ 首页快捷入口 / 设置页</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：「我的」→ 账号级设置的自然位置（本稿 A/B/C 都按此画）；首页 → 可发现性更高但会挤占服务页主路径</div>
+      </div>
+    </div><div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 9 条 · 打手态能不能改打手资料/密码？</div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：只读（推荐）/ 允许改</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：只读 → 零风险（本稿按只读画）；允许改 → 改密会吊销该账号<b>全部</b>会话（含工作端），需要在 UI 里明确警告</div>
+      </div>
+    </div><div class="chk">
+      <span class="bx"></span>
+      <div style="flex:1 1 auto;min-width:0">
+        <div style="font-size:13.5px;font-weight:700">第 10 条 · 本次是否同时合并管理端？</div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:3px"><b>选项</b>：不动（推荐）/ 一并合并</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:3px"><b>影响</b>：不动 → 管理端只加一个"打手绑定关系"只读页（阶段 2 可选）；一并合并 → 范围失控</div>
+      </div>
+    </div>
+  </div>
+  <div class="callout warn" style="margin-top:16px">
+    <p><b>其中第 1、4、5 条会直接改变设计形态</b>：第 1 条决定要不要做伴随会话（阶段 2 是否必要）；第 4 条决定打手态消息是 2 段还是 3 段（C4 已把两种形态都画出来供对比）；第 5 条决定阶段 1 能不能给全部打手用。</p>
+  </div>
+</section>
+
+<section id="s12">
+  <h2><span class="n">12</span>分阶段实施成本 · 最快可改点</h2>
+  <div class="grid3">
+    <div class="card">
+      <span class="badge b-p">阶段 1 · 1-2 天</span>
+      <h4>内部可用版（纯客户端 + 1 处服务端修复）</h4>
+      <ul class="ul">
+        <li>core <code>AuthStore</code> 双 token 槽（单身份路径逐字节不变）</li>
+        <li><code>ApiCache</code> / <code>RealtimeClient</code> 按身份隔离</li>
+        <li>工作端 3 页逻辑下沉 core，boss-app 按身份挂载 3 项导航</li>
+        <li>老板端「我的」页身份分组 + 切换/解绑弹层 + 5 类错误态</li>
+        <li>服务端：D4 大厅无权限由 403 改空列表</li>
+      </ul>
+      <p style="font-size:12px;margin:0"><b>局限</b>：复用 <code>/auth/login</code>，切换会顶掉工作端登录 → 只给内部打手试用。</p>
+    </div>
+    <div class="card">
+      <span class="badge b-g">阶段 2 · 4-6 天</span>
+      <h4>正式版（服务端伴随会话 + 绑定表）</h4>
+      <ul class="ul">
+        <li>D1 绑定表 + D2 <code>auth_token.kind/device_id</code></li>
+        <li>A1 绑定/切换接口 + A2 <code>issueTokens(kind)</code> + A3 guard 校验 + A4 me 附绑定 + A5 审计</li>
+        <li>客户端切换改走新接口；被顶/解绑实时失效</li>
+        <li>管理端「打手绑定关系」只读页（可选）</li>
+      </ul>
+      <p style="font-size:12px;margin:0"><b>结果</b>：工作端 App <b>不再被顶号</b>，单设备规则对 primary 依然成立。</p>
+    </div>
+    <div class="card">
+      <span class="badge b-m">阶段 3 · 2-3 天（可选）</span>
+      <h4>增强</h4>
+      <ul class="ul">
+        <li>大厅搜索（后端 keyword + 客户端搜索框）</li>
+        <li>绑定数量上限可配（<code>system_setting</code>）</li>
+        <li>打手侧"我的登录设备"与一键撤销</li>
+        <li>更新通道迁移（停用 worker 通道 + 公告）</li>
+      </ul>
+      <p style="font-size:12px;margin:0"><b>合计</b>：7-11 天（阶段 2 若确定停用工作端，可缩到 1-2 天）。</p>
+    </div>
+  </div>
+
+  <h3>12.1 若这版不合意，最快能改的 6 处</h3>
+  <div class="tbl-wrap"><table class=""><thead><tr><th>想改什么</th><th>改哪里</th><th>工作量</th></tr></thead>
+<tbody><tr><td>打手态底部导航的项数与文案（3 项 ↔ 4 项 / 加"订单"）</td><td><code>merge-identity-shell.mjs → tabbarWorker()</code> 一处函数</td><td>分钟级</td></tr><tr><td>大厅列表形态（卡片 ↔ 高密度行式）与每屏条数</td><td>A3 的 <code>ordCard()</code> ／ B3 的 <code>.wrow</code> + <code>DENS</code> 数据</td><td>10 分钟</td></tr><tr><td>身份入口的位置（「我的」页分组 ↔ 首页快捷入口 ↔ 设置页）</td><td>A1/B1/C1 的入口片段 + C 的 <code>idSwitch()</code></td><td>20 分钟</td></tr><tr><td>打手态消息段数（严格 2 段 ↔ 条件 3 段）</td><td>A4/B4/C4 的 <code>.seg</code> 片段；<b>C4 已同时画出两态</b>，改默认档即可</td><td>10 分钟</td></tr><tr><td>任一错误态的文案与下一步</td><td><code>a2()</code> 内 7 个 state pane 的文案常量，集中在一个函数</td><td>10 分钟</td></tr><tr><td>全局色板 / 圆角 / 间距</td><td><code>merge-identity-shell.mjs</code> 的 <code>:root</code>（一处改，18 屏全部生效）</td><td>5 分钟</td></tr></tbody></table></div>
+</section>
+
+<section id="s13">
+  <h2><span class="n">13</span>A+ 稿：A 套 + 当前身份显示</h2>
+
+  <div class="callout ok">
+    <p><b>负责人审批结论（2026-10-05）</b>：双端合并采用 <b>A 套「同 App 双态」</b>，但必须补上 C 套的「<b>显示当前身份</b>」——
+    任何时候都能一眼看出"我现在是老板还是打手"。本节即 A+ 稿（7 屏），<b>A 套原稿 <code>a1..a6.html</code> 未覆盖、可回溯</b>；
+    A+ 只改身份显示，骨架逐项沿用 A（打手态底栏 3 项、无凸起、无浮标、零老板端元素）。</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card"><h4 style="margin-top:0">A+ 相对 A 的 4 处改动（仅此 4 处）</h4><ul class="ul">
+      <li>老板态「我的」：新增「<b>当前身份：老板</b>」标签（资料头 + 身份分组行各一处，同一枚标签）</li>
+      <li>老板态「我的」：身份分组<b>上移</b>到资料头正下方（不与积分卡争首屏）</li>
+      <li>打手态三屏：页头下方新增 <b>28dp 身份细带</b>（工号 + 切回老板）</li>
+      <li>打手态页头：删除「打手态」标签（同一信息不重复）；新增切换中 Toast 与绑定上限态</li>
+    </ul></div>
+    <div class="card"><h4 style="margin-top:0">A+ 明确<b>不做</b>的事</h4><ul class="ul">
+      <li>不做顶部两格切换器（老板端多屏放不下，且会把"老板"二字带进打手态界面）</li>
+      <li>不改动底部导航的几何（打手态 3 项、无凸起，与 A 一致，只把总高对齐到 62dp）</li>
+      <li>不给老板态加任何常驻身份带（默认身份无需提示）</li>
+      <li>不新增依赖、不引入第三方 Toast / 动效包（全部用 core 既有组件）</li>
+    </ul></div>
+  </div>
+
+  <h3>13.1 A+ 稿 7 屏（390×844）</h3>
+  <p>状态覆盖：老板态「我的」① / 绑定上限已满 ② / 切换中（Toast + 骨架就位）③ / 打手态三屏（大厅含 4 态、消息含 2 态、我的含解绑态）④⑤⑥ / 解绑后回到老板态 ⑦。
+  每屏支持 <code>?state=</code> 变体，全部已出 PNG。</p>
+  <div class="shotgrid" data-set="A+"><figure class="shot">
+  <a href="aplus1-boss-mine.html" target="_blank"><img src="p-aplus1.png" alt="A+1 老板态 · 我的（当前身份：老板）" loading="lazy"></a>
+  <figcaption><b>A+1 老板态 · 我的（当前身份：老板）</b>
+  <span>变体：<code>default</code></span>
+  <a class="lk" href="aplus1-boss-mine.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="aplus1b-boss-mine-bound-limit.html" target="_blank"><img src="p-aplus1b.png" alt="A+1b 老板态 · 我的（绑定上限已满）" loading="lazy"></a>
+  <figcaption><b>A+1b 老板态 · 我的（绑定上限已满）</b>
+  <span>变体：<code>default</code></span>
+  <a class="lk" href="aplus1b-boss-mine-bound-limit.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="aplus2-switch-transition.html" target="_blank"><img src="p-aplus2.png" alt="A+2 切换中 · 过渡提示（Toast / 骨架就位）" loading="lazy"></a>
+  <figcaption><b>A+2 切换中 · 过渡提示（Toast / 骨架就位）</b>
+  <span>变体：<code>toast</code> <code>midway</code></span>
+  <a class="lk" href="aplus2-switch-transition.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="aplus3-worker-hall.html" target="_blank"><img src="p-aplus3.png" alt="A+3 打手态 · 接单大厅（含身份细带）" loading="lazy"></a>
+  <figcaption><b>A+3 打手态 · 接单大厅（含身份细带）</b>
+  <span>变体：<code>default</code> <code>empty</code> <code>noperm</code> <code>kicked</code></span>
+  <a class="lk" href="aplus3-worker-hall.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="aplus4-worker-messages.html" target="_blank"><img src="p-aplus4.png" alt="A+4 打手态 · 消息（老板 / 客服，含身份细带）" loading="lazy"></a>
+  <figcaption><b>A+4 打手态 · 消息（老板 / 客服，含身份细带）</b>
+  <span>变体：<code>default</code> <code>cs</code></span>
+  <a class="lk" href="aplus4-worker-messages.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="aplus5-worker-mine.html" target="_blank"><img src="p-aplus5.png" alt="A+5 打手态 · 我的（工号 / 切回老板 / 解绑）" loading="lazy"></a>
+  <figcaption><b>A+5 打手态 · 我的（工号 / 切回老板 / 解绑）</b>
+  <span>变体：<code>default</code> <code>unbind</code></span>
+  <a class="lk" href="aplus5-worker-mine.html" target="_blank">打开 HTML</a></figcaption></figure><figure class="shot">
+  <a href="aplus6-boss-mine-unbound.html" target="_blank"><img src="p-aplus6.png" alt="A+6 解绑后回到老板态 · 我的" loading="lazy"></a>
+  <figcaption><b>A+6 解绑后回到老板态 · 我的</b>
+  <span>变体：<code>done</code> <code>after</code></span>
+  <a class="lk" href="aplus6-boss-mine-unbound.html" target="_blank">打开 HTML</a></figcaption></figure></div>
+
+  <h3>13.2 身份显示的两种表达：对比与推荐</h3>
+  <div class="tbl-wrap"><table class=""><thead><tr><th>对比维度</th><th>表达一 · 顶部两格切换器（C 套做法）</th><th>表达二 · 28dp 身份细带（A+ 采纳）</th></tr></thead>
+<tbody><tr><td>形态</td><td><b>顶部两格切换器</b>（C 套做法）：两枚等宽胶囊「老板 / 打手」横排，选中格实色主色底。<br>高度 40dp，圆角 <code>10</code>，格间距 8dp；选中 <code>primary</code> 底 + 白字 13.5sp w700；未选中 <code>bgCard</code> 底 + <code>textSecondary</code> 字 + 发丝线描边。</td><td><b>28dp 身份细带</b>（A+ 采纳）：一行文字 + 右侧一个动作。<br>高度 <b>28dp</b>，圆角 0（通栏），<code>primarySoft</code> 实色底 + 1px 发丝线（<code>AppColors.divider</code>）下描边，无阴影无渐变。</td></tr><tr><td>什么身份能放</td><td>语义上"两个身份并列"，因此<b>两个身份都该有</b>。老板态「我的」放得下（一屏只有身份 + 积分 + 常用），但老板端<b>服务页 / 订单页 / 消息页</b>放不下：这三屏顶部已有页头，再插一个 40dp 切换器＝每屏多一块常驻控件。</td><td>只放<b>打手态</b>。老板态是"主 App 本体"，用户的身份默认认知就是老板，不需要常驻提示；打手态是"少数派形态"，才需要提示。</td></tr><tr><td>底部导航的关系</td><td>C 套要求两态共用同一套底栏几何、按身份改导航项（5 项 ↔ 3 项）。<b>这正是 A 套已经否掉的地方</b>：A 套打手态底栏只有 3 项且 <b>无凸起位</b>，老板态 5 项含凸起 —— 两种身份的底栏形态差异已经极大（项目数 3 vs 5、有无凸起、有无 AI 分支）。</td><td>A+ 不动底栏。<b>正因为底栏差异已经足够大，身份带不需要承担"区分身份"的重任</b>，它只承担两件事：① 说清"我现在是打手、工号是多少"（底栏只能说"这里有接单/消息/我的"，说不出工号）；② 给一个位置固定的切回出口（底栏故意不提供，避免误点丢页状态）。</td></tr><tr><td>对打手态干净度</td><td>切换器是"两个身份"的视觉声明，会把老板身份<b>带进打手态界面</b>（一个写着"老板"的胶囊常驻在大厅顶部）——与"打手态不得出现任何老板端元素"存在张力，只能靠置灰/隐藏未选中格来缓解，规则容易破。</td><td>细带<b>只写打手自己的信息</b>（角色 + 工号），右侧动作是"离开"而不是"另一个身份"。打手态里不出现「老板」二字 → 黑名单与结构断言天然通过。</td></tr><tr><td>老板态的代价</td><td>「我的」页多一个常驻板块（约 92dp：卡片 13+13 内边距 + 标题行 + 40dp 切换器 + 分隔 + 事实行），把「常用」往下推；对纯老板用户是无效信息。</td><td><b>零新增板块</b>：身份信息挂在已有的「身份」分组行内（一枚 17dp 标签），分组上移到资料头下方后仍在首屏，没有把任何内容挤出屏幕。</td></tr><tr><td>切换回老板的成本</td><td>顶部一格，随时一键（最低）。</td><td>打手态三屏的细带右侧都有「切回老板 ›」，同样随时一键（与 C 齐平）；差别只在细带是 28dp、切换器是 40dp。</td></tr><tr><td>结论</td><td><span class="badge b-m">不采纳</span> 作为<b>全局</b>控件。它在老板端多屏放不下，且会把老板身份带进打手态。</td><td><span class="badge b-p">采纳</span> 作为打手态常驻标识；老板态用「我的」页分组内的标签表达（同一事实、同一处入口，不另造第二入口）。</td></tr></tbody></table></div>
+
+  <div class="callout">
+    <p><b>推荐：表达二（28dp 身份细带），并且只在打手态常驻。</b>四条依据，按权重排序：</p>
+    <p><b>① 两种身份的视觉差异已经足够大，身份带不需要再"区分身份"。</b>A 套打手态底栏是 3 项、<b>无凸起位</b>；老板态是 5 项、中间凸起＋（AI 分支）。项目数、有无凸起、有无 AI 三类差异同时存在，
+    用户切过去一眼就知道"我不在原来的界面了"。此时身份带要解决的只剩两件底栏<b>说不了</b>的事：<b>工号是多少</b>（底栏没有位置显示工号）与<b>从哪儿切回去</b>（底栏故意不放切换入口，避免误点丢页状态）。</p>
+    <p><b>② 切换器在老板端"放不下"。</b>C 的切换器只有「我的」页放得下；老板端服务页 / 订单页 / 消息页顶部已有页头与筛选，插一个 40dp 常驻控件就是在主路径上加噪音。而"当前身份"这个信息在老板态<b>本是默认认知</b>（用户拿这个 App 就是来下单的），不值得每屏付 40dp。</p>
+    <p><b>③ 细带能守住"打手态零老板端元素"。</b>切换器是"两个身份并列"的视觉声明，必然在打手态界面里写出「老板」二字；细带只写打手自己的角色与工号，右侧动作是"离开"（切回老板）而不是"另一个身份"。
+    这让核验器的黑名单断言与结构断言天然通过，不需要额外豁免。</p>
+    <p><b>④ 老板态的代价为零。</b>表达一要在「我的」页加约 92dp 的常驻板块（纯老板用户眼中的无效信息）；表达二把身份信息挂进已有的「身份」分组行（一枚 17dp 标签），<b>不新增任何板块</b>。</p>
+    <p><b>代价（如实说明）</b>：细带 28dp 常驻，打手态首屏订单卡从 6 张降到 5 张（约 3.3% 视口高度）；且细带比切换器窄——它是"标识"不是"开关"，切换动作在「我的」页与细带右侧文字上，语义上少了一点"并列"的暗示。这两点已由 A+3 出图量化。</p>
+  </div>
+
+  <h4>推荐方案与底部导航 / 凸起位的处理（逐条）</h4>
+  <div class="tbl-wrap"><table class=""><thead><tr><th>问题</th><th>处理</th><th>理由</th></tr></thead>
+<tbody><tr><td>细带放在哪一层？</td><td>页头（<code>AppPageHeader</code>）<b>下方</b>、滚动内容之上，不随内容滚动；顶边距 0。</td><td>若贴在状态栏下方，视觉上会像系统级 SIM 卡条，与状态栏抢"系统区"；放在页头之下则与标题构成一个紧凑头部块（页头 + 细带 = 91dp），三屏位置一致、切 tab 不跳位。</td></tr><tr><td>身份带与页面标题是否抢位？</td><td><b>不抢</b>：标题 17sp w700 在 34dp 标题行内，细带 28dp 在其下方独立分层；细带内文字最大 11.5sp，与标题形成明确的级别差。</td><td>两处字号差 5.5sp、字重同为粗体但字号小一档，且细带用浅底实色（<code>primarySoft</code>）与页头白底分层，不争视觉焦点。</td></tr><tr><td>细带要不要与底部导航呼应？</td><td><b>不呼应，刻意不对称</b>：细带在顶部讲"我是谁"，底栏在底部讲"能去哪"，两者是不同层级的控件，几何上也不同（28 通栏 vs 62 分项）。</td><td>身份带不是导航：把它做成"第 4 个 tab"或与底栏同款胶囊，会诱导用户点它当导航用。A+ 的取舍是"顶部标识 + 底部导航"，各管一件事。</td></tr><tr><td>打手态的凸起位怎么处理？</td><td><b>整体不渲染</b>（不留空位、不置灰、不换成别的圆形按钮）。底栏总高仍为 62dp（= 老板态 62dp）。</td><td>老板态的 62dp 是"含凸起＋"的高度（凸起按钮 44dp，margin-top -15dp 溢出到内容区）。打手态没有凸起，因此项内需要 62dp 的可点击高度来保持切换身份时底栏不跳高（core 的 <code>AppPlainBottomNav</code> 需新增 <code>height</code> 参数）。</td></tr><tr><td>老板态为什么不放身份带？</td><td>老板态只有「我的」页显示「当前身份：老板」标签，其余四屏（服务 / 订单 / 消息 / 我的）<b>一律不显示</b>。</td><td>老板是默认身份：每屏顶一条"我是老板"等于每屏一条无信息量的横幅（docs/21 禁"每条信息配彩色小标签"的同理）。真正需要提示的场景（被顶下线、切换失败）由既有错误态承担。</td></tr><tr><td>打手态三屏的细带是否完全一致？</td><td><b>完全一致</b>（同高、同色、同文案、同位置），唯一例外是 <code>kicked</code>（被别的设备顶下线）：同位置换红系 + 文案加「（已暂停）」+ 右侧动作变「重新登录」。</td><td>位置不动是硬要求：被顶下线本身已经让用户困惑，再把标识位置挪走会加剧"我现在是什么状态"的不确定。</td></tr></tbody></table></div>
+
+  <h3>13.3 实施要点清单（客户端任务直接采用）</h3>
+  <p>表内每一项都写明<b>元素 / 位置 / 尺寸 / 颜色 token / 字号字重 / 间距</b>；标注「需新增」的即当前 core 里没有、需要一并补上的 token 或参数。
+  颜色 token 全部走 <code>AppColors.*</code>（<code>app_colors.dart</code>），圆角档位走 <code>AppAuthRadius</code>（4 / 6 / 10 / 14）与 <code>AppCard.radius = 16</code>，动效走 <code>Motion.*</code>（<code>app_motion.dart</code>）。</p>
+  <div class="tbl-wrap"><table class=""><thead><tr><th>编号</th><th>元素</th><th>放在哪（位置）</th><th>尺寸 / 高度</th><th>颜色 token</th><th>字号 · 字重 · 间距</th><th>组件 / token 复用情况</th></tr></thead>
+<tbody><tr><td>ID-A</td><td>身份细带（打手态常驻）</td><td>打手态三屏：接单大厅 / 消息 / 我的。位置 = <b>页头（<code>AppPageHeader</code>）正下方</b>、滚动内容之上，<b>不随内容滚动</b>；顶边距 0（紧贴页头下沿）。</td><td>高度 <b>28dp</b>；通栏（左右不缩进）；无圆角（0）；<b>不设阴影</b>（docs/21：阴影只给弹层）。</td><td>底色 <code>AppColors.primarySoft</code>（#E7EEFE）；底部 1px 发丝线 <code>AppColors.divider</code>（#E2E8F0）。</td><td>左侧小标签「当前身份」10.5sp w600；身份串「打手 · 工号 W20260118」11.5sp <b>w700</b>；两段都用 <code>AppColors.primary</code>。</td><td>左右内边距 <code>16</code>（= <code>AppColors</code> 体系里的页面 <code>--pad</code>）；组内间距 <b>6dp</b>（标签→盾牌图标→身份串）；图标与文字底对齐居中（<code>CrossAxisAlignment.center</code>）。</td><td><code>AppColors.primarySoft</code> / <code>AppColors.primary</code> / <code>AppColors.divider</code> / <code>AppIcon.shield</code>（13dp）均已存在。<b>需新增</b>：无（若想让左侧标签再淡一档，可新增 <code>AppColors.identityLabel = Color(0xFF5A76AE)</code>，不加则用 <code>AppColors.primary</code> 亦可）。</td></tr><tr><td>ID-B</td><td>细带右侧「切回老板」入口</td><td>细带右端（<code>Spacer()</code> 之后）：文字「切回老板」+ 12dp 右箭头，<code>InkWell</code> 热区高度 <b>28dp</b>（整条带高）、左右各扩展 8dp 内边距（保证 ≥ 44dp 宽的可点区域）。</td><td>文字 <b>11.5sp w700</b>，颜色 <code>AppColors.primary</code>；箭头 12dp 同色。</td><td>与身份串之间用 <code>Expanded</code> 占位，<b>不允许</b>把身份串压到省略号（工号必须完整可见）。</td><td>点击行为：切回老板 → 走同一套切换流程（Toast + 骨架）；在「我的」页时该动作与页内「切换回老板身份」行等价。</td><td><code>AppIcon.chevronRight</code>（或既有 <code>AppIcon.chevron</code>，12dp）。</td></tr><tr><td>ID-C</td><td>打手态页头去掉「打手态」标签</td><td>打手态三屏的页头右侧<b>只保留刷新按钮</b>；原工作端的「打手态」<code>AppTag</code> 删除。</td><td>删除后页头高度不变（34dp 标题行 + 9dp 下内边距）；细带补位后，页头 + 细带合计 <b>91dp</b>（原页头 63dp，净增 28dp）。</td><td>理由：同一事实（"我是打手"）不得出现在两个位置（docs/21「不存在的东西不出现 / 不重复」）。</td><td>—</td><td>无新增；删除 <code>AppTag('打手态')</code> 一处。</td></tr><tr><td>ID-D</td><td>老板态「我的」页 · 身份分组</td><td>位置：资料头<b>正下方</b>（上间距 18dp），在积分卡之前；组内顺序 = 组标题行 → 单行入口「切换身份」→ 事实说明行。</td><td>组标题 <b>15sp w700</b>（<code>AppSectionHeader</code>）；右侧小字 10.5sp <code>AppColors.textTertiary</code>；标题行与卡片间距 <b>10dp</b>（组内紧）；本组与上一块间距 18dp、与下一块 22dp（组间松）。</td><td>入口行：上下内边距 <b>13dp</b>、左右 <b>14dp</b>；左侧图标容器 <b>30×30</b>、圆角 <code>6</code>、底 <code>AppColors.ice</code>、图标 16dp <code>AppColors.primary</code>；主文案「切换身份」14sp w600 <code>AppColors.textPrimary</code>；副文案 11.5sp <code>AppColors.mutedText</code>、上边距 2dp。</td><td>行尾「当前身份：老板」标签：高 <b>17dp</b>、左右内边距 <b>6dp</b>、圆角 <code>4</code>、10.5sp w700、字色 <code>AppColors.textSecondary</code>、底 <code>#F1F5F9</code>、描边 1px <code>#CFD8E6</code>。<b>需新增 token</b>：<code>AppTag.identity()</code>（或 <code>AppColors.tagNeutralBg = Color(0xFFF1F5F9)</code> + <code>AppColors.tagNeutralBorder = Color(0xFFCFD8E6)</code>）。</td><td><code>AppSectionHeader</code> / <code>AppCard</code>（radius 16、padding 0 时行内自绘） / <code>AppIcon.swap</code> / <code>AppColors.ice</code> / <code>AppColors.primary</code> / <code>AppColors.mutedText</code> / <code>AppColors.textTertiary</code> 均已存在。</td></tr><tr><td>ID-E</td><td>老板态资料头徽标</td><td>昵称行内、会员标签<b>右侧</b>，行内间距 7dp。</td><td>与 ID-D 的行尾标签<b>同一枚</b>（17dp / r4 / 10.5sp w700）。</td><td>文案固定为「当前身份：老板」（含中文全角冒号，客户端请勿改成半角或加空格）。</td><td>只读标签，不可点（切换入口只有 ID-D 一处）。</td><td>同 ID-D。</td></tr><tr><td>ID-F</td><td>打手态底部导航</td><td>项数与顺序：<b>接单 · 消息 · 我的</b>（依次，等宽 <code>Expanded</code>）。<b>不渲染凸起位</b>、不留空位、不置灰。</td><td>总高 <b>62dp</b>（<b>与老板态底栏一致</b>，切换身份时底栏不跳高）；项内图标 21dp + 间距 4dp + 标签 10.5sp w600。</td><td>选中 <code>AppColors.primary</code>；未选中 <code>AppColors.textTertiary</code>（#94A3B8）；顶部 1px 发丝线 <code>AppColors.divider</code>；底 <code>AppColors.bgCard</code>。</td><td>消息未读徽标：<code>AppColors.error</code> 底 + 白字 10sp w700、<code>minWidth 17 / height 17 / 圆角 9</code>、与标签上间距 5dp。</td><td>core 既有 <code>AppPlainBottomNav</code> 直接复用（打手态传 3 项）；<b>需新增 1 个参数</b> <code>height</code>（默认 56，打手态传 62 与老板态 <code>AppBottomNav</code> 对齐）。</td></tr><tr><td>MSG-A</td><td>打手态消息页 · 两段</td><td>顺序固定：<b>老板</b> → <b>客服</b>（<code>AppSegmented</code>，等宽两格）。两段都是"我作为打手"的会话，不出现第三段。</td><td>分段控件外容器高 <b>37dp</b>（内含 3dp 内边距 + 31dp 内项）、圆角 <code>10</code>、槽底 <code>#EDF1F7</code>、项间距 3dp。</td><td>选中项：底 <code>AppColors.bgCard</code> + 字 <code>AppColors.primary</code> + 1px 发丝线描边、13sp w600；未选中：透明底 + <code>AppColors.textSecondary</code>。未读徽标同 ID-F。</td><td>段标题下方到列表首行间距 <b>10dp</b>；会话行沿用既有工作端读法（头像 40、主行 14sp w600、末条消息 11.5sp <code>AppColors.mutedText</code>、时间 10.5sp <code>AppColors.textTertiary</code>）。</td><td><code>AppSegmented</code>（选中态样式补 <code>primary</code> 字色 + 发丝线，若与既有实现不一致则以本稿为准）。</td></tr><tr><td>MSG-B</td><td>打手态消息页 · 空态文案</td><td>老板段无会话：标题「还没有老板来找你」，说明「抢到第一单后，下单的老板会自动出现在这里；抢单或派单成功时服务端会自动建会话」。</td><td>客服段未授权或无会话：标题「你还没有客服会话」，说明「客服权限由管理员单独授予，与接单权限互相独立；开通后老板的咨询会出现在这里」。</td><td>整块居中（<code>AppEmpty</code>），顶部内边距 <b>64dp</b>、左右 30dp。</td><td>图标 44×44 圆角 14 白底 + 发丝线 + <code>AppColors.textTertiary</code> 图标 21dp；标题 13.5sp w600 <code>AppColors.textSecondary</code>；说明 11.5sp <code>AppColors.mutedText</code> 行高 1.55。</td><td><code>AppEmpty(icon:, text:, action:, onAction:)</code> 已支持标题 + 说明 + 动作；两段空态各传一条。</td></tr><tr><td>MY-A</td><td>打手态「我的」页 · 工号展示</td><td>资料头：头像 52×52 圆角 14（<code>AppColors.primarySoft</code> 底 + 盾牌图标）；昵称 17sp w700；昵称行右侧 <code>AppTag('打手', color: primary)</code>；下一行副文案「工号 W20260118 · 账号 wangye_go」。</td><td>副文案 <b>11.5sp</b> <code>AppColors.mutedText</code>、上边距 4dp。</td><td>在职与分部事实行：11.5sp <code>AppColors.mutedText</code>，图标 <code>AppIcon.check</code> 13dp <code>AppColors.success</code>，上边距 2dp、下边距 14dp。</td><td>工号完整展示，<b>不做掩码</b>（这是打手本人的账号，不是敏感数据）；不可点击编辑（打手资料只读，见待拍板第 9 条）。</td><td><code>AppAvatar</code> / <code>AppTag</code> / <code>AppIcon.shield</code> 已存在。</td></tr><tr><td>MY-B</td><td>打手态「我的」页 · 切换回老板</td><td>位置：资料头与事实行<b>之后</b>、收益卡之前（首屏必见）。形式：单行卡片，主色描边 <code>#C7D8FB</code>。</td><td>行内边距上下 13dp / 左右 14dp；图标容器 30×30 r6、底 <code>AppColors.primarySoft</code>、图标 16dp <code>AppColors.primary</code>。</td><td>主文案「切换回老板身份」<b>14sp w600 且用 <code>AppColors.primary</code></b>（与普通行的 <code>textPrimary</code> 区分）；副文案「回到阿远（U 8471209365）的老板身份」11.5sp <code>AppColors.mutedText</code>、上边距 2dp；行尾 14dp 右箭头 <code>AppColors.textTertiary</code>。</td><td>卡片下方紧跟事实行「切换后打手账号仍保持绑定，下次可免密切回」（11.5sp mutedText，上边距 8dp）。</td><td><code>AppCard(border:)</code> 支持自定义描边；<code>AppIcon.swap</code> 已存在。</td></tr><tr><td>MY-C</td><td>打手态「我的」页 · 解绑入口 + 二次确认</td><td>入口：与 MY-B <b>同一张卡片的第二行</b>（两行一卡＝身份管理全部动作），不被次分割线以外的东西隔开。图标底 <code>#F1F5F9</code>、图标色 <code>AppColors.textTertiary</code>，主文案「解除绑定」用普通字重（<b>不用红色</b>，破坏性由弹层承担）。</td><td>弹层：<code>AppBottomSheet</code> 圆角 14/14/0/0、左右内边距 16、上内边距 15；抓握条 34×4 <code>#DDE3EC</code>。</td><td>确认按钮文案写全后果：<b>「解除绑定并回到老板身份」</b>，<code>AppColors.error</code> 实底白字、高 44dp、圆角 6；取消键高 40dp 描边款。</td><td>弹层内必须先说明"不影响两件事"：① 工作端 App 在那台手机的登录状态不变；② 打手态的订单/收益/私聊记录都还在。</td><td><code>AppColors.error</code> / <code>AppButton</code>；弹层用 core 既有底部弹层容器（若为 <code>showModalBottomSheet</code>，<code>shape</code> 传 <code>RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(14)))</code>）。</td></tr><tr><td>SW-A</td><td>切换身份弹层</td><td>从「我的 → 身份 → 切换身份」行唤起；覆盖全屏，底部弹层（<code>showModalBottomSheet(isScrollControlled: true)</code>）。</td><td>左右内边距 <b>16dp</b>、上内边距 <b>15dp</b>；顶部圆角 <b>14</b>；<code>maxHeight = 760</code>（<code>AppColors</code> 体系里的 760dp 上限，超出时内容区滚动、按钮区固定）。</td><td>遮罩 <code>Color(0x6B0F172A)</code>（= rgba(15,23,42,.42)），<b>唯一允许阴影的地方</b>：<code>BoxShadow(color: Color(0x2E0F172A), blurRadius: 30, offset: Offset(0,-10))</code>。</td><td>标题「切换身份」17sp w700；关闭按钮 30×30、圆角 6、1px 发丝线描边。内容区纵向间距 14dp；按钮区与内容区之间 1px 发丝线 + 上内边距 12dp、下内边距 20dp。</td><td><b>输入框直接复用登录页那套</b>：<code>AppAuthField</code>（高 46dp、圆角 <code>AppAuthRadius.control</code>=10、底 <code>AppAuthColors.fieldFill</code> #FAFBFD、描边 <code>AppAuthColors.fieldBorder</code> #E5E9F0、label 12sp w600 <code>AppColors.textTertiary</code>、输入字 15sp、图标 17dp）；错误态 <code>AppAuthColors.errorSoft</code> 底 + <code>AppColors.error</code> 描边。主按钮 <code>AppAuthButton</code>（高 48、圆角 6、15.5sp）；次要按钮高 40dp。</td></tr><tr><td>SW-B</td><td>7 类错误态（文案 + 出现位置）</td><td>① <b>未绑定</b>（默认）：两个输入框 + 主按钮「绑定并切换为打手」。<br>② <b>账密错误</b>（401）：主按钮文案转「重新绑定」，两个输入框转错误态，下方红字错误行「<b>账号或密码错误</b>，请重新输入。连续 5 次会锁定 1 分钟。」<br>③ <b>填了老板账号</b>（403「账号角色不符」）：橙色提示条（<b>不是输入框红字</b>）「这个账号是老板账号，不是打手账号」+ 处置说明；主按钮置灰，副按钮「联系客服」。<br>④ <b>账号已停用</b>（403 <code>ACCOUNT_BANNED</code>）：红色提示条「该打手账号已被停用」+ 工号与停用时间；主按钮置灰，副按钮「联系管理员」。<br>⑤ <b>别处已登录</b>（单设备冲突）：橙色事前告知条 + 账号信息卡（账号 / 工号·昵称 / 可接分部）+ 主按钮「仍然绑定，让那台设备下线」、副按钮「先不绑定」。<br>⑥ <b>无任何接单权限</b>：橙色提示条「绑定成功，但这个打手还没有任何分部的接单权限」+「已授权分部：暂无」；主按钮置灰、副按钮「留在老板态」。<br>⑦ <b>已绑定</b>：不请求账密，显示绑定卡（<code>AppIcon.ok</code> 绿）+ 两行动作「立即切换为打手」「解除绑定」；主按钮「切换为打手」、副按钮「取消」。</td><td>默认态内容顺序：两个身份单选项 → 一行说明（11.5sp mutedText）→ 账号字段 → 密码字段。</td><td>身份单选项（<code>.opt</code>）几何：内边距 13/14、圆角 14、间距 11dp、19dp 单选圆钮；选中态底 <code>AppColors.primarySoft</code> + 描边 <code>AppColors.primary</code>。<b>只有两个身份</b>（老板 / 打手）。</td><td>提示条（<code>.banner</code>）：内边距 10/12、圆角 6、图标 15dp、标题 12.5sp w600、说明 11.5sp；四色 = 红（错误）/ 橙（注意但没坏）/ 蓝（信息）/ 绿（成功）。<b>全部无阴影</b>。</td><td>错误码与文案一一对应关系见第 6 节错误态矩阵；<code>AppTag</code> / <code>AppCard</code> / <code>AppAuthField</code> / <code>AppAuthButton</code> 全部复用。</td></tr><tr><td>SW-C</td><td>绑定上限已满</td><td>出现位置：<b>切换身份弹层的第 7 态（已绑定）底部</b>，不单独成页。橙色提示条「已达绑定上限：本机只能绑定 1 个打手账号」+ 处置句「要换成别的打手账号，请先解除当前绑定」。</td><td>同时把主按钮改成置灰的「绑定新的打手账号」（把用户推向唯一可行动作）；「解除绑定」行副文案改为「先解绑，才能绑定另一个打手账号」。</td><td>老板态「我的」页分组右侧小字同步为「已达上限 · 本机 1 个打手账号」（同一事实两处一致，避免点进去才发现不能加）。</td><td>上限口径：<b>本机 1 个打手账号</b>（= 唯一键 <code>(user_id, worker_user_id, device_id)</code> 下的最简实现）。若改多绑定，本清单的 ID-D / SW-A / SW-C 三处形态都要改（入口行 → 身份列表、弹层 → 列表 + 添加）。</td><td><code>AppColors.warning</code>；上限值建议走 <code>system_setting</code>（键 <code>identity_bind_limit</code>，默认 1）以便后续调整而不发版。</td></tr><tr><td>TR-A</td><td>切换中过渡提示</td><td>形式：<b>顶部 Toast</b>（不是通栏细带）。位置 = 安全区下沿 + 60dp，左右各缩进 24dp，水平居中。</td><td>文案：切到打手「<b>已切换到打手身份</b>」/ 切回老板「<b>已切换到老板身份</b>」/ 解绑「<b>已解绑打手账号，已回到老板身份</b>」。</td><td>时长 <b>2000ms</b> 自动消失；内容 = 图标 17dp + 间距 8dp + 文字 13sp w700 白字；内边距 16/11、圆角 <b>14</b>。</td><td>底色用品牌色实底（<code>AppColors.primary</code>）—— <b>注意</b>：core 既有 <code>AppToast</code> 内部用的是 <code>primary → 深 12%</code> 的极小面积渐变（品牌化提示，2 秒生命周期，非主视觉面积）；此处的静态示意按实色 <code>primary</code> 画，实施时<b>直接调用 <code>AppToast.info()</code>，不要新写一个 Toast</b>。</td><td><code>AppToast.info(context, '已切换到打手身份')</code> 已存在（<code>app_toast.dart</code>），零新增。</td></tr><tr><td>TR-B</td><td>动效参数（按 docs/15 / Material Motion）</td><td>Toast 入场：<b>260ms</b>，曲线 <code>Cubic(0.2, 0, 0, 1)</code>（emphasized decelerate），淡入 + 上浮 25% 高度 + 从 0.94 缩放；出场为反向 200ms 淡出。</td><td>身份切换时的骨架替换：淡入 <b>260ms</b>（<code>Motion.itemEnter</code> 同档），不做横向滑动（避免"换 App"的错觉）。</td><td>细带出现/消失：<b>180ms</b> 淡入 + 高度从 0 到 28 的 <code>SizeTransition</code>，曲线 <code>Motion.emphasized</code>；只在切换身份时发生一次，页面内 tab 切换不重播。</td><td>底栏项数变化（5 ↔ 3）：不做逐项动画，整块 <b>150ms</b> 交叉淡化（项目数与位置同时变化，逐项动画会显得乱）。</td><td>全部取 <code>Motion.*</code> 既有档位（<code>app_motion.dart</code>）：<code>pageForward 300 / pageReverse 250 / itemEnter 260 / containerTransform 320 / emphasized / standard</code>，无需新增常量。</td></tr><tr><td>TR-C</td><td>切换的原子顺序（必须按此顺序，否则会串味）</td><td>① 断旧 WS（<code>RealtimeClient.dispose()</code>）→ ② 清 <code>ApiCache</code> → ③ 切 <code>AuthStore.activeIdentity</code> + token 槽 → ④ 重建 WS → ⑤ 重建页面栈（<b>按身份真正不挂载</b>另一态的页面）→ ⑥ 显示 Toast。</td><td>顺序错位的后果：先建新 WS 再断旧的 → 两条连接同时收未读，红点串味；先切 token 不清缓存 → 打手态首屏显示老板态的缓存数据。</td><td>期间显示目标身份的骨架（<code>midway</code> 态），<b>绝不显示老板态内容</b>。</td><td>失败处理：③ 之前任何一步失败 → 留在原身份 + <code>AppToast.error</code>；③ 之后失败 → 回滚 token 槽并重建旧身份连接。</td><td>详见第 8 节改动清单 C1/C2/C4 与第 9 节风险 R3。</td></tr><tr><td>OS-A</td><td>可抄的开源范式（许可与来源）</td><td><b>底部弹层 + 单选身份卡</b>：Material 3 <code>showModalBottomSheet</code> + <code>RadioListTile</code> 的组合（Flutter SDK 自带，BSD-3）—— 本稿 SW-A/SW-B 即此范式，无需第三方包。</td><td><b>品牌化 Toast</b>：项目已按 Material Motion 规范自研（<code>app_toast.dart</code>），<b>不需要</b> <code>fluttertoast</code>/<code>another_flushbar</code>；若要更花的入场，可参考 <code>flutter_animate</code>（MIT）的 <code>fadeIn + slideY + scale</code> 链式写法，但<b>不引入依赖</b>，用内置 <code>FadeTransition/SlideTransition/ScaleTransition</code> 等价实现（BSD-3）。</td><td><b>工作台列表（大厅订单卡）</b>：<code>flutter_miuix</code>（Apache-2.0，项目已依赖）的列表项与分段控件样式可参考；<code>flutter_chat_ui</code>（MIT）的会话行/未读徽标排版可参考。</td><td><b>细带/身份徽章</b>：Material 3 <code>Badge</code>（SDK 自带）与 <code>ListTile.dense</code> 的密度参数是本细带 28dp 取值的直接依据（M3 的 dense 行高 48dp 太高，故自绘 28dp）。</td><td><b>许可红线</b>：以上均为 MIT / Apache-2.0 / BSD-3，<b>可直接照抄实现</b>；抄的时候只抄布局、密度、动效曲线与状态机，<b>不抄</b>品牌资产、插画、吉祥物、图标集与文案（docs/21 第 6 条 + CLAUDE.md「禁止复制参考 App 的图片、插画、吉祥物、文案与独特装饰」）。GPL/AGPL 项目只可参考思路，不得引入依赖。</td></tr></tbody></table></div>
+
+  <div class="callout warn">
+    <p><b>实施顺序建议（先骨架后细节，每步可独立验收）</b></p>
+    <p><b>第 1 步（0.5 天）</b>：core 加两个东西——<code>AppIdentityBar</code>（ID-A / ID-B）与 <code>AppPlainBottomNav.height</code> 参数（ID-F）。此时打手态三屏即可挂细带，<b>不依赖任何服务端改动</b>，可直接跑核验器看正向断言。</p>
+    <p><b>第 2 步（0.5 天）</b>：老板态「我的」页身份分组（ID-D / ID-E，含分组上移）+ 打手态页头删标签（ID-C）+ 空态文案（MSG-B）。</p>
+    <p><b>第 3 步（1 天）</b>：切换弹层按 <code>AppAuthField</code>/<code>AppAuthButton</code> 复用（SW-A）+ 7 类错误态（SW-B）+ 绑定上限态（SW-C）+ Toast（TR-A）+ 原子顺序（TR-C）。</p>
+    <p><b>第 4 步（0.5 天）</b>：动效接线（TR-B）+ 双身份下细带/底栏不跳位的真机复核（重点看 5 项 ↔ 3 项切换时底部导航高度是否一致）。</p>
+    <p><b>验收口径</b>：<code>node scripts/tmp/merge-identity-shot.mjs</code> 全绿（含 A+ 的 4 类身份正向断言 + 打手态黑名单 0 命中 + 细带高度 28dp + 细带在页头之上 + 细带实色无阴影）。</p>
+  </div>
+
+  <h3>13.4 与 docs/21《反 AI 味设计规范》逐条对照（A+ 新增部分）</h3>
+  <div class="tbl-wrap"><table class=""><thead><tr><th>docs/21 条目</th><th>A+ 的落点</th><th>核验方式</th></tr></thead>
+<tbody><tr><td>禁渐变做主视觉</td><td>细带/标签/Toast 全部实色（细带 <code>primarySoft</code>、标签 <code>#F1F5F9</code>、Toast <code>primary</code>）</td><td>核验器逐屏断言 <code>gradient 面积 = 0</code></td></tr><tr><td>阴影只给弹层</td><td>细带、身份标签、底栏、Toast（静态示意）均无阴影；唯一投影在 <code>.sheet</code></td><td>核验器断言「非弹层元素 box-shadow = none」</td></tr><tr><td>圆角分档 4 / 6 / 10 / 14</td><td>身份标签 4、图标容器 6、切换器圆角 10（对比稿）、Toast 与卡片 14</td><td>核验器抽查细带圆角 = 0（通栏）、标签高 17dp</td></tr><tr><td>不堆彩色胶囊</td><td>打手态细带<b>只有一条</b>；页头原「打手态」绿标已删除，全屏彩色标签数从 2 降到 1</td><td>黑名单 + 结构断言；人工复核每屏彩色标签 ≤ 1</td></tr><tr><td>无 emoji</td><td>全部图标为内联线性 SVG（stroke 1.8）/ Material outlined</td><td>核验器正则扫 emoji（含 <code>U+1F300–1FAFF</code> 等 5 段区间）</td></tr><tr><td>列表用发丝线</td><td>细带底边 1px <code>AppColors.divider</code>；底栏顶边 1px；卡片沿用既有发丝线</td><td>核验器断言细带 <code>border-bottom-width = 1px</code></td></tr><tr><td>组内紧 8–10 / 组间松 20–24</td><td>身份分组：标题行→卡片 10dp（组内）；分组与资料头 18dp、与其他块 22dp（组间）。细带内部间距 6dp</td><td>关键间距写进实施要点表；出图人工复核</td></tr><tr><td>假数据拟真</td><td>工号 <code>W20260118</code>、账号 <code>wangye_go</code>、老板昵称「阿远 / U 8471209365」、金额 1,286 / 268.4 / 1,847.2 / 96.4（非整数、长短不一）</td><td>核验器断言真实分部名与真实公告原文出现</td></tr><tr><td>一屏只讲一件事</td><td>打手态每屏 = 一条身份细带 + 一个主任务（大厅/消息/我的）；细带不承载导航</td><td>结构断言：打手态底栏恰 3 项、无凸起、无浮标</td></tr></tbody></table></div>
+</section>
+
+
+<footer>
+  <p>本页与 25 屏 HTML/PNG（A/B/C 各 6 屏 + A+ 7 屏）均为<b>设计阶段产物</b>，未修改任何业务代码。
+  参考截图（另一平台「接单大厅」与「切换身份」弹层）仅用于学习<b>信息架构与交互范式</b>：我们保留了"页头 + 筛选胶囊 + 公告行 + 列表"与"底部弹层 + 身份单选项"这两个范式，
+  <b>未复制</b>其图片、插画、吉祥物、文案、VIP 体系与配色（我们不存在会员体系与区服选择，故这两项一律不出现）。</p>
+</footer>
+</div>
+</body>
+</html>

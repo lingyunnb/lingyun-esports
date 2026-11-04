@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1400,initial-scale=1">
+<title>下单页 · 填写信息区 视觉精修 · 前后对比（方向 A / 方向 B）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+:root{
+  /* —— 颜色：apps/packages/core/lib/src/theme/app_colors.dart 逐值对齐 —— */
+  --primary:#2563EB; --primary-strong:#1D4ED8; --primary-soft:#E7EEFE; --ice:#EFF6FF;
+  --cyan:#06B6D4; --gold:#D97706; --gold-soft:#FEF3C7;
+  --bg-page:#F5F7FB; --surface:#FFFFFF;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8; --muted:#5B6B80;
+  --hair:#E2E8F0; --hair-2:#EEF1F6; --field-line:#CFD8E6;
+  --error:#DC2626; --error-soft:#FDECEC; --error-hair:#F3C4C4;
+  --success:#16A34A; --success-soft:#DCFCE7;
+  /* —— 圆角分档：小控件 4–6 / 卡片 10–14 / 弹层 14 / 胶囊全圆（docs/21） —— */
+  --r-xs:4px; --r-sm:6px; --r-ctl:10px; --r-card:14px;
+  --pad:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+}
+body{font-family:var(--font);color:var(--ink);background:#DDE3EC;font-size:14px;line-height:1.4}
+.ic{display:block;flex:0 0 auto}
+
+/* ================= 设计图外框（不是设计的一部分） ================= */
+.sheet-head{max-width:1760px;margin:0 auto;padding:32px 28px 4px}
+.badge{display:inline-block;background:#E7EEFE;color:#1D4ED8;border:1px solid #C7D8FB;border-radius:999px;
+  padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:12px}
+.badge.gray{background:#F1F5F9;color:#475569;border-color:#CFD8E6}
+.sheet-head h1{margin:0 0 10px;font-size:27px;font-weight:800;letter-spacing:-.4px}
+.sheet-head .sub{color:#475569;font-size:13.5px;line-height:1.85;max-width:1260px}
+.sheet-head .sub b{color:#0F172A}
+.sheet-head .sub code{background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:12px;
+  font-family:Consolas,Monaco,monospace;color:#1D4ED8}
+.metarow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.metarow span{font-size:12px;color:#475569;background:#fff;border:1px solid #D7DEE9;border-radius:8px;padding:5px 10px}
+.metarow span b{color:#0F172A}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.legend i{font-style:normal;font-size:11.5px;color:#475569;background:#fff;border:1px solid #D7DEE9;
+  border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:6px}
+.legend i b{display:inline-flex;width:15px;height:15px;border-radius:50%;background:#DC2626;color:#fff;
+  font-size:10px;font-weight:800;align-items:center;justify-content:center}
+main{max-width:1760px;margin:0 auto;padding:18px 28px 6px;display:grid;
+  grid-template-columns:repeat(4,390px);gap:22px;align-items:start;align-content:start;justify-content:center}
+figure.shot{width:390px;align-self:start}
+figure.shot figcaption{font-size:12.5px;font-weight:700;color:#0F172A;margin-bottom:8px;display:flex;gap:7px;
+  align-items:center;height:18px;white-space:nowrap}
+figure.shot figcaption em{font-style:normal;font-weight:600;color:#5B6B80;font-size:11.5px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+figure.shot .ph-cap{font-size:11.5px;color:#5B6B80;line-height:1.65;margin-top:9px}
+figure.shot .ph-cap b{color:#0F172A;font-size:11.5px}
+
+/* ================= 手机壳 390×844（与 profile-redesign / merge-identity 同基线） ================= */
+.phone{width:390px;height:844px;background:var(--bg-page);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;outline:1px solid #C9D2E0}
+.statusbar{height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px 0 var(--pad);font-size:12px;font-weight:600;letter-spacing:.2px;color:var(--ink);background:var(--surface)}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:11px}
+.sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6.5px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:11px}
+.sb-batt{width:20px;height:10.5px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;opacity:.85}
+.sb-batt::after{content:"";position:absolute;right:-3.2px;top:3px;width:1.8px;height:4px;background:currentColor;border-radius:0 1px 1px 0}
+.sb-batt i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:62%;background:currentColor;border-radius:1px}
+.appbar{height:58px;flex:0 0 58px;background:var(--surface);border-bottom:1px solid var(--hair);
+  display:flex;align-items:center;padding:0 8px 0 6px}
+.appbar .at{font-size:20px;font-weight:800;letter-spacing:-.2px;color:var(--ink)}
+.abtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.scroll{flex:1 1 auto;overflow:hidden;position:relative;background:var(--bg-page)}
+.list{padding:12px 12px 0}
+/* ---------------- 底部导航（服务·订单·＋下单·消息·我的） ---------------- */
+.tabbar{flex:0 0 78px;display:flex;align-items:flex-start;background:var(--surface);border-top:1px solid var(--hair);
+  padding:7px 0 0;position:relative}
+.tb-item{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-3);padding-top:2px}
+.tb-item.on{color:var(--ink-2)}
+.tb-label{font-size:11px;font-weight:600;letter-spacing:.1px}
+.tb-c{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tb-cbtn{width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;
+  align-items:center;justify-content:center;margin-top:-15px;border:3px solid var(--surface)}
+
+/* ================= 共用排版 ================= */
+.h3{font-size:13.5px;font-weight:700;color:var(--ink)}
+.hint12{font-size:12px;line-height:1.5;color:var(--muted)}
+.aux11{font-size:11px;line-height:1.45;color:var(--muted)}
+.mini{font-size:10.5px;line-height:1.4;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);padding:14px}
+.card + .card{margin-top:12px}
+.hair{height:1px;background:var(--hair-2);border:0}
+
+/* ================= 商品卡（现状，两侧一致） ================= */
+.pcard{display:flex;gap:12px}
+.ptile{width:74px;height:74px;flex:0 0 74px;border-radius:var(--r-ctl);background:var(--primary-soft);
+  border:1px solid #CFDCFA;display:flex;align-items:center;justify-content:center;color:var(--primary)}
+.pname{font-size:13.5px;font-weight:700;line-height:1.35;color:var(--ink)}
+.ptag{display:inline-flex;align-items:center;height:19px;padding:0 7px;border-radius:var(--r-xs);
+  font-size:10.5px;font-weight:700;background:var(--primary-soft);color:var(--primary-strong);border:1px solid #C7D8FB}
+.prow{display:flex;align-items:center;justify-content:space-between}
+.price{font-size:16px;font-weight:800;color:var(--gold);letter-spacing:-.3px}
+.step{display:flex;align-items:center;border:1px solid var(--hair);border-radius:var(--r-sm);color:var(--ink-2)}
+.step .sb{width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+.step .sv{width:38px;text-align:center;font-size:13.5px;font-weight:700;color:var(--ink)}.stepper99{display:flex;align-items:center;border:1px solid var(--hair);border-radius:var(--r-sm);height:32px;color:var(--ink-2)}
+.stepper99 .sb{width:34px;height:30px;display:flex;align-items:center;justify-content:center}
+.stepper99 .sv{width:38px;text-align:center;font-size:13.5;font-weight:700;color:var(--ink)}
+
+/* ================= 现状：字段卡（1 字段 = 1 张卡） ================= */
+.fcard{position:relative;margin-top:12px}
+.fcard .ftop{display:flex;align-items:center}
+.fcard .star{font-size:14px;font-weight:700;color:var(--error)}
+.fcard .flab{font-size:13.5px;font-weight:700;color:var(--ink)}
+.fcard .flab.bad{color:var(--error)}
+.fcard .fbox{margin-top:10px;background:var(--bg-page);border:1px solid var(--hair);border-radius:var(--r-ctl);
+  padding:14px 12px;font-size:13.5px;color:var(--ink);min-height:50px;display:flex;align-items:center}
+.fcard .fbox.ph{font-size:12px;color:var(--ink-3)}
+.fcard .fbox.area{min-height:72px;align-items:flex-start;line-height:1.5}
+.diag{position:absolute;right:-9px;top:14px;width:18px;height:18px;border-radius:50%;background:#DC2626;color:#fff;
+  font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  border:2px solid #fff;z-index:3}
+
+/* ================= 方向 A：一卡多行 ================= */
+.arow{position:relative;display:flex;gap:10px;padding:12px 0 12px 12px}
+.arow + .arow{border-top:1px solid var(--hair-2)}
+/* 两档布局：标签 ≤4 字（含必填星号）走"左标签 + 右值"，固定 64dp 一列放得下；
+   >4 字或 textarea 一律走"标签在上、输入在下"（Flutter 中文实测 12sp 每字约 12.2dp） */
+.arow .lab{flex:0 0 64px;min-width:0;white-space:nowrap;font-size:12px;font-weight:600;color:var(--ink-2);
+  padding-top:2px;line-height:1.45}
+.arow .lab.bad{color:var(--error);font-weight:700}
+.arow .lab.on{color:var(--primary);font-weight:700}
+.arow .star{font-size:11px;font-weight:700;color:var(--error);margin-right:2px}
+.arow .lab.on .star{color:var(--primary)}
+.arow .val{flex:1 1 auto;min-width:0;font-size:13.5px;color:var(--ink);line-height:1.5}
+.arow .val.ph{color:var(--muted)}
+.arow .mark{position:absolute;left:0;top:9px;bottom:9px;width:2px;border-radius:1px;background:var(--primary)}
+.arow.bad .mark{background:var(--error)}
+.arow .fend{display:flex;align-items:center;gap:9px}
+.arow .fend .val{flex:0 1 auto}
+.slot{margin-top:5px;display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--error);line-height:1.4}
+.slot.ok{color:var(--muted);font-weight:500}
+.arow.stack{flex-direction:column;gap:6px}
+.arow.stack .lab{flex:0 0 auto;padding-top:0}
+.arow .caret{color:var(--ink-3)}
+
+/* 方案 B：白底 + 发丝线边框输入框 */
+.bfield{margin-top:10px;background:var(--surface);border:1px solid var(--field-line);border-radius:var(--r-ctl);
+  padding:13px 12px;font-size:13.5px;color:var(--ink);min-height:44px;display:flex;align-items:center}
+.bfield.ph{color:var(--muted)}
+.bfield.area{min-height:78px;align-items:flex-start;line-height:1.55}
+.bfield.on{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.10)}
+.bfield.bad{border-color:var(--error);background:#FFFCFC}
+
+/* ================= 选项按钮（区服 / 护航员，与现状逐值一致） ================= */
+.opts{display:flex;gap:10px}
+.opt{flex:1 1 0;height:44px;border-radius:var(--r-ctl);border:1px solid var(--field-line);background:var(--surface);
+  display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:500;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px}
+.opt.on{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:700}
+
+/* ================= 商品费用 / 吸底栏 ================= */
+.fee{display:flex;align-items:center;justify-content:space-between}
+.fee .fl{font-size:13.5px;font-weight:700;color:var(--ink)}
+.fee .fr{font-size:12px;color:var(--muted)}
+.footbar{flex:0 0 auto;background:var(--surface);border-top:1px solid var(--hair);padding:10px 16px 12px}
+.fb-note{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--error);margin-bottom:6px}
+.fb-row{display:flex;align-items:center;gap:6px}
+.fb-total{font-size:13.5px;font-weight:600;color:var(--ink)}
+.fb-btn{margin-left:auto;width:132px;height:44px;border-radius:var(--r-ctl);background:var(--primary);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700}
+
+/* ================= 审批说明（设计图外） ================= */
+.specwrap{max-width:1760px;margin:26px auto 0;padding:0 28px 60px}
+.specgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.spec{background:#fff;border:1px solid #D7DEE9;border-radius:14px;padding:16px 18px}
+.spec.wide{grid-column:1 / -1}
+.spec h3{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.spec h3 .n{display:inline-flex;width:19px;height:19px;border-radius:5px;background:#E7EEFE;color:#1D4ED8;
+  font-size:11.5px;font-weight:800;align-items:center;justify-content:center}
+.spec ul{margin:0 0 0 17px}
+.spec li{font-size:12.5px;line-height:1.75;color:#334155;margin-bottom:5px}
+.spec li b{color:#0F172A}
+.spec li code{background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px;
+  font-family:Consolas,Monaco,monospace;color:#1D4ED8}
+.spec p{font-size:12.5px;line-height:1.75;color:#334155}
+.spec .ok{color:#15803D;font-weight:800}
+.spec .no{color:#DC2626;font-weight:800}
+.spec table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+.spec th,.spec td{text-align:left;padding:7px 9px;border-bottom:1px solid #EEF1F6;color:#334155;vertical-align:top}
+.spec th{color:#5B6B80;font-weight:700;background:#FAFBFD;font-size:11.5px}
+.spec td b{color:#0F172A}
+.spec td.num,.spec th.num{font-variant-numeric:tabular-nums}
+.checkbox{font-size:13px;line-height:2.1;color:#0F172A}
+.checkbox b{font-weight:700}
+.footnote{max-width:1760px;margin:0 auto;padding:0 28px 70px}
+.footnote div{background:#0F172A;color:#D7DEEA;border-radius:12px;padding:14px 18px;font-size:12.5px;line-height:1.8}
+.footnote b{color:#93C5FD}
+@media (max-width:1100px){ .specgrid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<div class="sheet-head">
+  <div class="badge">下单页 · 填写信息区 视觉精修</div>
+  <h1>「填写信息」改好看点 · 前后对比（方向 A 一卡多行 / 方向 B 一卡一字段精修）</h1>
+  <p class="sub">
+    负责人口径：<b>「下单页就稍微改一下添加设计品牌样式即可」</b> → <b>只做视觉精修，不动结构流程</b>。字段由后台动态下发
+    （<code>/public/order-form</code>：<code>label / placeholder / type(text|textarea|phone) / required / maxLength</code>），
+    <b>不能按语义分组</b>（后台没有这个信息），所以两方向都<b>不新增分组名</b>：方向 A 用一张卡内的发丝线分行，
+    方向 B 保持"一字段一张卡"。<br>
+    本页现状 5 处问题（左屏编号 ①–⑤，逐条对应下方说明）：<b>①</b> 输入框 <code>fillColor: T.scaffoldColor</code>（页面灰 <code>#F5F7FB</code>）
+    却放在白卡里 → "灰洞嵌白卡"；<b>②</b> 只定义了 <code>border</code>/<code>enabledBorder</code>，<b>没有 <code>focusedBorder</code></b> →
+    聚焦用主题默认色，与品牌无关；<b>③</b> N 个字段 = N 张白卡（每卡 <code>margin-top:12</code>）→ 碎片化、垂直空间翻倍；
+    <b>④</b> 必填星号 14sp <b>比标签 13.5sp 还大</b> → 星号比标题显眼；<b>⑤</b> 错误态只把标签变红，<b>输入框边框不变</b>。
+  </p>
+  <div class="metarow">
+    <span><b>屏</b> 390×844 逻辑像素 × 4（现状 / 方向 A / 方向 B / 方向 A 聚焦与报错态）· 一屏一列并排</span>
+    <span><b>红线</b> docs/14 通过 · docs/21 通过 · 服务端改动 <b>0</b> · 客户端改动 <b>0（未实施）</b></span>
+    <span><b>沿用组件</b> AppCard / AppHairline / AppIcon / AppPrice / AppButton / AppPageHeader</span>
+    <span><b>字号</b> 现状 9 种 → 方向 A / B 收敛为 <b>7 种</b></span>
+    <span><b>垂直空间</b> 4 字段 466dp → <b>240dp（省 48.5%）</b></span>
+    <span><b>状态</b> 待负责人审批</span>
+  </div>
+  <div class="legend">
+    <i><b>1</b>灰洞嵌白卡</i><i><b>2</b>无聚焦态（无 focusedBorder）</i><i><b>3</b>N 字段 = N 白卡</i>
+    <i><b>4</b>星号 14sp &gt; 标签 13.5sp</i><i><b>5</b>错误态只改标签色</i>
+  </div>
+</div>
+
+<main>
+
+<!-- ============================================================ 屏 1 · 现状复刻 ============================================================ -->
+<figure class="shot">
+  <figcaption>屏 1 · 现状复刻 <em>4 字段 = 4 张白卡，占 466dp</em></figcaption>
+  <div class="phone">
+    <div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="appbar"><span class="abtn"><svg class="ic" style="width:20px;height:20px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span><span class="at">确认订单</span></div>
+    <div class="scroll">
+      <div class="list" style="margin-top:-160px">
+
+        <!-- 商品卡 -->
+        <div class="card">
+          <div class="pcard">
+            <div class="ptile"><svg class="ic" style="width:34px;height:34px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.2l8 4.4v8.8l-8 4.4-8-4.4V7.6z"/><path d="M12 12.4l8-4.4M12 12.4v8.4M12 12.4L4 8"/></svg></div>
+            <div style="flex:1 1 auto;min-width:0">
+              <div class="pname ell" style="max-width:190px">三角洲行动 · 烽火地带 护航陪玩（4 局起）</div>
+              <div style="margin-top:6px"><span class="ptag">三角洲行动 · 手游</span></div>
+              <div class="prow" style="margin-top:10px"><span class="price num">¥28.88<span style="font-size:11px;font-weight:600">/局</span></span>
+                <span class="stepper99"><span class="sb"><svg class="ic" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></span><span class="sv num">4</span><span class="sb"><svg class="ic" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 动态字段卡 ×4（现状结构：1 字段 = 1 张卡） -->
+        <div class="card fcard">
+          <div class="diag">4</div>
+          <div class="ftop"><span class="star">*&nbsp;</span><span class="flab">游戏登录账号</span></div>
+          <div class="fbox">qilian_ayuan88</div>
+        </div>
+        <div class="card fcard">
+          <div class="diag">1</div><div class="diag" style="right:13px">3</div>
+          <div class="ftop"><span class="star">*&nbsp;</span><span class="flab">联系手机号</span></div>
+          <div class="fbox num">159 2043 7712</div>
+        </div>
+        <div class="card fcard">
+          <div class="diag">2</div>
+          <div class="ftop"><span class="flab">备用联系方式（微信 / QQ）</span></div>
+          <div class="fbox">wxid_ayuan_1994</div>
+        </div>
+        <div class="card fcard" style="margin-bottom:12px">
+          <div class="diag">5</div>
+          <div class="ftop"><span class="flab bad">补充要求</span></div>
+          <div class="fbox area">周日 20:30 后开局，主玩医疗兵；不接受中途换人</div>
+        </div>
+
+        <!-- 区服卡 -->
+        <div class="card">
+          <div class="ftop"><span class="star">*&nbsp;</span><span class="flab">选择区服</span></div>
+          <div class="opts" style="margin-top:10px">
+            <span class="opt on">微信区 · 安卓</span><span class="opt">QQ 区 · 安卓</span>
+          </div>
+        </div>
+
+        <!-- 护航员卡 -->
+        <div class="card">
+          <div class="ftop"><span class="star">*&nbsp;</span><span class="flab">选择护航员</span></div>
+          <div class="opts" style="margin-top:10px">
+            <span class="opt on">随机安排</span><span class="opt">指定护航员</span>
+          </div>
+        </div>
+        <div style="height:12px"></div>
+      </div>
+    </div>
+    <div class="footbar">
+      <div class="fb-note">
+        <svg class="ic" style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 11.2v5.2M12 7.9h.01"/></svg>
+        <span>余额不足，还差 ¥86.64</span>
+      </div>
+      <div class="fb-row">
+        <span class="fb-total">合计：</span><span class="price num" style="font-size:19px">¥115.52</span>
+        <span class="fb-btn">提交订单</span>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+      <div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)">下单</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+    </div>
+  </div>
+  <div class="ph-cap"><b>4 个动态字段占 466dp</b>（4×103dp + 3×12dp 卡间距 + 12dp 与下方区块间隔）；输入框是页面灰 <code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11px">#F5F7FB</code> 底 + <code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11px">#E2E8F0</code> 描边，嵌在纯白卡里 = 灰洞。星号 <code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11px">14sp</code> 比标签 13.5sp 大。本屏为静态复刻（默认无聚焦）。</div>
+</figure>
+
+<!-- ============================================================ 屏 2 · 方向 A ============================================================ -->
+<figure class="shot">
+  <figcaption>屏 2 · 方向 A（推荐）<em>一卡多行 · 发丝线分行</em></figcaption>
+  <div class="phone">
+    <div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="appbar"><span class="abtn"><svg class="ic" style="width:20px;height:20px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span><span class="at">确认订单</span></div>
+    <div class="scroll">
+      <div class="list" style="margin-top:-120px">
+
+        <div class="card">
+          <div class="pcard">
+            <div class="ptile"><svg class="ic" style="width:34px;height:34px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.2l8 4.4v8.8l-8 4.4-8-4.4V7.6z"/><path d="M12 12.4l8-4.4M12 12.4v8.4M12 12.4L4 8"/></svg></div>
+            <div style="flex:1 1 auto;min-width:0">
+              <div class="pname ell" style="max-width:190px">三角洲行动 · 烽火地带 护航陪玩（4 局起）</div>
+              <div style="margin-top:6px"><span class="ptag">三角洲行动 · 手游</span></div>
+              <div class="prow" style="margin-top:10px"><span class="price num">¥28.88<span style="font-size:11px;font-weight:600">/局</span></span>
+                <span class="stepper99"><span class="sb"><svg class="ic" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></span><span class="sv num">4</span><span class="sb"><svg class="ic" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 方向 A：一张 ContentCard 装全部动态字段，发丝线分行 -->
+        <div class="card" style="padding:2px 14px">
+          <div class="arow stack">
+            <span class="lab"><span class="star">*</span>游戏登录账号</span>
+            <span class="fend" style="flex:1 1 auto;min-width:0"><span class="val ell">qilian_ayuan88</span></span>
+          </div>
+          <div class="arow stack">
+            <span class="lab"><span class="star">*</span>联系手机号</span>
+            <span class="fend" style="flex:1 1 auto;min-width:0">
+              <span class="val num ell" style="flex:1 1 auto">159 2043 7712</span>
+              <svg class="ic" style="width:14px;height:14px;color:var(--ink-3)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.4" y="6" width="19.2" height="12" rx="2.4"/><path d="M6.6 9.4h1.2M6.6 12h1.2M6.6 14.6h1.2M10.2 9.4h1.2M10.2 12h1.2M10.2 14.6h1.2M13.8 9.4h1.2M13.8 12h1.2M13.8 14.6h1.2M17.4 10.6v2.8"/></svg>
+            </span>
+          </div>
+          <div class="arow stack">
+            <span class="lab">备用联系方式（微信 / QQ）</span>
+            <span style="display:flex;align-items:baseline;flex:1 1 auto;min-width:0">
+              <span class="val ell" style="flex:1 1 auto">wxid_ayuan_1994</span>
+              <span class="mini num">16 / 20</span>
+            </span>
+          </div>
+          <div class="arow stack" style="padding-bottom:12px">
+            <span class="lab">补充要求</span>
+            <span class="val" style="flex:1 1 auto">周日 20:30 后开局，主玩医疗兵；不接受中途换人</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ftop"><span class="star">*&nbsp;</span><span class="flab">选择区服</span></div>
+          <div class="opts" style="margin-top:10px">
+            <span class="opt on">微信区 · 安卓</span><span class="opt">QQ 区 · 安卓</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ftop"><span class="star">*&nbsp;</span><span class="flab">选择护航员</span></div>
+          <div class="opts" style="margin-top:10px">
+            <span class="opt on">随机安排</span><span class="opt">指定护航员</span>
+          </div>
+        </div>
+        <div style="height:12px"></div>
+      </div>
+    </div>
+    <div class="footbar">
+      <div class="fb-note">
+        <svg class="ic" style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 11.2v5.2M12 7.9h.01"/></svg>
+        <span>余额不足，还差 ¥86.64</span>
+      </div>
+      <div class="fb-row">
+        <span class="fb-total">合计：</span><span class="price num" style="font-size:19px">¥115.52</span>
+        <span class="fb-btn">提交订单</span>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+      <div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)">下单</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+    </div>
+  </div>
+  <div class="ph-cap"><b>4 个动态字段占 240dp</b>（1 张卡：左右档单行 45dp × 2 + 上下档 65dp + textarea 上下档 65dp，卡内 padding 2/14）。
+  两档布局由数据自动决定：<b>标签 ≤ 4 字 → 左标签（固定 64dp）+ 右值</b>；<b>标签 &gt; 4 字或 textarea → 标签在上、输入在下</b>
+  （Flutter 中文实测 12sp 每字约 12.2dp，64dp 一列正好放 4 字 + 必填星号，<b>不会出现"标签折行"</b>）。
+  输入<b>去边框去填充</b>（纯文本行）；行间仅 <b>1px 发丝线 #EEF1F6</b>；行首预留 12dp 给 2px 聚焦竖条。
+  手机号行右侧加<b>数字键盘线性图标</b>（提示 <code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11px">type=phone</code> → 数字键盘，<b>不改键盘规则</b>）；
+  备用联系方式显示 <b>16 / 20 计数</b>（maxLength 的 80% 才出现）。</div>
+</figure>
+
+<!-- ============================================================ 屏 3 · 方向 B ============================================================ -->
+<figure class="shot">
+  <figcaption>屏 3 · 方向 B <em>保留现结构，只做 5 处精修</em></figcaption>
+  <div class="phone">
+    <div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="appbar"><span class="abtn"><svg class="ic" style="width:20px;height:20px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span><span class="at">确认订单</span></div>
+    <div class="scroll">
+      <div class="list" style="margin-top:-222px">
+
+        <div class="card">
+          <div class="pcard">
+            <div class="ptile"><svg class="ic" style="width:34px;height:34px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.2l8 4.4v8.8l-8 4.4-8-4.4V7.6z"/><path d="M12 12.4l8-4.4M12 12.4v8.4M12 12.4L4 8"/></svg></div>
+            <div style="flex:1 1 auto;min-width:0">
+              <div class="pname ell" style="max-width:190px">三角洲行动 · 烽火地带 护航陪玩（4 局起）</div>
+              <div style="margin-top:6px"><span class="ptag">三角洲行动 · 手游</span></div>
+              <div class="prow" style="margin-top:10px"><span class="price num">¥28.88<span style="font-size:11px;font-weight:600">/局</span></span>
+                <span class="stepper99"><span class="sb"><svg class="ic" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></span><span class="sv num">4</span><span class="sb"><svg class="ic" style="width:15px;height:15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:10px">
+          <div class="ftop"><span class="star" style="font-size:11px">*&nbsp;</span><span class="flab">游戏登录账号</span></div>
+          <div class="bfield">qilian_ayuan88</div>
+        </div>
+        <div class="card" style="margin-top:10px">
+          <div class="ftop"><span class="star" style="font-size:11px">*&nbsp;</span><span class="flab">联系手机号</span></div>
+          <div class="bfield on">
+            <span class="num" style="flex:1 1 auto">159 2043 7712</span>
+            <svg class="ic" style="width:14px;height:14px;color:var(--primary)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.4" y="6" width="19.2" height="12" rx="2.4"/><path d="M6.6 9.4h1.2M6.6 12h1.2M6.6 14.6h1.2M10.2 9.4h1.2M10.2 12h1.2M10.2 14.6h1.2M13.8 9.4h1.2M13.8 12h1.2M13.8 14.6h1.2M17.4 10.6v2.8"/></svg>
+          </div>
+        </div>
+        <div class="card" style="margin-top:10px">
+          <div class="ftop"><span class="flab">备用联系方式（微信 / QQ）</span></div>
+          <div class="bfield"><span class="ell" style="flex:1 1 auto">wxid_ayuan_1994</span><span class="mini num">16 / 20</span></div>
+        </div>
+        <div class="card" style="margin-top:10px">
+          <div class="ftop"><span class="flab">补充要求</span></div>
+          <div class="bfield area">周日 20:30 后开局，主玩医疗兵；不接受中途换人</div>
+        </div>
+
+        <div class="card" style="margin-top:10px">
+          <div class="ftop"><span class="star" style="font-size:11px">*&nbsp;</span><span class="flab">选择区服</span></div>
+          <div class="opts" style="margin-top:10px">
+            <span class="opt on">微信区 · 安卓</span><span class="opt">QQ 区 · 安卓</span>
+          </div>
+        </div>
+        <div class="card" style="margin-top:10px">
+          <div class="ftop"><span class="star" style="font-size:11px">*&nbsp;</span><span class="flab">选择护航员</span></div>
+          <div class="opts" style="margin-top:10px">
+            <span class="opt on">随机安排</span><span class="opt">指定护航员</span>
+          </div>
+        </div>
+        <div style="height:12px"></div>
+      </div>
+    </div>
+    <div class="footbar">
+      <div class="fb-note">
+        <svg class="ic" style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 11.2v5.2M12 7.9h.01"/></svg>
+        <span>余额不足，还差 ¥86.64</span>
+      </div>
+      <div class="fb-row">
+        <span class="fb-total">合计：</span><span class="price num" style="font-size:19px">¥115.52</span>
+        <span class="fb-btn">提交订单</span>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+      <div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)">下单</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+    </div>
+  </div>
+  <div class="ph-cap"><b>4 个动态字段占 394dp</b>（4×89dp + 3×10dp 卡间距 + 12dp）。5 处精修：① 输入框改
+  <b>白底 + 发丝线边框 <code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11px">#CFD8E6</code></b>（消除灰洞）② 补聚焦态（主色描边 + 主色标签 + 3px 柔光环）③ 星号缩到
+  <b>11sp</b> 并紧贴标签 ④ 错误态 = 边框转 error + 标签转 error + 输入框下方一行 11sp 中文文案 ⑤ 卡间距 12 → <b>10</b>。
+  结构、字段数、提交逻辑与现状<b>逐行一致</b>。</div>
+</figure>
+
+<!-- ============================================================ 屏 4 · 方向 A 聚焦 + 校验失败 ============================================================ -->
+<figure class="shot">
+  <figcaption>屏 4 · 方向 A 补充 <em>聚焦 / 报错 / 长标签</em></figcaption>
+  <div class="phone">
+    <div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="appbar"><span class="abtn"><svg class="ic" style="width:20px;height:20px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></span><span class="at">确认订单</span></div>
+    <div class="scroll">
+      <div class="list" style="margin-top:-100px">
+
+        <!-- 上一行只露一角，表明这是"表单中部" -->
+        <div class="card" style="padding:2px 14px;padding-top:12px">
+          <div class="arow" style="padding-top:4px">
+            <span class="lab"><span class="star">*</span>老板称呼</span>
+            <span class="fend" style="flex:1 1 auto;min-width:0"><span class="val ell">阿远</span></span>
+          </div>
+
+          <!-- 左右布局那一档（标签 ≤ 4 字） -->
+          <div class="arow" style="border-top:1px solid var(--hair-2)">
+            <span class="lab"><span class="star">*</span>开局时间</span>
+            <span class="fend" style="flex:1 1 auto;min-width:0"><span class="val ell">19:30 以后</span></span>
+          </div>
+
+          <!-- 聚焦中（不可见光标在此行；6 字标签 → 上下布局） -->
+          <div class="arow stack" style="border-top:1px solid var(--hair-2)">
+            <span class="mark"></span>
+            <span class="lab on"><span class="star">*</span>联系手机号</span>
+            <span class="fend" style="flex:1 1 auto;min-width:0">
+              <span class="val num ell" style="flex:1 1 auto">159 2043 77<span class="caret">|</span></span>
+              <svg class="ic" style="width:14px;height:14px;color:var(--primary)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.4" y="6" width="19.2" height="12" rx="2.4"/><path d="M6.6 9.4h1.2M6.6 12h1.2M6.6 14.6h1.2M10.2 9.4h1.2M10.2 12h1.2M10.2 14.6h1.2M13.8 9.4h1.2M13.8 12h1.2M13.8 14.6h1.2M17.4 10.6v2.8"/></svg>
+            </span>
+          </div>
+
+          <!-- 校验失败：字段 3（长标签 → 上下布局） -->
+          <div class="arow bad stack" style="padding-bottom:9px">
+            <span class="mark"></span>
+            <span class="lab bad">备用联系方式（微信 / QQ）</span>
+            <span class="val ph" style="flex:1 1 auto">请填写微信号或 QQ 号</span>
+            <span class="slot" style="margin-top:0">
+                <svg class="ic" style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.6v5.2M12 16.2h.01"/></svg>
+                <span>此项必填，用于联系不上账号时联系你</span>
+            </span>
+          </div>
+
+          <!-- 校验失败：字段 4（textarea，标签在上、输入在下） -->
+          <div class="arow bad stack" style="padding-bottom:12px">
+            <span class="mark"></span>
+            <span class="lab bad">补充要求</span>
+            <span class="val ph" style="flex:1 1 auto">请填写开局时间、常用兵种等（选填）</span>
+            <span class="slot" style="margin-top:0">
+              <svg class="ic" style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.6v5.2M12 16.2h.01"/></svg>
+              <span>此项必填，未填写护航员无法按你的要求开局</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ftop"><span class="star">*&nbsp;</span><span class="flab">选择区服</span></div>
+          <div class="opts" style="margin-top:10px">
+            <span class="opt on">微信区 · 安卓</span><span class="opt">QQ 区 · 安卓</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ftop"><span class="star">*&nbsp;</span><span class="flab">选择护航员</span></div>
+          <div class="opts" style="margin-top:10px">
+            <span class="opt on">随机安排</span><span class="opt">指定护航员</span>
+          </div>
+        </div>
+
+        <div class="card fee">
+          <span class="fl">商品费用</span>
+          <span class="fr">单价 ¥28.88 × 4 件</span>
+        </div>
+        <div style="height:12px"></div>
+      </div>
+    </div>
+    <div class="footbar">
+      <div class="fb-note">
+        <svg class="ic" style="width:13px;height:13px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 11.2v5.2M12 7.9h.01"/></svg>
+        <span>余额不足，还差 ¥86.64</span>
+      </div>
+      <div class="fb-row">
+        <span class="fb-total">合计：</span><span class="price num" style="font-size:19px">¥115.52</span>
+        <span class="fb-btn">提交订单</span>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+      <div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)">下单</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+      <div class="tb-item"><svg class="ic" style="width:21px;height:21px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+    </div>
+  </div>
+  <div class="ph-cap">
+    <b>三档行形态 + 两个状态同屏可见</b>：① <b>聚焦中</b>（联系手机号）= 整行左侧 <b>2px 主色竖条</b> + 标签转主色并加粗（<b>形状 + 颜色双信号</b>，不是只靠颜色）；
+    ② <b>校验失败</b>（备用联系方式 / 补充要求同时报错）= 竖条转 error + 标签转 error <b>加粗</b> + 输入框下方一行 <b>11sp 中文文案带警示图标</b>；
+    ③ <b>左右档</b>（老板称呼 / 开局时间，标签 ≤ 4 字）+ <b>上下档</b>（联系手机号，5 字）+ <b>textarea 上下档</b>（补充要求）。
+    切换规则只有一条：<code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11px">label.characters.length &gt; 4 || type == 'textarea'</code> → 上下档。错误文案前缀固定为
+    「此项必填，…」，只有后缀来自 <code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11px">label/placeholder</code>（后台动态下发文案一个字不改）。
+  </div>
+</figure>
+
+</main>
+
+<div class="specwrap"><div class="specgrid">
+
+<div class="spec">
+  <h3><span class="n">1</span>现状 5 个问题（逐条带行号）</h3>
+  <ul>
+    <li><b>① 灰洞嵌白卡</b>：<code>order_create_page.dart:353</code> <code>fillColor: T.scaffoldColor</code>（页面灰 <code>#F5F7FB</code>）——输入框嵌在白卡（<code>:619</code> <code>AppCard</code>）里，形成"白卡上挖了个灰洞"，与相邻的区服/护航员按钮（白底 + 描边）也不同源。</li>
+    <li><b>② 无聚焦态</b>：<code>:355-358</code> 只定义 <code>border</code> / <code>enabledBorder</code>，<b>没有 <code>focusedBorder</code></b>，也没给 <code>TextField</code> 任何 <code>focusNode</code> 监听 → 聚焦渲染走主题默认色（与 <code>T.primary</code> 无契约关系），品牌色在这里<b>完全失守</b>。</li>
+    <li><b>③ N 个字段 = N 张白卡</b>：<code>:337-362</code> 循环里每个字段 <code>SizedBox(height:12)</code> + 一张 <code>_card</code>；<code>_card</code>（<code>:619-638</code>）本身 <code>padding 14</code> + 标题 20 + <code>SizedBox(height:10)</code> → 单字段卡 103dp（textarea 157dp）。4 个字段 466dp，<b>其中 156dp 是重复的卡壳成本</b>。</li>
+    <li><b>④ 星号比标签大</b>：<code>:626</code> 星号 <code>fontSize:14 / w700</code>，<code>:629</code> 标签 <code>13.5 / w700</code> → 视线先落在红色星号而不是字段名；且星号单独占位（<code>'* '</code>）与标签有 4–5dp 缝。</li>
+    <li><b>⑤ 错误态只说了一半</b>：<code>:631</code> <code>color: invalid ? AppColors.error : T.textPrimary</code> —— 只有标签变色，<b>输入框边框/底色不变、没有错误文案</b>；<code>_missing</code>（<code>:41</code>）只驱动标签色，提交时另弹一条 <code>_snack('请填写标 * 的必填项')</code>（<code>:208</code>），与出错的字段<b>没有对应关系</b>。</li>
+  </ul>
+  <p style="margin-top:8px">补充（同页一致性）：<code>:626</code> 的星号写法在区服卡（<code>:321</code>）、护航员卡（<code>:366</code>）里复用，所以四张"必填卡"是同一种显眼度；<code>AppCard</code> 默认 <code>radius:16</code>（<code>app_ui.dart:107</code>）> docs/21 上限 14，本方案不动组件默认值，只在 <code>_card</code> 调用处显式传 <code>radius:14</code>。</p>
+</div>
+
+<div class="spec">
+  <h3><span class="n">2</span>两方向对比表（含垂直空间量化）</h3>
+  <table>
+    <tr><th>维度</th><th>现状</th><th>方向 A（推荐）</th><th>方向 B</th></tr>
+    <tr><td>卡片数（4 字段）</td><td>4 张</td><td><b>1 张</b></td><td>4 张</td></tr>
+    <tr><td>单字段高</td><td>103dp / textarea 157dp</td><td><b>左右档 45dp</b> / 上下档 65dp</td><td>89dp / 143dp</td></tr>
+    <tr><td>4 字段合计</td><td><b>466dp</b></td><td><b>240dp</b>（省 226dp，−48.5%）</td><td>394dp（省 72dp，−15.5%）</td></tr>
+    <tr><td>6 字段合计</td><td><b>670dp</b></td><td><b>343dp</b>（省 327dp，−48.8%）</td><td>574dp（省 96dp，−14.3%）</td></tr>
+    <tr><td>9 字段合计</td><td><b>979dp</b></td><td><b>497dp</b>（省 482dp，−49.2%）</td><td>841dp（省 138dp，−14.1%）</td></tr>
+    <tr><td>输入框底色</td><td class="no">灰 #F5F7FB（灰洞）</td><td>无填充（纯文本行）</td><td>白底 + 发丝线边框</td></tr>
+    <tr><td>聚焦反馈</td><td class="no">无（主题默认）</td><td>2px 主色竖条 + 标签转主色加粗</td><td>主色描边 + 3px 柔光环 + 标签转主色</td></tr>
+    <tr><td>错误反馈</td><td class="no">仅标签变红</td><td>竖条 + 标签 + <b>11sp 中文文案带图标</b></td><td>边框 + 标签 + <b>11sp 中文文案带图标</b></td></tr>
+    <tr><td>间距节奏</td><td class="no">卡间一律 12（组内=组间）</td><td>行间 0（发丝线）/ 字段间 8 / 组间 20</td><td>卡间 10 / 组间 20</td></tr>
+    <tr><td>字号种类</td><td class="no">9 种</td><td><b>7 种</b></td><td><b>7 种</b></td></tr>
+    <tr><td>结构改动</td><td>—</td><td>4 张卡 → 1 张卡（<b>字段顺序/数量/校验零变化</b>）</td><td class="ok">无（保留现结构）</td></tr>
+    <tr><td>实施行数</td><td>—</td><td><code>:337-362</code> 换 1 段 + 3 个私有 widget</td><td><code>:337-362</code> 微调 + <code>:619-638</code> 改 1 处</td></tr>
+  </table>
+  <p style="margin-top:8px">量化口径（Flutter 实测文字行高，Ahem 关闭后按字体 metrics）：卡片 = <code>padding 14×2 + 标签行 20 + 10 + 输入框</code>；输入框 = <code>内容行（text 19.2 / 13.5sp 行高 20）+ contentPadding 28 + border 2</code>。方向 A 行 = <code>padding 12×2 + 内容行 20 + 发丝线 1</code>；上下档 = <code>padding 12×2 + 标签行 17 + 6 + 输入行 18</code>。<b>省的 226dp ≈ 0.34 屏</b>——一屏可用高 ≈ 660dp（844 − 48 状态栏 − 58 页头 − 78 底栏），即"填完 4 个字段少滚三分之一屏"。</p>
+</div>
+
+<div class="spec">
+  <h3><span class="n">3</span>推荐方向与理由</h3>
+  <ul>
+    <li><b>推荐方向 A（一卡多行）</b>，理由三条：</li>
+    <li>① <b>它才是"发丝线"的正确用法</b>：docs/21 明写「列表用发丝线、列表优先于卡片阵」，而本页现状恰好是"把表单拆成卡片阵"。一张卡 + 发丝线分行 = 把 5 个问题一次解决，且不需要新增任何分组名（后台没给语义）。</li>
+    <li>② <b>与刚定案的「我的」页同族</b>：<code>site/design/profile-redesign/B.html</code> 的语言就是「卡片 + 卡内发丝线行 + 左标签右值」，下单页跟随它 → 全站一个语言，不再是"一半精修一半原样"。</li>
+    <li>③ <b>省近 50% 垂直空间</b>：字段越多收益越大（9 字段省 482dp），后台随时可能加字段，方向 A 的收益随字段数线性增长。</li>
+    <li><b>方向 B 的价值</b>：改动面最小（<code>_card</code> 一处 + 循环微调），如果负责人希望这一版"只换皮不动骨架"，B 是零风险选项；但省空间只有 15.5%，"碎片化"这条根因（问题 ③）仍然存在。</li>
+    <li><b>若两方向都不批</b>：最低限度建议先落 B 的 <code>focusedBorder</code>（问题 ②）与错误文案（问题 ⑤）——这两条是<b>功能可用性</b>问题，不只是好看问题。</li>
+  </ul>
+</div>
+
+<div class="spec">
+  <h3><span class="n">4</span>实施清单（改哪几个行段 / 加什么私有 widget）</h3>
+  <table>
+    <tr><th>#</th><th>位置</th><th>改什么</th><th>类型</th></tr>
+    <tr><td>1</td><td><code>:337-362</code></td><td>循环体换成"一张 <code>AppCard</code> + <code>_formRows(fields)</code>"：<code>for (final f in _fields(_form))</code> 生成行，行间插 <code>AppHairline()</code>。<b>字段顺序、数量、key、controller 一个不动</b></td><td>改行段</td></tr>
+    <tr><td>2</td><td>新增私有 widget</td><td><code>_FormRow</code>（StatefulWidget）：<code>label / required / invalid / errorText / focusNode / child</code>；内部按 <code>label.characters.length &gt; 4 || type == 'textarea'</code> 切"标签在左（固定 64dp）"或"标签在上"——<b>两档都是同一行内布局，不是两种卡片</b></td><td>新增 widget</td></tr>
+    <tr><td>3</td><td>新增私有 widget</td><td><code>_FocusBar</code>（<code>AnimatedContainer</code>：宽 2dp / 高 <code>double.infinity</code>，颜色 <code>T.primary</code> ↔ <code>AppColors.error</code> ↔ 透明）——这就是"聚焦竖条"，<b>只有 2dp 且有交互语义</b></td><td>新增 widget</td></tr>
+    <tr><td>4</td><td>新增私有 widget</td><td><code>_ErrorLine</code>（12dp 线性图标 <code>AppIcon.info</code> + 11sp <code>AppColors.error</code> 文案；为空则 <code>SizedBox.shrink()</code>）</td><td>新增 widget</td></tr>
+    <tr><td>5</td><td><code>:343-360</code></td><td><code>TextField</code> 改：<code>decoration: InputDecoration(border: InputBorder.none, enabledBorder: InputBorder.none, focusedBorder: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero)</code> + <code>focusNode</code>（<code>initState</code> 里按 key 建、<code>dispose</code> 里释放）；<code>counterText</code> 改为"接近上限才显示"：<code>counterText: text.length &gt;= maxLength * 0.8 ? '${text.length} / $maxLength' : ''</code></td><td>改行段</td></tr>
+    <tr><td>6</td><td><code>:619-638</code></td><td><code>_card</code> 加 <code>radius: 14</code> 与 <code>errorText</code> 参数；星号 <code>14 → 11</code> 并紧贴标签（去掉 <code>'* '</code> 里的空格，改 <code>Row</code> 内 <code>2dp</code> 间距）；<b>区服卡与护航员卡继续走 <code>_card</code></b>，所以自动跟随同一种星号</td><td>改行段</td></tr>
+    <tr><td>7</td><td><code>:640-657</code> <code>_optionButton</code></td><td>只把字号 13.5 保留、圆角 <code>10</code> 保留（<b>逐值不动</b>）——方向 A 的行高 45dp 与它的 44dp 同档，视觉上自然成组。若负责人想要更紧，可把 <code>height: 44 → 42</code></td><td>可选</td></tr>
+    <tr><td>8</td><td><code>:626</code> / <code>:631</code></td><td>错误态口径统一：<code>invalid == true</code> → 行竖条 error + 标签 <code>w700 + error</code> + <code>_ErrorLine</code>；<code>_missing</code> 集合本身<b>不改</b>（提交校验逻辑 <code>:194-210</code> 一行不动）</td><td>改行段</td></tr>
+    <tr><td>9</td><td>服务端</td><td class="ok"><b>0 处改动</b> —— 不新增字段、不加字段语义、不返回错误文案。错误文案在客户端由固定前缀 + 后台 <code>label/placeholder</code> 拼出</td><td class="ok">不动</td></tr>
+    <tr><td>10</td><td>其它页面</td><td class="ok"><b>0 处改动</b> —— 本方案只改 <code>order_create_page.dart</code>；<code>AppCard</code>/<code>_optionButton</code> 等共用件不碰默认值</td><td class="ok">不动</td></tr>
+  </table>
+</div>
+
+<div class="spec">
+  <h3><span class="n">5</span>红线核对表（逐条判 docs/14 与 docs/21）</h3>
+  <table>
+    <tr><th>条款</th><th>出处</th><th>判定</th></tr>
+    <tr><td>禁「渐变做主视觉」</td><td>docs/21 §2</td><td class="ok">通过 · 本方案 <b>0 处渐变</b>（全页 <code>linear-gradient</code>/<code>radial-gradient</code> 面积 = 0）</td></tr>
+    <tr><td>禁「每卡左侧彩色竖条」</td><td>docs/21 §2</td><td class="ok">通过 · 方向 A 的竖条是 <b>2dp 聚焦/错误反馈</b>（有 focus 状态才出现、随状态变色、随失焦消失），不是装饰性彩条。<b>若负责人认为仍触线 → 替代方案见第 6 条</b></td></tr>
+    <tr><td>禁「全大圆角 ≥16」</td><td>docs/21 §2</td><td class="ok">通过 · 卡片 <b>14</b> / 控件 <b>10</b> / 标签 <b>4</b> / 胶囊全圆；<code>AppCard</code> 默认 16 在调用处显式覆盖为 14</td></tr>
+    <tr><td>禁「阴影铺满」</td><td>docs/21 §2</td><td class="ok">通过 · 聚焦柔光环 <code>0 0 0 3px rgba(37,99,235,.10)</code> 是<b>焦点指示</b>（只有 1 处、且只在该行），不做卡片投影；全页无卡片阴影</td></tr>
+    <tr><td>禁「每条信息配彩色小标签」</td><td>docs/21 §2</td><td class="ok">通过 · 表单区 0 个标签胶囊；仅商品卡保留分部标签（现状已有，只给必须区分的项）</td></tr>
+    <tr><td>禁「emoji 当图标」</td><td>docs/21 §2</td><td class="ok">通过 · emoji 数 = <b>0</b>；全部图标为内联 SVG 线性单色（<code>fill="none" stroke="currentColor" stroke-width 1.7–2</code>），语义对应 <code>AppIcon</code> 的 Material outlined</td></tr>
+    <tr><td>禁「纯黑配纯白」</td><td>docs/21 §2</td><td class="ok">通过 · 正文 <code>#0F172A</code> + 底 <code>#F5F7FB</code> + 卡 <code>#FFFFFF</code></td></tr>
+    <tr><td>禁「顶部并排三个大数字」/ 装饰插画</td><td>docs/21 §2</td><td class="ok">通过 · 本页无该结构、无插画</td></tr>
+    <tr><td>要「实色主色」</td><td>docs/21 §2</td><td class="ok">通过 · <code>#2563EB</code> 实色（提交按钮、选中态、聚焦竖条、聚焦标签）</td></tr>
+    <tr><td>要「列表用发丝线」</td><td>docs/21 §2</td><td class="ok">通过 · 方向 A 行间 <b>1px <code>#EEF1F6</code></b>（卡内）/ 卡片描边 <b>1px <code>#E2E8F0</code></b></td></tr>
+    <tr><td>要「阴影只给弹层」</td><td>docs/21 §2</td><td class="ok">通过 · 全页 0 处卡片阴影（弹层不在本页范围内）</td></tr>
+    <tr><td>要「左对齐为主」</td><td>docs/21 §2</td><td class="ok">通过 · 左标签档固定 <b>64dp</b>（行首另留 12dp 给聚焦竖条），值左对齐；上下档标签与输入同左对齐；金额与步进器在右侧（业务上要右对齐）</td></tr>
+    <tr><td>要「组内紧 8–10 / 组间松 20–24」</td><td>docs/21 §2</td><td class="ok">通过 · 行间 0（发丝线）/ 字段间 8 / 卡片组间 <b>20</b>（现状一律 12）；唯一说明：卡片组间在现状代码里是 <code>12</code>，本方案提到 <code>20</code>，落在 20–24 区间</td></tr>
+    <tr><td>要「假数据拟真」</td><td>docs/21 §2</td><td class="ok">通过 · <code>¥28.88</code> / <code>¥115.52</code> / <code>¥86.64</code> / <code>qilian_ayuan88</code> / <code>wxid_ayuan_1994</code> / <code>159 2043 7712</code> / 「周日 20:30 后开局，主玩医疗兵；不接受中途换人」（非整数、长短不一、带场景）</td></tr>
+    <tr><td>圆角分档 4–6 / 10 / 14 / 胶囊</td><td>docs/21 §2</td><td class="ok">通过 · 4（标签）/ 6（步进器）/ 10（输入行容器、选项按钮）/ 14（卡片）/ 胶囊（底栏凸起按钮、状态胶囊）</td></tr>
+    <tr><td>字号阶梯</td><td>docs/14 §字体层级 / 本次任务</td><td class="ok">通过 · 本方案用 <b>7 种</b>（10.5 / 11 / 12 / 13.5 / 16 / 19 / 20），现状 9 种（10.5 / 11 / 11.5 / 12 / 13 / 13.5 / 14 / 16 / 20）；<b>注：docs/14 的色板表是 2026-09 旧值（<code>#5B6CFF</code>/<code>#17181A</code>/<code>#EEF0F4</code>），已被 2026-10-03 的 token 重写覆盖</b>，本方案按 <code>app_colors.dart</code> 真值（同 <code>profile-redesign/B.html</code>）</td></tr>
+    <tr><td>金额格式 <code>¥</code> + 两位小数 + 千分位</td><td>本次任务</td><td class="ok">通过 · <code>¥28.88</code> / <code>¥115.52</code> / <code>¥86.64</code>（&lt;1000 无需千分位，规则一致）</td></tr>
+    <tr><td>钱包口径（不得出现已废弃的计分单位）</td><td>本次任务 / CLAUDE.md</td><td class="ok">通过 · 该词出现 0 次；钱包口径一律「余额」</td></tr>
+    <tr><td>品牌主色为 token</td><td>本次任务</td><td class="ok">通过 · <b>主色是 token，换品牌只需改 token 值，本方案结构不受影响</b>（本稿按现有 <code>--primary:#2563EB</code>；聚焦竖条/标签/描边/选中态全部引用同一变量，改一处即全局生效）</td></tr>
+  </table>
+</div>
+
+<div class="spec">
+  <h3><span class="n">6</span>「聚焦竖条」是否触红线？（主动说明 + 替代方案）</h3>
+  <ul>
+    <li><b>我们的判断：不触线。</b> docs/21 禁的是「<b>每张卡左侧一条彩色竖条</b>」——那是<b>装饰性的、静态的、每张卡都有</b>的彩条（"过时模板签名"）。方向 A 的竖条满足三条与它相反的性质：
+      ① <b>不是每行都有</b>，只有<b>正在编辑</b>或<b>报错</b>的那一行有；② <b>随状态出现/消失</b>（失焦即消失，<code>AnimatedContainer</code> 120ms 过渡）；③ <b>宽度只有 2dp</b>，且是主色 token 而不是"彩虹分色"。</li>
+    <li><b>但它确实是一个"弱信号"</b>：如果负责人觉得"看起来像彩条"，替代方案有三个（任一即可，均不依赖颜色）：
+      <ul style="margin-top:4px">
+        <li><b>替代 1（推荐兜底）</b>：去掉竖条，改用「行底色 <code>#F8FAFD</code> + 标签加粗转主色 + 输入行尾部一个 14dp 主色线性光标」表达聚焦 —— 只靠<b>字重 + 底色</b>。</li>
+        <li><b>替代 2</b>：竖条改为 <b>2dp 圆点前缀</b>（行首一个 5dp 圆点，聚焦/报错时才出现）。</li>
+        <li><b>替代 3</b>：竖条只保留给<b>错误态</b>（错误必须有形状信号），聚焦态只用标签加粗 + 底色。</li>
+      </ul>
+    </li>
+    <li>无论选哪一版，<b>聚焦与错误都同时具备"颜色之外的信号"</b>（字重 / 图标 / 文案 / 底色），满足"不能只靠颜色"的硬要求。</li>
+  </ul>
+</div>
+
+<div class="spec">
+  <h3><span class="n">7</span>垂直空间对比表（3 / 6 / 9 字段）</h3>
+  <table>
+    <tr><th>字段数</th><th class="num">现状（dp）</th><th class="num">方向 A（dp）</th><th class="num">方向 B（dp）</th><th class="num">A 省</th><th class="num">B 省</th></tr>
+    <tr><td>3</td><td class="num">321</td><td class="num"><b>155</b></td><td class="num">279</td><td class="num">166（−51.7%）</td><td class="num">42（−13.1%）</td></tr>
+    <tr><td>6</td><td class="num">670</td><td class="num"><b>343</b></td><td class="num">574</td><td class="num">327（−48.8%）</td><td class="num">96（−14.3%）</td></tr>
+    <tr><td>9</td><td class="num">979</td><td class="num"><b>497</b></td><td class="num">841</td><td class="num">482（−49.2%）</td><td class="num">138（−14.1%）</td></tr>
+    <tr><td>4（本图）</td><td class="num">466</td><td class="num"><b>240</b></td><td class="num">394</td><td class="num">226（−48.5%）</td><td class="num">72（−15.5%）</td></tr>
+  </table>
+  <p style="margin-top:8px">公式：现状 = <code>N×103 + (N−1)×12 + 12</code>；方向 A = <code>卡上下 padding 4 + N×行高 + (N−1)×发丝线 1 + 12</code>（左右档行 45dp、上下档行 65dp；本图 4 字段按"2 左右档 + 2 上下档"= 240dp）；
+  方向 B = <code>N×89 + (N−1)×10 + 12</code>。<b>整页视角</b>：一屏可用高 ≈ 660dp，现状 9 字段要滚 1.48 屏才能看完表单，方向 A 只要 0.75 屏。</p>
+</div>
+
+<div class="spec">
+  <h3><span class="n">8</span>自查（本次验收口径）</h3>
+  <ul>
+    <li><b>emoji 数 = 0</b>（正则 <code>[\u{1F300}-\u{1FAFF}\u{2B00}-\u{2BFF}\u{FE0F}\u{1F1E6}-\u{1F1FF}]</code> 全页扫描，含说明区）。</li>
+    <li><b>图标全线性单色</b>：所有 <code>&lt;svg class="ic"&gt;</code> 均为 <code>fill="none"</code> + <code>stroke="currentColor"</code> + <code>stroke-width 1.6–2</code>，颜色只取自 token（<code>--ink-2/--ink-3/--primary/--error</code>），无多色描边、无实心图标。</li>
+    <li><b>金额格式合规</b>：<code>¥28.88</code> / <code>¥115.52</code> / <code>¥86.64</code>，全部两位小数。</li>
+    <li><b>钱包口径</b>：全页只出现「余额」，不出现已废弃的计分单位（出现 0 次）。</li>
+    <li><b>字号种类</b>：手机壳内用 <b>7 种</b>（10.5 / 11 / 12 / 13.5 / 16 / 19 / 20）；现状 9 种（10.5 / 11 / 11.5 / 12 / 13 / 13.5 / 14 / 16 / 20）。收敛动作：卡标题统一 13.5，字段值与标签统一 13.5 / 12，说明与计数统一 11，卡片右上角口径统一 11，行高与间距拉开层级而不是靠字号。</li>
+    <li><b>渐变面积 = 0</b>：手机壳内 <code>linear-gradient</code> / <code>radial-gradient</code> 命中 0 处（脚本实测 <code>gradArea = 0</code>）；全页卡片阴影 0 处，只有方向 B 那一行聚焦输入框带 3px 柔光环（焦点指示，不是卡片阴影）。</li>
+    <li><b>外部依赖</b>：外链脚本 0 · 外链样式表 0 · 样式表导入指令 0 · <code>&lt;img&gt;</code> 0（纯 CSS + 内联 SVG，自包含）。</li>
+    <li><b>底部导航</b> = 服务 · 订单 · ＋下单 · 消息 · 我的（5 位，与现状一致）。</li>
+  </ul>
+</div>
+
+<div class="spec">
+  <h3><span class="n">9</span>工时评估（按现有代码基线）</h3>
+  <table>
+    <tr><th>方向</th><th>改动面</th><th>工时</th><th>风险</th></tr>
+    <tr><td>方向 A</td><td><code>order_create_page.dart</code> 1 个文件、<code>:337-362</code> 1 段重写、<code>:343-360</code> 改 decoration、<code>:619-638</code> 星号与 radius、新增 3 个私有 widget</td><td><b>2.5 – 3.5 小时</b>（含 <code>flutter analyze</code> + 真机核对 3 个状态）</td><td>中低：只碰渲染层，无业务逻辑改动</td></tr>
+    <tr><td>方向 B</td><td>同文件、<code>:337-362</code> 改 margin、<code>:343-360</code> 改 decoration + focusedBorder、<code>:619-638</code> 星号/radius/错误文案、新增 1 个 <code>_ErrorLine</code></td><td><b>1.5 – 2 小时</b></td><td>低：结构与现状一致</td></tr>
+    <tr><td>共同：下发字段类型映射</td><td>不改服务端；仅在客户端按 <code>type</code> 决定键盘/行高/计数显示</td><td>含在上述工时内</td><td>无</td></tr>
+  </table>
+</div>
+
+<div class="spec wide">
+  <h3><span class="n">10</span>审批打勾表（请负责人勾选一项）</h3>
+  <div class="checkbox">
+    □ <b>批准 方向A（一卡多行）</b> —— 一张卡 + 发丝线分行，省 51.5% 垂直空间，与「我的」页同族<br>
+    □ <b>批准 方向B（一卡一字段精修）</b> —— 结构零改动，只修灰洞 / 聚焦态 / 星号 / 错误态 / 卡间距<br>
+    □ <b>都不批</b> —— 请指出不通过的具体条款，我方重出<br>
+    □ <b>按我说的改</b> —— 请补充具体要求（例如：竖条换成替代方案 1/2/3、组间间距取 24、textarea 行高改为 N 行可见…）
+  </div>
+  <p style="margin-top:10px">若勾方向 A 且对第 6 条的"聚焦竖条"有顾虑，请在勾选时注明替代方案编号（1 / 2 / 3），我方按该方案实施，其余视觉不变。</p>
+</div>
+
+</div></div>
+
+<div class="footnote"><div>
+  <b>本方案未实施任何代码改动，等负责人审批。</b>
+  全部数值取自 core 设计 token（<code>app_colors.dart</code> / <code>theme_colors.dart</code>）与现状代码实测（<code>order_create_page.dart</code> 862 行逐段核对），
+  不新增设计体系、不改字段顺序/数量/校验规则/提交逻辑/接口。主色为 token：换品牌只需改 token 值，本方案结构不受影响。
+</div></div>
+
+</body>
+</html>

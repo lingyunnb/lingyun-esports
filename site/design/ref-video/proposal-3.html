@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>参考视频重构 · 三套方案（G 促销场 / H 暗夜电竞 / I 杂志流）</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#E9ECF1;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#14202E;padding:18px 20px 26px}
+  h1{font-size:19px;font-weight:800;margin-bottom:3px}
+  .sub{font-size:11px;color:#5A6B80;margin-bottom:13px;line-height:1.6}
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:10px}
+  .ch{padding:9px 11px;border-radius:10px;color:#fff;font-size:13px;font-weight:800}
+  .ch small{display:block;font-weight:400;font-size:10px;opacity:.9;margin-top:2px}
+  .chG{background:linear-gradient(120deg,#FACC15,#F59E0B 55%,#EF4444)}
+  .chH{background:#0E1116;border:1px solid rgba(0,229,255,.5);box-shadow:0 0 14px rgba(0,229,255,.22)}
+  .chI{background:linear-gradient(120deg,#8A8F79,#5B6152)}
+  .pl{font-size:10px;color:#5A6B80;text-align:center;margin:1px 0 4px}
+
+  .ph{width:390px;height:844px;margin:0 auto;position:relative;overflow:hidden;display:flex;flex-direction:column;flex:none}
+  .ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+  .ic.sm{width:15px;height:15px}
+  .ic.lg{width:22px;height:22px}
+
+  /* ================= 方案 G · 促销场（最贴参考） ================= */
+  .g{background:#F6F7F9}
+  .g .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;background:#F6F7F9}
+  .g .brand{font-size:17px;font-weight:900;letter-spacing:.3px;color:#0F2440}
+  .g .brand em{font-style:normal;color:#2563EB}
+  .g .badge{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;box-shadow:0 4px 10px rgba(37,99,235,.35)}
+  .g .search{margin:0 16px 10px;height:40px;border-radius:999px;background:#FFFFFF;display:flex;align-items:center;gap:7px;padding:0 14px;color:#94A3B8;font-size:12px;border:1px solid #E8ECF2}
+  .g .bars{display:flex;flex-direction:column;gap:7px;padding:0 16px}
+  .g .bar{height:44px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#fff;font-size:11.5px;font-weight:700;letter-spacing:.2px}
+  .g .b1{background:#FFF8E6;color:#8A5A00;border:1px solid #F3E2BB}
+  .g .b2{background:#F1F6FD;color:#1E40AF;border:1px solid #D8E5F7}
+  .g .b3{background:#FDF3F6;color:#9D174D;border:1px solid #F2DCE4}
+  .g .bar span{font-weight:600;font-size:11px;opacity:1}
+  .g .entries{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:12px 16px 0}
+  .g .entry{height:58px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#fff;border:1px solid #E8ECF2;box-shadow:0 2px 6px rgba(15,36,64,.05);font-size:10.5px;font-weight:700;color:#14202E}
+  .g .e1 .ic{color:#0E9F6E}
+  .g .e2 .ic{color:#2563EB}
+  .g .e3 .ic{color:#C2760B}
+  .g .tabs{display:flex;gap:18px;padding:14px 16px 0;font-size:13px;color:#7A8798}
+  .g .tabs b{color:#0F2440;font-weight:900;position:relative}
+  .g .tabs b::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:3px;border-radius:2px;background:#2563EB}
+  .g .chips{display:flex;align-items:center;gap:7px;padding:14px 16px 10px;overflow:hidden}
+  .g .chips b{background:#111827;color:#fff;font-size:11.5px;font-weight:700;padding:6px 13px;border-radius:999px;white-space:nowrap}
+  .g .chips span{background:#fff;color:#4A5A6E;font-size:11.5px;padding:6px 13px;border-radius:999px;border:1px solid #E8ECF2;white-space:nowrap}
+  .g .chips i{margin-left:auto;color:#7A8798;font-style:normal;font-size:14px}
+  .g .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;flex:1;align-content:start}
+  .g .card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #E8ECF2;position:relative;display:flex;flex-direction:column}
+  .g .chead{height:22px;background:#EEF4FC;color:#1E40AF;border-bottom:1px solid #DCE7F7;font-size:10px;font-weight:800;display:flex;align-items:center;padding:0 8px;letter-spacing:.3px}
+  .g .cover{height:92px;background:linear-gradient(135deg,#DBEAFE,#CFFAFE);position:relative;display:flex;align-items:center;justify-content:center;color:#93B4D8}
+  .g .stick{position:absolute;top:-2px;right:-4px;background:#EF4444;color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:3px;transform:rotate(8deg);box-shadow:0 2px 5px rgba(0,0,0,.18)}
+  .g .cbody{padding:6px 8px 8px;display:flex;flex-direction:column;gap:5px;flex:1}
+  .g .ctitle{font-size:11px;font-weight:700;line-height:1.35;color:#14202E}
+  .g .crow{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+  .g .price{background:#FACC15;color:#3B2400;font-size:11.5px;font-weight:900;padding:2px 8px;border-radius:999px}
+  .g .sold{font-size:9px;color:#94A3B8}
+  .g .bot{display:flex;align-items:flex-end;justify-content:space-around;background:#F4F4F6;border-top:1px solid #E8ECF2;padding:8px 0 16px}
+  .g .bi{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;color:#8A99AB;width:52px}
+  .g .bi.on{color:#2563EB;font-weight:800;background:#E8F1FB;border-radius:10px;padding:4px 0}
+  .g .fab{width:44px;height:44px;border-radius:50%;margin-bottom:6px;background:linear-gradient(135deg,#2563EB,#06B6D4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 5px 12px rgba(37,99,235,.42)}
+
+  /* ---------- 分类页：左侧导航栏 + 右侧商品（三个方案共用结构） ---------- */
+  .catwrap{display:flex;flex:1;overflow:hidden}
+  .side{width:92px;flex:none;display:flex;flex-direction:column;padding-top:4px}
+  .side .si{height:52px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 6px;line-height:1.25;font-size:11.5px}
+  .side .si.on{font-weight:800}
+  .right{flex:1;overflow:hidden;display:flex;flex-direction:column}
+  .right .grid{padding:0}
+  .right .list{padding:0}
+  .plist{display:flex;flex-direction:column;gap:8px}
+  .prow{display:flex;gap:8px;padding:8px;border-radius:10px}
+  .pth{width:62px;height:62px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center}
+  .pb{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+  .pt{font-size:11px;font-weight:700;line-height:1.3}
+  .pm{font-size:9px}
+  .pp{font-size:12.5px;font-weight:900;margin-top:auto}
+  .g .side{background:#EFF2F6}
+  .g .side .si{color:#6B7A8C}
+  .g .side .si.on{background:#fff;color:#0F2440;box-shadow:inset 3px 0 0 #2563EB}
+  .g .right{background:#F6F7F9;padding:8px 10px 0}
+  .g .prow{background:#fff;border:1px solid #E8ECF2}
+  .g .pth{background:linear-gradient(135deg,#DBEAFE,#CFFAFE);color:#9CC0E4}
+  .g .pt{color:#14202E}
+  .g .pm{color:#94A3B8}
+  .g .pp{color:#B4732A}
+  .h .side{background:#0B0F14}
+  .h .side .si{color:#5C6C96}
+  .h .side .si.on{background:#171B22;color:#00E5FF;box-shadow:inset 3px 0 0 #00E5FF}
+  .h .right{background:#0E1116;padding:8px 10px 0}
+  .h .prow{background:#171B22;border:1px solid #242C3A}
+  .h .pth{background:linear-gradient(135deg,#1E3A8A,#155E75);color:rgba(159,217,255,.5)}
+  .h .pt{color:#E6EEFF}
+  .h .pm{color:#5C6C96}
+  .h .pp{color:#FFC857}
+  .i .side{background:#EFEEE7}
+  .i .side .si{color:#8A8F79}
+  .i .side .si.on{background:#F7F7F5;color:#2A2E27;box-shadow:inset 3px 0 0 #2A2E27}
+  .i .right{background:#F7F7F5;padding:8px 12px 0}
+  .i .prow{background:#fff;border:1px solid #ECEBE4}
+  .i .pth{background:linear-gradient(135deg,#DDE3D8,#C9D2C2);color:#93A08A}
+  .i .pt{color:#2A2E27}
+  .i .pm{color:#8A8F79}
+  .i .pp{color:#2A2E27}
+
+  /* ================= 方案 H · 暗夜电竞 ================= */
+  .h{background:#0E1116;color:#E6EEFF}
+  .h .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px}
+  .h .brand{font-size:17px;font-weight:900;color:#fff;text-shadow:0 0 12px rgba(0,229,255,.55)}
+  .h .brand em{font-style:normal;color:#00E5FF}
+  .h .badge{width:34px;height:34px;border-radius:50%;border:1px solid rgba(0,229,255,.55);color:#00E5FF;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;box-shadow:0 0 12px rgba(0,229,255,.4)}
+  .h .search{margin:0 16px 10px;height:40px;border-radius:999px;background:#171B22;border:1px solid rgba(0,229,255,.24);display:flex;align-items:center;gap:7px;padding:0 14px;color:#5C6C96;font-size:12px}
+  .h .bars{display:flex;flex-direction:column;gap:7px;padding:0 16px}
+  .h .bar{height:44px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:11.5px;font-weight:700;background:#141A24}
+  .h .b1{color:#FFC857;border:1px solid rgba(255,200,87,.45);box-shadow:0 0 12px rgba(255,200,87,.12) inset}
+  .h .b2{color:#00E5FF;border:1px solid rgba(0,229,255,.45);box-shadow:0 0 12px rgba(0,229,255,.12) inset}
+  .h .b3{color:#FF6B9D;border:1px solid rgba(255,107,157,.45)}
+  .h .bar span{font-weight:400;opacity:.85}
+  .h .entries{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:12px 16px 0}
+  .h .entry{height:58px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#fff;font-size:10.5px;font-weight:700}
+  .h .e1{background:linear-gradient(135deg,#065F46,#10B981)}
+  .h .e2{background:linear-gradient(135deg,#1E3A8A,#2563EB)}
+  .h .e3{background:linear-gradient(135deg,#7C2D12,#F59E0B)}
+  .h .tabs{display:flex;gap:18px;padding:14px 16px 0;font-size:13px;color:#5C6C96}
+  .h .tabs b{color:#00E5FF;font-weight:900;position:relative}
+  .h .tabs b::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:3px;border-radius:2px;background:#00E5FF;box-shadow:0 0 8px #00E5FF}
+  .h .chips{display:flex;align-items:center;gap:7px;padding:14px 16px 10px;overflow:hidden}
+  .h .chips b{background:linear-gradient(135deg,#00E5FF,#2563EB);color:#06202A;font-size:11.5px;font-weight:800;padding:6px 13px;border-radius:999px;white-space:nowrap}
+  .h .chips span{background:#171B22;color:#7C8DB5;font-size:11.5px;padding:6px 13px;border-radius:999px;border:1px solid #242C3A;white-space:nowrap}
+  .h .chips i{margin-left:auto;color:#5C6C96;font-style:normal;font-size:14px}
+  .h .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;flex:1;align-content:start}
+  .h .card{background:#171B22;border-radius:12px;overflow:hidden;border:1px solid #242C3A;position:relative;display:flex;flex-direction:column}
+  .h .chead{height:22px;background:linear-gradient(90deg,#0E7490,#06B6D4);color:#04161C;font-size:10px;font-weight:900;display:flex;align-items:center;padding:0 8px}
+  .h .cover{height:92px;background:linear-gradient(135deg,#1E3A8A,#155E75);display:flex;align-items:center;justify-content:center;color:rgba(159,217,255,.5)}
+  .h .stick{position:absolute;top:-2px;right:-4px;background:#FF6B9D;color:#1A0A12;font-size:9px;font-weight:900;padding:2px 7px;border-radius:3px;transform:rotate(8deg);box-shadow:0 0 10px rgba(255,107,157,.5)}
+  .h .cbody{padding:6px 8px 8px;display:flex;flex-direction:column;gap:5px;flex:1}
+  .h .ctitle{font-size:11px;font-weight:700;line-height:1.35;color:#E6EEFF}
+  .h .crow{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+  .h .price{background:linear-gradient(135deg,#FFC857,#E8832B);color:#1A1200;font-size:11.5px;font-weight:900;padding:2px 8px;border-radius:999px}
+  .h .sold{font-size:9px;color:#5C6C96}
+  .h .bot{display:flex;align-items:flex-end;justify-content:space-around;background:#0B0F14;border-top:1px solid #1C2430;padding:8px 0 16px}
+  .h .bi{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;color:#4E5B78;width:52px}
+  .h .bi.on{color:#00E5FF;font-weight:800;background:rgba(0,229,255,.1);border-radius:10px;padding:4px 0;text-shadow:0 0 8px rgba(0,229,255,.6)}
+  .h .fab{width:44px;height:44px;border-radius:50%;margin-bottom:6px;background:linear-gradient(135deg,#00E5FF,#2563EB);color:#06202A;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 18px rgba(0,229,255,.8)}
+
+  /* ================= 方案 I · 杂志流（密度降下来） ================= */
+  .i{background:#F7F7F5}
+  .i .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 6px}
+  .i .brand{font-size:15px;font-weight:900;letter-spacing:2px;color:#2A2E27}
+  .i .badge{width:32px;height:32px;border-radius:10px;background:#2A2E27;color:#F7F7F5;display:flex;align-items:center;justify-content:center}
+  .i .hero{margin:8px 18px 0;height:190px;border-radius:16px;background:linear-gradient(140deg,#2A2E27,#5B6152 60%,#8A8F79);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:16px}
+  .i .hero .ht{color:#fff;font-size:19px;font-weight:900;letter-spacing:.5px;line-height:1.3}
+  .i .hero .hs{color:rgba(255,255,255,.78);font-size:11px;margin-top:6px}
+  .i .hero .badge2{position:absolute;top:14px;left:16px;font-size:9.5px;letter-spacing:1.5px;color:#2A2E27;background:#E4E3DA;padding:3px 9px;border-radius:99px;font-weight:800}
+  .i .hrow{display:flex;gap:8px;padding:14px 18px 0;overflow:hidden}
+  .i .hrow b{font-size:11.5px;font-weight:800;color:#2A2E27;border-bottom:2px solid #2A2E27;padding-bottom:5px;white-space:nowrap}
+  .i .hrow span{font-size:11.5px;color:#8A8F79;padding-bottom:5px;white-space:nowrap}
+  .i .list{display:flex;flex-direction:column;gap:12px;padding:14px 18px 0;flex:1;align-content:start}
+  .i .row{display:flex;gap:12px;background:#fff;border-radius:14px;padding:10px;border:1px solid #ECEBE4}
+  .i .thumb{width:84px;height:84px;border-radius:10px;background:linear-gradient(135deg,#DDE3D8,#C9D2C2);flex:none;display:flex;align-items:center;justify-content:center;color:#93A08A}
+  .i .rb{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0}
+  .i .rt{font-size:12.5px;font-weight:800;color:#2A2E27;line-height:1.35}
+  .i .rs{font-size:10px;color:#8A8F79;display:flex;gap:6px;align-items:center}
+  .i .rdot{width:3px;height:3px;border-radius:50%;background:#C9D2C2}
+  .i .rp{margin-top:auto;display:flex;align-items:baseline;gap:5px}
+  .i .rp b{font-size:16px;font-weight:900;color:#2A2E27}
+  .i .rp em{font-style:normal;font-size:10px;color:#8A8F79}
+  .i .bot{display:flex;align-items:center;justify-content:space-around;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border-top:1px solid #ECEBE4;padding:10px 0 16px}
+  .i .bi{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;color:#A3A79B;width:52px}
+  .i .bi.on{color:#2A2E27;font-weight:800}
+  .i .bi.on .dot{width:4px;height:4px;border-radius:50%;background:#2A2E27}
+  .i .fab{width:42px;height:42px;border-radius:14px;margin-bottom:4px;background:#2A2E27;color:#F7F7F5;display:flex;align-items:center;justify-content:center;font-size:19px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></symbol>
+  <symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="2" y="13" width="4" height="7" rx="1.5"/><rect x="18" y="13" width="4" height="7" rx="1.5"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M17 6.5a3 3 0 010 5.6M18 20c0-2.4-.9-4.4-2.4-5.7"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 01-8 0V4z"/><path d="M8 5H5v2a3 3 0 003 3M16 5h3v2a3 3 0 01-3 3"/><path d="M12 13v4M9 20h6"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-sword" viewBox="0 0 24 24"><path d="M4 20l6-6M14 4l6 6-9 9H5v-6z"/></symbol>
+</defs></svg>
+
+<h1>参考视频重构 · 三套方案（背景色 + 排版都取自视频）</h1>
+<div class="sub">
+  取数依据：背景 <b>#F8F8F8</b>（占画面 25.2%）、左右内边距 <b>16 / 12px</b>@540、底栏底色 <b>#F4F4F6</b>、强蓝 <b>#2563EB</b> 系、促销黄 <b>#FACC15</b>、近黑选中胶囊 <b>#111827</b>。<br>
+  排版顺序照视频：搜索胶囊 → 全宽保证色条堆叠 → 三宫格服务入口 → 下划线分类 Tab → 黑选中胶囊筛选 → 双列商品卡（蓝条卡头 + 贴纸角标 + 价格胶囊）→ 底部 5 项（首页高亮 + 中间凸起）。每列两屏：上=首页，下=商品列表。
+</div>
+
+<div class="board">
+
+  <!-- ============ G ============ -->
+  <div class="col">
+    <div class="ch chG">方案 G · 促销场<small>完全照参考的密度与排版，只把配色换成品牌蓝+促销黄</small></div>
+    <div class="pl">首页</div>
+    <div class="ph g">
+      <div class="nav"><div class="brand">祁连山<em>电竞</em></div><div class="badge">祁</div></div>
+      <div class="search"><svg class="ic sm"><use href="#i-search"/></svg>搜索你想要的单</div>
+      <div class="bars">
+        <div class="bar b1">老板下单 5 分钟内客服介入<span>不满意 3 倍赔付 ›</span></div>
+        <div class="bar b2">车 5 把 3 倍退款<span>1000w 以下订单 ›</span></div>
+        <div class="bar b3">连续翻车 10 把五倍退款<span>任何订单 ›</span></div>
+      </div>
+      <div class="entries">
+        <div class="entry e1"><svg class="ic"><use href="#i-headset"/></svg><span>投诉客服</span></div>
+        <div class="entry e2"><svg class="ic"><use href="#i-users"/></svg><span>代练招募</span></div>
+        <div class="entry e3"><svg class="ic"><use href="#i-trophy"/></svg><span>陪玩入住</span></div>
+      </div>
+      <div class="tabs"><b>祁连山官方</b><span>和平精英</span><span>三角洲</span></div>
+      <div class="chips"><b>全部</b><span>特色单</span><span>自定义</span><span>大转盘</span><i>≡</i></div>
+      <div class="grid">
+        <div class="card">
+          <div class="chead">祁连山电竞</div>
+          <div class="cover"><svg class="ic lg"><use href="#i-sword"/></svg><div class="stick">稳</div></div>
+          <div class="cbody"><div class="ctitle">9.9 新人体验单 保 400w</div>
+            <div class="crow"><span class="price">¥9.90</span><span class="sold">已售 19</span></div></div>
+        </div>
+        <div class="card">
+          <div class="chead">祁连山电竞</div>
+          <div class="cover"><svg class="ic lg"><use href="#i-trophy"/></svg><div class="stick">福运</div></div>
+          <div class="cbody"><div class="ctitle">44.6 博弈鹰雕单 不出保 1200w</div>
+            <div class="crow"><span class="price">¥44.60</span><span class="sold">已售 37</span></div></div>
+        </div>
+        <div class="card">
+          <div class="chead">祁连山电竞</div>
+          <div class="cover"><svg class="ic lg"><use href="#i-grid"/></svg></div>
+          <div class="cbody"><div class="ctitle">30 保 1000w 送 7 级套</div>
+            <div class="crow"><span class="price">¥30.00</span><span class="sold">已售 88</span></div></div>
+        </div>
+        <div class="card">
+          <div class="chead">祁连山电竞</div>
+          <div class="cover"><svg class="ic lg"><use href="#i-home"/></svg><div class="stick">热门</div></div>
+          <div class="cbody"><div class="ctitle">233 保 1 亿 送小金人</div>
+            <div class="crow"><span class="price">¥233.00</span><span class="sold">已售 6</span></div></div>
+        </div>
+      </div>
+      <div class="bot">
+        <div class="bi on"><svg class="ic sm"><use href="#i-home"/></svg>首页</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-grid"/></svg>分类</div>
+        <div class="fab">＋</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-chat"/></svg>消息</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-user"/></svg>我的</div>
+      </div>
+    </div>
+
+    <div class="pl">商品列表</div>
+    <div class="ph g">
+      <div class="nav"><div class="brand">和平精英 · 手游</div><div class="badge">祁</div></div>
+      <div class="chips"><b>综合</b><span>销量</span><span>价格</span><span>新上架</span><i>≡</i></div>
+      <div class="catwrap">
+        <div class="side">
+          <div class="si on">全部单</div>
+          <div class="si">特色单</div>
+          <div class="si">自定义</div>
+          <div class="si">大转盘</div>
+          <div class="si">翻车</div>
+          <div class="si">护航</div>
+          <div class="si">新人</div>
+        </div>
+        <div class="right">
+          <div class="plist">
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-sword"/></svg></div><div class="pb"><div class="pt">9.9 新人体验单 保 400w（送 7 套＋aug）</div><div class="pm">已售 19 · 满意度 100%</div><div class="pp">¥9.90</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-trophy"/></svg></div><div class="pb"><div class="pt">18.8 保 500w（送 7 级套＋aug）</div><div class="pm">已售 59 · 满意度 99.2%</div><div class="pp">¥18.80</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-grid"/></svg></div><div class="pb"><div class="pt">30 保 1000w（强化 74u/妹控二选一）</div><div class="pm">已售 88 · 满意度 98.6%</div><div class="pp">¥30.00</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-menu"/></svg></div><div class="pb"><div class="pt">44.6 博弈鹰雕单 不出保 1200w</div><div class="pm">已售 37 · 满意度 97.4%</div><div class="pp">¥44.60</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-home"/></svg></div><div class="pb"><div class="pt">233 保 1 亿（送小金人）</div><div class="pm">已售 6 · 高端局</div><div class="pp">¥233.00</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-sword"/></svg></div><div class="pb"><div class="pt">68 保 3000w 全天在线</div><div class="pm">已售 12 · 满意度 99.0%</div><div class="pp">¥68.00</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="bot">
+        <div class="bi"><svg class="ic sm"><use href="#i-home"/></svg>首页</div>
+        <div class="bi on"><svg class="ic sm"><use href="#i-grid"/></svg>分类</div>
+        <div class="fab">＋</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-chat"/></svg>消息</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-user"/></svg>我的</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ H ============ -->
+  <div class="col">
+    <div class="ch chH">方案 H · 暗夜电竞<small>同密度同排版，换深色底 + 霓虹描边（夜场感最强）</small></div>
+    <div class="pl">首页</div>
+    <div class="ph h">
+      <div class="nav"><div class="brand">祁连山<em>电竞</em></div><div class="badge">祁</div></div>
+      <div class="search"><svg class="ic sm"><use href="#i-search"/></svg>搜索你想要的单</div>
+      <div class="bars">
+        <div class="bar b1">老板下单 5 分钟内客服介入<span>不满意 3 倍赔付 ›</span></div>
+        <div class="bar b2">车 5 把 3 倍退款<span>1000w 以下订单 ›</span></div>
+        <div class="bar b3">连续翻车 10 把五倍退款<span>任何订单 ›</span></div>
+      </div>
+      <div class="entries">
+        <div class="entry e1"><svg class="ic"><use href="#i-headset"/></svg><span>投诉客服</span></div>
+        <div class="entry e2"><svg class="ic"><use href="#i-users"/></svg><span>代练招募</span></div>
+        <div class="entry e3"><svg class="ic"><use href="#i-trophy"/></svg><span>陪玩入住</span></div>
+      </div>
+      <div class="tabs"><b>祁连山官方</b><span>和平精英</span><span>三角洲</span></div>
+      <div class="chips"><b>全部</b><span>特色单</span><span>自定义</span><span>大转盘</span><i>≡</i></div>
+      <div class="grid">
+        <div class="card"><div class="chead">祁连山电竞</div><div class="cover"><svg class="ic lg"><use href="#i-sword"/></svg><div class="stick">稳</div></div>
+          <div class="cbody"><div class="ctitle">9.9 新人体验单 保 400w</div><div class="crow"><span class="price">¥9.90</span><span class="sold">已售 19</span></div></div></div>
+        <div class="card"><div class="chead">祁连山电竞</div><div class="cover"><svg class="ic lg"><use href="#i-trophy"/></svg><div class="stick">福运</div></div>
+          <div class="cbody"><div class="ctitle">44.6 博弈鹰雕单 不出保 1200w</div><div class="crow"><span class="price">¥44.60</span><span class="sold">已售 37</span></div></div></div>
+        <div class="card"><div class="chead">祁连山电竞</div><div class="cover"><svg class="ic lg"><use href="#i-grid"/></svg></div>
+          <div class="cbody"><div class="ctitle">30 保 1000w 送 7 级套</div><div class="crow"><span class="price">¥30.00</span><span class="sold">已售 88</span></div></div></div>
+        <div class="card"><div class="chead">祁连山电竞</div><div class="cover"><svg class="ic lg"><use href="#i-home"/></svg><div class="stick">热门</div></div>
+          <div class="cbody"><div class="ctitle">233 保 1 亿 送小金人</div><div class="crow"><span class="price">¥233.00</span><span class="sold">已售 6</span></div></div></div>
+      </div>
+      <div class="bot">
+        <div class="bi on"><svg class="ic sm"><use href="#i-home"/></svg>首页</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-grid"/></svg>分类</div>
+        <div class="fab">＋</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-chat"/></svg>消息</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-user"/></svg>我的</div>
+      </div>
+    </div>
+
+    <div class="pl">商品列表</div>
+    <div class="ph h">
+      <div class="nav"><div class="brand">和平精英 · 手游</div><div class="badge">祁</div></div>
+      <div class="chips"><b>综合</b><span>销量</span><span>价格</span><span>新上架</span><i>≡</i></div>
+      <div class="catwrap">
+        <div class="side">
+          <div class="si on">全部单</div>
+          <div class="si">特色单</div>
+          <div class="si">自定义</div>
+          <div class="si">大转盘</div>
+          <div class="si">翻车</div>
+          <div class="si">护航</div>
+          <div class="si">新人</div>
+        </div>
+        <div class="right">
+          <div class="plist">
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-sword"/></svg></div><div class="pb"><div class="pt">9.9 新人体验单 保 400w（送 7 套＋aug）</div><div class="pm">已售 19 · 满意度 100%</div><div class="pp">¥9.90</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-trophy"/></svg></div><div class="pb"><div class="pt">18.8 保 500w（送 7 级套＋aug）</div><div class="pm">已售 59 · 满意度 99.2%</div><div class="pp">¥18.80</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-grid"/></svg></div><div class="pb"><div class="pt">30 保 1000w（强化 74u/妹控二选一）</div><div class="pm">已售 88 · 满意度 98.6%</div><div class="pp">¥30.00</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-menu"/></svg></div><div class="pb"><div class="pt">44.6 博弈鹰雕单 不出保 1200w</div><div class="pm">已售 37 · 满意度 97.4%</div><div class="pp">¥44.60</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-home"/></svg></div><div class="pb"><div class="pt">233 保 1 亿（送小金人）</div><div class="pm">已售 6 · 高端局</div><div class="pp">¥233.00</div></div></div>
+            <div class="prow"><div class="pth"><svg class="ic"><use href="#i-sword"/></svg></div><div class="pb"><div class="pt">68 保 3000w 全天在线</div><div class="pm">已售 12 · 满意度 99.0%</div><div class="pp">¥68.00</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="bot">
+        <div class="bi"><svg class="ic sm"><use href="#i-home"/></svg>首页</div>
+        <div class="bi on"><svg class="ic sm"><use href="#i-grid"/></svg>分类</div>
+        <div class="fab">＋</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-chat"/></svg>消息</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-user"/></svg>我的</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ I ============ -->
+  <div class="col">
+    <div class="ch chI">方案 I · 杂志流<small>保留视频的背景与色彩，但把密度降下来：大图 + 单列 + 留白</small></div>
+    <div class="pl">首页</div>
+    <div class="ph i">
+      <div class="nav"><div class="brand">祁连山电竞</div><div class="badge"><svg class="ic sm"><use href="#i-search"/></svg></div></div>
+      <div class="hero">
+        <div class="badge2">官方自营 · 无第三方</div>
+        <div class="ht">下单 5 分钟<br>客服必介入</div>
+        <div class="hs">不满意 3 倍赔付 · 全程录屏</div>
+      </div>
+      <div class="hrow"><b>祁连山官方</b><span>和平精英</span><span>三角洲</span><span>排行榜</span></div>
+      <div class="list">
+        <div class="row"><div class="thumb"><svg class="ic lg"><use href="#i-sword"/></svg></div>
+          <div class="rb"><div class="rt">9.9 新人体验单 保 400w</div>
+            <div class="rs">送 7 套<span class="rdot"></span>aug<span class="rdot"></span>已售 19</div>
+            <div class="rp"><b>¥9.90</b><em>/单</em></div></div></div>
+        <div class="row"><div class="thumb"><svg class="ic lg"><use href="#i-trophy"/></svg></div>
+          <div class="rb"><div class="rt">44.6 博弈鹰雕单 不出保 1200w</div>
+            <div class="rs">现小金人<span class="rdot"></span>金 aug<span class="rdot"></span>已售 37</div>
+            <div class="rp"><b>¥44.60</b><em>/单</em></div></div></div>
+        <div class="row"><div class="thumb"><svg class="ic lg"><use href="#i-grid"/></svg></div>
+          <div class="rb"><div class="rt">30 保 1000w 送 7 级套</div>
+            <div class="rs">强化 74u / 妹控 / Aug 四选一<span class="rdot"></span>已售 88</div>
+            <div class="rp"><b>¥30.00</b><em>/单</em></div></div></div>
+      </div>
+      <div class="bot">
+        <div class="bi on"><svg class="ic sm"><use href="#i-home"/></svg>首页<div class="dot"></div></div>
+        <div class="bi"><svg class="ic sm"><use href="#i-grid"/></svg>分类</div>
+        <div class="fab">＋</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-chat"/></svg>消息</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-user"/></svg>我的</div>
+      </div>
+    </div>
+
+    <div class="pl">商品列表</div>
+    <div class="ph i">
+      <div class="nav"><div class="brand">和平精英 · 手游</div><div class="badge"><svg class="ic sm"><use href="#i-menu"/></svg></div></div>
+      <div class="catwrap">
+        <div class="side">
+          <div class="si on">全部单</div>
+          <div class="si">特色单</div>
+          <div class="si">自定义</div>
+          <div class="si">大转盘</div>
+          <div class="si">翻车</div>
+        </div>
+        <div class="right">
+          <div class="list">
+            <div class="row"><div class="thumb"><svg class="ic lg"><use href="#i-sword"/></svg></div>
+              <div class="rb"><div class="rt">9.9 新人体验单 保 400w（送 7 套＋aug）</div>
+                <div class="rs">已售 19 · 满意度 100%</div><div class="rp"><b>¥9.90</b><em>/单</em></div></div></div>
+            <div class="row"><div class="thumb"><svg class="ic lg"><use href="#i-trophy"/></svg></div>
+              <div class="rb"><div class="rt">18.8 保 500w（送 7 级套＋aug）</div>
+                <div class="rs">已售 59 · 满意度 99.2%</div><div class="rp"><b>¥18.80</b><em>/单</em></div></div></div>
+            <div class="row"><div class="thumb"><svg class="ic lg"><use href="#i-grid"/></svg></div>
+              <div class="rb"><div class="rt">30 保 1000w（强化 74u/妹控二选一）</div>
+                <div class="rs">已售 88 · 满意度 98.6%</div><div class="rp"><b>¥30.00</b><em>/单</em></div></div></div>
+            <div class="row"><div class="thumb"><svg class="ic lg"><use href="#i-home"/></svg></div>
+              <div class="rb"><div class="rt">233 保 1 亿（送小金人）</div>
+                <div class="rs">已售 6 · 高端局</div><div class="rp"><b>¥233.00</b><em>/单</em></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="bot">
+        <div class="bi"><svg class="ic sm"><use href="#i-home"/></svg>首页</div>
+        <div class="bi on"><svg class="ic sm"><use href="#i-grid"/></svg>分类<div class="dot"></div></div>
+        <div class="fab">＋</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-chat"/></svg>消息</div>
+        <div class="bi"><svg class="ic sm"><use href="#i-user"/></svg>我的</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

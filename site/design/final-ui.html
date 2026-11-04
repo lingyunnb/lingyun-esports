@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>祁连山电竞 · UI 最终稿（F 主题 + 结构修正）</title>
+<style>
+  :root{ --ink:#0f172a; --ink2:#475569; --ink3:#94a3b8; --line:#e2e8f0; --blue:#2563eb; --cyan:#06b6d4;
+         --gold:#d97706; --bg:#f5f7fb; --card:#fff; --sh:0 4px 14px rgba(15,23,42,.06), 0 12px 32px rgba(15,23,42,.05); }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:"PingFang SC","Microsoft YaHei UI","Microsoft YaHei",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  header{padding:38px 32px 6px;max-width:1520px;margin:0 auto}
+  .badge{display:inline-block;background:#dcfce7;color:#15803d;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:14px}
+  h1{margin:0 0 10px;font-size:30px;font-weight:800}
+  .sub{color:var(--ink2);font-size:14px;line-height:1.8;max-width:1200px}
+  main{max-width:1520px;margin:0 auto;padding:10px 32px 90px}
+  .sec{margin:44px 0 16px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .sec h2{margin:0;font-size:20px;font-weight:800}
+  .sec span{font-size:13px;color:var(--ink3)}
+  .grid{display:grid;gap:24px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid.one{grid-template-columns:minmax(0,1fr)}
+  .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--sh)}
+  .card h3{margin:0 0 4px;font-size:15.5px;font-weight:800}
+  .card p{margin:0 0 12px;font-size:12.5px;color:var(--ink2);line-height:1.65}
+  .shot{display:block;width:100%;border-radius:14px;border:1px solid var(--line);cursor:zoom-in;background:#fff}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px;background:#fff;border:1px solid var(--line);
+        border-radius:20px;overflow:hidden;box-shadow:var(--sh)}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+  th{color:var(--ink3);font-weight:700;font-size:12px;background:#fbfcfe}
+  td b{color:var(--ink)}
+  code{background:#eff6ff;border-radius:6px;padding:2px 6px;font-size:12.5px;font-family:Consolas,Monaco,monospace;color:#1d4ed8}
+  .tools{display:flex;gap:10px;align-items:center;margin:18px 0 4px;flex-wrap:wrap}
+  .tools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;
+                font-size:13px;font-weight:700;cursor:pointer;color:var(--ink2)}
+  .tools button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tools .hint{font-size:12.5px;color:var(--ink3)}
+  .sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:6px;border:1px solid rgba(0,0,0,.08)}
+  .ok{color:#15803d;font-weight:800}
+  .note{background:#eff6ff;border:1px solid #bfdbfe;border-radius:16px;padding:16px 20px;margin-top:16px;
+        font-size:13px;color:#1e40af;line-height:1.8}
+  @media (max-width:980px){ .grid,.grid.three{grid-template-columns:1fr} header,main{padding-left:16px;padding-right:16px} }
+</style>
+</head>
+<body>
+<header>
+  <div class="badge">定稿 · F 主题视觉 + 结构修正（旧 A/B/E/F 初版/G/H 作废）</div>
+  <h1>祁连山电竞 · UI 最终稿</h1>
+  <p class="sub">
+    <b>视觉 = F 版主题</b>：青蓝渐变主视觉 · 卡片（轻阴影 + 较大圆角）· 彩色标签胶囊 · 圆形「快速下单」浮标 · 底部凸起＋。
+    <br><b>内容 = 后几轮确认的结构修正</b>：导航去重 · 不存在的不显示 · 消息只留三类 · 只有祁连山官方 · 榜单不写分部与标签。
+    <br><b>找陪玩 = 极简</b>：头像 + 名字 + 介绍（介绍由管理端填写），其余字段一律不要。
+    <br>频道社区（独立功能）见 <a href="./community.html" style="color:var(--blue);font-weight:700">C/D 对照页</a>。
+  </p>
+  <div class="tools">
+    <button data-cols="one" class="on">单列看细节</button>
+    <button data-cols="two">双列</button>
+    <button data-cols="three">三列总览</button>
+    <span class="hint">点任意图片可开原始尺寸</span>
+  </div>
+</header>
+
+<main>
+  <div class="sec"><h2>两个入口的细化（负责人本轮要求）</h2><span>右下角下单按钮 + 底部中间＋</span></div>
+  <div class="grid">
+    <div class="card">
+      <h3>① 下单按钮：改用俱乐部雪山标</h3>
+      <p>原先是通用「闪电」+ 青蓝渐变，与俱乐部无关。现改为 <b>祁连山雪山标</b> + 品牌冷调（深蓝 <code>#173A7A</code> → 蓝 <code>#2563EB</code> + 雪顶冰蓝 <code>#BAE6FD</code>）。三种候选：
+        <br>· <b>A 圆形雪山徽章</b>（最小巧）
+        <br>· <b>B 胶囊：雪山 + 下单</b>（最醒目，推荐）
+        <br>· <b>C 细描边：快速下单</b>（最轻）</p>
+      <a href="J1-下单按钮候选.png" target="_blank"><img class="shot" src="J1-下单按钮候选.png" alt="下单按钮候选" /></a>
+    </div>
+    <div class="card">
+      <h3>② 中间＋：改为「快捷入口」面板</h3>
+      <p>原先＋和右下浮标<b>都进下单，功能重复</b>。现改为点开弹出快捷面板：<b>找陪玩（按分部挑人）/ 聊天记录（好友·客服·打手）/ 联系客服 / 发帖到玩家圈</b>，
+        底部保留主行动「直接去下单」。</p>
+      <a href="J2-快捷面板.png" target="_blank"><img class="shot" src="J2-快捷面板.png" alt="快捷面板" /></a>
+    </div>
+  </div>
+
+  <div class="sec"><h2>六屏总览</h2><span>老板端最终形态</span></div>
+  <div class="grid one">
+    <div class="card">
+      <h3>第一组：首页 / 找陪玩 / 排行榜 / 玩家圈</h3>
+      <p>首页＝分部渐变卡（和平精英通栏 + 三角洲手游/端游）→ 祁连山官方 → 保障说明；找陪玩＝渐变圆头像 + 名字 + 介绍；排行榜＝渐变横幅 + 名次/头像/名字/金额；玩家圈＝渐变圆头像 + 长短不一的真实帖。</p>
+      <a href="I0-总览-1.png" target="_blank"><img class="shot" src="I0-总览-1.png" alt="总览 1" /></a>
+    </div>
+  </div>
+  <div class="grid" style="margin-top:24px">
+    <div class="card">
+      <h3>第二组：消息 / 我的</h3>
+      <p>消息＝好友私聊 / 客服 / 打手 三类（卡片化会话）；我的＝渐变圆头像 + 积分卡 + 订单三状态 + 常用 + 会员成长进度（无猫粮/尊享卡/优惠券）。</p>
+      <a href="I0-总览-2.png" target="_blank"><img class="shot" src="I0-总览-2.png" alt="总览 2" /></a>
+    </div>
+    <div class="card">
+      <h3>视觉 token（实施依据）</h3>
+      <p>
+        <b>主色</b> <span class="sw" style="background:#2563eb"></span>#2563EB　<b>渐变</b> <span class="sw" style="background:#06b6d4"></span>#06B6D4 → <span class="sw" style="background:#2563eb"></span>#2563EB<br>
+        <b>价格/等级</b> <span class="sw" style="background:#d97706"></span>#D97706　<b>在线/成功</b> <span class="sw" style="background:#16a34a"></span>#16A34A<br>
+        <b>页面底</b> <span class="sw" style="background:#f5f7fb"></span>#F5F7FB　<b>冰蓝渐隐</b> <span class="sw" style="background:#eff6ff"></span>#EFF6FF<br>
+        <b>卡片</b> 圆角 14–16 + 轻阴影 + 发丝描边　<b>胶囊</b> 全圆　<b>标签</b> 浅底 + 同色描边 + 同色字<br>
+        <b>图标</b> 统一线性（<code>lucide_icons</code> ISC）　<b>浮标</b> 圆形渐变「快速下单」
+      </p>
+    </div>
+  </div>
+
+  <div class="sec"><h2>逐屏</h2><span>点开看大图</span></div>
+  <div class="grid three">
+    <div class="card"><h3>1 首页</h3>
+      <p>分部渐变卡（3 个：和平精英·手游通栏、三角洲·手游/端游）→ <b>祁连山官方</b>（2 张，带渐变封面 + 官方标）→ 保障说明。无服务分类胶囊、无多档俱乐部标签。</p>
+      <a href="I1-首页.png" target="_blank"><img class="shot" src="I1-首页.png" alt="首页" /></a></div>
+    <div class="card"><h3>2 找陪玩</h3>
+      <p><b>渐变圆头像 + 名字 + 介绍</b>（介绍由管理端填写）；行高随介绍长短自适应；顶部分部胶囊；和平精英下不出现端游。</p>
+      <a href="I2-找陪玩.png" target="_blank"><img class="shot" src="I2-找陪玩.png" alt="找陪玩" /></a></div>
+    <div class="card"><h3>3 排行榜</h3>
+      <p>子榜胶囊 + 渐变横幅 + 分部/日周筛选 + <b>名次 + 头像 + 名字 + 接单金额</b>（每行不写分部、不带标签）+ 吸底我的排名。</p>
+      <a href="I3-排行榜.png" target="_blank"><img class="shot" src="I3-排行榜.png" alt="排行榜" /></a></div>
+    <div class="card"><h3>4 玩家圈</h3>
+      <p>筛选胶囊 + 活动条 + 帖子卡（渐变圆头像 / 具体内容 / 话题 / 图片 / 互动）。</p>
+      <a href="I4-玩家圈.png" target="_blank"><img class="shot" src="I4-玩家圈.png" alt="玩家圈" /></a></div>
+    <div class="card"><h3>5 消息</h3>
+      <p>三类：<b>好友私聊 / 客服 / 打手</b>；卡片化会话 + 角色标签；系统通知与公告归「公告」；订单群进订单详情。</p>
+      <a href="I5-消息.png" target="_blank"><img class="shot" src="I5-消息.png" alt="消息" /></a></div>
+    <div class="card"><h3>6 我的</h3>
+      <p>渐变圆头像 + 名字/ID/等级/分部 → 积分卡 → 订单三状态 → 常用四项 → 会员成长进度。</p>
+      <a href="I6-我的.png" target="_blank"><img class="shot" src="I6-我的.png" alt="我的" /></a></div>
+  </div>
+
+  <div class="sec"><h2>结构规则（全部已落实）</h2><span>来源：负责人逐轮确认</span></div>
+  <table>
+    <tr><th>规则</th><th>落实情况</th></tr>
+    <tr><td>同一入口只出现一次</td><td><span class="ok">✅</span> 顶部＝首页/排行榜/玩家圈/公告（+搜索）；底部＝服务/订单/＋下单/消息/我的</td></tr>
+    <tr><td>不存在的东西不出现</td><td><span class="ok">✅</span> 和平精英只有手游 → 其榜下无「端游」选项，平台筛选按需出现</td></tr>
+    <tr><td>模块不混装</td><td><span class="ok">✅</span> 消息页只留 好友私聊 / 客服 / 打手</td></tr>
+    <tr><td>只有官方</td><td><span class="ok">✅</span> 首页只有「祁连山官方」，无推荐/关注俱乐部等多档标签</td></tr>
+    <tr><td>陪玩展示极简</td><td><span class="ok">✅</span> 只允许 名字 + 介绍；禁 明星陪玩/大神/单考/双考/空闲/忙碌/等级/评分/单价/下单人数/语音时长/标签/分部副标</td></tr>
+    <tr><td>反 AI 味（docs/21）</td><td><span class="ok">✅</span> 标签只给必须区分的项、左对齐、数据拟真（<code>2,847 单</code>、<code>9:00-次日 2:00 在线</code>、<code>不接急单</code>）；渐变仅作主题点缀（沿用 F 主题）</td></tr>
+  </table>
+
+  <div class="note" style="background:#ecfdf5;border-color:#a7f3d0;color:#065f46">
+    <b>✅ 本稿已实现并发布（2026-10-04 凌晨）</b><br>
+    · 设计 token 重写（青蓝主题 / 琥珀金 / 圆角分档）+ 组件层（卡片 / 标签 / 价格 / 雪山标 / 底部凸起＋ / 快捷面板）<br>
+    · 后端「分部」体系（3 分部，串联商品 / 订单 / 榜单 / 工作端）+ 管理端「分部管理」页<br>
+    · 老板端：服务页（按分部）/ 找陪玩（名字+介绍）/ 排行榜 / 消息三类分区 / 下单页平台选择<br>
+    · 工作端：接单大厅分部筛选　·　目录已按分部重新上架（7 分类 / 10 商品）<br>
+    · 云发布：<b>老板端 v1.8.3（码36）</b>、<b>工作端 v1.5.1（码28）</b>（旧版自动停用，可原位升级）<br>
+    · 端到端实测：下单 → 按分部看大厅 → 抢单 → 完成 → 结算 → 分部榜，<b>9 步全通过</b><br>
+    · 完整验收材料：<code>docs/23-验收报告.md</code>
+  </div>
+</main>
+
+<script>
+  document.querySelectorAll('.tools button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.tools button').forEach(function(b){ b.classList.remove('on'); });
+      btn.classList.add('on');
+      document.querySelectorAll('.grid').forEach(function(g){
+        g.classList.remove('one','two','three'); g.classList.add(btn.dataset.cols);
+      });
+    });
+  });
+</script>
+</body>
+</html>

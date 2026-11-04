@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>服务页「货架化」设计稿 · A 套（货架标题 = 文字标题 + 品牌色小标）</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#EDF1F6}
+body{font-family:"MiSans","Microsoft YaHei","PingFang SC",Helvetica,Arial,sans-serif;color:#14202E;
+     padding:24px;display:flex;flex-direction:column;gap:24px}
+h1{font-size:22px;font-weight:800;letter-spacing:.2px}
+h2{font-size:18px;font-weight:700}
+.lead{font-size:13px;line-height:1.75;color:#4A5A6E;max-width:1660px}
+.lead b{color:#1D5FA8;font-weight:700}
+.lead .sep{color:#CDD6E2;padding:0 8px}
+.panel{background:#fff;border:1px solid #CDD6E2;border-radius:14px;padding:16px 20px}
+.row{display:flex;gap:32px;align-items:flex-start;flex-wrap:nowrap}
+.stack{display:flex;flex-direction:column}
+.cap{margin-top:8px;width:390px;font-size:12px;line-height:1.6;color:#4A5A6E}
+.cap b{display:block;font-size:13px;font-weight:700;color:#14202E;margin-bottom:4px}
+.cap i{font-style:normal;color:#1D5FA8}
+.warn{margin-top:8px;width:390px;font-size:11.5px;line-height:1.6;color:#4A5A6E;background:#fff;border:1px solid #E3E8EF;border-radius:10px;padding:8px 12px}
+
+/* ---------- 手机壳（用 outline 做评审外框：不占布局，宣传图才能量到"壳宽 390 / 左边距 0"） ---------- */
+.phone{width:390px;flex:0 0 auto;position:relative;overflow:hidden;background:#F4F6F9;
+       border-radius:14px;outline:1px solid #CDD6E2;outline-offset:-1px}
+.phone.fixed{height:844px}
+.phone.auto{height:auto}
+.phone.fixed .tabwrap{position:absolute;left:0;right:0;bottom:0}
+
+/* ---------- 系统状态栏 ---------- */
+.sb{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.sb .t{font-size:12px;font-weight:600}
+.sb .r{display:flex;align-items:center;gap:4px}
+
+/* ---------- 顶部导航（只放底部没有的入口：排行榜 / 公告） ---------- */
+.nav{height:40px;display:flex;align-items:center;padding:0 16px}
+.nav .h{font-size:22px;font-weight:800}
+.nav .links{margin-left:16px;display:flex;align-items:center;gap:16px;margin-top:4px}
+.nav .link{display:flex;align-items:center;gap:4px;font-size:13px;color:#4A5A6E}
+
+/* ---------- 宣传图（通栏 · 直角 · 紧贴导航 0 间距） ---------- */
+.banner{height:144px;position:relative;overflow:hidden;background:#1D5FA8}
+.banner .cut{position:absolute;right:0;top:0;width:0;height:0;
+  border-top:64px solid rgba(255,255,255,.13);border-left:64px solid transparent}
+.banner .in{position:absolute;left:0;top:0;right:0;bottom:0;padding:20px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.banner .k{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:rgba(255,255,255,.8)}
+.banner .k .dash{width:16px;height:1px;background:rgba(255,255,255,.6)}
+.banner .tt{font-size:22px;font-weight:800;color:#fff}
+.banner .ds{font-size:12px;line-height:1.6;color:rgba(255,255,255,.9)}
+.banner .dots{position:absolute;left:20px;bottom:20px;display:flex;gap:4px}
+.banner .dot{width:4px;height:4px;border-radius:999px;background:rgba(255,255,255,.4)}
+.banner .dot.on{width:12px;background:#fff}
+.banner .go{position:absolute;right:20px;bottom:20px;height:28px;padding:0 12px;border:1px solid rgba(255,255,255,.6);
+  border-radius:999px;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#fff}
+
+/* ---------- 充值入口条 ---------- */
+.rech{margin-top:12px;height:44px;background:#fff;border-top:1px solid #E3E8EF;border-bottom:1px solid #E3E8EF;
+  display:flex;align-items:center;padding:0 16px}
+.rech .tx{margin-left:8px;display:flex;align-items:baseline;gap:8px;flex:1;min-width:0}
+.rech .n{font-size:13px;font-weight:600;white-space:nowrap}
+.rech .s{font-size:11px;color:#8A99AB;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- 货架 ---------- */
+.shelf{margin-top:20px}
+.sh{height:40px;display:flex;align-items:center;padding:0 16px}
+.sh .tt{font-size:18px;font-weight:700;letter-spacing:.2px}
+.sh .mk{margin-left:8px;height:20px;padding:0 8px;border-radius:4px;display:inline-flex;align-items:center;
+  font-size:11px;font-weight:600}
+.sh .mk.p{background:#E8EEF7;color:#1D5FA8}
+.sh .mk.c{background:#E3F0EF;color:#0E7C7B}
+.sh .mk.n{background:#F4F6F9;color:#4A5A6E;border:1px solid #E3E8EF}
+.sh .more{display:flex;align-items:center;gap:4px;font-size:13px;color:#4A5A6E}
+.sp{flex:1}
+.shelfbody{background:#fff;border-top:1px solid #E3E8EF}
+
+.item{height:92px;display:flex;align-items:flex-start;padding:12px 16px;border-bottom:1px solid #E3E8EF}
+.item .l{flex:1;min-width:0}
+.item .nm{font-size:15px;font-weight:600;line-height:20px;height:40px;overflow:hidden;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.item .meta{margin-top:4px;height:20px;display:flex;align-items:center;gap:4px;
+  font-size:12px;color:#4A5A6E;white-space:nowrap;overflow:hidden}
+.item .tag{height:18px;padding:0 8px;border-radius:4px;background:#E8EEF7;color:#1D5FA8;
+  font-size:11px;font-weight:600;display:inline-flex;align-items:center;flex:0 0 auto}
+.item .r{margin-left:12px;width:96px;flex:0 0 96px;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.item .pr{font-size:18px;font-weight:700;line-height:24px;color:#B4732A;font-variant-numeric:tabular-nums;white-space:nowrap}
+.item .pr .un{font-size:11px;font-weight:400}
+.item .buy{width:88px;height:32px;border:1px solid #1D5FA8;border-radius:10px;background:transparent;
+  color:#1D5FA8;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center}
+
+.erow{min-height:88px;display:flex;align-items:center;padding:16px;border-bottom:1px solid #E3E8EF;background:#fff}
+.erow .etx{margin-left:12px;flex:1;min-width:0}
+.erow .et{font-size:15px;font-weight:600;color:#4A5A6E}
+.erow .es{margin-top:4px;font-size:12px;color:#8A99AB}
+
+/* ---------- 选择分部（通栏主卡） ---------- */
+.sec{margin-top:20px}
+.dcard{margin:0 16px;height:88px;background:#fff;border:1px solid #E3E8EF;border-radius:14px;padding:16px;
+  display:flex;align-items:center}
+.dlogo{width:56px;height:56px;border-radius:10px;background:#E8EEF7;display:flex;align-items:center;justify-content:center}
+.dinfo{margin-left:12px;flex:1;min-width:0}
+.dname{font-size:18px;font-weight:700}
+.dsub{margin-top:4px;font-size:12px;color:#4A5A6E}
+.dgo{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#1D5FA8}
+
+/* ---------- 官方自营 HeroCard（墨蓝实色 + 斜切角 + 细网格） ---------- */
+.hero{margin:0 16px;position:relative;overflow:hidden;background:#0F2440;border-radius:14px;
+  padding:16px;color:#fff}
+.hero .cut{position:absolute;right:0;bottom:0;width:0;height:0;
+  border-bottom:48px solid rgba(255,255,255,.1);border-left:48px solid transparent}
+.hero .mesh{position:absolute;left:0;top:0}
+.hero .k{position:relative;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:rgba(255,255,255,.7)}
+.hero .nm{position:relative;margin-top:8px;font-size:18px;font-weight:700}
+.hero .ds{position:relative;margin-top:8px;font-size:12px;line-height:18px;color:rgba(255,255,255,.78)}
+.hero .arw{position:absolute;right:16px;top:52px}
+
+.guarantee{margin-top:16px;padding:0 16px 24px;font-size:10.5px;line-height:20px;color:#8A99AB}
+.guarantee .l{display:flex;align-items:center;gap:4px}
+
+/* ---------- 顶部欢迎文案 + 在线数（现状保留，原文不动：services_page.dart:48-49） ---------- */
+.hl{margin-top:8px;padding:0 16px;display:flex;align-items:flex-start;gap:8px}
+.hl .tx{flex:1;min-width:0;font-size:12px;line-height:18px;color:#4A5A6E}
+.hl .on{flex:0 0 auto;font-size:12px;line-height:18px;color:#8A99AB}
+
+/* ---------- 投诉 / 打赏 / 退款（现状保留；改为通栏白条 + 发丝线，与列表语言一致） ---------- */
+.sup{margin-top:20px;background:#fff;border-top:1px solid #E3E8EF;border-bottom:1px solid #E3E8EF;height:56px;display:flex;align-items:center}
+.sup .cell{flex:1;height:56px;display:flex;align-items:center;justify-content:center;gap:4px}
+.sup .cell span{font-size:13px;font-weight:600;color:#14202E}
+.sup .vsep{width:1px;height:22px;background:#E3E8EF}
+
+/* ---------- 底部导航（服务 · 订单 · ＋下单 · 消息 · 我的） ---------- */
+.tabwrap{background:#fff;border-top:1px solid #E3E8EF}
+.tabbar{height:62px;display:flex;align-items:center}
+.tb{flex:1;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.tbl{font-size:11px;color:#8A99AB}
+.tbl.on{color:#1D5FA8;font-weight:700}
+.tb.c{position:relative}
+.cbtn{width:48px;height:48px;border-radius:999px;background:#1D5FA8;display:flex;align-items:center;justify-content:center;
+  position:relative;top:-16px}
+.tbl.c{color:#1D5FA8;font-weight:600}
+.home{height:24px;display:flex;align-items:center;justify-content:center}
+.home i{width:96px;height:4px;border-radius:999px;background:#CDD6E2}
+
+/* ---------- 骨架块（静态灰块；生产用 shimmer 时其渐变只做遮罩，不作主视觉） ---------- */
+.sk{background:#E3E8EF;border-radius:4px}
+.sk.b{background:#E3E8EF;border-radius:10px}
+
+/* ---------- 对照页 ---------- */
+.cmp{display:flex;gap:24px;align-items:flex-start}
+.colL{flex:0 0 760px;display:flex;flex-direction:column;gap:16px}
+.colR{flex:0 0 390px;display:flex;flex-direction:column;gap:16px}
+.box{border:1px solid #CDD6E2;border-radius:10px;padding:12px;background:#fff}
+.box.h{background:#E8EEF7;border-color:#E8EEF7}
+.box .bt{font-size:13px;font-weight:700}
+.box .bd{font-size:12px;line-height:1.7;color:#4A5A6E;margin-top:4px}
+.ind{margin-left:16px;border-left:1px solid #CDD6E2;padding-left:12px;display:flex;flex-direction:column;gap:8px;margin-top:8px}
+pre{font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;line-height:1.7;color:#14202E;white-space:pre-wrap}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #CDD6E2;border-radius:14px;overflow:hidden}
+th,td{border-bottom:1px solid #E3E8EF;padding:8px 12px;text-align:left;vertical-align:top;font-size:12px;line-height:1.7}
+th{background:#F4F6F9;font-size:12px;font-weight:700}
+td.y{color:#0E7C7B;font-weight:700;white-space:nowrap}
+td.n{color:#4A5A6E;font-weight:700;white-space:nowrap}
+td.p{color:#1D5FA8;font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+code{font-family:"Cascadia Mono",Consolas,monospace;font-size:11.5px;background:#F4F6F9;border:1px solid #E3E8EF;border-radius:4px;padding:0 4px}
+</style>
+</head>
+<body>
+<h1>服务页「货架化」设计稿 · A 套（货架标题 = 文字标题 + 品牌色小标）</h1>
+<div class="lead">
+    <b>目标</b>：把老板端「服务页（首页）」按竞品「货架结构」重做 —— 三个货架（为您推荐 / 最近上新 / 热门点单）成为首页主体。
+    <span class="sep">|</span><b>数据</b>：全部取真实接口返回（<code>/public/products?divisionId=1</code> 在架 8 个商品 · <code>/divisions/grouped</code> 和平精英 · 手游 · <code>/public/clubs</code> 官方 1 个馆）。
+    <span class="sep">|</span><b>红线</b>：宣传图通栏直角紧贴导航（0 间距）· 白底为主 · 4dp 网格 · 同一入口只出现一次 · 不存在的东西不出现。
+    <span class="sep">|</span><b>标题做法</b>：本页为 <i>A 套 · 文字标题 + 品牌色小标（推荐）</i>。</div>
+<div class="row">
+  <div class="stack"><div class="phone fixed" data-screen="first">
+<div class="sb">
+  <div class="t">09:41</div>
+  <div class="r">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" ><path d="M2 14h2v4H2zM6 11h2v7H6zM10 8h2v10h-2zM14 5h2v13h-2z" fill="currentColor" stroke="none"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 9a12 12 0 0 1 14 0M6 12a8 8 0 0 1 8 0M9 15a4 4 0 0 1 2 0M11 18h.01"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/></svg>
+  </div>
+</div>
+<div class="nav">
+  <div class="h">服务</div>
+  <div class="links">
+    <div class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 20h16M6 20v-7M12 20V6M18 20v-4"/></svg><span>排行榜</span></div>
+    <div class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M18 8a6 6 0 1 0-12 0c0 7-2 8-2 8h16s-2-1-2-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg><span>公告</span></div>
+  </div>
+</div>
+<div class="banner">
+  <div class="cut"></div>
+  <div class="in">
+    <div class="k"><span class="dash"></span><span>地铁护航 · 专区上新</span></div>
+    <div class="tt">和平精英 地铁护航</div>
+    <div class="ds">9.9 新人体验单 · 保 400w 不卡保底</div>
+  </div>
+  <div class="dots"><i class="dot on"></i><i class="dot"></i><i class="dot"></i></div>
+  <div class="go"><span>去看看</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+<div class="rech">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 7h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11"/><path d="M16 13h2"/></svg>
+  <div class="tx"><span class="n">充值余额</span><span class="s">线下扫码付款 · 人工核对后发放</span></div>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg>
+</div>
+<div class="hl">
+  <div class="tx">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+  <div class="on">13 位在线</div>
+</div><div class="shelf">
+    
+<div class="sh">
+  <div class="tt">为您推荐</div>
+  <span class="mk p">平台主推</span>
+  <div class="sp"></div>
+  <div class="more"><span>查看更多</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+    <div class="shelfbody">
+<div class="item">
+  <div class="l">
+    <div class="nm">基础保底700w和凌云单挑 打赢加1000w打输不加</div>
+    <div class="meta"><span class="tag">董事长推荐</span><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥28.88<span class="un">/局</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">9.9新人体验单保400w不卡保底（送7套＋aug）</div>
+    <div class="meta"><span class="tag">董事长推荐</span><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥9.90<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div></div>
+  </div><div class="shelf">
+    
+<div class="sh">
+  <div class="tt">最近上新</div>
+  <span class="mk c">新上架</span>
+  <div class="sp"></div>
+  <div class="more"><span>查看更多</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+    <div class="shelfbody">
+<div class="item">
+  <div class="l">
+    <div class="nm">44.6博弈鹰雕单（出反现小金人+金aug或雪隼）不出保1200w[老板必须全程录屏不录开出不算]</div>
+    <div class="meta"><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥44.60<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">36.6博弈宝冠单（出返现小金人+金aug）不出保888w[老板必须全程录屏不录开出不算]</div>
+    <div class="meta"><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥36.60<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">233保1亿（送小金人+金Aug/雪隼二选一）</div>
+    <div class="meta"><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥233.00<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div></div>
+  </div><div class="shelf">
+    
+<div class="sh">
+  <div class="tt">热门点单</div>
+  <span class="mk n">销量优先</span>
+  <div class="sp"></div>
+  <div class="more"><span>查看更多</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+    <div class="shelfbody">
+<div class="item">
+  <div class="l">
+    <div class="nm">18.8保500w（送7级套+aug）</div>
+    <div class="meta"><span>和平精英 · 手游 · 已售 59 单</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥18.80<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">9.9新人体验单保400w不卡保底（送7套＋aug）</div>
+    <div class="meta"><span class="tag">董事长推荐</span><span>和平精英 · 手游 · 已售 19 单</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥9.90<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">基础保底700w和凌云单挑 打赢加1000w打输不加</div>
+    <div class="meta"><span class="tag">董事长推荐</span><span>和平精英 · 手游 · 已售 5 单</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥28.88<span class="un">/局</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div></div>
+  </div>
+<div class="sec">
+  <div class="sh"><div class="tt">选择分部</div></div>
+  <div class="dcard">
+    <div class="dlogo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h1v-6H5"/><path d="M20 14v4a2 2 0 0 1-2 2h-1v-6h2"/></svg></div>
+    <div class="dinfo">
+      <div class="dname">和平精英 · 手游</div>
+      <div class="dsub">打手全天在线 · 13 位在线</div>
+    </div>
+    <div class="dgo"><span>进入</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+  </div>
+</div>
+<div class="sec">
+  <div class="sh"><div class="tt">祁连山官方</div><span class="mk n">平台直营 · 无第三方</span></div>
+  <div class="hero">
+    <svg class="mesh" width="358" height="132" viewBox="0 0 358 132">
+      <g stroke="#FFFFFF" stroke-opacity="0.045" stroke-width="1">
+        <path d="M0 16h358M0 32h358M0 48h358M0 64h358M0 80h358M0 96h358M0 112h358M0 128h358"/>
+        <path d="M16 0v132M32 0v132M48 0v132M64 0v132M80 0v132M96 0v132M112 0v132M128 0v132M144 0v132M160 0v132M176 0v132M192 0v132M208 0v132M224 0v132M240 0v132M256 0v132M272 0v132M288 0v132M304 0v132M320 0v132M336 0v132"/>
+      </g>
+    </svg>
+    <div class="cut"></div>
+    <div class="k"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span>官方自营 · 直营分部</span></div>
+    <div class="nm">祁连山电竞 · 和平精英分部</div>
+    <div class="ds">和平精英地铁护航上架 欢迎各位板板来体验 后期还会上线更多的单来给板板们体验</div>
+    <div class="arw"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+  </div>
+</div>
+<div class="sup">
+  <div class="cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z"/><path d="M12 11v5M12 8h.01"/></svg><span>投诉</span></div>
+  <div class="vsep"></div>
+  <div class="cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 7h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11"/><path d="M16 13h2"/></svg><span>打赏</span></div>
+  <div class="vsep"></div>
+  <div class="cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>退款</span></div>
+</div>
+<div class="guarantee">
+  <div class="l"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z"/><path d="M12 8v4l3 2"/></svg><span>先服务后结算 · 不满意可申诉 · 余额由平台发放</span></div>
+  <div class="l" style="margin-top:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg><span>当前在架商品 8 个 · 未配图商品按文字卡片展示</span></div>
+</div>
+<div class="tabwrap">
+  <div class="tabbar">
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h1v-6H5"/><path d="M20 14v4a2 2 0 0 1-2 2h-1v-6h2"/></svg><span class="tbl on">服务</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span class="tbl">订单</span></div>
+    <div class="tb c"><div class="cbtn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 5v14M5 12h14"/></svg></div><span class="tbl c">下单</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 5h16v11H8l-4 3z"/></svg><span class="tbl">消息</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span class="tbl">我的</span></div>
+  </div>
+  <div class="home"><i></i></div>
+</div></div><div class="cap"><b>① 首屏（不滚动）</b>宣传图紧贴导航（间距 0）→ 充值条（12）→ 欢迎文案 + 在线数（8）→ 货架 1 全 2 行 → 货架 2 头 + 第 1 行；底栏固定，内容在其下方自然截断（示意"还能滚动"）。</div><div class="warn">注意：宣传图由管理端「宣传图轮播」配置（<code>/public/banners</code>）。实测当前返回空数组 → 线上此位不渲染；本图示意"已配置态"，否则无法评审"紧贴导航 0 间距"。</div></div><div class="stack"><div class="phone auto" data-screen="full">
+<div class="sb">
+  <div class="t">09:41</div>
+  <div class="r">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" ><path d="M2 14h2v4H2zM6 11h2v7H6zM10 8h2v10h-2zM14 5h2v13h-2z" fill="currentColor" stroke="none"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 9a12 12 0 0 1 14 0M6 12a8 8 0 0 1 8 0M9 15a4 4 0 0 1 2 0M11 18h.01"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/></svg>
+  </div>
+</div>
+<div class="nav">
+  <div class="h">服务</div>
+  <div class="links">
+    <div class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 20h16M6 20v-7M12 20V6M18 20v-4"/></svg><span>排行榜</span></div>
+    <div class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M18 8a6 6 0 1 0-12 0c0 7-2 8-2 8h16s-2-1-2-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg><span>公告</span></div>
+  </div>
+</div>
+<div class="banner">
+  <div class="cut"></div>
+  <div class="in">
+    <div class="k"><span class="dash"></span><span>地铁护航 · 专区上新</span></div>
+    <div class="tt">和平精英 地铁护航</div>
+    <div class="ds">9.9 新人体验单 · 保 400w 不卡保底</div>
+  </div>
+  <div class="dots"><i class="dot on"></i><i class="dot"></i><i class="dot"></i></div>
+  <div class="go"><span>去看看</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+<div class="rech">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 7h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11"/><path d="M16 13h2"/></svg>
+  <div class="tx"><span class="n">充值余额</span><span class="s">线下扫码付款 · 人工核对后发放</span></div>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg>
+</div>
+<div class="hl">
+  <div class="tx">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+  <div class="on">13 位在线</div>
+</div><div class="shelf">
+    
+<div class="sh">
+  <div class="tt">为您推荐</div>
+  <span class="mk p">平台主推</span>
+  <div class="sp"></div>
+  <div class="more"><span>查看更多</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+    <div class="shelfbody">
+<div class="item">
+  <div class="l">
+    <div class="nm">基础保底700w和凌云单挑 打赢加1000w打输不加</div>
+    <div class="meta"><span class="tag">董事长推荐</span><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥28.88<span class="un">/局</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">9.9新人体验单保400w不卡保底（送7套＋aug）</div>
+    <div class="meta"><span class="tag">董事长推荐</span><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥9.90<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div></div>
+  </div><div class="shelf">
+    
+<div class="sh">
+  <div class="tt">最近上新</div>
+  <span class="mk c">新上架</span>
+  <div class="sp"></div>
+  <div class="more"><span>查看更多</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+    <div class="shelfbody">
+<div class="item">
+  <div class="l">
+    <div class="nm">44.6博弈鹰雕单（出反现小金人+金aug或雪隼）不出保1200w[老板必须全程录屏不录开出不算]</div>
+    <div class="meta"><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥44.60<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">36.6博弈宝冠单（出返现小金人+金aug）不出保888w[老板必须全程录屏不录开出不算]</div>
+    <div class="meta"><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥36.60<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">233保1亿（送小金人+金Aug/雪隼二选一）</div>
+    <div class="meta"><span>和平精英 · 手游 · 30 分钟</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥233.00<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div></div>
+  </div><div class="shelf">
+    
+<div class="sh">
+  <div class="tt">热门点单</div>
+  <span class="mk n">销量优先</span>
+  <div class="sp"></div>
+  <div class="more"><span>查看更多</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+</div>
+    <div class="shelfbody">
+<div class="item">
+  <div class="l">
+    <div class="nm">18.8保500w（送7级套+aug）</div>
+    <div class="meta"><span>和平精英 · 手游 · 已售 59 单</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥18.80<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">9.9新人体验单保400w不卡保底（送7套＋aug）</div>
+    <div class="meta"><span class="tag">董事长推荐</span><span>和平精英 · 手游 · 已售 19 单</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥9.90<span class="un">/单</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="nm">基础保底700w和凌云单挑 打赢加1000w打输不加</div>
+    <div class="meta"><span class="tag">董事长推荐</span><span>和平精英 · 手游 · 已售 5 单</span></div>
+  </div>
+  <div class="r">
+    <div class="pr">¥28.88<span class="un">/局</span></div>
+    <div class="buy">下单</div>
+  </div>
+</div></div>
+  </div>
+<div class="sec">
+  <div class="sh"><div class="tt">选择分部</div></div>
+  <div class="dcard">
+    <div class="dlogo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h1v-6H5"/><path d="M20 14v4a2 2 0 0 1-2 2h-1v-6h2"/></svg></div>
+    <div class="dinfo">
+      <div class="dname">和平精英 · 手游</div>
+      <div class="dsub">打手全天在线 · 13 位在线</div>
+    </div>
+    <div class="dgo"><span>进入</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+  </div>
+</div>
+<div class="sec">
+  <div class="sh"><div class="tt">祁连山官方</div><span class="mk n">平台直营 · 无第三方</span></div>
+  <div class="hero">
+    <svg class="mesh" width="358" height="132" viewBox="0 0 358 132">
+      <g stroke="#FFFFFF" stroke-opacity="0.045" stroke-width="1">
+        <path d="M0 16h358M0 32h358M0 48h358M0 64h358M0 80h358M0 96h358M0 112h358M0 128h358"/>
+        <path d="M16 0v132M32 0v132M48 0v132M64 0v132M80 0v132M96 0v132M112 0v132M128 0v132M144 0v132M160 0v132M176 0v132M192 0v132M208 0v132M224 0v132M240 0v132M256 0v132M272 0v132M288 0v132M304 0v132M320 0v132M336 0v132"/>
+      </g>
+    </svg>
+    <div class="cut"></div>
+    <div class="k"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span>官方自营 · 直营分部</span></div>
+    <div class="nm">祁连山电竞 · 和平精英分部</div>
+    <div class="ds">和平精英地铁护航上架 欢迎各位板板来体验 后期还会上线更多的单来给板板们体验</div>
+    <div class="arw"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+  </div>
+</div>
+<div class="sup">
+  <div class="cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z"/><path d="M12 11v5M12 8h.01"/></svg><span>投诉</span></div>
+  <div class="vsep"></div>
+  <div class="cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 7h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11"/><path d="M16 13h2"/></svg><span>打赏</span></div>
+  <div class="vsep"></div>
+  <div class="cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>退款</span></div>
+</div>
+<div class="guarantee">
+  <div class="l"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z"/><path d="M12 8v4l3 2"/></svg><span>先服务后结算 · 不满意可申诉 · 余额由平台发放</span></div>
+  <div class="l" style="margin-top:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg><span>当前在架商品 8 个 · 未配图商品按文字卡片展示</span></div>
+</div>
+<div class="tabwrap">
+  <div class="tabbar">
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h1v-6H5"/><path d="M20 14v4a2 2 0 0 1-2 2h-1v-6h2"/></svg><span class="tbl on">服务</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span class="tbl">订单</span></div>
+    <div class="tb c"><div class="cbtn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 5v14M5 12h14"/></svg></div><span class="tbl c">下单</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 5h16v11H8l-4 3z"/></svg><span class="tbl">消息</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span class="tbl">我的</span></div>
+  </div>
+  <div class="home"><i></i></div>
+</div></div><div class="cap"><b>② 滚动后完整页</b>三货架（2 / 3 / 3 行）→ 选择分部（通栏主卡）→ 祁连山官方（HeroCard）→ 投诉 / 打赏 / 退款（现状三入口保留）→ 保障说明 → 底栏。</div><div class="warn">注意：跨货架重复曝光是真实结果：137 / 168 同时出现在「为您推荐」与「热门点单」（推荐按标记、热门按销量，两个口径各自成立）。</div></div><div class="stack"><div class="phone fixed" data-screen="skeleton">
+<div class="sb">
+  <div class="t">09:41</div>
+  <div class="r">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" ><path d="M2 14h2v4H2zM6 11h2v7H6zM10 8h2v10h-2zM14 5h2v13h-2z" fill="currentColor" stroke="none"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 9a12 12 0 0 1 14 0M6 12a8 8 0 0 1 8 0M9 15a4 4 0 0 1 2 0M11 18h.01"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/></svg>
+  </div>
+</div>
+<div class="nav">
+  <div class="h">服务</div>
+  <div class="links">
+    <div class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 20h16M6 20v-7M12 20V6M18 20v-4"/></svg><span>排行榜</span></div>
+    <div class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M18 8a6 6 0 1 0-12 0c0 7-2 8-2 8h16s-2-1-2-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg><span>公告</span></div>
+  </div>
+</div>
+    <div class="sk" style="height:144px;border-radius:0"></div>
+    <div class="rech"><div class="sk" style="width:20px;height:20px"></div><div class="sk" style="width:220px;height:12px;margin-left:8px"></div></div>
+    
+<div class="hl">
+  <div class="tx">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+  
+</div>
+    <div class="shelf">
+    <div class="sh">
+      <div class="sk b" style="width:72px;height:12px"></div>
+      <div class="sp"></div>
+      <div class="sk" style="width:48px;height:12px"></div>
+    </div><div class="shelfbody">
+<div class="item">
+  <div class="l">
+    <div class="sk" style="width:236px;height:12px"></div>
+    <div class="sk" style="width:148px;height:12px;margin-top:4px"></div>
+    <div class="sk" style="width:196px;height:10px;margin-top:12px"></div>
+  </div>
+  <div class="r">
+    <div class="sk" style="width:64px;height:16px"></div>
+    <div class="sk b" style="width:88px;height:32px"></div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="sk" style="width:236px;height:12px"></div>
+    <div class="sk" style="width:148px;height:12px;margin-top:4px"></div>
+    <div class="sk" style="width:196px;height:10px;margin-top:12px"></div>
+  </div>
+  <div class="r">
+    <div class="sk" style="width:64px;height:16px"></div>
+    <div class="sk b" style="width:88px;height:32px"></div>
+  </div>
+</div>
+<div class="item">
+  <div class="l">
+    <div class="sk" style="width:236px;height:12px"></div>
+    <div class="sk" style="width:148px;height:12px;margin-top:4px"></div>
+    <div class="sk" style="width:196px;height:10px;margin-top:12px"></div>
+  </div>
+  <div class="r">
+    <div class="sk" style="width:64px;height:16px"></div>
+    <div class="sk b" style="width:88px;height:32px"></div>
+  </div>
+</div></div></div>
+    <div class="shelf">
+    <div class="sh">
+      <div class="sk b" style="width:72px;height:12px"></div>
+      <div class="sp"></div>
+      <div class="sk" style="width:48px;height:12px"></div>
+    </div><div class="shelfbody">
+<div class="item">
+  <div class="l">
+    <div class="sk" style="width:236px;height:12px"></div>
+    <div class="sk" style="width:148px;height:12px;margin-top:4px"></div>
+    <div class="sk" style="width:196px;height:10px;margin-top:12px"></div>
+  </div>
+  <div class="r">
+    <div class="sk" style="width:64px;height:16px"></div>
+    <div class="sk b" style="width:88px;height:32px"></div>
+  </div>
+</div></div></div>
+<div class="tabwrap">
+  <div class="tabbar">
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h1v-6H5"/><path d="M20 14v4a2 2 0 0 1-2 2h-1v-6h2"/></svg><span class="tbl on">服务</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span class="tbl">订单</span></div>
+    <div class="tb c"><div class="cbtn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 5v14M5 12h14"/></svg></div><span class="tbl c">下单</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 5h16v11H8l-4 3z"/></svg><span class="tbl">消息</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span class="tbl">我的</span></div>
+  </div>
+  <div class="home"><i></i></div>
+</div></div><div class="cap"><b>③ 加载骨架态</b>宣传图 / 充值条 / 货架头 / 卡片行全部灰块占位；导航与欢迎文案为硬编码文案（不依赖接口），保持真实内容（不做无意义的全灰屏）。</div><div class="warn">注意：骨架用静态灰块（渐变面积 = 0，符合 docs/32 §一 铁律 1）。生产用 shimmer 时其渐变只作遮罩扫光，不作主视觉。</div></div><div class="stack"><div class="phone auto" data-screen="empty">
+<div class="sb">
+  <div class="t">09:41</div>
+  <div class="r">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" ><path d="M2 14h2v4H2zM6 11h2v7H6zM10 8h2v10h-2zM14 5h2v13h-2z" fill="currentColor" stroke="none"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 9a12 12 0 0 1 14 0M6 12a8 8 0 0 1 8 0M9 15a4 4 0 0 1 2 0M11 18h.01"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14202E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" ><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M20 10v4"/></svg>
+  </div>
+</div>
+<div class="nav">
+  <div class="h">服务</div>
+  <div class="links">
+    <div class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 20h16M6 20v-7M12 20V6M18 20v-4"/></svg><span>排行榜</span></div>
+    <div class="link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M18 8a6 6 0 1 0-12 0c0 7-2 8-2 8h16s-2-1-2-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg><span>公告</span></div>
+  </div>
+</div>
+<div class="rech">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 7h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11"/><path d="M16 13h2"/></svg>
+  <div class="tx"><span class="n">充值余额</span><span class="s">线下扫码付款 · 人工核对后发放</span></div>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg>
+</div>
+<div class="hl">
+  <div class="tx">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+  
+</div><div class="shelf">
+      
+<div class="sh">
+  <div class="tt">为您推荐</div>
+  <span class="mk p">平台主推</span>
+  <div class="sp"></div>
+  
+</div>
+      <div class="shelfbody">
+<div class="erow">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg>
+  <div class="etx">
+    <div class="et">暂无推荐商品</div>
+    <div class="es">平台还没配主推单，下拉可刷新</div>
+  </div>
+</div></div>
+    </div><div class="shelf">
+      
+<div class="sh">
+  <div class="tt">最近上新</div>
+  <span class="mk c">新上架</span>
+  <div class="sp"></div>
+  
+</div>
+      <div class="shelfbody">
+<div class="erow">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg>
+  <div class="etx">
+    <div class="et">暂无新上架商品</div>
+    <div class="es">最近 7 天没有新增上架</div>
+  </div>
+</div></div>
+    </div><div class="shelf">
+      
+<div class="sh">
+  <div class="tt">热门点单</div>
+  <span class="mk n">销量优先</span>
+  <div class="sp"></div>
+  
+</div>
+      <div class="shelfbody">
+<div class="erow">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg>
+  <div class="etx">
+    <div class="et">暂无热门商品</div>
+    <div class="es">还没有产生销量，销量排序为空</div>
+  </div>
+</div></div>
+    </div>
+<div class="sec">
+  <div class="sh"><div class="tt">选择分部</div></div>
+  <div class="dcard">
+    <div class="dlogo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h1v-6H5"/><path d="M20 14v4a2 2 0 0 1-2 2h-1v-6h2"/></svg></div>
+    <div class="dinfo">
+      <div class="dname">和平精英 · 手游</div>
+      <div class="dsub">打手全天在线 · 13 位在线</div>
+    </div>
+    <div class="dgo"><span>进入</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+  </div>
+</div>
+<div class="sec">
+  <div class="sh"><div class="tt">祁连山官方</div><span class="mk n">平台直营 · 无第三方</span></div>
+  <div class="hero">
+    <svg class="mesh" width="358" height="132" viewBox="0 0 358 132">
+      <g stroke="#FFFFFF" stroke-opacity="0.045" stroke-width="1">
+        <path d="M0 16h358M0 32h358M0 48h358M0 64h358M0 80h358M0 96h358M0 112h358M0 128h358"/>
+        <path d="M16 0v132M32 0v132M48 0v132M64 0v132M80 0v132M96 0v132M112 0v132M128 0v132M144 0v132M160 0v132M176 0v132M192 0v132M208 0v132M224 0v132M240 0v132M256 0v132M272 0v132M288 0v132M304 0v132M320 0v132M336 0v132"/>
+      </g>
+    </svg>
+    <div class="cut"></div>
+    <div class="k"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span>官方自营 · 直营分部</span></div>
+    <div class="nm">祁连山电竞 · 和平精英分部</div>
+    <div class="ds">和平精英地铁护航上架 欢迎各位板板来体验 后期还会上线更多的单来给板板们体验</div>
+    <div class="arw"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 6l6 6-6 6"/></svg></div>
+  </div>
+</div>
+<div class="sup">
+  <div class="cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z"/><path d="M12 11v5M12 8h.01"/></svg><span>投诉</span></div>
+  <div class="vsep"></div>
+  <div class="cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 7h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11"/><path d="M16 13h2"/></svg><span>打赏</span></div>
+  <div class="vsep"></div>
+  <div class="cell"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span>退款</span></div>
+</div>
+<div class="guarantee">
+  <div class="l"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z"/><path d="M12 8v4l3 2"/></svg><span>先服务后结算 · 不满意可申诉 · 余额由平台发放</span></div>
+  <div class="l" style="margin-top:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg><span>当前在架商品 0 个 · 下拉可刷新</span></div>
+</div>
+<div class="tabwrap">
+  <div class="tabbar">
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D5FA8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h1v-6H5"/><path d="M20 14v4a2 2 0 0 1-2 2h-1v-6h2"/></svg><span class="tbl on">服务</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span class="tbl">订单</span></div>
+    <div class="tb c"><div class="cbtn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 5v14M5 12h14"/></svg></div><span class="tbl c">下单</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M4 5h16v11H8l-4 3z"/></svg><span class="tbl">消息</span></div>
+    <div class="tb"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span class="tbl">我的</span></div>
+  </div>
+  <div class="home"><i></i></div>
+</div></div><div class="cap"><b>④ 空态（三货架都无数据）</b>宣传图未配 → 不渲染（导航底距 12）；三货架只留标题 + 空态行（写明原因，不给重复入口）；分部 / 官方 / 投诉打赏退款 / 保障照常 → 页面永不空白。</div><div class="warn">注意：空态行不渲染「查看更多」（"查看更多"指向空列表 = 死入口，违反「不存在的东西不出现」）。</div></div>
+</div>
+<div class="panel"><div class="lead">
+    <b>自检（脚本实测，见 shots.json）</b>：渐变面积 0 · 阴影 0 处 · emoji 0 个 · 字号种类 ⊆ {22,18,15,13,12,11,10.5} · 金额违规 0 · 「积分」0 次 · 卡片档位 ContentCard + ListCard + HeroCard(每页 ≤1) · 间距落格率 100%（非零间距只用 4/8/12/16/20/24/32/48/64）。
+    <span class="sep">|</span><b>现状两块保留、只挪位置</b>：欢迎文案（<code>services_page.dart:48-49</code>，一字未改）+ 投诉 / 打赏 / 退款（<code>444-464</code>）——货架化后从"宣传图正下方"下移到官方馆下方，把首屏让给货架；三个入口全 App 仍各只出现一次。
+    <span class="sep">|</span><b>不画的东西</b>：右下「快速下单」浮标（与底栏凸起「＋下单」重复，建议删除，见对照页）· 竞品的四徽章 · 语聊房 · 玩家圈 · 山峰意象 · 任何渐变与阴影。</div></div>
+</body>
+</html>

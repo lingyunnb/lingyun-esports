@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>连不上服务端</title>
+    <link rel="stylesheet" href="./shell.css" />
+  </head>
+  <body>
+    <div class="card">
+      <div class="brand">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+          <path d="M1.5 20.5 L8.4 7.6 L12.3 14.2 L15.4 9.4 L24.5 20.5 Z" fill="#2563EB" />
+          <path d="M8.4 7.6 L11.2 12.6 L9.9 13.6 L8.1 11.2 Z" fill="#FFFFFF" opacity="0.92" />
+        </svg>
+        <span class="brand-name">祁连山电竞</span>
+        <span class="brand-sub">管理端 桌面版 <span id="version"></span></span>
+      </div>
+
+      <h1 id="headline">连不上服务端，请先启动服务</h1>
+      <p class="lead" id="lead">
+        管理端页面由后端直接托管（<code>http://127.0.0.1:3100</code>）。本机没启动服务、公网隧道也没连上时，
+        桌面端就没有页面可加载 —— 请先启动服务，再点「重试」。
+      </p>
+
+      <ol class="steps">
+        <li>启动依赖与服务：<code>npm run infra:start</code></li>
+        <li>启动后端：<code>pm2 start fish-server</code>（或 <code>cd server &amp;&amp; npm run start:dev</code>）</li>
+        <li>回到这里点「重试」；换网络/换机器时，壳会按顺序自动重找地址</li>
+      </ol>
+
+      <div class="actions">
+        <button class="primary" id="retry" type="button">重试</button>
+        <span class="hint" id="hint">正在探活…</span>
+      </div>
+
+      <div class="diag">
+        <div class="diag-title">本轮探活记录（已按 ① 本机 → ② Gitee 引导 → ③ 内置候选 顺序试过）</div>
+        <ul class="attempts" id="attempts"></ul>
+      </div>
+    </div>
+    <script src="./error.js"></script>
+  </body>
+</html>

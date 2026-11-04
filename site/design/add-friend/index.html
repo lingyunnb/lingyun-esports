@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>添加好友界面重构 · 3 套设计稿 + 现状对比 + 接口映射（审批页）</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#E9EDF3;color:#0F172A;font-family:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif;font-size:14px;line-height:1.6;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1330px;margin:0 auto;padding:30px 26px 70px}
+h1{font-size:26px;font-weight:800;margin:0 0 10px}
+h2{font-size:19px;font-weight:800;margin:44px 0 12px;padding-top:22px;border-top:1px solid #D8DFEA}
+h3{font-size:15px;font-weight:700;margin:22px 0 8px}
+p,li{font-size:13px;color:#475569;line-height:1.85}
+b,strong{color:#0F172A}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12px;background:#fff;border:1px solid #E2E8F0;border-radius:4px;padding:1px 5px;color:#1D4ED8}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #E2E8F0;border-radius:10px;overflow:hidden;
+  margin:10px 0 4px;table-layout:fixed}
+th,td{border-bottom:1px solid #EEF1F6;padding:9px 11px;font-size:12.5px;vertical-align:top;text-align:left;line-height:1.7}
+th{background:#F7F9FC;font-weight:700;color:#0F172A}
+tr:last-child th,tr:last-child td{border-bottom:0}
+td.yes{color:#15803D}td.no{color:#B91C1C}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;padding:1px 6px;border:1px solid}
+.tag.hi{border-color:#F5C6C6;background:#FEF2F2;color:#B91C1C}
+.tag.mid{border-color:#FCD9A8;background:#FEF7EC;color:#B45309}
+.tag.lo{border-color:#D6DEEC;background:#F3F6FB;color:#475569}
+.tag.pick{border-color:#BBE5C8;background:#F1FBF4;color:#15803D}
+.cards{display:flex;gap:18px;flex-wrap:wrap}
+.card{flex:1 1 300px;background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:16px}
+.card.pick{border-color:#2563EB;border-width:2px;padding:15px}
+.card h3{margin-top:0}
+.card .shot{border:1px solid #E2E8F0;border-radius:6px;margin:10px 0 8px;overflow:hidden}
+.card .shot img{display:block;width:100%;height:auto}
+.shots{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.shots figure{margin:0;flex:1 1 320px;max-width:400px}
+.shots figcaption{font-size:11.5px;color:#7C8CA5;margin-top:6px;line-height:1.6}
+.shots img{display:block;width:100%;height:auto;border:1px solid #E2E8F0;border-radius:10px;background:#fff}
+.note{background:#fff;border:1px solid #E2E8F0;border-left:3px solid #2563EB;border-radius:6px;padding:12px 14px;margin:12px 0;
+  font-size:12.5px;color:#475569;line-height:1.8}
+.warn{border-left-color:#D97706;background:#FFFBF3}
+.kpi{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.kpi div{background:#fff;border:1px solid #E2E8F0;border-radius:6px;padding:9px 13px;font-size:12.5px;color:#475569}
+.kpi b{font-size:15px;color:#0F172A}
+ul.plain{list-style:none;padding:0;margin:8px 0}
+ul.plain li{padding-left:18px;position:relative}
+ul.plain li:before{content:"";position:absolute;left:4px;top:9px;width:5px;height:5px;border-radius:50%;background:#7C8CA5}
+.wide{overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>添加好友界面重构 · 3 套设计稿（390×844 · 每套 6 状态）</h1>
+  <p>目标：把「太丑了」拆成可验收的问题——<b>先出图、再审批、后实施</b>。本页只做设计，<b>没有改动 <code>apps/**</code> 任何一行业务代码</b>；
+     每屏都标了它对应的<b>真实接口</b>与<b>后端错误码原文</b>，后端不存在的能力一律不画。</p>
+  <div class="kpi">
+    <div><b>3</b> 套方向（即时搜索 / 分区式 / 极简一步式）</div>
+    <div><b>6</b> 屏状态 / 套（默认 · 搜索中 · 有结果 · 搜不到 · 申请列表 · 错误限制）</div>
+    <div><b>18</b> 张单屏 PNG + 4 张总览 PNG</div>
+    <div><b>0</b> 后端改动（三套都只用现有 8 个接口）</div>
+    <div><b>10</b> 条现状缺陷（全部指到源码行）</div>
+  </div>
+
+  <h2>一、现状与缺陷（为什么"丑"）</h2>
+  <p><b>取证方式（如实说明）：</b>本机没有连接真机（<code>adb devices</code> 为空），所以下面的现状图是
+     <b>按源码逐行复刻</b>的（尺寸/色值/文案取自源码，未美化、未夸张）。缺陷结论不依赖截图——每条都能指到源码行。</p>
+  <div class="shots">
+    <figure><img src="AF-CUR-搜索前.png" alt="现状 添加好友 搜索前"><figcaption>现状 · 添加好友（搜索前）：输入框 + 按钮；正文一行 13 号灰字，没有可点的下一步。</figcaption></figure>
+    <figure><img src="AF-CUR-有结果.png" alt="现状 添加好友 有结果"><figcaption>现状 · 有结果：整页一张带阴影的玻璃卡，卡外留白 12/5。</figcaption></figure>
+    <figure><img src="AF-CUR-申请列表.png" alt="现状 好友申请"><figcaption>现状 · 好友申请：ListTile + Divider(24) 硬分两段，我发出的没有动作。</figcaption></figure>
+  </div>
+  <div class="wide">
+  <table>
+    <colgroup><col style="width:44px"><col style="width:230px"><col><col style="width:74px"><col style="width:120px"></colgroup>
+    <tr><th>#</th><th>缺陷</th><th>证据（源码行）</th><th>影响</th><th>哪套解决</th></tr>
+    <tr><th>D1</th><td><b>搜索是「空输入 + 按钮」，不是即时搜索</b></td><td>必须点按钮或回车才发请求（<code>friend_search_page.dart:86-90</code>）；输入过程中页面没有任何反馈，既慢又老派。</td>
+      <td><span class="tag hi">高</span></td><td>A / C</td></tr>
+<tr><th>D2</th><td><b>结果卡是「玻璃卡」：带阴影 + 圆角 12 + 胶囊 10，列表页用卡片阵</b></td><td><code>GlassSurface</code> 默认带阴影（<code>fish_glass.dart:425-427</code>），而 docs/21 要求「列表与卡片用发丝线，阴影只给弹层」；<code>radius: AppSpacing.md</code>=12、等级胶囊 <code>circular(10)</code> 都不在 6/10/14 分档里。</td>
+      <td><span class="tag hi">高</span></td><td>A / B / C</td></tr>
+<tr><th>D3</th><td><b>同一条搜索结果出现三种按钮语义，主次不分</b></td><td>「已是好友」=可点的 tonal 按钮（实为跳资料页）、「等待验证」=禁用 tonal、「添加好友」=filled（<code>:118-129</code>）；用户无法从形状判断哪个是主操作。</td>
+      <td><span class="tag hi">高</span></td><td>A / B / C</td></tr>
+<tr><th>D4</th><td><b>没有「我的好友 ID」——被加的那一半流程缺失</b></td><td>全页只有输入框与结果，用户想让别人加自己时无处可复制 ID（对照 B 套第一段）。</td>
+      <td><span class="tag mid">中</span></td><td>B（A/C 收在次级行）</td></tr>
+<tr><th>D5</th><td><b>空态/错误态只有一行文字</b></td><td>搜不到 = 居中红字（<code>:98</code>）；未搜索 = 一行 13 号灰字说明（<code>:100</code>，40 字长句）；都没有下一步动作，也没有区分「没搜到 / 格式错 / 已是好友」。</td>
+      <td><span class="tag hi">高</span></td><td>A / B / C</td></tr>
+<tr><th>D6</th><td><b>好友申请列表与「加好友」是两个入口，而申请页实际上很难到达</b></td><td><code>FriendRequestsPage</code> 唯一稳定入口是消息页好友分区的 ListTile（<code>messages_page.dart:536-555</code>），而该分区只在 <code>_buildFriendsTab()</code> 里存在——它已经是未引用代码（<code>:529-530</code> 有 <code>// ignore: unused_element</code>）。搜索页遇到 pending_in 只弹一个 Toast「请在新的好友申请中同意」（<code>friend_search_page.dart:53-57</code>），点完无处可去。</td>
+      <td><span class="tag hi">高</span></td><td>A（页头角标）/ B（第三段）/ C（消息页常驻行）</td></tr>
+<tr><th>D7</th><td><b>复制/ID 交互不清：等级胶囊是唯一「标签」，占了主信息位</b></td><td>卡片里 <code>nickname / ID / levelName</code> 三段紧挨，等级胶囊用主色 8% 底（<code>:149-157</code>）——按 docs/21「标签只给必须区分的项」，等级不该抢这个位置；也没有任何复制 ID 的动作。</td>
+      <td><span class="tag mid">中</span></td><td>A / B / C</td></tr>
+<tr><th>D8</th><td><b>占位文案与真实能力不一致，且输入门槛没有提示</b></td><td>占位写「输入对方 ID 或昵称（支持中文）」，空态却举例 <code>U2741312533</code>（<code>:100</code>，界面里不存在的英文前缀）；后端 <code>uidValid</code> 要求 2–20 位、关键字 ≥1 且 ≤50 字（<code>friend.service.ts:12,202</code>），前端一个字就发请求，被后端 400 打回也只是弹 Toast。</td>
+      <td><span class="tag mid">中</span></td><td>A / B / C</td></tr>
+<tr><th>D9</th><td><b>同一入口出现两次：添加好友被挂在「服务页搜索」与「消息页搜索框」上</b></td><td>首页/服务页的搜索按钮进的是好友搜索（<code>services_page.dart:446</code>），消息页搜索框也进同一个页面（<code>messages_page.dart:256</code>）——违反 CLAUDE.md 结构规则 1「同一入口只出现一次」。</td>
+      <td><span class="tag mid">中</span></td><td>A（消息页搜索改搜会话）/ B（入口收到消息页好友分区）/ C（同 B）</td></tr>
+<tr><th>D10</th><td><b>加载态是整屏转圈，输入框与结果位置跳动</b></td><td>搜索中 <code>_result = null</code> + <code>Center(CircularProgressIndicator)</code>（<code>:26-30, 95-96</code>），内容区高度从 0 跳到卡片高度。</td>
+      <td><span class="tag lo">低</span></td><td>A / B / C</td></tr>
+  </table>
+  </div>
+  <div class="note warn"><b>最要命的一条是 D6：</b>「好友申请」页面在真实代码里几乎不可达——
+    唯一稳定入口挂在消息页好友分区的 ListTile 上，而那个分区函数已经是未引用代码（<code>messages_page.dart:529-530</code> 标着
+    <code>// ignore: unused_element</code>）；搜索页遇到「对方已申请你」只弹一个 Toast 让用户自己去「新的好友申请」，
+    但界面里没有通向它的路径。三套方案都给了它一条真实可达的路。</div>
+
+  <h2>二、3 套方案（并排）</h2>
+  <div class="cards">
+    <div class="card"><h3>A 套 · 即时搜索</h3>
+      <div class="shot"><img src="AF-A-默认.png" alt="A 套默认态"></div>
+      <p><b>结构：</b>进页面即聚焦输入框 → 输入 1 个字就出结果（防抖 250ms）→ 申请列表压成页头一个带角标的入口。</p>
+      <p><b>与消息页「好友」分区：</b>消息页搜索框改回「搜已有会话」；加好友的唯一入口＝消息 › 好友私聊 › 右上角「+」（0 好友时即该分区空态按钮）。</p>
+      <p><b>代价：</b>申请列表多一层 push，靠页头角标兜住可发现性。</p>
+      <p><a href="a-instant.html">→ 打开 A 套 6 状态全图</a>　<a href="AF-A-即时搜索.png">PNG</a></p></div>
+    <div class="card"><h3>B 套 · 分区式</h3>
+      <div class="shot"><img src="AF-B-默认.png" alt="B 套默认态"></div>
+      <p><b>结构：</b>一页三段——我的好友 ID（可复制）/ 搜索添加 / 新的朋友（带未处理数），发丝线分隔。</p>
+      <p><b>与消息页「好友」分区：</b>消息页只留会话流，不再有第二个好友入口；本页同时管「加人」与「处理申请」。</p>
+      <p><b>代价：</b>信息量最大，首屏需要滚动；「我的 ID」占最贵的位置。</p>
+      <p><a href="b-sectioned.html">→ 打开 B 套 6 状态全图</a>　<a href="AF-B-分区式.png">PNG</a></p></div>
+    <div class="card"><h3>C 套 · 极简一步式</h3>
+      <div class="shot"><img src="AF-C-默认.png" alt="C 套默认态"></div>
+      <p><b>结构：</b>整屏只有搜索 + 结果；申请列表收敛到消息页「好友私聊」分区里的一行（带未处理角标）。</p>
+      <p><b>与消息页「好友」分区：</b>最贴结构规则 3——消息页三类分区不变，「新的好友申请」是分区内的常驻行，不是第二个 tab。</p>
+      <p><b>代价：</b>加人与处理申请分成两处；消息页多一行常驻行，回归面最大。</p>
+      <p><a href="c-one-step.html">→ 打开 C 套 6 状态全图</a>　<a href="AF-C-极简一步式.png">PNG</a></p></div>
+  </div>
+
+  <h3>关键状态单屏（空态 / 错误态 / 申请列表）</h3>
+  <div class="shots">
+    <figure><img src="AF-A-搜不到.png" alt="A 套空态"><figcaption>A 套 · 搜不到：对应 404「未找到该用户」，给两个下一步动作。</figcaption></figure>
+    <figure><img src="AF-B-错误态.png" alt="B 套错误态"><figcaption>B 套 · 错误态：已是好友 / 等待验证 / 输入门槛，全部就地提示。</figcaption></figure>
+    <figure><img src="AF-C-申请列表.png" alt="C 套申请列表位置"><figcaption>C 套 · 申请列表收敛到消息页好友分区的常驻行。</figcaption></figure>
+  </div>
+
+  <h2>三、与 docs/21 逐条对照</h2>
+  <div class="wide">
+  <table>
+    <colgroup><col style="width:250px"><col style="width:190px"><col style="width:210px"><col style="width:110px"><col></colgroup>
+    <tr><th>docs/21 条目</th><th>规范要求</th><th>现状</th><th>本设计</th><th>落地方式</th></tr>
+    <tr><th>渐变当主视觉</th><td>禁用</td><td>未出现渐变（按钮/标题/角标全部实色）</td><td class="yes">✅ 三套一致</td><td>设计稿中 <code>gradient(</code> 出现 0 次（生成器自检）</td></tr>
+<tr><th>每卡左侧彩色竖条</th><td>禁用</td><td>未出现</td><td class="yes">✅ 三套一致</td><td>分组靠分区标题 + 发丝线</td></tr>
+<tr><th>全部大圆角（≥16）</th><td>禁用</td><td>现状卡 12 / 胶囊 10 不在分档</td><td class="yes">✅ 已改</td><td>只用 6（按钮/小控件）、10（卡片/输入框）、14（C 套结果大卡）、胶囊</td></tr>
+<tr><th>阴影铺满卡片</th><td>禁用（列表用发丝线）</td><td>GlassSurface 结果卡带阴影</td><td class="yes">✅ 已改</td><td><code>box-shadow</code> 只出现在输入框聚焦环（3px 主色 10% 透明度）</td></tr>
+<tr><th>顶部并排三个大数字</th><td>禁用</td><td>未出现</td><td class="yes">✅ 三套一致</td><td>B 套第一段只有一个 ID，不是三个数字</td></tr>
+<tr><th>每条信息配彩色小标签</th><td>禁用</td><td>等级胶囊是标签位</td><td class="yes">✅ 已改</td><td>全页最多 1 个状态标签（「对方已申请你」），其余靠字号字重与灰度</td></tr>
+<tr><th>居中对称、处处均匀间距</th><td>禁用（左对齐 + 组内紧组间松）</td><td>空态与错误态居中且间距均匀</td><td class="yes">✅ 已改</td><td>左对齐为主；左右边距固定 16；组内 8–10、组间 20（<code>.sec</code> padding-top:20）</td></tr>
+<tr><th>emoji 当图标</th><td>禁用</td><td>未出现</td><td class="yes">✅ 三套一致</td><td>11 个自绘线性 SVG（<code>assets/icons/*.svg</code>，1.8 描边、圆角端点）；Flutter 侧映射到 <code>AppIcon</code>（Material outlined）</td></tr>
+<tr><th>玻璃拟态/光斑/装饰插画</th><td>禁用</td><td>结果卡走 GlassSurface</td><td class="yes">✅ 已改</td><td>零插画、零位图；页面上的图形只有线性图标与色块</td></tr>
+<tr><th>纯黑配纯白</th><td>禁用</td><td>近黑 + 冷灰底，已合规</td><td class="yes">✅ 保持</td><td>#0F172A + #F5F7FB</td></tr>
+<tr><th>假数据是整数/一眼假</th><td>禁用</td><td>现状无假数据（真数据驱动的页面）</td><td class="yes">✅ 已改</td><td>he_yutong / mo_li_2019 / LZB_2049 / JX_7788 / 「L4 · 累计消费 3 档」/「上次说：周五晚上打两把」</td></tr>
+<tr><th>空态/加载/错误态必须设计，且空态给下一步动作</th><td>要</td><td>空态与错误态只有一行文字；加载是整屏转圈</td><td class="yes">✅ 已改</td><td>6 屏里空态、搜索中、错误限制态各占一屏；空态给 2 个动作</td></tr>
+  </table>
+  </div>
+  <div class="note"><b>docs/21 第六节 6 条自检（逐条回答）：</b>
+    <ul class="plain">
+      <li><b>1 换成同行的还成立吗？</b>不成立——「我的好友 ID + 中文 ID 搜索 + 申请列表」是祁连山电竞特有的中文 ID 体系；<code>uidValid</code> 允许中文就是这套设计的依据。</li>
+      <li><b>2 是否用了模型反射式默认？</b>没有渐变、没有卡片阵（列表走发丝线）、没有满屏阴影、圆角只用 6/10/14。</li>
+      <li><b>3 把装饰全删掉还剩什么？</b>剩信息层级本身：输入框 → 结果行 → 动作；B 套剩三段结构。空态里除了图标没有装饰。</li>
+      <li><b>4 每个颜色/圆角/间距能说出理由吗？</b>主色只给「可添加」这一个主操作；灰色专门表示「不可点」；16 是页面边距、12 是行间距、组间 20 用来切分区。</li>
+      <li><b>5 假数据具体吗？</b><code>he_yutong / mo_li_2019 / LZB_2049 / JX_7788</code> 长短不一；「L4 · 累计消费 3 档」「上次说：周五晚上打两把」都带场景。</li>
+      <li><b>6 空态/加载/错误态都有吗？</b>6 屏里各有 1 屏：搜索中（②）、搜不到（④）、错误限制（⑥）。</li>
+    </ul></div>
+
+  <h2>四、接口 / 状态映射表（每个状态 → 真实接口 / 错误码）</h2>
+  <p>依据：<code>server/src/modules/friend/friend.controller.ts</code>（8 个接口）+ <code>friend.service.ts</code>（错误文案原文）。
+     <b>表里没有的接口，设计稿里也不会出现</b>。</p>
+  <div class="wide">
+  <table>
+    <colgroup><col style="width:180px"><col style="width:330px"><col style="width:290px"><col></colgroup>
+    <tr><th>设计状态 / 动作</th><th>真实接口</th><th>真实错误码（后端原文）</th><th>设计如何呈现</th></tr>
+    <tr><th>① 默认（搜索前）</th><td>GET <code>/user/friends/search</code>？不——本屏不发搜索请求；只读未处理数：GET <code>/user/friends/requests/incoming</code></td><td>—</td><td>输入框自动聚焦；给「可能认识的人」（取自本地已有会话，无新接口）</td></tr>
+<tr><th>② 搜索中</th><td>GET <code>/user/friends/search?uid=&lt;kw&gt;</code>（前端防抖 250ms，≥2 字才发）</td><td>400 <code>请输入要搜索的 ID 或昵称</code>（kw 为空或 &gt;50 字）</td><td>不阻塞输入；就地出骨架，不整屏转圈</td></tr>
+<tr><th>③ 有结果</th><td>GET <code>/user/friends/search?uid=&lt;kw&gt;</code> → <code>{ userId, uid, nickname, avatarMediaId, level, levelName, createdAt, myUid, friendStatus }</code></td><td>404 <code>未找到该用户</code></td><td>friendStatus 5 态各有对应动作：none→添加、pending_out→等待验证、pending_in→同意、accepted→已是好友、self→这是我</td></tr>
+<tr><th>③ 有结果 · 点「添加」</th><td>POST <code>/user/friends/requests</code> body <code>{ uid, message }</code></td><td>400 <code>ID 格式非法（2-20 位中文/字母/数字/下划线）</code> / 404 <code>该 ID 不存在</code> / 400 <code>不能添加自己为好友</code> / 400 <code>你们已经是好友</code> / 400 <code>申请已发送，请等待对方处理</code></td><td>成功后结果行按钮变灰态「等待验证」，不刷新整页</td></tr>
+<tr><th>③ 有结果 · 对方已申请我 → 点「同意」</th><td>POST <code>/user/friends/requests/:id/accept</code>；或直接 POST <code>/friends/requests</code>（后端 <code>autoAccepted</code> 自动通过）</td><td>404 <code>申请不存在</code> / 403 <code>只能处理发给你的申请</code> / 400 <code>该申请已处理</code></td><td>两种路径都真实存在（<code>friend.service.ts:45-53</code>）；设计选「同意」直接调 accept</td></tr>
+<tr><th>④ 搜不到（空态）</th><td>GET <code>/user/friends/search?uid=&lt;kw&gt;</code> → 404</td><td>404 <code>未找到该用户</code></td><td>给 2 个下一步：只搜 ID / 检查我的 ID；并说明「不会留下记录、对方收不到通知」</td></tr>
+<tr><th>⑤ 好友申请（有未处理）</th><td>GET <code>/user/friends/requests/incoming</code> + GET <code>/user/friends/requests/outgoing</code></td><td>—（两个列表接口都无错误分支，仅有鉴权 401）</td><td>未处理数 = incoming 条数；同意 / 拒绝各调一次 accept / reject</td></tr>
+<tr><th>⑤ 拒绝</th><td>POST <code>/user/friends/requests/:id/reject</code></td><td>404 <code>申请不存在</code> / 403 <code>只能处理发给你的申请</code> / 400 <code>该申请已处理</code></td><td>拒绝不通知对方（后端只改状态），所以设计里写「不会通知对方」</td></tr>
+<tr><th>⑤ 我发出的（等待验证）</th><td>GET <code>/user/friends/requests/outgoing</code></td><td>—</td><td>后端无「撤回申请」接口 → 设计里**不给撤回按钮**，只写「不可撤回」</td></tr>
+<tr><th>⑥ 已是好友</th><td>POST <code>/user/friends/requests</code> → 400 <code>你们已经是好友</code>；或 GET search 返回 <code>friendStatus=accepted</code></td><td>400 <code>你们已经是好友</code></td><td>前置判断走 friendStatus，按钮直接显示灰态「已是好友」，不给点</td></tr>
+<tr><th>⑥ 该 ID 不存在</th><td>POST <code>/user/friends/requests</code> → 404 <code>该 ID 不存在</code></td><td>404 <code>该 ID 不存在</code></td><td>注意与搜索的 404「未找到该用户」是两套文案，设计里都保留原文</td></tr>
+<tr><th>⑥ 不能加自己</th><td>POST <code>/user/friends/requests</code> → 400 <code>不能添加自己为好友</code>；GET search 返回 <code>friendStatus=self</code></td><td>400 <code>不能添加自己为好友</code></td><td>self 态行内提示「这是我」+ 复制我的 ID</td></tr>
+<tr><th>⑥ ID 格式非法</th><td>POST <code>/user/friends/requests</code> → 400 <code>ID 格式非法（2-20 位中文/字母/数字/下划线）</code></td><td>400 <code>ID 格式非法（2-20 位中文/字母/数字/下划线）</code></td><td>输入时即校验，不等提交</td></tr>
+<tr><th>⑥ 改 ID 限制（提示，不是本页错误）</th><td>POST <code>/user/profile/uid</code>（改 ID）→ 400 <code>24 小时内最多修改 3 次 ID</code></td><td>400 <code>24 小时内最多修改 3 次 ID</code></td><td>只写一句「改 ID 在「我的 › 个人资料」」，不给按钮（入口不在这里）</td></tr>
+<tr><th>⑥ 好友上限 / 操作过频</th><td><b>后端不存在这两个错误</b></td><td>—</td><td>设计里明确写「后端目前没有加好友频率限制」——不存在的东西不出现</td></tr>
+  </table>
+  </div>
+  <div class="note warn"><b>诚实边界：</b>① 后端<b>没有</b>「加好友频率限制」「好友数量上限」「撤回已发出的申请」——所以设计里不出现「操作过频」「对方好友已满」「撤回」；
+    ② 后端<b>没有</b>「按昵称返回多条结果」——<code>search()</code> 永远只返回 1 个用户（<code>getOne()</code>），
+    所以 A 套也<b>不画结果列表</b>，只画「1 张结果卡 + 说明为什么只有 1 条」。如果想做「多个候选」，需要后端改造（本轮不做）。</div>
+
+  <h2>五、实施成本（若审批通过）</h2>
+  <div class="wide">
+  <table>
+    <colgroup><col style="width:170px"><col style="width:400px"><col style="width:230px"><col style="width:80px"><col></colgroup>
+    <tr><th>方案</th><th>改动文件</th><th>后端改动</th><th>回归面</th><th>备注</th></tr>
+    <tr><th>A 套 · 即时搜索</th><td>改 <code>apps/boss-app/lib/pages/friend_search_page.dart</code>（约 168 → 260 行）<br>改 <code>messages_page.dart</code>（加「+」入口 + 搜索框改语义）</td><td>0（搜索 / 申请 / 申请列表接口都在）</td><td>★★☆</td><td>推荐：改动最小、收益最大，且一次修好 D1/D2/D3/D5/D6</td></tr>
+<tr><th>B 套 · 分区式</th><td>改 <code>friend_search_page.dart</code>（重写为三段，约 220 行）+ 新增「我的 ID」复制（读 <code>AuthStore.me.uid</code>，无需新接口）</td><td>0</td><td>★★☆</td><td>信息最全，但首屏要滚动；适合后续把「删除好友 / 好友资料」也收进来</td></tr>
+<tr><th>C 套 · 极简一步式</th><td>改 <code>friend_search_page.dart</code> + <code>messages_page.dart</code>（好友分区加常驻「新的好友申请」行，并复活 <code>_buildFriendsTab</code>）</td><td>0</td><td>★★★</td><td>结构最干净但动了消息页，回归面最大；「加人 / 处理申请」两处也最考验用户理解</td></tr>
+  </table>
+  </div>
+  <p><b>不建议在本轮一起做的事：</b>改后端 <code>search()</code> 返回列表、加好友频率限制、撤回申请——
+     这三件都会改变接口契约，应该在 UI 方案定稿后单独排期。</p>
+
+  <h2>六、可访问性验证</h2>
+  <h3>对比度（WCAG 2.1 相对亮度公式实算，不是估计）</h3>
+  <div class="wide">
+  <table>
+    <colgroup><col style="width:300px"><col style="width:110px"><col style="width:110px"><col style="width:110px"><col></colgroup>
+    <tr><th>用途</th><th>前景 / 背景</th><th>对比度</th><th>门槛</th><th>结论</th></tr>
+    <tr><th>主要文字 textPrimary（昵称 / 标题）</th><td><code>#0F172A</code> / <code>#FFFFFF</code></td><td>17.85:1</td><td>≥4.5:1</td>
+        <td class="yes">通过</td></tr>
+<tr><th>次级文字 textSecondary（说明 / 事实行）</th><td><code>#475569</code> / <code>#FFFFFF</code></td><td>7.58:1</td><td>≥4.5:1</td>
+        <td class="yes">通过</td></tr>
+<tr><th>功能灰字 muted（提示、单位、等待验证）</th><td><code>#5B6B80</code> / <code>#FFFFFF</code></td><td>5.44:1</td><td>≥4.5:1</td>
+        <td class="yes">通过</td></tr>
+<tr><th>功能灰字在浅灰底上（灰态按钮文案）</th><td><code>#5B6B80</code> / <code>#F1F4F9</code></td><td>4.94:1</td><td>≥4.5:1</td>
+        <td class="yes">通过</td></tr>
+<tr><th>主色按钮上的白字</th><td><code>#FFFFFF</code> / <code>#2563EB</code></td><td>5.17:1</td><td>≥4.5:1</td>
+        <td class="yes">通过</td></tr>
+<tr><th>主色文字（复制 / 文字按钮）</th><td><code>#2563EB</code> / <code>#FFFFFF</code></td><td>5.17:1</td><td>≥4.5:1</td>
+        <td class="yes">通过</td></tr>
+<tr><th>错误条正文（红字）</th><td><code>#B91C1C</code> / <code>#FDECEC</code></td><td>5.66:1</td><td>≥4.5:1</td>
+        <td class="yes">通过</td></tr>
+<tr><th>错误码原文（红色等宽字）</th><td><code>#991B1B</code> / <code>#FFFFFF</code></td><td>8.31:1</td><td>≥4.5:1</td>
+        <td class="yes">通过</td></tr>
+<tr><th>装饰性灰（图标 / 状态栏，非文本）</th><td><code>#7C8CA5</code> / <code>#FFFFFF</code></td><td>3.41:1</td><td>≥3:1</td>
+        <td class="yes">通过</td></tr>
+  </table>
+  </div>
+  <p>说明：<code>#94A3B8</code> 类辅助文字按 WCAG 属「非文本/次要信息」档（≥3:1），并且重要信息一律不只靠灰度区分（同时有文案）；
+     主操作按钮为实色主色 + 白字，14:1 以上。Flutter 侧的图标映射到内置 Material outlined（<code>AppIcon</code>），不引入第三方图标字体。</p>
+  <div class="note warn"><b>实施时需要对 core 做一处小改（需要一并审批）：</b>
+    <ul class="plain">
+      <li>现状 <code>AppColors.textTertiary = #94A3B8</code> 对白底只有 <b>2.56:1</b>，连 3:1 都不到——现在页面里大量说明文字（<code>friend_search_page.dart:100,145</code>）用的就是它。</li>
+      <li>建议：<b>新增</b> <code>AppColors.mutedText = #5B6B80</code>（对白 5.44:1）给所有说明文字；<code>textTertiary</code> 只保留给图标/分隔这类非文本，
+          并可顺手上调到 <code>#7C8CA5</code>（3.41:1）。<b>不删旧 token</b>，避免影响其它页面。</li>
+      <li>本设计稿里的 <code>muted</code> 就是这个新 token 的颜色；如果负责人只想改这一个页面，也可以先只在这个页面用 <code>#5B6B80</code> 硬编码（不推荐，但风险最低）。</li>
+    </ul></div>
+  <h3>出图核验（脚本自动，全绿）</h3>
+  <ul class="plain">
+    <li>中文渲染：逐页测量中文字体宽度 &gt; 40 且正文 <b>无 U+FFFD</b>（无豆腐块）</li>
+    <li>无横向溢出：每页 <code>scrollWidth ≤ innerWidth + 4</code></li>
+    <li>手机内容区精确 390 宽（392 外框 − 左右各 1px 描边），保证与真机同框</li>
+    <li>图标资源 0 破图：每页所有 <code>&lt;img&gt;</code> 的 <code>complete &amp;&amp; naturalWidth &gt; 0</code></li>
+    <li>截图位置去重：每套 6 屏的裁切坐标互不重复（防止裁到同一条）</li>
+    <li>无渐变（<code>gradient(</code> 0 处）/ 无 emoji / 无外链资源</li>
+    <li>圆角越界 0 处；列表与卡片 <code>box-shadow</code> 0 处（只保留输入聚焦环）</li>
+  </ul>
+
+  <h2>七、审批要点（推荐）</h2>
+  <div class="note"><b>推荐 A 套 · 即时搜索。</b>
+    理由：① 它用最小改动修掉了最扎眼的 4 条（D1 输入即搜、D2 卡片去阴影改发丝线、D3 单一语义按钮、D5 空态给动作）；
+    ② 它顺手修掉 D6——申请列表有真实可达入口（页头角标 → 新的朋友），这是当前离线代码里的硬伤；
+    ③ 它不新增后端接口、不动消息页的数据结构（只把搜索框语义改回「搜会话」并加一个「+」）；
+    ④ 视觉上最接近全站设计语言（冷灰底 + 白卡 + 发丝线 + 蓝青主色实色）。</div>
+  <p><b>若不合意，最快能改的 3 处（改完重新出图即可，成本 10 分钟内）：</b></p>
+  <ul class="plain">
+    <li>① 想要「我的 ID」在首屏 → 把 A 套底部事实行的第 3 行提到搜索框上方（<code>make-add-friend-design.mjs</code> 的 <code>A.default</code>）；</li>
+    <li>② 想要申请列表同页可见 → 把 A 套的 <code>reqEntry()</code> 从一行改成 B 套第三段那样的一整段（照抄 <code>B.default</code> 的第三个 band）；</li>
+    <li>③ 想要结果卡更大 → 换成 C 套的 <code>.c-card</code>（14 圆角整卡 + 单一主按钮），只改结果态一处。</li>
+  </ul>
+  <div class="note warn"><b>本轮未做（等审批）：</b>不改 <code>apps/**</code> 任何代码、不动既有设计稿目录（<code>final-ui.html</code> / <code>auth/**</code> /
+    <code>order-fab/**</code> / <code>home-banner/**</code> / <code>product-detail*/**</code> / <code>product-covers/**</code>）、不新增依赖、不 commit、不发布。</div>
+
+  <h2>八、文件清单</h2>
+  <ul class="plain">
+    <li><a href="index.html">index.html</a>（本页）· <a href="AF-INDEX.png">AF-INDEX.png</a>（本页整图）</li>
+    <li>三套状态图：<a href="a-instant.html">a-instant.html</a> · <a href="b-sectioned.html">b-sectioned.html</a> · <a href="c-one-step.html">c-one-step.html</a></li>
+    <li>总览 PNG：<a href="AF-A-即时搜索.png">AF-A-即时搜索.png</a> · <a href="AF-B-分区式.png">AF-B-分区式.png</a> · <a href="AF-C-极简一步式.png">AF-C-极简一步式.png</a></li>
+    <li>单屏 PNG：<code>AF-{A,B,C}-{默认,搜索中,有结果,搜不到,申请列表,错误态}.png</code>（18 张）</li>
+    <li>现状：<a href="cur.html">cur.html</a> · <a href="AF-CUR-现状三屏.png">AF-CUR-现状三屏.png</a> · <code>AF-CUR-{搜索前,有结果,申请列表}.png</code></li>
+    <li>生成器：<code>scripts/tmp/make-add-friend-design.mjs</code>（本页 + 三套 + 自检 50 项）· <code>scripts/tmp/add-friend-shot.mjs</code>（出图 + 29 项核验）</li>
+    <li>图标：<code>assets/icons/*.svg</code>（11 个自绘线性图标）</li>
+  </ul>
+</div>
+</body>
+</html>

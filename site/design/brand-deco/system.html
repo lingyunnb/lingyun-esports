@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>祁连山电竞 · 品牌装饰系统规范（6 个装饰位）</title>
+<style>
+:root{
+  --brand:#1D5FA8;
+  --brand-ink:#0F2440;
+  --brand-tint:#E8EEF7;
+  --celadon:#0E7C7B;
+  --celadon-tint:#E3F0EF;
+  --amber:#B4732A;
+  --amber-tint:#F7EDE0;
+  --warn:#B45309;
+  --danger:#B42318;
+  --danger-tint:#FBECEA;
+  --g1:#14202E;
+  --g2:#4A5A6E;
+  --g3:#8A99AB;
+  --g4:#CDD6E2;
+  --g5:#E3E8EF;
+  --g6:#F4F6F9;
+  --hair:#E3E8EF;
+  --sk:#EAEEF4;
+  --r-chip:6px;
+  --r-ctl:10px;
+  --r-card:14px;
+  --font:"Microsoft YaHei","PingFang SC",-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,Consolas,"Courier New",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--g1);background:#FFFFFF;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+code{font-family:var(--mono);font-size:11px;background:var(--g6);padding:2px 4px;border-radius:4px}
+
+/* ================= 文档外壳 ================= */
+.doc{max-width:1560px;margin:0 auto;padding:32px 24px 64px}
+.doch{padding-bottom:16px;border-bottom:1px solid var(--g5)}
+.doch h1{font-size:22px;font-weight:800;letter-spacing:.2px}
+.doch .sub{font-size:13px;color:var(--g2);margin-top:8px;line-height:1.8;max-width:1240px}
+.doch .sub b{color:var(--g1)}
+.metarow{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--g2);margin-top:16px}
+.metarow b{color:var(--g1)}
+.kernel{margin-top:24px;border:1px solid var(--g5);border-left:4px solid var(--brand);border-radius:var(--r-card);padding:16px}
+.kernel h2{font-size:15px;font-weight:800}
+.kernel p{font-size:13px;color:var(--g2);line-height:1.9;margin-top:8px}
+.kernel .k3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.kernel .k3 div{border:1px solid var(--g5);border-radius:var(--r-ctl);padding:12px;font-size:12px;color:var(--g2);line-height:1.8}
+.kernel .k3 b{display:block;font-size:13px;color:var(--g1);margin-bottom:4px}
+
+/* ================= 章节 ================= */
+.sec{margin-top:40px}
+.sech{display:flex;align-items:baseline;gap:8px;padding:0 0 8px}
+.sech .st{font-size:18px;font-weight:700;letter-spacing:.2px}
+.sech .ss{font-size:12px;color:var(--g3)}
+.sech .sp{flex:1 1 auto}
+.sech .tagq{font-size:11px;font-weight:600;color:var(--brand)}
+.sec .cap{font-size:12px;color:var(--g2);line-height:1.9;margin-bottom:12px}
+.sec .cap b{color:var(--g1)}
+.rulebar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.ruleb{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:4px;
+  background:var(--brand-tint);color:var(--brand);font-size:11px;font-weight:600}
+.ruleb.g{background:var(--g6);color:var(--g2)}
+.ruleb.c{background:var(--celadon-tint);color:var(--celadon)}
+
+.rows{display:flex;flex-direction:column;gap:12px}
+.rw{display:grid;grid-template-columns:118px 1fr;border:1px solid var(--g5);border-radius:var(--r-ctl);overflow:hidden}
+.rw .lab{border-right:1px solid var(--g5);padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+.rw .lab .k{font-size:11px;font-weight:700;color:var(--g2);letter-spacing:.4px}
+.rw .lab .v{font-size:10.5px;color:var(--g3);line-height:1.5}
+.rw .cls{display:flex;align-items:stretch}
+.cs{flex:1 1 0;min-width:0;padding:12px 8px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;
+  border-right:1px solid var(--g5);background:#FFFFFF;position:relative}
+.cs:last-child{border-right:0}
+.cs.bad{background:#FCFBFB}
+/* 反例单元里左右内距统一 12（红竖条样本要靠左贴 0 起，8 的内距会裁掉它） */
+.rw.is4 .cs{padding:12px}
+.rw.is4 .mark,.rw.is4 .rul{padding-right:8px}
+/* 基准线网格行：左边框宽固定，右侧给测量说明 */
+.rw.wide{grid-template-columns:118px 1fr}
+.rw.wide .cls{padding:12px;gap:32px;align-items:flex-start}
+.gnotes{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:12px}
+.gnotes .gn{border:1px solid var(--g5);border-radius:10px;padding:12px}
+.gnotes .gn h4{font-size:13px;font-weight:700;margin-bottom:4px}
+.gnotes .gn p{font-size:12px;color:var(--g2);line-height:1.9}
+.gnotes .gn .v{font-family:var(--mono);font-size:11px;color:var(--g1)}
+.mark{position:relative;padding-left:12px;font-size:11px;font-weight:700;line-height:1.4;margin-bottom:4px}
+.mark::before{content:"";position:absolute;left:0;top:2px;width:8px;height:8px;border-radius:2px}
+.mark.ok{color:var(--celadon)}
+.mark.ok::before{background:var(--celadon)}
+.mark.no{color:var(--danger)}
+.mark.no::before{background:var(--danger)}
+.cs .rul{font-size:11px;color:var(--g2);line-height:1.6;margin-top:4px}
+.cs .rul b{color:var(--g1)}
+
+/* ================= 手机壳（对齐 docs/32 §十：390×844） ================= */
+.shell{width:390px;height:844px;flex:0 0 390px;background:var(--g6);border:1px solid var(--g4);
+  border-radius:18px;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.sb48{flex:0 0 48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+  font-size:12px;font-weight:600;background:#FFFFFF}
+.sb48 .r{display:flex;align-items:center;gap:8px}
+.bars{display:flex;align-items:flex-end;gap:4px;height:12px}
+.bars i{display:block;width:4px;background:var(--g1);border-radius:1px}
+.bars i:nth-child(1){height:4px}.bars i:nth-child(2){height:6px}
+.bars i:nth-child(3){height:9px}.bars i:nth-child(4){height:12px}
+.batt{width:24px;height:12px;border:1px solid var(--g4);border-radius:3px;position:relative}
+.batt i{position:absolute;left:2px;top:2px;bottom:2px;width:14px;background:var(--g1);border-radius:1px}
+.h56{flex:0 0 56px;display:flex;align-items:center;gap:12px;padding:0 16px;background:#FFFFFF;border-bottom:1px solid var(--g5)}
+.h56 .tt{font-size:18px;font-weight:700}
+.h56 .sp{flex:1 1 auto}
+.flow{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.tb56{flex:0 0 56px;display:flex;align-items:flex-start;padding:4px 0 0;background:#FFFFFF;border-top:1px solid var(--g5)}
+.tb{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--g3)}
+.tb.on{color:var(--brand)}
+.tb .tl{font-size:11px;font-weight:600;line-height:16px}
+.tb.rz{color:var(--brand)}
+.tb.rz svg{width:32px;height:32px;padding:4px;border-radius:999px;background:#FFFFFF;border:1px solid var(--brand)}
+
+/* ================= 基准线网格（可量） ================= */
+.meascol{display:flex;gap:12px;align-items:baseline;font-size:10.5px;color:var(--g2)}
+.rule20{height:20px;display:flex;align-items:center;gap:4px}
+.rule20 i{display:block;height:2px;background:var(--brand-tint);width:4px}
+/* ===== ⑦ 配色 / ⑧ 手段取舍 用到的原子 ===== */
+.tone{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:4px;font-size:11px;font-weight:700}
+.tone1{background:var(--brand-tint);color:var(--brand)}
+.tone2{background:var(--celadon-tint);color:var(--celadon)}
+.tone3{background:var(--amber-tint);color:var(--amber)}
+.tone4{background:var(--g6);color:var(--g2);border:1px solid var(--g5)}
+.tone-ink{background:var(--brand-ink);color:#FFFFFF}
+.tone-line{background:#FFFFFF;border:1px solid var(--brand);color:var(--brand)}
+.sw{width:32px;height:32px;border-radius:6px;border:1px solid var(--g4);flex:0 0 32px}
+.demo{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.dcell{width:264px;display:flex;flex-direction:column;gap:8px}
+.dcell .dbox{border:1px solid var(--g5);border-radius:var(--r-ctl);overflow:hidden;position:relative;background:#FFFFFF}
+.dcell .dcap{font-size:11px;color:var(--g2);line-height:1.7}
+.dcell .dcap b{color:var(--g1)}
+.icobase{width:32px;height:32px;border-radius:var(--r-ctl);display:flex;align-items:center;justify-content:center;background:var(--brand-tint);color:var(--brand)}
+.icobase.cel{background:var(--celadon-tint);color:var(--celadon)}
+.icobase.amb{background:var(--amber-tint);color:var(--amber)}
+.icobase.ink{background:var(--brand-ink);color:#FFFFFF}
+.icobase.solid{background:var(--brand);color:#FFFFFF}
+.icobase.gray{background:var(--g6);color:var(--g2)}
+.band{display:flex;align-items:center;gap:8px;height:24px;padding:0 8px;background:var(--brand-tint);color:var(--brand);font-size:11px;font-weight:700;border-radius:4px;position:relative;overflow:hidden}
+.band .ntc{position:absolute;right:0;top:0;width:4px;height:4px;background:#FFFFFF;border-left:1px solid #C7D8EC;border-bottom:1px solid #C7D8EC}
+.gbar{height:24px;border-radius:6px;background-image:linear-gradient(90deg,#1D5FA8 0px,#1D5FA8 24px,rgba(0,0,0,0) 24px,rgba(0,0,0,0) 100%)}
+.gsoft{height:48px;border-radius:6px;background-image:linear-gradient(90deg,#E8EEF7 0px,#E8EEF7 24px,rgba(0,0,0,0) 24px,rgba(0,0,0,0) 100%)}
+.gbig{height:88px;border-radius:0;background-image:linear-gradient(90deg,#1D5FA8 0px,#1D5FA8 44px,rgba(0,0,0,0) 44px,rgba(0,0,0,0) 100%)}
+.shadowcard{height:48px;border-radius:var(--r-card);background:#FFFFFF;border:1px solid var(--g5)}
+.sh-a{box-shadow:0 12px 24px rgba(15,23,42,.22)}
+.sh-b{box-shadow:0 2px 6px rgba(15,23,42,.06)}
+.stripe{display:flex;align-items:center;height:56px;border:1px solid var(--g5);border-radius:var(--r-card);background:#FFFFFF;overflow:hidden}
+.stripe .bar4{width:4px;align-self:stretch;background:var(--brand);flex:0 0 4px}
+.colorbg{height:64px;border-radius:var(--r-card);background:var(--brand);color:#FFFFFF;display:flex;align-items:center;padding:12px;font-size:13px;font-weight:700}
+.colorbg.soft{background:var(--brand-tint);color:var(--brand)}
+.guide{position:absolute;left:0;right:0;height:0;border-top:1px dashed #C7D2E0}
+.guide .gt{position:absolute;right:4px;top:-12px;font-size:11px;color:#7C8CA0;font-family:var(--mono)}
+.mzone{position:absolute;top:0;bottom:0;width:16px;background:#E8EEF7}
+.mzone.r{right:0;left:auto}
+
+/* ================= 装饰原子 ================= */
+/* ① 斜切角 —— 整套装饰唯一的角度符号 45° / 6×6 与 8×8 两级 */
+.notch{position:absolute;width:6px;height:6px;background:#FFFFFF;border-left:1px solid var(--g4);border-bottom:1px solid var(--g4)}
+.notch.b{border-left-color:var(--brand);border-bottom-color:var(--brand);background:#FFFFFF}
+.notch.l{background:var(--g6)}
+/* ② 细网格 —— 只用于品牌区与空态，1px，3–5% */
+.gridtex{position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(90deg,rgba(15,36,64,.05) 0 1px,rgba(0,0,0,0) 1px 16px),
+  linear-gradient(0deg,rgba(15,36,64,.05) 0 1px,rgba(0,0,0,0) 1px 16px)}
+.gridtex.onink{background-image:linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,rgba(0,0,0,0) 1px 16px),
+  linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,rgba(0,0,0,0) 1px 16px)}
+/* ③ 标尺线 —— 1px 线 + 两端 3×3 方块（左端方块即"起点"） */
+.sr{display:flex;align-items:center;width:104px;height:16px}
+.sr .dot3{width:3px;height:3px;background:var(--g4);flex:0 0 3px}
+.sr .dot3.b{background:var(--brand)}
+.sr .ln{flex:1 1 auto;height:1px;background:var(--g4)}
+.sr .ln.b{background:var(--brand)}
+/* 发丝线 —— 内容行分隔，无端点方块 */
+.hair{height:1px;background:var(--g5)}
+.hair.i{background:var(--g5);margin-left:16px}
+/* 左标识竖线 —— docs/21 禁的是"每卡左侧彩色竖条"，此处只允许 8×8 品牌短标 */
+.vtick{width:8px;height:2px;background:var(--brand);flex:0 0 8px}
+
+/* ================= 卡片三档 ================= */
+.trio{display:flex;gap:12px;align-items:flex-start}
+.triobox{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:8px}
+.triocap{font-size:11px;font-weight:700;color:var(--g2)}
+.triocap em{font-style:normal;font-weight:400;color:var(--g3)}
+.hero{position:relative;height:96px;border-radius:var(--r-card);border:1px solid var(--brand-tint);
+  padding:12px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.hero .hl{position:relative;z-index:1}
+.hero .hm{position:absolute;right:8px;top:8px;width:24px;height:24px;border-radius:4px;background:var(--brand-ink);
+  color:#FFFFFF;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;z-index:1}
+.hero .badge{position:absolute;right:0;top:0;height:24px;padding:0 8px;background:var(--brand);color:#FFFFFF;
+  font-size:11px;font-weight:700;display:flex;align-items:center;border-radius:0 var(--r-card) 0 6px}
+.hero .badge .nt{position:absolute;left:0;bottom:-6px;width:6px;height:6px;background:#FFFFFF;border-left:1px solid var(--brand);border-bottom:1px solid var(--brand)}
+.contentcard{position:relative;height:96px;border-radius:var(--r-card);border:1px solid var(--g5);background:#FFFFFF;
+  padding:12px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.listcard{height:96px;background:#FFFFFF;border-top:1px solid var(--g5);border-bottom:1px solid var(--g5);
+  display:flex;flex-direction:column;justify-content:center}
+.listcard .lr{height:48px;display:flex;align-items:center;gap:12px;padding:0 12px}
+
+/* ================= 标签语言（同源斜切角 → 各装饰位） ================= */
+.ling{display:flex;flex-direction:column;gap:4px;width:100%;border:1px solid var(--g5);border-radius:6px;
+  padding:8px;background:#FFFFFF;position:relative}
+.ling .lb{font-size:11px;color:var(--g2);line-height:1.5}
+.stag{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;font-size:11px;position:relative;
+  border-radius:4px;border:1px solid transparent;overflow:hidden;white-space:nowrap}
+.stag .nt{position:absolute;right:0;top:0;width:6px;height:6px;background:#FFFFFF;border-left:1px solid;border-bottom:1px solid}
+.s-live{background:var(--brand);border-color:var(--brand);color:#FFFFFF;font-weight:700}
+.s-live .nt{border-left-color:var(--brand);border-bottom-color:var(--brand)}
+.s-wait{background:var(--amber-tint);border-color:#E6CFAE;color:var(--warn);font-weight:700}
+.s-wait .nt{border-left-color:#E6CFAE;border-bottom-color:#E6CFAE}
+.s-ok{background:var(--celadon-tint);border-color:#BCD9D7;color:var(--celadon);font-weight:700}
+.s-ok .nt{border-left-color:#BCD9D7;border-bottom-color:#BCD9D7}
+.s-off{background:#F0F2F5;border-color:#D8DEE6;color:var(--g2);font-weight:600}
+.s-off .nt{border-left-color:#D8DEE6;border-bottom-color:#D8DEE6}
+.s-bad{background:var(--danger-tint);border-color:#E7C6C2;color:var(--danger);font-weight:700}
+.s-bad .nt{border-left-color:#E7C6C2;border-bottom-color:#E7C6C2}
+
+.sectag{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;font-size:11px;font-weight:600;
+  color:var(--g2);border:1px solid var(--g5);background:#FFFFFF;border-radius:4px;position:relative}
+.sectag .nt{position:absolute;right:0;top:0;width:6px;height:6px;background:#FFFFFF;border-left:1px solid var(--g4);border-bottom:1px solid var(--g4)}
+.cap{display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 12px;font-size:13px;font-weight:600;
+  color:var(--g2);border:1px solid var(--g4);border-radius:999px;background:#FFFFFF}
+.cap.on{background:var(--brand);border-color:var(--brand);color:#FFFFFF;font-weight:700;position:relative;overflow:hidden}
+.cap.on .nta{position:absolute;right:0;bottom:0;width:8px;height:8px;background:#FFFFFF;border-left:1px solid rgba(255,255,255,.85);border-top:1px solid rgba(255,255,255,.85)}
+.seg{display:flex;height:34px;padding:2px;border:1px solid var(--g5);border-radius:6px;background:#FFFFFF;width:100%}
+.seg div{flex:1 1 0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:400;color:var(--g2);border-radius:4px;position:relative;overflow:hidden}
+.seg div.on{background:var(--brand);color:#FFFFFF;font-weight:700}
+.seg div.on.left .ntb{position:absolute;left:0;bottom:0;width:4px;height:4px;background:#FFFFFF;border-right:1px solid rgba(255,255,255,.85);border-top:1px solid rgba(255,255,255,.85)}
+.badge4{display:inline-flex;align-items:center;height:16px;padding:0 4px;font-size:10.5px;font-weight:700;
+  background:var(--brand-tint);color:var(--brand);border-radius:4px;position:relative;overflow:hidden}
+.badge4 .ntc{position:absolute;right:0;top:0;width:4px;height:4px;background:#FFFFFF;border-left:1px solid #C7D8EC;border-bottom:1px solid #C7D8EC}
+
+/* ================= 金额 / 数字 ================= */
+.amt{display:flex;align-items:baseline;gap:4px;font-variant-numeric:tabular-nums}
+.amt .cur{font-size:12px;font-weight:600;color:var(--amber)}
+.amt .v{font-size:18px;font-weight:700;color:var(--amber);letter-spacing:0}
+.amt .v.sml{font-size:15px}
+.amt .v.lg{font-size:22px}
+.amt .u{font-size:12px;font-weight:600;color:var(--g3)}
+.stat{display:flex;align-items:baseline;gap:4px;font-variant-numeric:tabular-nums}
+.stat .v{font-size:15px;font-weight:700;color:var(--g1)}
+.stat .v.lg{font-size:22px}
+.stat .u{font-size:12px;font-weight:600;color:var(--g3)}
+.goldline{display:flex;align-items:center;gap:8px}
+.goldline .bar4{width:4px;height:16px;background:var(--amber);border-radius:1px;flex:0 0 4px}
+.lvbadge{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:4px;
+  background:var(--amber-tint);border:1px solid #E6CFAE;color:var(--amber);font-size:11px;font-weight:700}
+
+/* ================= 空态 / 骨架 ================= */
+.emptybox{position:relative;flex:1 1 auto;width:100%;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;overflow:hidden;border-radius:var(--r-ctl);border:1px solid var(--g5)}
+.frameico{width:48px;height:48px;border:1px solid var(--g4);border-radius:6px;display:flex;align-items:center;
+  justify-content:center;color:var(--g3);position:relative;background:#FFFFFF}
+.sr2{display:flex;align-items:center;width:88px}
+.sr2 .d3{width:3px;height:3px;background:var(--g4)}
+.sr2 .l1{flex:1 1 auto;height:1px;background:var(--g4)}
+.sk{background:var(--sk)!important;border-color:var(--sk)!important;color:transparent!important;position:relative}
+.sk::after{content:"";position:absolute;left:0;top:0;bottom:0;width:40%;opacity:1;
+  background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.55) 50%,rgba(255,255,255,0) 100%)}
+.sk4{background:#EFF2F7!important;border-color:#EFF2F7!important;color:transparent!important;position:relative}
+.sk4::after{content:"";position:absolute;left:0;top:0;bottom:0;width:40%;opacity:1;
+  background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.55) 50%,rgba(255,255,255,0) 100%)}
+.skbar{height:12px;border-radius:4px}
+.sktext{font-size:11px;color:var(--g3);line-height:1.6}
+
+/* ================= 谱系图 ================= */
+.lineage{display:flex;flex-direction:column;gap:16px;border:1px solid var(--g5);border-radius:var(--r-card);
+  padding:16px;background:#FFFFFF}
+.lgc{display:flex;align-items:stretch}
+.up{width:24px;flex:0 0 24px;border-left:1px solid var(--g5);align-self:flex-start;height:24px}
+.lgtree{display:flex;align-items:center;gap:0}
+.node{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:124px}
+.nbox{position:relative;height:40px;padding:0 12px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--g4);border-radius:4px;background:#FFFFFF;font-size:12px;font-weight:700;color:var(--g1)}
+.nbox.ink{background:var(--brand-ink);border-color:var(--brand-ink);color:#FFFFFF}
+.nbox.brandline{border-color:var(--brand);color:var(--brand)}
+.ncap{font-size:10.5px;color:var(--g3);text-align:center;line-height:1.5}
+.hinge{width:24px;height:1px;background:var(--g5);flex:0 0 24px;align-self:center}
+.lgtxt{font-size:12px;color:var(--g2);line-height:1.9}
+.lgtxt b{color:var(--g1)}
+table.tb{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+table.tb th,table.tb td{border:1px solid var(--g5);padding:8px 12px;text-align:left;vertical-align:top;line-height:1.7}
+table.tb th{background:var(--g6);font-weight:700}
+table.tb td.n{font-variant-numeric:tabular-nums}
+.ok{color:var(--celadon);font-weight:700}
+.no{color:var(--danger);font-weight:700}
+.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.note{border:1px solid var(--g5);border-radius:var(--r-ctl);padding:12px}
+.note h3{font-size:13px;font-weight:700;margin-bottom:8px}
+.note p{font-size:12px;color:var(--g2);line-height:1.9}
+.spacing{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.spx{border:1px solid var(--g5);border-radius:6px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:64px}
+.spx i{display:block;height:6px;background:var(--brand);border-radius:1px}
+.spx b{font-size:11px}
+.spx em{font-style:normal;font-size:10.5px;color:var(--g3);font-variant-numeric:tabular-nums}
+</style></head>
+<body><div class="doc">
+<!-- 审批出图参数（运行时读取，不影响静态打开）：?scale=0.9 等比缩放；?minH=4200 撑到指定高度（分段截取用）；?banner=文字 顶部加分段说明条 -->
+<div id="banner" style="display:none;align-items:center;gap:8px;height:48px;padding:0 24px;background:#0F2440;color:#FFFFFF;font-size:14px;font-weight:700;border-radius:10px;margin-bottom:16px"></div>
+<div class="doch">
+  <h1>祁连山电竞 · 品牌装饰系统规范</h1>
+  <p class="sub">在既定品牌地基（<code>docs/32</code> 色板 / 字体 7 级 / 图标 4 档 / 卡片 3 档 / 动效 3 档 / 辅助图形三件）之上，<b>只加装饰、不改结构</b>。
+  6 个装饰位逐条给出「正例 / 反例 / 一句话规则」。负责人 2026-10-15 放宽手段：<b>颜色可以用、自创装饰可以用、通用做法（浅底块 / 主题色描边 / 分隔色带 / 圆角色卡 / 图标底色）可以用</b>；
+  仍然守住<b>不画山 · 不用 emoji 当图标 · 全站金额只用 ¥/元 · 白底为主 · 4dp 网格 · 全站唯一金</b>。
+  本系统 = <b>一条 45° 刀口 + 一张 4dp 网格 + 三档尺度的色彩用量</b>，外加第 ⑦ 节的《配色使用规则表》与第 ⑧ 节的《手段取舍表》。</p>
+  <div class="metarow">
+    <span><b>基准</b> <code>docs/32</code> · <code>docs/21</code> · <code>docs/39</code> · <code>CLAUDE.md</code></span>
+    <span><b>色板唯一真相</b> 墨蓝 #0F2440 · 主交互 #1D5FA8 · 青瓷 #0E7C7B · 唯一金 #B4732A</span>
+    <span><b>网格</b> 4dp（4/8/12/16/20/24/32/48/64）</span>
+    <span><b>手机壳</b> 390×844</span>
+    <span><b>状态</b> 待审批 · 未改任何产品代码</span>
+  </div>
+</div>
+
+<div class="kernel">
+  <h2>统一性内核：一套装饰 = 一条 45° 线 + 一张 4dp 网格</h2>
+  <p>「一眼认出是同一套」不靠多画元素，靠<b>三个重复量</b>：① 全部切口都是 <b>45° 直线</b>（没有圆角切口、没有弧形、没有三角拼贴）；
+  ② 全部线宽只有 <b>2 档</b>（1dp 发丝 / 2dp 品牌）；③ 全部尺寸只落 <b>4dp 网格</b>（切口 6×6 与 8×8、端点 3×3、标尺到内容 8dp、线到内容 12dp、区块间 20dp）。
+  把这三条对所有装饰位重复一遍，跨页面就自动是同一套 —— 不需要"每页配一个彩色小标签"去提示"我们是一个品牌"。</p>
+  <div class="k3">
+    <div><b>重复量 ①｜角度</b>所有斜切角 = 45°。状态标签 / 分区标签 / 筛选胶囊选中 / 小角标 / 卡片角 / 徽章角 —— 同一把刀口，只是尺寸分两级。</div>
+    <div><b>重复量 ②｜线宽</b>只两档：1dp（#CDD6E2 描边 · #E3E8EF 发丝）与 2dp（#1D5FA8 品牌）。不出现 0.5dp / 1.5dp / 3dp 的中间值。</div>
+    <div><b>重复量 ③｜落格</b>装饰的每个尺寸与间距都是 4dp 倍数：切口 6/8、端点 3（3×3 为对齐像素取 3）、标尺到内容 8、线到内容 12、区块间 20、页边 16。</div>
+  </div>
+  <p style="margin-top:12px"><b>元素少的时候靠什么撑住品牌识别度？（本题核心）</b>
+  陪玩/打手的展示字段被收窄到「头像 + 名字 + 介绍 + 接单次数 + 好评率」——状态胶囊、评分、价格、徽章一律不画，能挂装饰的地方确实变少了。
+  <b>负责人 2026-10-15 放宽了手段</b>：「品牌化装饰我们可以用<b>颜色</b>、<b>自创的</b>、<b>普通的那些</b>」——
+  所以识别度不再只押在版式上，而是押在<b>三个量被同时重复</b>上：<b>45° 刀口 × 4dp 网格 × 三档尺度的色彩用量</b>（三档 = 极浅底 / 实色描边 / 极小面积品牌锚）。</p>
+  <div class="k3" style="margin-top:8px">
+    <div><b>① 刀口重复</b>页面元素越少，"唯一的形状信号"就越显眼 —— 全站只剩一种切口形状（45°），它会成为用户脑中"这个 App"的锚点，而不是被十几种装饰冲淡。</div>
+    <div><b>② 尺度的重复</b>颜色不当"填色板"，而当"三档音量"：极浅底（<code>#E8EEF7/#E3F0EF/#F7EDE0/#F4F6F9</code>）打底 · 实色/描边（<code>#1D5FA8/#0E7C7B</code>）定位 · 极小面积品牌锚（<code>#0F2440</code>）落徽。任何一个元素用色，都能说出它属于哪一档。</div>
+    <div><b>③ 分工与节奏重复</b>内容行 = 发丝线（无端点），区块 = 标尺线（3×3 端点）；组内紧（8/12）组间松（20/24）四页一致。字段少时，字重对比（800/700/600/400）与留白承担了原本靠彩色标签承担的层级。</div>
+  </div>
+  <p style="margin-top:12px">反过来说：<b>如果"刀口 / 三档色彩 / 线的分工"这三件事里有两件没做到，页面就会同时"元素少"且"没有品牌"。</b>
+  所以第 ⑤ 节的标签扩展与第 ⑦ 节的配色规则必须做扎实 —— 它们共同承担了元素变少后的识别度。</p>
+</div>
+
+<!-- ============ ① 页面骨架 ============ -->
+<div class="sec" id="s1">
+  <div class="sech"><span class="st">① 页面骨架</span><span class="ss">页头 / 内容 / 页底 —— 装饰出现在哪几条基准线上</span><span class="sp"></span><span class="tagq">基准线网格图</span></div>
+  <div class="cap"><b>基准线网格（左图，虚线 = 基准线）</b>：整屏只有 <b>5 条横基准线</b> + <b>2 条纵基准线</b>，装饰元素必须贴着其中一条。横线自上而下：
+  <code>B0 页头底线 104</code>（状态栏 48 + 页头 56）· <code>B1 品牌区底线 168</code>（品牌区 64）· <code>B2 首块内容线 188</code>（区块间 20）· <code>B3 区块间线 288</code>（区块间 20）
+  · <code>B4 页底信号线 788</code>（页底 56）。纵线 <code>V0 左页边 16</code> · <code>V1 右页边 374</code>。装饰只允许落在 <b>B0 / B1 / B4 三处</b>：页头底线放 <b>标尺线（无左端点方块，示意"页级分隔"）</b>，
+  页底信号线放 <b>标尺线（带左端点方块，示意"这一页到此结束"）</b>，区块之间放 <b>左右端点齐备的标尺线</b>；品牌区底线的细网格只属于品牌区，不越界到内容区。
+  <b>另外本图预留了「打手等级标识」的几何位（L-SLOT，琥珀色虚线框）—— 只锁尺寸与间距，不画形态、不起名字</b>（详见右侧说明）。</div>
+  <div class="rows">
+    <div class="rw wide"><div class="lab"><span class="k">基准线网格</span><span class="v">390×844 · 全屏可量</span></div>
+      <div class="cls">
+        <div style="position:relative;flex:0 0 auto">
+          <div class="shell" style="border-radius:0">
+            <div class="sb48"><span class="num">21:34</span><span class="r"><span class="bars"><i></i><i></i><i></i><i></i></span><span class="batt"><i></i></span></span></div>
+            <div class="h56"><span class="tt">服务</span><span class="sp"></span><span style="color:var(--g2)">排行 · 公告</span></div>
+            <div style="flex:0 0 64px;background:#FFFFFF;border-bottom:1px solid var(--g5);position:relative;padding:12px 16px">
+              <div class="gridtex"></div>
+              <div style="position:relative;display:flex;align-items:center;gap:8px">
+                <div style="width:40px;height:40px;border-radius:6px;background:var(--brand-ink);color:#FFFFFF;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center">祁</div>
+                <div><div style="font-size:15px;font-weight:700">祁连山电竞</div><div style="font-size:12px;color:var(--g2);margin-top:4px">官方自营 · 平台直营无第三方</div></div>
+              </div>
+            </div>
+            <div class="flow" style="padding:20px 0 0">
+              <div style="position:relative;background:#FFFFFF;border-top:1px solid var(--g5);border-bottom:1px solid var(--g5)">
+                <div class="sr" style="width:358px;margin-left:16px"><span class="dot3"></span><span class="ln"></span><span class="dot3"></span></div>
+              </div>
+              <div style="padding:12px 16px;display:flex;flex-direction:column;gap:12px">
+                <div style="height:64px;border:1px solid var(--g5);border-radius:14px;position:relative;overflow:hidden">
+                  <div class="notch" style="left:-1px;bottom:-1px;background:#FFFFFF"></div>
+                  <div style="padding:12px;font-size:13px;font-weight:700">段位上分 · 保底结算</div>
+                </div>
+                <div style="height:64px;border:1px solid var(--g5);border-radius:14px"></div>
+              </div>
+              <div style="position:relative;background:#FFFFFF;border-top:1px solid var(--g5);padding:8px 0">
+                <div class="sr" style="width:358px;margin-left:16px"><span class="dot3 b"></span><span class="ln b"></span><span class="dot3"></span></div>
+              </div>
+              <div style="padding:0 16px;font-size:11px;color:var(--g3)">区块间标尺线：左右端点齐备，提示"上一块结束"</div>
+            </div>
+            <div class="tb56"><div class="tb on"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4.4h6.4v6.4H4zM13.6 4.4H20v6.4h-6.4zM4 13.6h6.4V20H4zM13.6 13.6H20V20h-6.4z"/></svg><span class="tl">服务</span></div><div class="tb"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4.4h14v15.2H5zM9 9h6M9 12.6h6"/></svg><span class="tl">订单</span></div><div class="tb rz"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg><span class="tl">下单</span></div><div class="tb"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12.4c0 3.9-3.6 7-8 7l-3-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tl">消息</span></div><div class="tb"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8a3.6 3.6 0 1 0 0 .01M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tl">我的</span></div></div>
+            <div class="guide" style="top:104px"><span class="gt">B0 页头底线 104</span></div>
+            <div class="guide" style="top:168px"><span class="gt">B1 品牌区底线 168</span></div>
+            <div class="guide" style="top:188px"><span class="gt">B2 首块内容线 188</span></div>
+            <div class="guide" style="top:288px"><span class="gt">B3 区块间线 288（+20 间隔 308）</span></div>
+            <div class="guide" style="top:788px"><span class="gt">B4 页底信号线 788</span></div>
+            <div style="position:absolute;top:0;bottom:0;left:16px;width:1px;border-left:1px dashed #C7D2E0"></div>
+            <div style="position:absolute;top:0;bottom:0;left:374px;width:1px;border-left:1px dashed #C7D2E0"></div>
+            <div class="mzone"></div><div class="mzone r"></div>
+            <!-- 等级标识预留位（只留位、只标尺寸，不画形态、不起名字） -->
+            <div style="position:absolute;left:232px;top:126px;width:72px;height:20px;border:1px dashed #B4732A;border-radius:4px"></div>
+            <div style="position:absolute;left:232px;top:112px;font-size:11px;color:#B4732A;font-family:var(--mono)" data-ok>L-SLOT</div>
+            <div style="position:absolute;left:196px;top:150px;right:16px;height:0;border-top:1px dashed rgba(180,115,42,.55)"></div>
+            <div style="position:absolute;left:196px;top:138px;font-size:11px;color:#B4732A;font-family:var(--mono)" data-ok>↔ 8dp（名字 → 等级位）</div>
+          </div>
+          <div class="gnotes">
+            <div class="gn"><h4>L-SLOT · 打手等级标识的预留位（本轮不画形态）</h4>
+              <p>负责人：<b>「后期我会给打手加等级，等我想好名称告诉你」</b> → 所以本系统<b>只锁几何、不锁内容</b>。
+              位置：与名字<b>同一行</b>、名字右侧；尺寸 <b>高 20 × 最长 72</b>（高 20 = 标签档，与分区标签同高）；与名字间距 <b>8dp</b>；左起点跟随名字右缘（名字长度可变，所以左起点会浮动，右缘不动）。
+              形态<b>尚未指定</b>：名称确定后，它按第 ⑤ 节的标签规则落地（20 高 → 右上 6×6 斜切角、字号 11、字重 700）；<b>若名称含等级语义，它属于"等级"→ 允许用唯一金 <code>#B4732A</code>，这是全站除价格外第二个允许上金的位置</b>。</p>
+              <p>为什么现在就留位：不动版式就能上内容 —— 名字行的高度已经按 20dp 预留（<span class="v">行高 24 = 名字 15sp 行高 20 + 4 余量</span>），补上时既不挤行、也不需要重排列表。</p>
+            </div>
+            <div class="gn"><h4>横基准线（5 条）</h4>
+              <p><span class="v">B0 104</span> = 状态栏 48 + 页头 56 · <span class="v">B1 168</span> = + 品牌区 64 · <span class="v">B2 188</span> = + 区块间 20 · <span class="v">B3 288</span> = + 内容块 80 + 区块间 20 · <span class="v">B4 788</span> = 844 − 页底 56</p>
+              <p>装饰只能贴 <b>B0 / B1 / B4</b> 三处（页级、品牌区、页底）；<b>B2 / B3</b> 是内容与区块的"停靠线"，装饰不许压在上面。</p>
+            </div>
+            <div class="gn"><h4>纵基准线（2 条）</h4>
+              <p><span class="v">V0 = 16</span>（左页边）· <span class="v">V1 = 374</span>（右页边）→ 内容栏宽 <span class="v">358</span>。</p>
+              <p>所有贴线装饰（标尺线、发丝线、区块短标）左端都从 V0 起；列表行的发丝线缩进 16 与 V0 对齐；装饰<b>不越过 V0/V1</b>（通栏装饰图是唯一例外，它按定案通栏直角）。</p>
+            </div>
+          </div>
+          </div>
+          <div class="meascol" style="margin-top:8px"><span>V0 = 16（左页边）</span><span>栏宽 = 358</span><span>V1 = 374（右页边）</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rw"><div class="lab"><span class="k">正例</span><span class="v">装饰贴基准线</span></div>
+      <div class="cls">
+        <div class="cs"><div class="mark ok">贴线</div>
+          <div style="width:100%;background:#FFFFFF;border-bottom:1px solid var(--g5)">
+            <div class="sr" style="width:100%"><span class="dot3 b"></span><span class="ln b"></span><span class="dot3"></span></div>
+          </div>
+          <div class="rul">页级分隔 = 标尺线贴在 <b>B0</b>，左端点方块 = 品牌；右端点 = 描边灰。上块底边与线之间 <b>0 间距</b>（线本身就是底边），线到下一块内容 <b>8dp</b>。</div>
+        </div>
+        <div class="cs"><div class="mark ok">落格</div>
+          <div style="width:100%;padding:8px 0"><div style="height:64px;border:1px solid var(--g5);border-radius:14px;position:relative"><span class="notch" style="left:-1px;bottom:-1px;background:#FFFFFF"></span></div></div>
+          <div class="rul">卡片与区块之间 <b>20dp</b>（<code>AppSpacing</code> 的"组间松"），卡内 <b>12–16dp</b>，卡片上沿不压基准线、与基准线保持 20dp，视觉上"挂"在两条基准线之间。</div>
+        </div>
+        <div class="cs"><div class="mark ok">页底</div>
+          <div style="width:100%;background:#FFFFFF;border-top:1px solid var(--g5);padding:8px 0"><div class="sr" style="width:100%"><span class="dot3 b"></span><span class="ln"></span><span class="dot3"></span></div><div style="font-size:11px;color:var(--g3);margin-top:4px">已到页尾 · 无更多内容</div></div>
+          <div class="rul">**B4 页底信号线**用带左端方块的长标尺线收口 —— 明确"滚动到底了"，替代"再塞一行灰字提示"。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rw"><div class="lab"><span class="k">反例</span><span class="v">装饰脱离基准线</span></div>
+      <div class="cls">
+        <div class="cs bad"><div class="mark no">居中装饰</div>
+          <div style="width:100%;display:flex;justify-content:center;background:#FFFFFF;border-bottom:1px solid var(--g5);padding:8px 0"><div class="sr" style="width:64px"><span class="dot3"></span><span class="ln"></span><span class="dot3"></span></div></div>
+          <div class="rul">居中短装饰线：既不表达"页开始"也不表达"页结束"，纯粹是填充物 —— 去掉后版面反而更稳。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">满屏网格</div>
+          <div style="width:100%;height:64px;position:relative;border:1px solid var(--g5);border-radius:10px;overflow:hidden"><div class="gridtex"></div><div style="position:relative;padding:12px;font-size:12px">正文压在同密度网格上</div></div>
+          <div class="rul">细网格铺到正文区：可读性下降、且它不再专属于品牌区 → 品牌区与内容区失去区分信号。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">越格间距</div>
+          <div style="width:100%;background:#FFFFFF;padding:10px 16px;border:1px solid var(--g5);border-radius:10px">
+            <div style="height:20px;border:1px solid var(--g5);border-radius:4px;margin-bottom:11px"></div>
+            <div style="height:20px;border:1px solid var(--g5);border-radius:4px"></div>
+          </div>
+          <div class="rul">块间距 <b>10 / 11 / 13 / 15</b>（<code>docs/39</code> 抽样现状 P1–P16）：同一页混用多种刻度 → 节奏读不出来，且没法抽 token 收口。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ② 卡片语言 ============ -->
+<div class="sec" id="s2">
+  <div class="sech"><span class="st">② 卡片语言</span><span class="ss">三档卡片的<b>唯一</b>装饰特征 + 为什么是一套</span><span class="sp"></span><span class="tagq">三档对比</span></div>
+  <div class="cap"><b>各自的唯一特征（互相不可替换）</b>：<b>HeroCard</b> = 白底 + <code>#E8EEF7</code> 细网格 + <b>右上 24dp 墨蓝字标块</b>（品牌锚，每屏 ≤1）；<b>ContentCard</b> = 白底 + 1dp <code>#E3E8EF</code> 描边 + 圆角 14 + <b>左下 6×6 切口</b>；
+  <b>ListCard</b> = 通栏白底 + 上下 1dp 发丝 + 圆角 0 + <b>行高 48/56/64</b>（无切口，序列表格不需要"角"这个语义）。<b>三档同源靠三件事</b>：切口全是 45°、圆角只用 <code>0 / 4 / 10 / 14 / 胶囊</code>、卡内距只用 12/16。</div>
+  <div class="trio" style="margin-bottom:12px">
+    <div class="triobox"><span class="triocap">HeroCard <em>每屏 ≤ 1</em></span>
+      <div class="hero"><div class="gridtex"></div>
+        <div class="hm">祁</div>
+        <div class="hl" style="font-size:15px;font-weight:700">祁连山电竞 · 官方自营</div>
+        <div class="hl" style="font-size:11px;color:var(--g2)">平台直营 · 无第三方 · 客服 9:00-次日 2:00</div>
+        <div class="hl"><span class="badge4">官方自营<span class="ntc"></span></span></div>
+      </div>
+      <div class="triocap" style="font-weight:400;color:var(--g3)">特征 = 细网格 + 24dp 墨蓝字标块（左上角同款 6×6 小切口呼应）</div>
+    </div>
+    <div class="triobox"><span class="triocap">ContentCard <em>多个</em></span>
+      <div class="contentcard"><span class="notch" style="left:0;bottom:0"></span>
+        <div style="display:flex;align-items:center;gap:8px"><span class="vtick"></span><span style="font-size:15px;font-weight:700">段位上分 · 保底结算</span></div>
+        <div style="font-size:12px;color:var(--g2)">未达保底按差额补单，先服务后结算</div>
+        <div style="display:flex;align-items:baseline;gap:4px"><span class="amt"><span class="cur">¥</span><span class="v sml">36.60</span></span><span class="amt"><span class="u">起</span></span></div>
+      </div>
+      <div class="triocap" style="font-weight:400;color:var(--g3)">特征 = 14 圆角 + 1dp 描边 + 左下 6×6 切口 + 8dp 品牌短标</div>
+    </div>
+    <div class="triobox"><span class="triocap">ListCard <em>多个</em></span>
+      <div class="listcard">
+        <div class="lr"><span style="flex:1 1 auto;font-size:13px;font-weight:700">和平精英 · 手游</span><span style="font-size:11px;color:var(--g3)">46 名在线</span></div>
+        <div class="hair i"></div>
+        <div class="lr"><span style="flex:1 1 auto;font-size:13px;font-weight:700">三角洲行动 · 手游</span><span style="font-size:11px;color:var(--g3)">31 名在线</span></div>
+      </div>
+      <div class="triocap" style="font-weight:400;color:var(--g3)">特征 = 通栏 0 圆角 + 发丝缩进 16 + 行高 48</div>
+    </div>
+  </div>
+  <div class="rows">
+    <div class="rw wide"><div class="lab"><span class="k">L-SLOT</span><span class="v">等级标识预留位</span></div>
+      <div class="cls">
+        <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:12px">
+          <div style="width:300px;border:1px solid var(--g5);border-radius:14px;padding:12px;position:relative">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:999px;background:var(--brand-tint);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">头像</div>
+              <div style="font-size:15px;font-weight:700">青柠不加冰</div>
+              <div style="width:72px;height:20px;border:1px dashed var(--amber);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--amber);font-family:var(--mono)" data-ok>← L-SLOT</div>
+            </div>
+            <div style="margin-top:8px;font-size:12px;color:var(--g2);line-height:1.6">主玩医疗兵，周中 20:00 后在线，不接急单</div>
+            <div style="margin-top:8px;font-size:11px;color:var(--g3)">接单 1,286 次 · 好评率 98.4%</div>
+          </div>
+          <div style="font-size:11px;color:var(--g3);font-family:var(--mono)">名字右缘 → 8dp → L-SLOT（高 20 × 最长 72）→ 行尾</div>
+        </div>
+        <div class="gnotes">
+          <div class="gn"><h4>为什么在卡片语言里也留这个位</h4>
+            <p>等级标识会同时出现在<b>两处</b>：列表行（陪玩/打手列表）与身份卡（打手信息页顶卡）。两处都用<b>同一份几何</b>：高 20、最长 72、与名字间距 8dp、与名字同一行且垂直居中。</p>
+            <p>本轮<b>不画形态</b>（负责人尚未给名称）。第 ⑤ 节的标签规则已经把这个尺寸档的形态定死：<b>高 20 → 右上 6×6 斜切角、字号 11、字重 700</b>，所以名称一到就能直接落，不需要重新排版。</p>
+          </div>
+          <div class="gn"><h4>唯一金的第二个合法位置</h4>
+            <p>铁律「全站唯一金 <code>#B4732A</code> 只给价格与等级」里的<b>等级</b>就是这里。也就是说：L-SLOT 是唯一不与价格冲突的用金位置；除它之外出现金即违规。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rows" style="margin-top:12px">
+      <div class="cls">
+        <div class="cs"><div class="mark ok">序列表格</div>
+          <div style="width:100%;font-size:11px;color:var(--g2);line-height:1.8">列表用 <b>ListCard</b>（无圆角、发丝线）—— 表格天生没有"角"的语义，强行加圆角只会让 5 行以上列表出现"饼干盒"感。</div>
+        </div>
+        <div class="cs"><div class="mark ok">内容块</div>
+          <div style="width:100%;font-size:11px;color:var(--g2);line-height:1.8"><b>ContentCard</b> 只给"一个独立知识块"（一段规则、一个商品、一份明细）；同屏 ≤3 张，超过就改列表。</div>
+        </div>
+        <div class="cs"><div class="mark ok">每屏上限</div>
+          <div style="width:100%;font-size:11px;color:var(--g2);line-height:1.8"><b>HeroCard ≤1 个</b>（品牌锚面积极小）；出现第 2 个 = 品牌锚被摊平，一眼看起来"每块都重要" = 都不重要。</div>
+        </div>
+      </div>
+    </div>
+    <div class="rw"><div class="lab"><span class="k">反例</span><span class="v">常见三错</span></div>
+      <div class="cls">
+        <div class="cs bad"><div class="mark no">左侧彩色竖条</div>
+          <div style="width:100%;display:flex;background:#FFFFFF;border:1px solid var(--g5);border-radius:14px;overflow:hidden"><i style="display:block;width:4px;background:var(--brand)"></i><div style="padding:12px"><span style="font-size:11px;color:var(--g2)">整条 4dp 品牌色竖条贯穿卡高</span></div></div>
+          <div class="rul"><code>docs/21</code> 点名"过时模板签名"；且它把品牌色做成大面积 → 与"品牌色只做点缀"冲突。改成 <b>8dp 短标</b>（只占一行高、只 2dp 厚）。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">全大圆角 + 阴影</div>
+          <div style="width:100%;height:64px;border-radius:18px;background:#FFFFFF;border:1px solid var(--g5);box-shadow:0 4px 14px rgba(15,23,42,.10)" data-bad="shadow"></div>
+          <div class="rul">18 圆角 + 投影铺满卡片：玩具感 + 每张卡都"浮"起来 → 层级噪音。卡片<b>零阴影</b>，阴影只给弹层。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">切口不成体系</div>
+          <div style="width:100%;display:flex;gap:8px;align-items:center">
+            <span style="width:40px;height:24px;border:1px solid var(--g4);border-radius:4px;position:relative;display:block"><span class="notch" style="left:0;top:0;width:6px;height:6px;background:#FFFFFF;border:0;border-right:1px solid var(--g4);border-bottom:1px solid var(--g4)"></span></span>
+            <span style="width:40px;height:24px;border:1px solid var(--g4);border-radius:4px;position:relative;display:block"><span style="position:absolute;right:0;bottom:0;width:8px;height:8px;background:#FFFFFF;border-left:1px solid var(--g4);border-top:1px solid var(--g4)"></span></span>
+            <span style="width:40px;height:24px;border:1px solid var(--g4);border-radius:999px;position:relative;display:block"><span style="position:absolute;right:0;top:0;width:6px;height:6px;background:#FFFFFF;border-left:1px solid var(--g4);border-bottom:1px solid var(--g4)"></span></span>
+          </div>
+          <div class="rul">左上 6×6 / 右下 8×8 / 胶囊也切 —— 三处不同角位与尺寸 → 看起来是三种来源。规则：<b>同一元素只用一处、只用 6×6；8×8 仅出现在高 32 的胶囊</b>。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ③ 区块标题 ============ -->
+<div class="sec" id="s3">
+  <div class="sech"><span class="st">③ 区块标题</span><span class="ss">在既有 <code>AppSectionHeader</code> 上只加一条标尺线</span><span class="sp"></span><span class="tagq">正例 / 反例</span></div>
+  <div class="cap">既有 <code>AppSectionHeader</code>（左标题 15/w800 + 可选副标 + 右侧动作）结构不动，装饰只加两处：<b>① 标题左侧 4×16 品牌短标</b>（高 = 字号 15 的 16dp，宽 4dp，落格）；
+  <b>② 标题下方的标尺线</b>（1dp 发丝 + 左右各 3×3 端点方块，线到标题 8dp）。这条线同时替代"卡片上边框"和"分组底色" —— 一个信息只用一个信号，所以不会像"每段配个彩色小标签"。</div>
+  <div class="rows">
+    <div class="rw"><div class="lab"><span class="k">正例</span><span class="v">标尺线式区块头</span></div>
+      <div class="cls">
+        <div class="cs"><div class="mark ok">基本型</div>
+          <div style="width:100%;padding:20px 0 0">
+            <div style="display:flex;align-items:center;gap:8px"><span class="vtick"></span><span style="font-size:15px;font-weight:800">选择分部</span><span style="font-size:11px;color:var(--g3)">按游戏 · 平台划分</span><span style="flex:1 1 auto"></span><span style="font-size:12px;font-weight:600;color:var(--brand)">共 3 个</span></div>
+            <div style="margin-top:8px"><div class="sr" style="width:100%"><span class="dot3"></span><span class="ln"></span><span class="dot3"></span></div></div>
+          </div>
+          <div class="rul"><b>4×16 短标 + 8dp + 标尺线</b>。区块上间距 20dp（与上一块的"组间松"同档），线到内容 8dp、内容到线 12dp。</div>
+        </div>
+        <div class="cs"><div class="mark ok">带动作</div>
+          <div style="width:100%;padding:20px 0 0">
+            <div style="display:flex;align-items:center;gap:8px"><span class="vtick" style="background:var(--celadon)"></span><span style="font-size:15px;font-weight:800">官方自营馆</span><span style="flex:1 1 auto"></span><span style="font-size:12px;font-weight:600;color:var(--brand)">全部商品</span></div>
+            <div style="margin-top:8px"><div class="sr" style="width:100%"><span class="dot3 b"></span><span class="ln"></span><span class="dot3"></span></div></div>
+          </div>
+          <div class="rul">右侧动作保持 12sp 品牌蓝（既有口径），左端方块在该区块属于<b>青瓷体系</b>时跟手换成青瓷 —— 同一条规则，只换色不改形。</div>
+        </div>
+        <div class="cs"><div class="mark ok">次级区块</div>
+          <div style="width:100%;padding:20px 0 0">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--g2)">最近评价</span><span style="font-size:11px;color:var(--g3)">128 条</span></div>
+            <div style="margin-top:8px"><div class="sr" style="width:100%;opacity:1"><span class="dot3"></span><span class="ln"></span><span class="dot3"></span></div></div>
+          </div>
+          <div class="rul">第二层区块（不在页级导航树上）不配短标，只保留标尺线 —— 短标数量 = 该页"顶级分区数"，不是"每个标题都有"。</div>
+        </div>
+      </div>
+    </div>
+    <div class="rw"><div class="lab"><span class="k">反例</span><span class="v">AI 味三种标题</span></div>
+      <div class="cls">
+        <div class="cs bad"><div class="mark no">彩色小标签</div>
+          <div style="width:100%;display:flex;align-items:center;gap:4px"><span class="sectag">选择分部<span class="nt"></span></span><span style="font-size:11px;color:var(--g2)">每段一个彩色片 = 模板签名</span></div>
+          <div class="rul">标签是"必须区分的项"专用（平台/状态/价格）。标题本身不需要被区分 → 标签化后整页小彩片数量翻倍，主次反而消失。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">竖条 + 底色块</div>
+          <div style="width:100%;display:flex;align-items:center;gap:8px;background:var(--brand-tint);border-radius:6px;padding:8px 12px;border-left:4px solid var(--brand)"><span style="font-size:13px;font-weight:700;color:var(--brand)">选择分部</span></div>
+          <div class="rul">浅底块 + 左侧竖条：两个信号说同一件事，还把品牌色铺成面积。去掉底块，只留短标 + 线。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">居中 + 装饰线</div>
+          <div style="width:100%;display:flex;align-items:center;gap:8px"><span style="flex:1 1 auto"><span class="hair" style="display:block"></span></span><span style="font-size:13px;font-weight:700">选择分部</span><span style="flex:1 1 auto"><span class="hair" style="display:block"></span></span></div>
+          <div class="rul">居中标题 + 两侧对称装饰线（典型"分隔符"写法）：破坏左阅读边，且两侧线是纯装饰、不表达层级。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ④ 数字与金额 ============ -->
+<div class="sec" id="s4">
+  <div class="sech"><span class="st">④ 数字与金额</span><span class="ss">唯一金 #B4732A 只给价格与等级</span><span class="sp"></span><span class="tagq">正例 / 反例</span></div>
+  <div class="cap"><b>装饰靠三件事，不靠颜色</b>：① <b>等宽数字</b>（<code>tabular-nums</code>，列右对齐时小数点成列）；② <b>三级字号档</b> 15 / 18 / 22 配 w700（±2 档内不混用）；③ <b>基线上抬</b>：<code>¥</code> 与单位小字走 12sp/w600 并 <code>align-baseline</code> 对齐数字基线，数字永远比符号大 ≥1 档。
+<b>金的唯一性怎么守</b>：金只允许出现在 ① 金额数字与 <code>¥</code> ② 等级徽章；统计类数字（单量、在线数、次数、时长）一律 <code>--g1</code>，与"金"物理同屏时也保持灰黑 —— 出现第二处金即视为违规（自检按出现次数卡）。</div>
+  <div class="rows">
+    <div class="rw"><div class="lab"><span class="k">正例</span><span class="v">金 · 等宽 · 基线</span></div>
+      <div class="cls">
+        <div class="cs"><div class="mark ok">金额三档</div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+            <span class="amt"><span class="v sml">¥28.88</span><span class="u">/局</span></span>
+            <span class="amt"><span class="v">¥115.52</span><span class="u">/小时</span></span>
+            <span class="amt"><span class="v lg">¥4,286.50</span><span class="u">已结算</span></span>
+          </div>
+          <div class="rul">15 / 18 / 22 三档，数字 w700 等宽；单位小字 12sp / w600 / <code>#8A99AB</code>（与金额<b>不同色</b>，否则单位会被读成钱）。</div>
+        </div>
+        <div class="cs"><div class="mark ok">符号贴基线</div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+            <span class="amt"><span class="cur">¥</span><span class="v lg">36.60</span></span>
+            <span style="font-size:11px;color:var(--g3)">¥ 12sp / w600，贴数字基线；差 6sp = 两档</span>
+          </div>
+          <div class="rul"><code>¥</code> 永远比数字小 ≥2 档（12 vs 18/22），走 <code>align-baseline</code> —— 金额的"读法"是先看数字、再看是钱。</div>
+        </div>
+        <div class="cs"><div class="mark ok">等级徽章</div>
+          <div style="width:100%;display:flex;align-items:center;gap:8px"><span class="lvbadge">L2 · 进阶会员</span><span style="font-size:12px;color:var(--g2)">距精英会员还差 <span class="amt"><span class="v sml">¥713.60</span></span></span></div>
+          <div class="rul">等级徽章用<b>琥珀浅底 #F7EDE0 + 金描边 + 金字</b>（与价格同一个金）；进度条走青瓷，不抢金。</div>
+        </div>
+        <div class="cs"><div class="mark ok">统计非金</div>
+          <div style="width:100%;display:flex;align-items:center;gap:16px">
+            <span class="stat"><span class="v">2,847</span><span class="u">单</span></span>
+            <span class="stat"><span class="v">3 分 20 秒</span></span>
+          </div>
+          <div class="rul">统计数字一律 <code>#14202E</code> + 单位 12sp 灰。<b>同屏没有第二个金</b> → 金自然变成"这是钱/这是等级"的唯一信号。</div>
+        </div>
+      </div>
+    </div>
+    <div class="rw is4"><div class="lab"><span class="k">反例</span><span class="v">金的三种滥用</span></div>
+      <div class="cls">
+        <div class="cs bad"><div class="mark no">统计也上金</div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:8px" data-bad="gold">
+            <span class="stat"><span class="v" style="color:var(--amber)">2,847</span><span class="u">单</span></span>
+            <span class="stat"><span class="v" style="color:var(--amber)">46</span><span class="u">人在线</span></span>
+          </div>
+          <div class="rul">金色被摊到统计值上 → 价格不再是"唯一金"。自检口径：金色文字出现处里，凡不在金额/等级容器内的即算违规。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">符号与数字等大</div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:18px;font-weight:700;color:var(--amber)" data-ok>¥&nbsp;36.60</span>
+            <span style="font-size:13px;color:var(--g2)">¥ 与数字同号同色同权重 → 读数时"符号"和"数值"权重相同</span>
+          </div>
+          <div class="rul">符号必须小 ≥1 档并贴基线；同时金额串<b>必须整串可命中</b>：<code>¥36.60</code> 这一串要能被 <code>find.text</code> 整体命中，所以不能用独立小号 Text 拼。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ⑤ 状态与标签 ============ -->
+<div class="sec" id="s5">
+  <div class="sech"><span class="st">⑤ 状态与标签</span><span class="ss">同源斜切角语言 → 分区标签 / 筛选胶囊 / 分段控件</span><span class="sp"></span><span class="tagq">斜切角语言谱系图</span></div>
+  <div class="cap"><b>已定案的五档 × 四信号</b>（图标 + 形状含右上 6×6 斜切角 + 字重 600/700/800 + 颜色）保持逐字不变（<code>order_status_tag.dart</code>）。
+  本次做的是把"右上 6×6 斜切角"这一条<b>同源扩展</b>到其余三类标签。扩展规则只有两条：<b>① 语义"状态/归属" → 右上 6×6；语义"选中/进行" → 右下 8×8；语义"最小号/方向" → 4×4</b>；
+  <b>② 切口永远只用一处、只画两条边（左 + 下），另两边用元素底色"盖"出来 —— 与订单状态标签是同一个实现思路</b>（不引入 <code>ClipPath</code>）。</div>
+
+  <div class="lineage">
+    <div class="lgtxt"><b>斜切角语言谱系图</b>：一把 45° 刀口，按"元素高度"分成三级；级差由高度决定，不由审美决定。</div>
+    <div class="lgtree">
+      <div class="node"><div class="nbox ink" style="width:124px">45° 切口</div><div class="ncap">唯一角度符号<br>（无圆角切口 / 无弧形）</div></div>
+      <div class="hinge"></div>
+      <div class="node"><div class="nbox" style="width:124px">6×6</div><div class="ncap">高度 20–24<br>订单状态 · 分区标签 · 卡片角</div></div>
+      <div class="hinge"></div>
+      <div class="node"><div class="nbox" style="width:124px">8×8</div><div class="ncap">高度 32<br>筛选胶囊选中角</div></div>
+      <div class="hinge"></div>
+      <div class="node"><div class="nbox" style="width:124px">4×4</div><div class="ncap">高度 16–20<br>极小角标 · 分段方向</div></div>
+    </div>
+    <div class="lgtxt" style="margin-top:8px">线段图（同一棵树，横向读）：<code>45° 切口 ── 6×6（h20–24，右上｜状态·归属） ── 8×8（h32，右下｜选中·进行） ── 4×4（h16–20，右下｜最小号/方向）</code>；
+    四条分支共用同一条线宽规则（描边 1dp、2dp 仅给异常/售后）。</div>
+    <table class="tb">
+      <tr><th style="width:132px">装饰位</th><th style="width:104px">切口</th><th style="width:104px">角位</th><th>语义 / 为什么是这个角位</th><th style="width:112px">既有对接</th></tr>
+      <tr><td>订单状态标签</td><td class="n">6×6</td><td>右上</td><td>状态是"被判定"的结果，右上角=结论位；五档 × 四信号已定案</td><td><code>OrderStatusTag</code> 不动</td></tr>
+      <tr><td>分区标签（分部/平台/区服）</td><td class="n">6×6</td><td>右上</td><td>与状态标签同形 → 用户一眼归入"标签"类；但底色恒为 <code>#F4F6F9</code> + 灰字，不抢状态色</td><td>新增 <code>AppMetaTag</code></td></tr>
+      <tr><td>筛选胶囊 · 选中</td><td class="n">8×8</td><td>右下</td><td>胶囊高 32（比标签高一档）→ 切口同步升一档；右下角=选中"向前"的方向感</td><td>扩展 <code>AppTagChip</code></td></tr>
+      <tr><td>分段控件 · 选中段</td><td class="n">4×4</td><td>右下</td><td>分段是"切出一段"，切口最小且贴段的方向；不做整条切角（会与胶囊撞形）</td><td>扩展 <code>AppSegmented</code></td></tr>
+      <tr><td>小角标（起 / 已接 N 单）</td><td class="n">4×4</td><td>右上</td><td>高 16 的最小号，缩到 6×6 会把字吃掉半边</td><td>新增 <code>AppMiniBadge</code></td></tr>
+    </table>
+  </div>
+
+  <div class="rows" style="margin-top:12px">
+    <div class="rw"><div class="lab"><span class="k">正例</span><span class="v">同源四类</span></div>
+      <div class="cls">
+        <div class="cs"><div class="mark ok">状态（五档）</div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:4px;align-items:flex-start">
+            <span class="stag s-wait">待接单<span class="nt"></span></span>
+            <span class="stag s-live">进行中<span class="nt"></span></span>
+            <span class="stag s-ok">已完成<span class="nt"></span></span>
+            <span class="stag s-off">已取消<span class="nt"></span></span>
+            <span class="stag s-bad">异常<span class="nt"></span></span>
+          </div>
+          <div class="rul">图标 + 形状 + 字重 + 颜色四信号并行，去色后仍两两可分；<b>此档本次零改动</b>。</div>
+        </div>
+        <div class="cs"><div class="mark ok">分区标签</div>
+          <div style="width:100%;display:flex;gap:4px;flex-wrap:wrap">
+            <span class="sectag">三角洲行动 · 端游<span class="nt"></span></span>
+            <span class="sectag">微信区<span class="nt"></span></span>
+            <span class="badge4">起<span class="ntc"></span></span>
+          </div>
+          <div class="rul">同形（6×6 右上）但恒定灰底 —— 与状态标签同"家族"、不同"音量"。小角标降一档到 4×4。</div>
+        </div>
+        <div class="cs"><div class="mark ok">胶囊 / 分段</div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:8px"><span class="cap">和平精英 · 手游</span><span class="cap on">三角洲 · 端游<span class="nta"></span></span></div>
+            <div class="seg"><div class="on left"><span class="ntb"></span>进行中</div><div>已完成</div><div>全部</div></div>
+          </div>
+          <div class="rul">胶囊选中 8×8（右下）；分段选中 4×4（右下）。<b>未选中态一律不切口</b> —— 切口是"选中/状态"的专属信号。</div>
+        </div>
+      </div>
+    </div>
+    <div class="rw"><div class="lab"><span class="k">反例</span><span class="v">切口失序</span></div>
+      <div class="cls">
+        <div class="cs bad"><div class="mark no">未选中也切角</div>
+          <div style="width:100%;display:flex;gap:8px"><span class="cap on">选中<span class="nta"></span></span><span class="cap" style="position:relative;overflow:hidden">未选中<span class="nta" style="background:#FFFFFF;border-left-color:var(--g4);border-top-color:var(--g4)"></span></span></div>
+          <div class="rul">两枚胶囊都有切口 → 切口从"选中信号"退化成"胶囊自带的装饰" → 用户再也读不出哪个是选中。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">尺寸越档</div>
+          <div style="width:100%;display:flex;gap:8px;align-items:center"><span class="cap on" style="height:32px">胶囊切 6×6<span class="nta" style="width:6px;height:6px"></span></span><span class="stag s-live" style="height:20px;font-size:11px">标签切 8×8<span class="nt" style="width:8px;height:8px"></span></span></div>
+          <div class="rul">切口尺寸与元素高度脱钩：胶囊切小了像"缺了个角"，标签切大了像"被咬掉"。规则：<b>切口边长 ≈ 高度 ÷ 4，只取 4 / 6 / 8</b>。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">真裁切 + 多角</div>
+          <div style="width:100%;display:flex;gap:8px">
+            <span style="display:inline-flex;align-items:center;height:24px;padding:0 8px;font-size:11px;font-weight:700;background:var(--brand);color:#FFFFFF;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))">两角全切</span>
+            <span style="display:inline-flex;align-items:center;height:24px;padding:0 8px;font-size:11px;background:#FFFFFF;border:1px solid var(--g4);clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)">连边框一起切</span>
+          </div>
+          <div class="rul">对角双切口 + <code>ClipPath</code> 真裁：切口变"异形按钮"，且描边被裁断、在任意卡片底色上出现缝隙。统一用"底色盖角 + 两条边"的既有实现。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ⑥ 空态 / 加载 / 分隔 ============ -->
+<div class="sec" id="s6">
+  <div class="sech"><span class="st">⑥ 空态 / 加载 / 分隔</span><span class="ss">不靠插画的品牌感 + 细网格与发丝线的分工</span><span class="sp"></span><span class="tagq">正例 / 反例</span></div>
+  <div class="cap"><b>分工只有一条判据：看这条线/纹理要表达"内容结束了"还是"这里还没有内容"。</b>
+  <b>发丝线</b>（1dp <code>#E3E8EF</code>，无端点方块）= 内容<b>行分隔</b>，缩进 16 对齐文案起点；<b>标尺线</b>（1dp + 3×3 端点方块）= <b>区块/页面</b>分隔，是"结构"的线；
+  <b>细网格</b>（1px，3–5% 透明度）= 只出现在"还没有内容"的两处：品牌区背景 + 空态背景，其余区域 0 处。骨架 shimmer = 6 档灰阶底 + 白色亮带扫过（40% 宽、每 1.2s），<b>骨架块保留圆角与切口</b>（形状与真内容一致，加载完不跳版）。</div>
+  <div class="rows">
+    <div class="rw"><div class="lab"><span class="k">正例</span><span class="v">三态都不靠插画</span></div>
+      <div class="cls">
+        <div class="cs"><div class="mark ok">空态</div>
+          <div class="emptybox" style="height:172px;background:#FFFFFF">
+            <div class="gridtex"></div>
+            <div class="frameico" style="position:relative">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6.4h16v11.2H4zM8 10.4h8M8 13.6h5"/></svg>
+              <span class="notch" style="right:-1px;top:-1px;background:#FFFFFF"></span>
+            </div>
+            <div style="position:relative;font-size:13px;font-weight:700">这个分部还没有订单</div>
+            <div class="sr2" style="position:relative"><span class="d3"></span><span class="l1"></span><span class="d3"></span></div>
+            <div style="position:relative;font-size:11px;color:var(--g3)">换个分部看看，或去服务页下单</div>
+          </div>
+          <div class="rul">细网格 5% + <b>48×48 线框图标</b>（右上 6×6 切口与卡片语言同源）+ 标题 + <b>标尺线</b> + 一句下一步动作。<b>零插画、零 emoji</b>，却带满品牌味。</div>
+        </div>
+        <div class="cs"><div class="mark ok">骨架（shimmer）</div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:12px">
+            <div style="height:64px;border:1px solid #EFF2F7;border-radius:14px;padding:12px;display:flex;flex-direction:column;justify-content:center;gap:8px;position:relative;overflow:hidden">
+              <div class="sk4 skbar" style="width:60%"></div><div class="sk4 skbar" style="width:36%"></div>
+            </div>
+            <div style="height:64px;border:1px solid #EFF2F7;border-radius:14px;padding:12px;display:flex;flex-direction:column;justify-content:center;gap:8px;position:relative;overflow:hidden">
+              <div class="sk4 skbar" style="width:48%"></div><div class="sk4 skbar" style="width:28%"></div>
+            </div>
+          </div>
+          <div class="rul">骨架底 <code>#EFF2F7</code>（比页底亮一档，防止"白上白"看不出）、亮带 40% 宽白 55% 透明。骨架块<b>保留 14 圆角与 12 内距</b> → 真内容到达时零位移。</div>
+        </div>
+        <div class="cs"><div class="mark ok">分隔两种分工</div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:12px">
+            <div><div class="hair i" style="width:100%"></div><div style="font-size:11px;color:var(--g3);margin-top:4px">发丝线 · 行分隔 · 缩进 16 · 无端点</div></div>
+            <div><div class="sr" style="width:100%"><span class="dot3"></span><span class="ln"></span><span class="dot3"></span></div><div style="font-size:11px;color:var(--g3);margin-top:4px">标尺线 · 区块分隔 · 端点 3×3</div></div>
+          </div>
+          <div class="rul">同一页里两者<b>不同层</b>：发丝线在卡内、标尺线在卡外。<b>禁止</b>用发丝线分隔区块（读不出层级）、也禁止用标尺线分隔列表行（端点方块会变成噪音）。</div>
+        </div>
+      </div>
+    </div>
+    <div class="rw"><div class="lab"><span class="k">反例</span><span class="v">空态/骨架三错</span></div>
+      <div class="cls">
+        <div class="cs bad"><div class="mark no">插画 / emoji</div>
+          <div class="emptybox" style="height:172px;background:#FFFFFF">
+            <div style="width:96px;height:64px;border:1px solid var(--g4);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--g3)">山峰 / 吉祥物插画</div>
+            <div style="font-size:11px;color:var(--g3)">外加一个 emoji 表情当图标</div>
+          </div>
+          <div class="rul"><code>docs/21</code> 禁装饰插画、<code>CLAUDE.md</code> 禁 emoji 当图标与山峰意象；插画还带来资源体积与跨设备风格失控。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">骨架不同形</div>
+          <div style="width:100%;display:flex;gap:8px">
+            <div style="flex:1 1 0;padding:12px;border:1px solid var(--g5);border-radius:10px;display:flex;flex-direction:column;gap:8px" data-bad="radius">
+              <div style="height:24px;background:#EFF2F7;border-radius:20px"></div>
+              <div style="height:24px;background:#EFF2F7;border-radius:20px;width:72%"></div>
+              <div class="sktext">骨架块做成 20 圆角胶囊，真内容是 14 圆角 → 加载完成瞬间整块"跳一下"</div>
+            </div>
+            <div style="flex:1 1 0;padding:12px;border:1px solid var(--g5);border-radius:10px;display:flex;flex-direction:column;gap:8px">
+              <div style="position:relative;height:24px;border-radius:14px;overflow:hidden;background:#EFF2F7">
+                <i class="sk4" style="position:absolute;inset:0"></i>
+              </div>
+              <div style="position:relative;height:24px;border-radius:14px;overflow:hidden;background:#EFF2F7;width:72%">
+                <i class="sk4" style="position:absolute;inset:0"></i>
+              </div>
+              <div class="sktext">亮带按 40% 宽、白 55% 扫过 → 克制；纯白 100% 全宽就是"闪光灯"</div>
+            </div>
+          </div>
+          <div class="rul">两条都是形状/强度层面的错：骨架必须<b>与真内容同形</b>（同 14 圆角、同 12 内距），亮带必须<b>克制</b>（40% 宽、白 55%）。</div>
+        </div>
+        <div class="cs bad"><div class="mark no">发丝线当区块线</div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:12px;font-weight:700">选择分部</div>
+            <div class="hair"></div>
+            <div style="font-size:12px;font-weight:700">官方自营馆</div>
+            <div class="hair"></div>
+          </div>
+          <div class="rul">区块之间也用发丝线：卡外分隔与卡内行分隔同形 → 页面变成一整块"表格"，区块层级消失（<code>docs/21</code> §四"列表优先于卡片阵"的反面）。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 汇总 ============ -->
+<div class="sec" id="sx">
+  <div class="sech"><span class="st">附 · 6 条自检（逐条问）</span><span class="ss">docs/21 §六</span></div>
+  <table class="tb">
+    <tr><th style="width:280px">自检问题</th><th>本套装饰的答案</th></tr>
+    <tr><td>1 把内容换成同行的，还成立吗？</td><td>不成立：切口尺寸由"元素高度 ÷ 4"决定、标尺线端点方块只在品牌色+描边灰两色间取值、金币唯一性绑定业务语义（钱/等级）—— 换内容即不自洽。</td></tr>
+    <tr><td>2 用了模型反射式默认吗？</td><td>没有：渐变 0 处、阴影 0 处（卡片）、圆角集合固定 5 档、无卡片阵、无居中对称。</td></tr>
+    <tr><td>3 把装饰全删掉，还剩什么？</td><td>剩下完整结构：页头/区块/列表/卡片/金额/状态全部独立成立 —— 装饰只做"加快识别"，不承担层级。</td></tr>
+    <tr><td>4 每个颜色/圆角/间距能说出理由吗？</td><td>能：每个装饰元素都配了"它解决什么问题 / 去掉会怎样"（见上 6 节每格规则句）。</td></tr>
+    <tr><td>5 假数据具体、长短不一、有业务味吗？</td><td>是：<code data-ok>¥115.52</code> / <code data-ok>¥4,286.50</code> / <code data-ok>2,847 单</code> / <code data-ok>9:00-次日 2:00</code> / 商品名取真实目录口径。</td></tr>
+    <tr><td>6 空态/加载/错误态都设计了吗？</td><td>是：第 ⑥ 节三态齐备，且空态给下一步动作、骨架与真内容同形不跳版。</td></tr>
+  </table>
+</div>
+
+<!-- ============ ⑦ 配色使用规则 ============ -->
+<div class="sec" id="s7">
+  <div class="sech"><span class="st">⑦ 配色使用规则</span><span class="ss">负责人 2026-10-15：「品牌化装饰我们可以用颜色 用自创加普通的那些」</span><span class="sp"></span><span class="tagq">配色使用规则表</span></div>
+  <div class="cap"><b>先定一个前提：白底为主 ≠ 不能大胆用色。</b>读法是「<b>底色仍以白为主（页底 <code>#F4F6F9</code>、卡面 <code>#FFFFFF</code>），装饰元素可以大胆用色</b>」—— 不是"可以铺大块深色底"。
+  这条读法同时解释了 <code>docs/32</code> 铁律 1「渐变面积 ≈ 0 → 品牌区一律用实色深块」与 <code>docs/39</code>「取消一切整块深色/蓝色大块」：两处说的是<b>底色</b>，不是<b>装饰元素的用色</b>。
+  所以本节把颜色当成<b>三档音量</b>而不是填色板：<b>只有刻度、没有色彩</b>会显得寡淡；<b>只有色彩、没有刻度</b>就会退回"模板感"。三档同时在场，才是"一眼认出"。</div>
+
+  <div class="demo" style="margin-bottom:16px">
+    <div class="dcell"><span class="dcap"><b>第 1 档｜极浅底色（打底）</b><br>同色相极浅档，铺面积用：图标底、磁贴底、标签底、选中底、事实条底。</span>
+      <div class="dbox" style="padding:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <span class="sw" style="background:#E8EEF7"></span><span class="sw" style="background:#E3F0EF"></span><span class="sw" style="background:#F7EDE0"></span><span class="sw" style="background:#F4F6F9"></span>
+      </div>
+      <span class="dcap"><code>#E8EEF7</code> 主色浅 · <code>#E3F0EF</code> 青瓷浅 · <code>#F7EDE0</code> 琥珀浅 · <code>#F4F6F9</code> 页底/中性底</span>
+    </div>
+    <div class="dcell"><span class="dcap"><b>第 2 档｜实色与描边（定位）</b><br>占小面积但决定"哪里是重点"：主按钮、选中态、链接、短标、描边、进度条。</span>
+      <div class="dbox" style="padding:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;background:#1D5FA8;color:#FFFFFF;border-radius:10px;font-size:13px;font-weight:700">主按钮</span>
+        <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;background:#FFFFFF;border:1px solid #1D5FA8;color:#1D5FA8;border-radius:10px;font-size:13px;font-weight:600">次按钮</span>
+        <span class="tone tone2">青瓷 · 成功</span>
+        <span class="tone tone3" data-ok>琥珀 · 价格/等级</span>
+      </div>
+      <span class="dcap"><code>#1D5FA8</code> 主交互 · <code>#0E7C7B</code> 强调 · <code>#B4732A</code> 价格与等级（全站唯一金）</span>
+    </div>
+    <div class="dcell"><span class="dcap"><b>第 3 档｜极小面积品牌锚（落徽）</b><br>只出现在"品牌署名"位置：40dp 字标块、身份徽章 1dp 描边。</span>
+      <div class="dbox" style="padding:12px;display:flex;gap:8px;align-items:center">
+        <span style="width:40px;height:40px;border-radius:6px;background:#0F2440;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800">祁</span>
+        <span style="display:inline-flex;align-items:center;height:20px;padding:0 4px;background:#FFFFFF;border:1px solid #0F2440;color:#0F2440;border-radius:6px;font-size:11px;font-weight:600">身份</span>
+      </div>
+      <span class="dcap"><code>#0F2440</code> 每屏 ≤1 处、≤1600px²（约首屏 0.5%）；<b>永不作卡面/区块底</b></span>
+    </div>
+  </div>
+
+  <table class="tb">
+    <tr><th style="width:132px">色</th><th style="width:196px">允许出现在哪</th><th style="width:152px">面积上限（每屏）</th><th style="width:170px">与谁搭配</th><th>禁止组合 / 禁止位置</th></tr>
+    <tr><td><b>品牌锚墨蓝</b><br><code>#0F2440</code></td>
+      <td>40dp 字标块底 · 品牌署名徽章 1dp 描边</td><td><b>≤ 1 处 / 屏</b><br>≤ 1600px²（约 0.5%）</td><td>白字 · 8×8 品牌蓝小切口 · 发丝线</td><td>不作卡面 / 区块底 / 页头底；不与其他深色相邻成大块；不做渐变端点</td></tr>
+    <tr><td><b>主交互蓝</b><br><code>#1D5FA8</code></td>
+      <td>主按钮 · 选中胶囊/分段 · 链接文字 · 区块 4×16 短标 · 主推 2dp 描边 · 图标底 · 标尺线端点</td>
+      <td><b>≤ 3% 屏面积</b>（不含选中胶囊行）</td><td>白字（对比 ≥5:1）· 主色浅底 <code>#E8EEF7</code> · 发丝线</td><td>不作页面背景；不做整块横幅底；不做两色渐变；不与琥珀金直接相邻做"双色强调"</td></tr>
+    <tr><td><b>强调青瓷</b><br><code>#0E7C7B</code></td>
+      <td>成功/已完成状态 · 会员进度条 · 次级区块短标 · 图标底</td>
+      <td><b>≤ 2% 屏面积</b></td><td>白字 · 青瓷浅底 <code>#E3F0EF</code> · 描边 <code>#BCD9D7</code></td><td>不与主交互蓝并列成"蓝青双主色"（同屏两者面积比 ≤ 2:1，蓝为主）</td></tr>
+    <tr><td><b>唯一金</b><br><code>#B4732A</code></td>
+      <td><b>仅两处</b>：① 金额数字与 <code>¥</code>；② 等级徽章 / L-SLOT（等级标识）</td>
+      <td><b>≤ 1% 屏面积</b>（金只做文字与 1dp 描边，<b>不做色块</b>）</td><td>琥珀浅底 <code>#F7EDE0</code>（等级徽章底）· 白底</td><td>统计数字 / 标题 / 图标 / 进度条 / 促销语一律不准上金；不准引入 <code>#D4A017</code> 等"更亮的金"（= 第二个金）</td></tr>
+    <tr><td><b>功能色</b><br><code>#B45309</code> 警示<br><code>#B42318</code> 错误</td>
+      <td>状态标签 · 表单错误提示 · 异常/售后档</td><td>≤ 1.5% 屏面积</td><td>警示浅底（琥珀浅）· 错误浅底 <code>#FBECEA</code> · 图标 + 描边</td><td>不单独用色表达状态（必须配图标/形状/字重/文案之一）</td></tr>
+    <tr><td><b>灰阶 6 档</b><br><code>#14202E → #F4F6F9</code></td>
+      <td>正文 · 次要 · 弱化 · 描边 · 分割 · 页底</td><td>不设上限（它是底）</td><td>任意品牌色叠在 <code>#FFFFFF</code>/<code>#F4F6F9</code> 上</td><td>不用纯黑 <code>#000</code> 配纯白；不把灰当"弱化的品牌色"用（灰永远中性）</td></tr>
+  </table>
+
+  <div class="notes">
+    <div class="note"><h3>整体配比：白 ≥ 88% · 浅底 ≤ 8% · 品牌色 ≤ 4%</h3>
+      <p>四页实测：品牌色（含浅底 + 实色 + 金）合计 <b>1.5–3.9%</b>，白与页底始终 ≥ 90%。配色不做"五五分"，只做"白底上一处重点"。</p></div>
+    <div class="note"><h3>硬约束四条</h3>
+      <p>① <b>色不兼任结构</b>：色块只做"底"，不做分隔（分隔用线）；② <b>同屏品牌色 ≤ 3 色</b>（主蓝 / 青瓷 / 金里最多取三种组合，且金只允许在两者之一上）；③ <b>同色相只取两档</b>（浅 + 实，不出第三档）；④ <b>墨蓝只做署名</b>，出现即代表"这是品牌自己在说话"。</p></div>
+    <div class="note"><h3>配色一致性怎么验</h3>
+      <p>把四页缩成 40×86 的缩略图看：① 白底是否仍占主导；② 每页是否只有一个实色重点 + 一处金；③ 浅底块是否都落在 3 个同色相档里。三条都成立，四页就是一套。</p></div>
+  </div>
+</div>
+
+<!-- ============ ⑧ 手段取舍 ============ -->
+<div class="sec" id="s8">
+  <div class="sech"><span class="st">⑧ 手段取舍</span><span class="ss">阴影 / 渐变 / 大圆角 / 彩色竖条 / 色块底 / 图标底色 / 分隔色带 / 斜切角 / 细网格 / 标尺线</span><span class="sp"></span><span class="tagq">手段取舍表 + 渐变边界</span></div>
+  <div class="cap">这份表比设计图更常用：以后任何人加装饰都先查这张表。<b>「有条件用」的两项（阴影 · 渐变）与「需要理由」的两项（彩色竖条 · 色块底）在本节给出正反例</b>；
+  <code>docs/21</code> 点名的"每卡左侧彩色竖条"与"阴影铺满"仍是默认禁区，本节给的是<b>窄口径例外</b>，不是解禁。</div>
+
+  <table class="tb">
+    <tr><th style="width:104px">手段</th><th style="width:104px">用 / 不用 / 有条件用</th><th>为什么</th><th style="width:236px">正例 → 反例</th></tr>
+    <tr><td><b>斜切角</b></td><td><b>用</b>（主符号）</td><td>唯一的形状信号；45° 直线，不引入新形状词汇。元素越少越有用。</td><td>状态标签右上 6×6 → 两角全切 + 真 ClipPath 裁断描边</td></tr>
+    <tr><td><b>细网格</b></td><td><b>用</b>（限量）</td><td>给"还没有内容/品牌自己在说话"的地方一个质感底；3–5% 不干扰正文。</td><td>品牌区底 + 空态底 → 铺到正文区 / 提升到 20% 变雪点</td></tr>
+    <tr><td><b>标尺线</b></td><td><b>用</b></td><td>区块分隔专用：两端 3×3 方块让"层级"可读；替代卡片上边框与分组底色。</td><td>区块之间 → 用它分隔列表行（端点变噪音）</td></tr>
+    <tr><td><b>图标底色</b></td><td><b>用</b>（通用做法）</td><td>让 20dp 线性图标在列表里有一个"落点"，是列表行最容易的节奏来源。</td><td>3 个分部行分用浅蓝/浅青/中性底 → 每行都换色 = 彩虹列表</td></tr>
+    <tr><td><b>分隔色带</b></td><td><b>有条件用</b></td><td>只在"整块内容自身要有一句话标签"时用（如通栏块的下沿）；它承担的是<b>文案</b>不是分隔。</td><td>通栏块下沿 24dp 浅底带 + 8×8 切口 → 用色带代替发丝线做列表分隔</td></tr>
+    <tr><td><b>色块底</b></td><td><b>有条件用</b></td><td>只允许<b>极浅底</b>（第 1 档）与<b>极小面积实色</b>（按钮/选中/字标）；色块永远做"底"不做"结构"。</td><td>浅底 32dp 图标底 + 实色主按钮 → 整块品牌蓝卡面 / 深色 Hero 大块</td></tr>
+    <tr><td><b>彩色竖条</b></td><td><b>有条件用</b>（默认不用）</td><td><code>docs/21</code> 点名"过时模板签名"。唯一窄口径例外：<b>通栏块的左边界标识条</b>（不属卡片，表达"这是一整块"）。卡片内一律改用 4×16 短标。</td><td>ListCard 内 4×16 品牌短标 → 每张卡左侧 4dp 彩色竖条贯穿整卡高</td></tr>
+    <tr><td><b>阴影</b></td><td><b>有条件用</b>（默认不用）</td><td>卡片用发丝线做分隔，阴影只承担"浮起来"的语义。允许处：<b>弹层 / 吸底操作条 / 悬浮按钮</b>；<b>卡片 0 阴影</b>。</td><td>弹层 1 处 6% 投影 → 每张卡片 10% 投影铺满（看着像 2015 年）</td></tr>
+    <tr><td><b>渐变</b></td><td><b>有条件用</b>（默认不用作主视觉）</td><td>判据见下方"渐变边界"：小面积装饰渐变可以，主视觉渐变不行。</td><td>骨架 shimmer 40% 宽浅白扫过 → 整屏蓝→青渐变作页头/横幅主视觉</td></tr>
+    <tr><td><b>大圆角</b></td><td><b>不用</b>（≥16 当卡片）</td><td>玩具感、软塌、层级消失。圆角只用 <code>4 / 6 / 10 / 14 / 胶囊</code>（手机壳 18 属设备外框）。</td><td>卡 14 + 控件 10 + 小片 4/6 → 卡片全部 18–24 圆角</td></tr>
+  </table>
+
+  <div class="demo" style="margin-top:16px">
+    <div class="dcell"><span class="dcap"><b>渐变边界 · 反例 A（主视觉渐变）</b><br>整屏/整块蓝→青渐变当页头或横幅底 —— 这是 <code>docs/21</code> 明令的"AI 默认反射"。<b>判据：把渐变换成实色，层级关系完全不变 → 它只是装饰性炫技。</b></span>
+      <div class="dbox"><div class="gbig" data-bad="gradient"></div></div>
+      <span class="dcap">占屏宽 100% × 高 88dp，<b>超出 64×64 装饰区</b> → 算主视觉，禁用</span>
+    </div>
+    <div class="dcell"><span class="dcap"><b>渐变边界 · 正例（装饰性小面积）</b><br>① 骨架 shimmer：40% 宽、白 55% 的亮带扫过；② 极小面积高光带（≤ 24dp × 屏宽）只做"方向感"。</span>
+      <div class="dbox" style="padding:12px;display:flex;flex-direction:column;gap:8px">
+        <div class="gsoft"></div>
+        <div style="display:flex;gap:8px;align-items:center"><div class="gbar" style="flex:1 1 auto"></div><span class="dcap">≤ 24dp 高</span></div>
+      </div>
+      <span class="dcap"><b>允许条件</b>：块高 ≤ 64dp <b>且</b> 不承担信息层级；<b>禁止</b>：> 屏宽 40% 且高 > 200dp，或作为卡片/页头/横幅的底。</span>
+    </div>
+    <div class="dcell"><span class="dcap"><b>阴影边界</b><br>左 = 允许（弹层/吸底/悬浮，6% 以内）；右 = 禁止（卡片批量投影）。</span>
+      <div class="dbox" style="padding:12px;display:flex;flex-direction:column;gap:8px">
+        <div class="shadowcard sh-b"></div>
+        <div class="shadowcard sh-a" data-bad="shadow"></div>
+      </div>
+      <span class="dcap">卡片用 <b>1dp 发丝线</b>分界；只有"浮在内容之上"的东西才配阴影</span>
+    </div>
+  </div>
+
+  <div class="demo" style="margin-top:8px">
+    <div class="dcell"><span class="dcap"><b>彩色竖条 · 正例（窄口径）</b><br>只允许出现在<b>通栏块的左边界</b>（表达"这一整块是一个整体"），宽度 4dp，且该块没有左右外边距。</span>
+      <div class="dbox" style="padding:12px"><div class="stripe"><i class="bar4"></i><div style="padding:0 12px"><div style="font-size:13px;font-weight:700">通栏宣传块</div><div style="font-size:11px;color:var(--g2);margin-top:4px">左边界标识条 4dp</div></div></div></div>
+    </div>
+    <div class="dcell"><span class="dcap"><b>彩色竖条 · 反例</b><br>每张卡片左侧一条彩色竖条贯穿整卡高：被点名的过时模板签名，且把品牌色摊成大面积。</span>
+      <div class="dbox" style="padding:12px"><div class="stripe" data-bad="stripe"><i class="bar4"></i><div style="padding:0 12px"><div style="font-size:13px;font-weight:700">内容卡</div><div style="font-size:11px;color:var(--g2);margin-top:4px">卡内竖条（应改为 4×16 短标）</div></div></div></div>
+    </div>
+    <div class="dcell"><span class="dcap"><b>色块底 · 正例 / 反例</b><br>上 = 极浅底 + 实色小按钮（三档音量同时在）；下 = 整块品牌实色卡面（把装饰变成主视觉）。</span>
+      <div class="dbox" style="padding:12px;display:flex;flex-direction:column;gap:8px">
+        <div class="colorbg soft">极浅底块 + 一处实色重点</div>
+        <div class="colorbg" data-bad="block">整块品牌实色卡面</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><h3>渐变边界（一句话）</h3>
+      <p><b>块高 ≤ 64dp 且不承担信息层级 = 装饰性渐变（可以）；&gt; 屏宽 40% 且高 &gt; 200dp，或作为卡片/页头/横幅底 = 主视觉渐变（不行）。</b>另外自检脚本会把"同位两个色标的硬边渐变"单列为<b>纹理</b>（细网格、shimmer、通栏条纹都属纹理，不算渐变）。</p></div>
+    <div class="note"><h3>"通用做法"的三条准入</h3>
+      <p>① 必须能说出解决什么问题；② 必须落 4dp 网格；③ 必须能在不改变结构的前提下删掉。三条缺一 → 不入系统（回到本表标"不用"）。</p></div>
+    <div class="note"><h3>三档色彩用量的自检口径</h3>
+      <p>脚本实测四页：<b>品牌色实色面积 ≤ 3%</b>、<b>金只做文字（金色块 = 0 处）</b>、<b>墨蓝每屏 ≤ 1 处</b>、<b>全文档渐变面积 = 0</b>（软渐变）、<b>卡片阴影 = 0 处</b>。任一条不成立即为"用色过头"。</p></div>
+  </div>
+</div>
+
+</div>
+<script>
+/* 审批出图参数（运行时读取，静态打开时零影响）：
+   ?scale=0.9   等比缩放整页（用于总览缩略，保证 PNG 高 ≤ 8192）
+   ?minH=4200   把页面撑到该高度（分段截取时按段高取，避免截到空白）
+   ?banner=文字 顶部加一条分段说明（"第 N/3 段 · 内容：…"） */
+(function () {
+  var q = new URLSearchParams(location.search);
+  var doc = document.querySelector('.doc');
+  var bn = document.getElementById('banner');
+  if (q.get('banner') && bn) { bn.textContent = q.get('banner'); bn.style.display = 'flex'; }
+  var scale = parseFloat(q.get('scale') || '1');
+  if (isFinite(scale) && scale > 0 && Math.abs(scale - 1) > 1e-6) {
+    var r = doc.getBoundingClientRect();
+    var w = r.width, h = r.height;
+    document.body.style.margin = '0';
+    document.body.style.padding = '0';
+    doc.style.transformOrigin = 'top left';
+    doc.style.transform = 'scale(' + scale + ')';
+    doc.style.width = w + 'px';
+    document.body.style.width = Math.round(w * scale) + 'px';
+    document.body.style.height = Math.round(h * scale) + 'px';
+    document.body.dataset.scaleInfo = '内容 ' + Math.round(w) + '×' + Math.round(h) + ' → 画布 ' + Math.round(w * scale) + '×' + Math.round(h * scale);
+  }
+  var minH = parseFloat(q.get('minH') || '0');
+  if (isFinite(minH) && minH > 0) {
+    var used = document.body.getBoundingClientRect().height;
+    if (used < minH) document.body.style.minHeight = minH + 'px';
+  }
+})();
+</script>
+</body></html>

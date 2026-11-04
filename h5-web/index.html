@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#0F2440" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>祁连山电竞</title>
+    <style>
+      /* 首屏骨架：JS 未加载前不白屏（移动端体感的第一印象） */
+      #app-boot{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+        background:#F4F6F9;color:#8A99AB;font:13px/1.6 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+      #app-boot .m{width:40px;height:40px;background:#0F2440;color:#fff;border-radius:8px 2px 8px 2px;
+        display:grid;place-items:center;font-weight:800;font-size:20px;margin:0 auto 10px}
+    </style>
+  </head>
+  <body>
+    <div id="app"><div id="app-boot"><div><div class="m">祁</div>正在加载…</div></div></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

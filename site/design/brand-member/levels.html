@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1820,initial-scale=1">
+<title>祁连山电竞 · 会员等级体系品牌化设计（levels）</title>
+<style>
+/* ============================================================================
+   基准：docs/32-品牌视觉规范-设计稿基准.md（本次唯一基准，逐条遵守）
+   只出图，不改任何产品代码。
+   自包含：<img>=0 / <script src>=0 / @import=0 / 外部 http=0
+   ============================================================================ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+:root{
+  /* 一、色彩体系（docs/32 §一） */
+  --ink-brand:#0F2440;      /* 品牌锚 墨蓝 */
+  --primary:#1D5FA8;        /* 主交互 */
+  --celadon:#0E7C7B;        /* 强调 青瓷 */
+  --amber:#B4732A;          /* 价格·等级 —— 全站唯一"金"，低饱和 */
+  --bg-page:#F4F6F9; --surface:#FFFFFF; --hair:#E3E8EF;
+  --t1:#14202E; --t2:#4A5A6E; --t3:#8A99AB;
+  --primary-soft:#E8EEF7; --celadon-soft:#E3F0EF; --amber-soft:#F7EDE0;
+  /* 文字档：琥珀 #B4732A 在白底只有 3.87:1（<AA 正文 4.5）→ 正文/小字改用同色相深档 #8F5A22（5.75:1）
+     青瓷同理由 #0E7C7B 调整为 #0B6665（青瓷浅底上 5.1:1），#0E7C7B 保留给描边/图形/大字号 */
+  --amber-ink:#8F5A22; --celadon-ink:#0B6665;
+  --warn:#B45309; --err:#B42318;
+  /* 等级档位色：低档中性石板 / 高档唯一琥珀（不同色相，但同一几何语言） */
+  --lv1:#8A99AB; --lv1-soft:#EDF0F4;
+  --lv2:#4A5A6E; --lv2-soft:#E9EDF2;
+  --lv3:#B4732A; --lv3-soft:#F7EDE0;
+  --lv4:#8F5A22; --lv4-soft:#F4E7D6;
+  --lv5:#6E4419; --lv5-soft:#F0E2D0;
+  /* 六、圆角只允许 4–6 / 10 / 14 / 胶囊 */
+  --r-xs:4px; --r-sm:6px; --r-ctl:10px; --r-card:14px;
+  --pad:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","MiSans","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+}
+body{font-family:var(--font);color:var(--t1);background:#DCE2EA;font-size:13px;line-height:1.45}
+
+/* ---------- 设计图外框（不是设计的一部分） ---------- */
+.sheet-head{max-width:1820px;margin:0 auto;padding:32px 32px 4px}
+.badge{display:inline-block;background:var(--primary-soft);color:var(--primary);border:1px solid #C9D8EA;
+  border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:10px}
+.sheet-head h1{margin:0 0 10px;font-size:29px;font-weight:800;letter-spacing:-.4px}
+.sheet-head .sub{color:var(--t2);font-size:13px;line-height:1.85;max-width:1300px}
+.sheet-head .sub b{color:var(--t1)}
+.metarow{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
+.metarow span{font-size:12px;color:var(--t2);background:#fff;border:1px solid #D6DEE9;border-radius:var(--r-sm);padding:5px 10px}
+.metarow span b{color:var(--t1)}
+main{max-width:1820px;margin:0 auto;padding:18px 32px 8px;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+figure.shot{width:420px;flex:0 0 420px}
+figure.shot figcaption{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:7px;display:flex;gap:7px;align-items:baseline}
+figure.shot figcaption em{font-style:normal;font-weight:600;color:var(--t2);font-size:11.5px}
+figure.shot .cap{font-size:11.5px;color:var(--t2);line-height:1.65;margin-top:9px}
+.panel{width:420px;flex:0 0 420px;background:#fff;border:1px solid #D6DEE9;border-radius:var(--r-card);padding:15px}
+.panel h3{font-size:14px;font-weight:800;margin-bottom:4px}
+.panel .cap{font-size:11.5px;color:var(--t2);line-height:1.65;margin-bottom:12px}
+.panel .blk+.blk{margin-top:15px;padding-top:13px;border-top:1px solid #EEF1F6}
+.panel .blk .bt{font-size:11.5px;font-weight:700;color:var(--t2);margin-bottom:8px}
+
+/* ---------- 手机壳 420×844（内容逻辑宽 390，等宽放大便于评审） ---------- */
+.phone{width:420px;height:844px;background:var(--bg-page);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;outline:1px solid #C6CFDC}
+.phone.full{height:auto}.phone.full .scroll{overflow:visible}
+.statusbar{height:46px;flex:0 0 46px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px 0 var(--pad);font-size:12px;font-weight:600;color:var(--t1);background:var(--surface)}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:10px}
+.sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6px}
+.sb-bars i:nth-child(3){height:8px}.sb-bars i:nth-child(4){height:10px}
+.sb-batt{width:20px;height:10px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;opacity:.8}
+.sb-batt::after{content:"";position:absolute;right:-3px;top:2.6px;width:1.8px;height:3.6px;background:currentColor;border-radius:0 1px 1px 0}
+.sb-batt i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:60%;background:currentColor;border-radius:1px}
+.scroll{flex:1 1 auto;overflow:hidden;position:relative}
+.inner{display:flex;flex-direction:column}
+.fold{position:absolute;left:0;right:0;top:798px;height:0;border-top:1px dashed #93A2B5;z-index:5}
+.fold span{position:absolute;right:8px;top:-16px;background:#fff;border:1px solid #C6CFDC;border-radius:var(--r-xs);
+  padding:1px 6px;font-size:9.5px;font-weight:700;color:var(--t2);letter-spacing:.2px}
+.tabbar{margin-top:auto;flex:0 0 62px;background:var(--surface);border-top:1px solid var(--hair);
+  display:flex;align-items:center;padding:0 6px}
+.tabbar .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--t3);font-size:10px}
+.tabbar .tb.on{color:var(--primary);font-weight:700}
+.tabbar .tb.fab{flex:0 0 62px}
+.fabdot{width:40px;height:40px;border-radius:var(--r-ctl);background:var(--primary);display:flex;
+  align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:300;margin-top:-14px}
+
+/* ---------- 页头（白底 + 发丝线；与已发版「我的」页同形） ---------- */
+.phead{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--hair);padding:6px var(--pad) 11px;
+  display:flex;align-items:center;gap:9px}
+.phead .ttl{font-size:22px;font-weight:800;letter-spacing:-.2px;color:var(--t1)}
+.phead .rt{margin-left:auto;display:flex;align-items:center;gap:14px;color:var(--t2)}
+.phead.sub{padding-bottom:10px}
+.phead.sub .ttl{font-size:18px;font-weight:700}
+
+/* ---------- HeroCard（每屏 ≤1 个；墨蓝实色 + 斜切角 + 细网格；无渐变） ---------- */
+.hero{position:relative;margin:0 var(--pad);background:var(--ink-brand);color:#fff;overflow:hidden;
+  border-radius:var(--r-card);
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px))}
+.hero .grid{position:absolute;inset:0;opacity:.045;
+  background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);
+  background-size:22px 22px}
+.hero .chamfer{position:absolute;top:0;right:0;width:20px;height:20px;background:rgba(255,255,255,.16)}
+.hero .chamfer2{position:absolute;bottom:0;left:0;width:20px;height:20px;background:rgba(255,255,255,.16)}
+.hero .body{position:relative;padding:18px 16px 18px}
+.hero .hrow{display:flex;align-items:center;gap:12px}
+.hero .hname{font-size:18px;font-weight:700;letter-spacing:.2px}
+.hero .hsub{font-size:11px;color:rgba(255,255,255,.72);margin-top:3px;font-variant-numeric:tabular-nums}
+.hero .hright{margin-left:auto;text-align:right}
+.hero .hnum{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.2px}
+.hero .hlab{font-size:11px;color:rgba(255,255,255,.72);margin-top:2px}
+.hero .ruler{margin-top:14px;height:1px;background:rgba(255,255,255,.20);position:relative}
+.hero .ruler::before,.hero .ruler::after{content:"";position:absolute;top:-2.5px;width:5px;height:5px;background:rgba(255,255,255,.42)}
+.hero .ruler::before{left:0}.hero .ruler::after{right:0}
+.hero .prog{position:relative;height:6px;background:rgba(255,255,255,.16);margin-top:13px}
+.hero .prog i{position:absolute;left:0;top:0;bottom:0;background:var(--amber)}
+.hero .tickrow{display:flex;justify-content:space-between;margin-top:9px}
+.hero .tick{flex:1;padding-right:6px}
+.hero .tick .cv{width:5px;height:5px;background:rgba(255,255,255,.34);margin-bottom:5px}
+.hero .tick.on .cv{background:var(--amber)}
+.hero .tick .cn{font-size:10px;font-weight:600;color:rgba(255,255,255,.60)}
+.hero .tick.on .cn{color:var(--amber)}
+.hero .tick .ct{font-size:9.5px;color:rgba(255,255,255,.40);font-variant-numeric:tabular-nums;margin-top:1px}
+
+/* ---------- 横向等级阶梯（一级一卡并排） ---------- */
+.rail{display:flex;gap:8px;padding:0 var(--pad)}
+.rail.five .lvc{flex:1 1 0;min-width:0}
+.lvc{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);padding:11px 8px 10px;
+  display:flex;flex-direction:column;align-items:center;position:relative;
+  clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px))}
+.lvc.cur{border-color:var(--amber);box-shadow:none;background:#FFFDF9}
+.lvc .curtag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--amber);color:#fff;
+  font-size:9px;font-weight:700;padding:1.5px 6px;border-radius:0 0 var(--r-xs) var(--r-xs);letter-spacing:.2px}
+/* ---------- 等级档位（只用一个琥珀色系；文字用可过 AA 的深档） ---------- */
+.lvc .lk{font-size:11px;font-weight:700;color:var(--t3);margin-top:8px}
+.lvc .ln{font-size:12px;font-weight:700;color:var(--t1);margin-top:2px;white-space:nowrap}
+.lvc .lt{font-size:10px;color:var(--t3);margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lvc.cur .lk,.lvc.cur .ln{color:var(--amber-ink)}
+.lvc .st{font-size:9.5px;font-weight:600;margin-top:5px;padding:1px 5px;border-radius:var(--r-xs)}
+.lvc .st.done{color:var(--celadon-ink);background:var(--celadon-soft);border:1px solid #C6DFDD}
+.lvc .st.now{color:#fff;background:var(--amber)}
+.lvc .st.lock{color:var(--t2);background:#EFF2F6;border:1px solid #DFE5ED}
+/* 阶梯台阶基线（同一几何语言：发丝线 + 端点小方块） */
+.steps{margin:10px var(--pad) 0;display:flex;align-items:flex-end;gap:8px;height:16px}
+.steps i{flex:1 1 0;display:block;background:var(--hair)}
+.steps i:nth-child(1){height:4px}.steps i:nth-child(2){height:7px}.steps i:nth-child(3){height:10px}
+.steps i:nth-child(4){height:13px}.steps i:nth-child(5){height:16px;background:var(--amber)}
+
+/* ---------- 通用卡 / 行 ---------- */
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);margin:0 var(--pad);overflow:hidden}
+.card.inset{padding:14px}
+.sect{margin:0 var(--pad);display:flex;align-items:baseline;gap:8px}
+.sect .st{font-size:15px;font-weight:600;color:var(--t1)}
+.sect .ss{font-size:11px;color:var(--t3);margin-left:auto}
+.hair{height:1px;background:#EEF1F6}
+.row{display:flex;align-items:center;gap:11px;padding:12px 13px 12px 14px;min-height:52px}
+.row+.row{border-top:1px solid #EEF1F6}
+.row .ic{width:32px;height:32px;flex:0 0 32px;border-radius:var(--r-ctl);background:#F1F4F8;
+  display:flex;align-items:center;justify-content:center;color:var(--t2)}
+.row .tx{flex:1 1 auto;min-width:0}
+.row .rt{font-size:13px;font-weight:600;color:var(--t1)}
+.row .rs{font-size:11px;color:var(--t3);margin-top:2px}
+.row .rv{font-size:12px;font-weight:600;color:var(--t2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row .ch{color:var(--t3);flex:0 0 auto}
+
+/* ---------- 徽章几何语言（统一：切角方 + 内环 + 刻度） ---------- */
+.bw{width:44px;height:44px;position:relative;flex:0 0 44px}
+.bw.sm{width:40px;height:40px;flex:0 0 40px}
+.bw.lg{width:76px;height:76px;flex:0 0 76px}
+.bw svg{display:block}
+/* 标签 / 胶囊 */
+.tag{display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:var(--r-xs);
+  font-size:10px;font-weight:700;letter-spacing:.2px;border:1px solid transparent}
+.tag.amber{background:var(--amber-soft);color:var(--amber-ink);border-color:#E4CFAE}
+.tag.plain{background:#F1F4F8;color:var(--t2);border-color:#DFE5ED}
+.tag.celadon{background:var(--celadon-soft);color:var(--celadon-ink);border-color:#C6DFDD}
+.tag.hero{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.30)}
+/* 金额：¥ + 两位小数 + 千分位 + 等宽数字 */
+.money{font-variant-numeric:tabular-nums;font-weight:700}
+.m22{font-size:22px}.m18{font-size:18px}.m15{font-size:15px}
+.num{font-variant-numeric:tabular-nums}
+.t-caption{font-size:12px;color:var(--t2)}
+.t-body{font-size:13px;color:var(--t2)}
+.t-micro{font-size:11px;color:var(--t3)}
+.t-note{font-size:11px;color:var(--t3);line-height:1.6}
+.wrap{padding:0 var(--pad)}
+.stack{display:flex;flex-direction:column}
+.g14{height:14px;flex:0 0 14px}.g22{height:22px;flex:0 0 22px}.g10{height:10px;flex:0 0 10px}
+.g8{height:8px;flex:0 0 8px}.g18{height:18px;flex:0 0 18px}
+
+/* ---------- 骨架态（静态灰块，不做 shimmer） ---------- */
+.sk{background:#E3E8EF;border-radius:var(--r-xs)}
+.sk.circle{border-radius:50%}
+
+/* ---------- 单级详情：等级视觉资产 ---------- */
+.assets{display:flex;gap:8px;padding:14px}
+.assets .as{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:7px}
+.assets .as .an{font-size:10.5px;color:var(--t3);text-align:center;line-height:1.4}
+.spec-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.spec-table th,.spec-table td{text-align:left;padding:7px 6px;border-bottom:1px solid #EEF1F6;vertical-align:top}
+.spec-table th{font-size:11px;color:var(--t3);font-weight:600}
+.spec-table td b{color:var(--t1)}
+.spec-table .mono{font-variant-numeric:tabular-nums;color:var(--t2)}
+</style>
+</head>
+<body>
+
+<div class="sheet-head">
+  <span class="badge">祁连山电竞 · 品牌化设计（阶段 4 / 会员等级体系）</span>
+  <h1>会员等级体系 · 品牌化设计图</h1>
+  <p class="sub">
+    <b>基准：`docs/32-品牌视觉规范-设计稿基准.md`（逐条遵守）。只出图，不改任何产品代码。</b><br>
+    等级阶梯<b>不是新发明的规则</b>：<b>5 级</b>，名称与升级阈值全部读自代码 ——
+    生效阈值 `server/src/modules/level/level.service.ts:14-20`（后台可配 `system_setting.level_rules`）、
+    前端兜底 `apps/packages/core/lib/src/theme/level_style.dart:97-103`、等级名 `level_style.dart:36-77`；
+    升级判定「累计消费 ≥ 阈值，只升不降」同文件 `:25-32`、`docs/06-积分账务规范.md:53-60`。<br>
+    <b>本次要解决的现状问题</b>：`membership_page.dart` 现在只有「当前等级卡 + 5 行列表 + 4 条权益」，
+    等级依次是<b>银灰 → 宝蓝 → 鎏金 → 紫金 → 赤金五种渐变圆标</b>（`level_style.dart:36-77`），
+    既违反「价格/等级只用 #B4732A」（`docs/32 §一 铁律 3`），又是「渐变做主视觉 + 五个不同色相」；<br>
+    <b>品质感来源</b>：比例 · 排版 · 材质 · 留白 · 对比 · 细节 —— <b>不靠金色堆砌 / 闪光 / 粒子 / 复杂渐变</b>（本页渐变面积 0）。
+  </p>
+  <div class="metarow">
+    <span>等级阶梯 <b>5 级</b>（代码确认）</span>
+    <span>等级色 <b>#B4732A 一个色系</b></span>
+    <span>HeroCard <b>每屏 1 个</b>（墨蓝实色 + 斜切角 + 细网格）</span>
+    <span>渐变面积 <b>0</b></span>
+    <span>阴影 <b>0 处</b></span>
+    <span>禁用词表 <b>0 处</b></span>
+    <span>动服务端 <b>0</b></span>
+  </div>
+</div>
+
+<main>
+
+  <!-- ============================ 屏 1 · 等级阶梯总览（一级一卡并排） ============================ -->
+  <figure class="shot">
+    <figcaption>① 等级阶梯总览 <em>一级一卡并排（5 级全在同一横排，可横滑）</em></figcaption>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+      <div class="phead sub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        <span class="ttl">会员中心</span>
+        <span class="rt">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8.2v.1"/></svg>
+        </span>
+      </div>
+      <div class="scroll">
+        <div class="inner">
+          <div class="g14"></div>
+          <!-- HeroCard：全站唯一允许深色大块的地方之一；斜切角 + 细网格 4.5% -->
+          <div class="hero" data-hero="1">
+            <div class="grid"></div><div class="chamfer"></div><div class="chamfer2"></div>
+            <div class="body">
+              <div class="hrow">
+                <span class="bw" data-badge="lv2"></span>
+                <span>
+                  <span class="hname">进阶会员</span>
+                  <span class="hsub" style="display:block">L2 · 累计消费 <span class="money">¥1,286.50</span></span>
+                </span>
+                <span class="hright">
+                  <span class="hnum">64.3%</span>
+                  <span class="hlab" style="display:block">升级进度</span>
+                </span>
+              </div>
+              <div class="ruler"></div>
+              <div class="prog"><i style="width:64.3%"></i></div>
+              <div class="tickrow">
+                <span class="tick on"><span class="cv"></span><span class="cn">L1 新星</span><span class="ct">¥0.00</span></span>
+                <span class="tick on"><span class="cv"></span><span class="cn">L2 进阶</span><span class="ct">¥500.00</span></span>
+                <span class="tick"><span class="cv"></span><span class="cn">L3 精英</span><span class="ct">¥2,000.00</span></span>
+                <span class="tick"><span class="cv"></span><span class="cn">L4 尊享</span><span class="ct">¥10,000.00</span></span>
+                <span class="tick"><span class="cv"></span><span class="cn">L5 王者</span><span class="ct">¥50,000.00</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="g18"></div>
+          <div class="sect"><span class="st">等级阶梯</span><span class="ss">5 级 · 一级一卡并排</span></div>
+          <div class="g10"></div>
+          <!-- 一级一卡并排：同一几何语言（切角方徽章 + 刻度），差异靠深度/环数/刻度数 -->
+          <div class="rail five">
+            <div class="lvc"><span class="bw sm" data-badge="lv1"></span><span class="lk">L1</span><span class="ln">新星会员</span><span class="lt">¥0.00</span><span class="st done">已达成</span></div>
+            <div class="lvc cur"><span class="curtag">当前</span><span class="bw sm" data-badge="lv2"></span><span class="lk">L2</span><span class="ln">进阶会员</span><span class="lt">¥500.00</span><span class="st now">当前等级</span></div>
+            <div class="lvc"><span class="bw sm" data-badge="lv3"></span><span class="lk">L3</span><span class="ln">精英会员</span><span class="lt">¥2,000.00</span><span class="st lock">未解锁</span></div>
+            <div class="lvc"><span class="bw sm" data-badge="lv4"></span><span class="lk">L4</span><span class="ln">尊享会员</span><span class="lt">¥10,000.00</span><span class="st lock">未解锁</span></div>
+            <div class="lvc"><span class="bw sm" data-badge="lv5"></span><span class="lk">L5</span><span class="ln">王者会员</span><span class="lt">¥50,000.00</span><span class="st lock">未解锁</span></div>
+          </div>
+          <div class="steps"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="g22"></div>
+
+          <div class="sect"><span class="st">会员权益</span><span class="ss">全部为现有真实能力</span></div>
+          <div class="g10"></div>
+          <div class="card">
+            <div class="row">
+              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span>
+              <span class="tx"><span class="rt">成长值累计</span><span class="rs" style="display:block">每次下单累计消费，等级只升不降</span></span>
+              <span class="ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="row">
+              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7.5A4 4 0 0112 3.5a4 4 0 014 4V10"/></svg></span>
+              <span class="tx"><span class="rt">等级永久保留</span><span class="rs" style="display:block">消费回退不降级，会员身份长期有效</span></span>
+              <span class="ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="row">
+              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5.5c0 4-2.9 7.6-7 9.5-4.1-1.9-7-5.5-7-9.5V6z"/></svg></span>
+              <span class="tx"><span class="rt">好友资料页展示</span><span class="rs" style="display:block">等级徽章与等级名在好友资料页可见</span></span>
+              <span class="ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+          <div class="wrap"><div class="g10"></div><div class="t-note">升级阈值由后台配置 · 下单自动累计 · 退款回退累计消费但不降级</div></div>
+          <div class="g22"></div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>服务</span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>订单</span>
+        <span class="tb fab"><span class="fabdot">＋</span></span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 01-7 7H8l-4 3v-6.5A7 7 0 0111 5h2a7 7 0 017 7z"/></svg>消息</span>
+        <span class="tb on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.7-3.6 3.6-5.6 7.2-5.6s6.5 2 7.2 5.6"/></svg>我的</span>
+      </div>
+    </div>
+    <p class="cap"><b>首屏（不滚动）</b>：页头 → 当前等级 HeroCard（徽章 + 等级名 + 累计消费 + 64.3% 进度 + 5 级刻度尺）→ 等级阶梯一级一卡并排（当前级琥珀描边，已达成/未解锁分别是青瓷与中性灰）→ 会员权益首行。
+    <br>「阶梯台阶基线」是 5 根递增的发丝线，只作层级提示，不是装饰插画。</p>
+  </figure>
+
+  <!-- ============================ 屏 2 · 单级详情（首屏） ============================ -->
+  <figure class="shot">
+    <figcaption>② 单级详情 · 首屏 <em>以 L2 进阶会员为例（真实规则 + 真实消费额）</em></figcaption>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+      <div class="phead sub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        <span class="ttl">等级详情</span>
+        <span class="rt"><span class="tag plain">L2</span></span>
+      </div>
+      <div class="scroll">
+        <div class="inner">
+          <div class="g14"></div>
+          <div class="hero" data-hero="1">
+            <div class="grid"></div><div class="chamfer"></div><div class="chamfer2"></div>
+            <div class="body" style="padding:18px 16px 17px">
+              <div class="hrow" style="gap:15px">
+                <span class="bw lg" data-badge="lv2"></span>
+                <span>
+                  <span class="hname" style="font-size:20px">进阶会员</span>
+                  <span class="tag hero" style="display:inline-flex;margin-top:7px">当前等级</span>
+                  <span class="hsub" style="display:block;margin-top:7px">两档之间：累计消费满 <span class="money">¥500.00</span> 达成</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="g18"></div>
+          <div class="sect"><span class="st">当前进度</span><span class="ss">成长值 = 累计消费</span></div>
+          <div class="g10"></div>
+          <div class="card inset">
+            <div style="display:flex;align-items:baseline;gap:10px">
+              <span class="money m22" style="color:var(--t1)">¥1,286.50</span>
+              <span class="t-micro" style="margin-left:auto">目标 ¥2,000.00</span>
+            </div>
+            <div style="height:6px;background:#EDF0F4;margin-top:12px;position:relative">
+              <i style="position:absolute;left:0;top:0;bottom:0;width:64.3%;background:var(--amber);display:block"></i>
+            </div>
+            <div style="display:flex;margin-top:9px">
+              <span class="t-micro">64.3%</span>
+              <span class="t-micro" style="margin-left:auto">距精英会员还差 <span class="money" style="color:var(--amber-ink)">¥713.50</span></span>
+            </div>
+            <div class="hair" style="margin:13px 0 11px"></div>
+            <div style="display:flex;gap:16px">
+              <span style="flex:1 1 0"><span class="t-micro" style="display:block">下一等级</span><span class="t-body" style="display:block;font-weight:600;color:var(--t1);margin-top:2px">L3 精英会员</span></span>
+              <span style="flex:1 1 0"><span class="t-micro" style="display:block">升级方式</span><span class="t-body" style="display:block;font-weight:600;color:var(--t1);margin-top:2px">下单自动累计</span></span>
+            </div>
+          </div>
+          <div class="g18"></div>
+          <div class="sect"><span class="st">本级权益</span><span class="ss">只用现有真实能力</span></div>
+          <div class="g10"></div>
+          <div class="card">
+            <div class="row">
+              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-6 7z"/><path d="M12 10v6"/><path d="M8 20h8"/></svg></span>
+              <span class="tx"><span class="rt">L2 等级徽章</span><span class="rs" style="display:block">头像旁展示，好友资料页可见</span></span>
+            </div>
+            <div class="row">
+              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M7 19V9M12 19V5M17 19v-7"/></svg></span>
+              <span class="tx"><span class="rt">成长值累计</span><span class="rs" style="display:block">每次下单累计消费，等级只升不降</span></span>
+            </div>
+            <div class="row">
+              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7.5A4 4 0 0112 3.5a4 4 0 014 4V10"/></svg></span>
+              <span class="tx"><span class="rt">等级永久保留</span><span class="rs" style="display:block">退款回退累计消费，等级不降</span></span>
+            </div>
+          </div>
+          <div class="g18"></div>
+          <div class="sect"><span class="st">视觉资产</span><span class="ss">同一几何语言</span></div>
+        </div>
+      </div>
+      <div class="fold"><span>首屏折线 844</span></div>
+      <div class="tabbar">
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>服务</span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>订单</span>
+        <span class="tb fab"><span class="fabdot">＋</span></span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 01-7 7H8l-4 3v-6.5A7 7 0 0111 5h2a7 7 0 017 7z"/></svg>消息</span>
+        <span class="tb on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.7-3.6 3.6-5.6 7.2-5.6s6.5 2 7.2 5.6"/></svg>我的</span>
+      </div>
+    </div>
+    <p class="cap"><b>首屏（不滚动）</b>：HeroCard = 放大徽章（76dp）+ 等级名 + 「当前等级」标签 + 达成条件一句 →
+    当前进度卡（累计消费 22sp 等宽数字 / 目标 / 进度条 / 还差多少 / 下一等级与升级方式）→ 本级权益 3 行（<b>全部为真实能力</b>）。
+    <br>质量感来自「一个视觉主角 + 大量留白 + 一处翡翠绿强调」：整屏<b>只有进度条与「还差 ¥713.50」两处用琥珀</b>。</p>
+  </figure>
+
+  <!-- ============================ 屏 3 · 单级详情（滚动后完整页） ============================ -->
+  <figure class="shot">
+    <figcaption>③ 单级详情 · 滚动后完整页 <em>虚线以上 = 首屏所见</em></figcaption>
+    <div class="phone full">
+      <div class="statusbar"><span>9:41</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+      <div class="phead sub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        <span class="ttl">等级详情</span>
+        <span class="rt"><span class="tag plain">L2</span></span>
+      </div>
+      <div class="scroll">
+        <div class="inner">
+          <div class="g14"></div>
+          <div class="hero" data-hero="1">
+            <div class="grid"></div><div class="chamfer"></div><div class="chamfer2"></div>
+            <div class="body" style="padding:18px 16px 17px">
+              <div class="hrow" style="gap:15px">
+                <span class="bw lg" data-badge="lv2"></span>
+                <span>
+                  <span class="hname" style="font-size:20px">进阶会员</span>
+                  <span class="tag hero" style="display:inline-flex;margin-top:7px">当前等级</span>
+                  <span class="hsub" style="display:block;margin-top:7px">两档之间：累计消费满 <span class="money">¥500.00</span> 达成</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="g18"></div>
+          <div class="sect"><span class="st">当前进度</span><span class="ss">成长值 = 累计消费</span></div>
+          <div class="g10"></div>
+          <div class="card inset">
+            <div style="display:flex;align-items:baseline;gap:10px">
+              <span class="money m22">¥1,286.50</span>
+              <span class="t-micro" style="margin-left:auto">目标 ¥2,000.00</span>
+            </div>
+            <div style="height:6px;background:#EDF0F4;margin-top:12px;position:relative">
+              <i style="position:absolute;left:0;top:0;bottom:0;width:64.3%;background:var(--amber);display:block"></i>
+            </div>
+            <div style="display:flex;margin-top:9px">
+              <span class="t-micro">64.3%</span>
+              <span class="t-micro" style="margin-left:auto">距精英会员还差 <span class="money" style="color:var(--amber-ink)">¥713.50</span></span>
+            </div>
+            <div class="hair" style="margin:13px 0 11px"></div>
+            <div style="display:flex;gap:16px">
+              <span style="flex:1 1 0"><span class="t-micro" style="display:block">下一等级</span><span class="t-body" style="display:block;font-weight:600;color:var(--t1);margin-top:2px">L3 精英会员</span></span>
+              <span style="flex:1 1 0"><span class="t-micro" style="display:block">升级方式</span><span class="t-body" style="display:block;font-weight:600;color:var(--t1);margin-top:2px">下单自动累计</span></span>
+            </div>
+          </div>
+          <div class="g18"></div>
+          <div class="sect"><span class="st">本级权益</span><span class="ss">只用现有真实能力</span></div>
+          <div class="g10"></div>
+          <div class="card">
+            <div class="row">
+              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-6 7z"/><path d="M12 10v6"/><path d="M8 20h8"/></svg></span>
+              <span class="tx"><span class="rt">L2 等级徽章</span><span class="rs" style="display:block">头像旁展示，好友资料页可见</span></span>
+            </div>
+            <div class="row">
+              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M7 19V9M12 19V5M17 19v-7"/></svg></span>
+              <span class="tx"><span class="rt">成长值累计</span><span class="rs" style="display:block">每次下单累计消费，等级只升不降</span></span>
+            </div>
+            <div class="row">
+              <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7.5A4 4 0 0112 3.5a4 4 0 014 4V10"/></svg></span>
+              <span class="tx"><span class="rt">等级永久保留</span><span class="rs" style="display:block">退款回退累计消费，等级不降</span></span>
+            </div>
+          </div>
+          <div class="g18"></div>
+
+          <!-- 等级视觉资产：同一徽章的比例 / 单色 / 小尺寸三形态 -->
+          <div class="sect"><span class="st">视觉资产</span><span class="ss">同一几何语言</span></div>
+          <div class="g10"></div>
+          <div class="card">
+            <div class="assets">
+              <span class="as"><span class="bw" data-badge="lv2" style="width:56px;height:56px;flex:0 0 56px"></span><span class="an">标准 44dp<br>会员卡 / 等级卡</span></span>
+              <span class="as"><span class="bw sm" data-badge="lv2"></span><span class="an">小尺寸 40dp<br>阶梯并排卡</span></span>
+              <span class="as">
+                <span style="display:flex;align-items:center;gap:6px;height:44px">
+                  <span style="width:26px;height:26px;border-radius:50%;background:#EDF0F4;display:flex;align-items:center;justify-content:center">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.7-3.6 3.6-5.6 7.2-5.6s6.5 2 7.2 5.6"/></svg>
+                  </span>
+                  <span style="display:inline-flex;align-items:center;gap:3px;height:16px;padding:0 6px;border-radius:4px;background:var(--lv2-soft);border:1px solid #D3DAE3">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 6-7 12L5 9z"/><path d="M5 9h14"/></svg>
+                    <span style="font-size:10.5px;font-weight:700;color:var(--lv2)">L2 进阶</span>
+                  </span>
+                </span>
+                <span class="an">头像旁 24dp<br>内联标签</span>
+              </span>
+              <span class="as"><span style="width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:var(--lv2-soft);border:1px solid #D3DAE3;clip-path:polygon(0 0,calc(100% - 11px) 0,100% 11px,100% 100%,11px 100%,0 calc(100% - 11px))"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A5A6E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 6-7 12L5 9z"/><path d="M5 9h14"/></svg></span><span class="an">浅底切角片 56dp<br>列表 / 空态</span></span>
+            </div>
+          </div>
+          <div class="g22"></div>
+
+          <div class="sect"><span class="st">等级规则</span><span class="ss">读自代码，未改一字</span></div>
+          <div class="g10"></div>
+          <div class="card">
+            <div class="row"><span class="tx"><span class="rt">升级依据</span><span class="rs" style="display:block">累计实际消费（成长值），下单累加、退款回退</span></span><span class="rv">只升不降</span></div>
+            <div class="row"><span class="tx"><span class="rt">阈值来源</span><span class="rs" style="display:block">后台配置下发，前端只读展示</span></span><span class="rv">后台可配</span></div>
+            <div class="row"><span class="tx"><span class="rt">等级口径</span><span class="rs" style="display:block">会员体系仅老板端账号，打手端账号不设会员等级</span></span><span class="rv">老板端</span></div>
+            <div class="row"><span class="tx"><span class="rt">调整方式</span><span class="rs" style="display:block">管理端手动调级（仅超管，双重审计）</span></span><span class="rv">人工</span></div>
+          </div>
+          <div class="wrap"><div class="g10"></div><div class="t-note">当前等级以下（含本级）划线为已达成；等级只升不降，退款不会导致等级跳变。</div></div>
+          <div class="g22"></div>
+        </div>
+      </div>
+      <div class="fold"><span>首屏折线 844</span></div>
+      <div class="tabbar">
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>服务</span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>订单</span>
+        <span class="tb fab"><span class="fabdot">＋</span></span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 01-7 7H8l-4 3v-6.5A7 7 0 0111 5h2a7 7 0 017 7z"/></svg>消息</span>
+        <span class="tb on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.7-3.6 3.6-5.6 7.2-5.6s6.5 2 7.2 5.6"/></svg>我的</span>
+      </div>
+    </div>
+    <p class="cap"><b>滚动后</b>：视觉资产 4 形态（标准 44dp / 小尺寸 40dp / 头像旁 24dp 内联标签 / 浅底切角片 56dp）→ 等级规则 4 行事实。
+    <br>4 种形态<b>同一枚徽章的等比缩放</b>，不是 4 套图形；规则 4 行全部来自代码（`level_style.dart:97-103`、`docs/06:53-68`）。</p>
+  </figure>
+
+  <!-- ============================ 屏 4 · 升级进度态 ============================ -->
+  <figure class="shot">
+    <figcaption>④ 升级进度态 <em>临近升级 / 刚升级 / 距离尚远 三态同框</em></figcaption>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+      <div class="phead sub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        <span class="ttl">升级进度</span>
+      </div>
+      <div class="scroll">
+        <div class="inner">
+          <div class="g14"></div>
+          <div class="hero" data-hero="1">
+            <div class="grid"></div><div class="chamfer"></div><div class="chamfer2"></div>
+            <div class="body">
+              <div class="hrow">
+                <span class="bw" data-badge="lv3"></span>
+                <span>
+                  <span class="hname">再消费 <span class="money" style="color:#E0BE8C">¥713.50</span></span>
+                  <span class="hsub" style="display:block">即可升级到 L3 精英会员</span>
+                </span>
+              </div>
+              <div class="prog" style="margin-top:15px"><i style="width:64.3%"></i></div>
+              <div class="tickrow">
+                <span class="tick on"><span class="cv"></span><span class="cn">已达成</span><span class="ct">¥1,286.50</span></span>
+                <span class="tick" style="text-align:right"><span class="cv" style="margin-left:auto"></span><span class="cn">目标 L3</span><span class="ct">¥2,000.00</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="g18"></div>
+          <div class="sect"><span class="st">升级后你得到什么</span><span class="ss">L3 精英会员</span></div>
+          <div class="g10"></div>
+          <div class="card">
+            <div class="row" style="padding:14px 14px 13px">
+              <span class="bw" data-badge="lv3"></span>
+              <span class="tx">
+                <span class="rt" style="color:var(--amber-ink)">L3 等级徽章</span>
+                <span class="rs" style="display:block">徽章新增内环 + 3 段刻度，等级名与徽章同步升级</span>
+              </span>
+            </div>
+            <div class="hair"></div>
+            <div class="row" style="min-height:auto;padding:12px 14px 13px">
+              <span class="tx"><span class="rt">口径不变</span><span class="rs" style="display:block">升级只改徽章与等级名；余额、订单、服务入口一字不变</span></span>
+            </div>
+          </div>
+          <div class="g18"></div>
+          <div class="sect"><span class="st">三态对照</span><span class="ss">同一套组件，只换数据</span></div>
+          <div class="g10"></div>
+          <div class="card">
+            <div class="row" style="align-items:flex-start">
+              <span class="tx"><span class="rt">① 临近升级 <span class="tag amber" style="margin-left:4px">当前</span></span>
+                <span class="rs" style="display:block">¥1,286.50 / ¥2,000.00 · 还差 ¥713.50 · 进度 64.3%（现值）</span>
+                <span style="display:block;height:5px;background:#EDF0F4;margin-top:9px;position:relative">
+                  <i style="position:absolute;left:0;top:0;bottom:0;width:64.3%;background:var(--amber);display:block"></i></span>
+              </span>
+            </div>
+            <div class="hair"></div>
+            <div class="row" style="align-items:flex-start">
+              <span class="tx"><span class="rt">② 刚升级 <span class="tag celadon" style="margin-left:4px">满格</span></span>
+                <span class="rs" style="display:block">¥2,120.00 / ¥10,000.00 · 进度 21.2% · 文案切换为「距尊享会员还差 ¥7,880.00」</span>
+                <span style="display:block;height:5px;background:#EDF0F4;margin-top:9px;position:relative">
+                  <i style="position:absolute;left:0;top:0;bottom:0;width:21.2%;background:var(--amber);display:block"></i></span>
+              </span>
+            </div>
+            <div class="hair"></div>
+            <div class="row" style="align-items:flex-start;border-bottom:0">
+              <span class="tx"><span class="rt">③ 已达顶级 <span class="tag plain" style="margin-left:4px">L5 满级</span></span>
+                <span class="rs" style="display:block">累计消费 ¥52,300.00 · 进度 100% · 文案「已达最高等级」，不再显示「还差」</span>
+                <span style="display:block;height:5px;background:#EDF0F4;margin-top:9px;position:relative">
+                  <i style="position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--amber);display:block"></i></span>
+              </span>
+            </div>
+          </div>
+          <div class="wrap"><div class="g10"></div>
+            <div class="t-note">三态文案与已发版一致：`profile_page.dart:702-706`（满级 →「已达最高等级 · 累计消费 …」；未满级 →「距下一级还差 …」）。「满格」用青瓷不用金 —— 成功态与等级色两种语义分开（docs/32 §一 铁律 4：状态不只靠颜色）。</div>
+          </div>
+          <div class="g22"></div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>服务</span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>订单</span>
+        <span class="tb fab"><span class="fabdot">＋</span></span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 01-7 7H8l-4 3v-6.5A7 7 0 0111 5h2a7 7 0 017 7z"/></svg>消息</span>
+        <span class="tb on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.7-3.6 3.6-5.6 7.2-5.6s6.5 2 7.2 5.6"/></svg>我的</span>
+      </div>
+    </div>
+    <p class="cap"><b>升级进度态</b>：HeroCard 主题句变成「再消费 ¥713.50 即可升级到 L3 精英会员」+ 升级后徽章预览（L3 徽章提前展示，不靠金色）。
+    <br>三态对照卡把「临近 / 刚升级 / 满级」三种文案状态一次说清 —— 都是现成代码里已有的分支，没有新增规则。</p>
+  </figure>
+
+  <!-- ============================ 屏 5 · 加载骨架态 ============================ -->
+  <figure class="shot">
+    <figcaption>⑤ 加载骨架态 <em>静态灰块，不做 shimmer（与已发版同口径）</em></figcaption>
+    <div class="phone">
+      <div class="statusbar"><span>9:41</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+      <div class="phead sub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        <span class="ttl">会员中心</span>
+      </div>
+      <div class="scroll">
+        <div class="inner">
+          <div class="g14"></div>
+          <div class="hero" data-hero="1">
+            <div class="grid"></div><div class="chamfer"></div><div class="chamfer2"></div>
+            <div class="body">
+              <div class="hrow">
+                <span class="sk" style="width:44px;height:44px;flex:0 0 44px;background:rgba(255,255,255,.13)"></span>
+                <span style="flex:1 1 auto">
+                  <span class="sk" style="display:block;width:96px;height:15px;background:rgba(255,255,255,.13)"></span>
+                  <span class="sk" style="display:block;width:132px;height:10px;margin-top:8px;background:rgba(255,255,255,.09)"></span>
+                </span>
+                <span class="sk" style="width:52px;height:22px;background:rgba(255,255,255,.13)"></span>
+              </div>
+              <div class="sk" style="height:6px;margin-top:16px;background:rgba(255,255,255,.10)"></div>
+              <div class="tickrow" style="margin-top:9px">
+                <span class="tick"><span class="sk" style="width:5px;height:5px;display:block;background:rgba(255,255,255,.13)"></span><span class="sk" style="display:block;width:38px;height:8px;margin-top:4px;background:rgba(255,255,255,.09)"></span></span>
+                <span class="tick"><span class="sk" style="width:5px;height:5px;display:block;background:rgba(255,255,255,.13)"></span><span class="sk" style="display:block;width:38px;height:8px;margin-top:4px;background:rgba(255,255,255,.09)"></span></span>
+                <span class="tick"><span class="sk" style="width:5px;height:5px;display:block;background:rgba(255,255,255,.13)"></span><span class="sk" style="display:block;width:38px;height:8px;margin-top:4px;background:rgba(255,255,255,.09)"></span></span>
+                <span class="tick"><span class="sk" style="width:5px;height:5px;display:block;background:rgba(255,255,255,.13)"></span><span class="sk" style="display:block;width:38px;height:8px;margin-top:4px;background:rgba(255,255,255,.09)"></span></span>
+                <span class="tick"><span class="sk" style="width:5px;height:5px;display:block;background:rgba(255,255,255,.13)"></span><span class="sk" style="display:block;width:38px;height:8px;margin-top:4px;background:rgba(255,255,255,.09)"></span></span>
+              </div>
+            </div>
+          </div>
+          <div class="g18"></div>
+          <div class="sect"><span class="st">等级阶梯</span><span class="ss">5 级 · 一级一卡并排</span></div>
+          <div class="g10"></div>
+          <div class="rail five">
+            <div class="lvc"><span class="sk circle" style="width:40px;height:40px"></span><span class="sk" style="width:26px;height:10px;margin-top:9px"></span><span class="sk" style="width:52px;height:11px;margin-top:6px"></span><span class="sk" style="width:44px;height:9px;margin-top:6px"></span></div>
+            <div class="lvc"><span class="sk circle" style="width:40px;height:40px"></span><span class="sk" style="width:26px;height:10px;margin-top:9px"></span><span class="sk" style="width:52px;height:11px;margin-top:6px"></span><span class="sk" style="width:44px;height:9px;margin-top:6px"></span></div>
+            <div class="lvc"><span class="sk circle" style="width:40px;height:40px"></span><span class="sk" style="width:26px;height:10px;margin-top:9px"></span><span class="sk" style="width:52px;height:11px;margin-top:6px"></span><span class="sk" style="width:44px;height:9px;margin-top:6px"></span></div>
+            <div class="lvc"><span class="sk circle" style="width:40px;height:40px"></span><span class="sk" style="width:26px;height:10px;margin-top:9px"></span><span class="sk" style="width:52px;height:11px;margin-top:6px"></span><span class="sk" style="width:44px;height:9px;margin-top:6px"></span></div>
+            <div class="lvc"><span class="sk circle" style="width:40px;height:40px"></span><span class="sk" style="width:26px;height:10px;margin-top:9px"></span><span class="sk" style="width:52px;height:11px;margin-top:6px"></span><span class="sk" style="width:44px;height:9px;margin-top:6px"></span></div>
+          </div>
+          <div class="g22"></div>
+          <div class="sect"><span class="st">会员权益</span></div>
+          <div class="g10"></div>
+          <div class="card">
+            <div class="row"><span class="sk" style="width:32px;height:32px;flex:0 0 32px;border-radius:10px"></span><span class="tx"><span class="sk" style="display:block;width:88px;height:12px"></span><span class="sk" style="display:block;width:180px;height:10px;margin-top:8px"></span></span></div>
+            <div class="row"><span class="sk" style="width:32px;height:32px;flex:0 0 32px;border-radius:10px"></span><span class="tx"><span class="sk" style="display:block;width:88px;height:12px"></span><span class="sk" style="display:block;width:160px;height:10px;margin-top:8px"></span></span></div>
+            <div class="row"><span class="sk" style="width:32px;height:32px;flex:0 0 32px;border-radius:10px"></span><span class="tx"><span class="sk" style="display:block;width:110px;height:12px"></span><span class="sk" style="display:block;width:148px;height:10px;margin-top:8px"></span></span></div>
+          </div>
+          <div class="g22"></div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z"/></svg>服务</span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>订单</span>
+        <span class="tb fab"><span class="fabdot">＋</span></span>
+        <span class="tb"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 01-7 7H8l-4 3v-6.5A7 7 0 0111 5h2a7 7 0 017 7z"/></svg>消息</span>
+        <span class="tb on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.7-3.6 3.6-5.6 7.2-5.6s6.5 2 7.2 5.6"/></svg>我的</span>
+      </div>
+    </div>
+    <p class="cap"><b>骨架态</b>：图形与真实结构同形（徽章 / 数值 / 刻度 / 阶梯卡 / 权益行），静态灰块、<b>不做 shimmer</b> ——
+    与已发版一致（`profile_page.dart:858-864` 的注释说明：动画会让 `pumpAndSettle` 永不收敛）。</p>
+  </figure>
+
+  <!-- ============================ 规格面板 1：等级阶梯表 ============================ -->
+  <div class="panel">
+    <h3>真实等级阶梯（读自代码，未编造）</h3>
+    <p class="cap">阈值来源 `server/src/modules/level/level.service.ts:14-20`（后台可配）；前端兜底 `level_style.dart:97-103`；等级名 `level_style.dart:36-77`。</p>
+    <table class="spec-table">
+      <tr><th>级</th><th>等级名</th><th>累计消费门槛</th><th>徽章（同一几何语言）</th></tr>
+      <tr><td class="mono">L1</td><td><b>新星会员</b></td><td class="mono">¥0.00</td><td>切角方 · 无内环 · 0 刻度 · 石板灰</td></tr>
+      <tr><td class="mono">L2</td><td><b>进阶会员</b></td><td class="mono">¥500.00</td><td>切角方 · 1 内环 · 1 刻度 · 深石板</td></tr>
+      <tr><td class="mono">L3</td><td><b>精英会员</b></td><td class="mono">¥2,000.00</td><td>切角方 · 2 内环 · 2 刻度 · <b>琥珀 #B4732A</b></td></tr>
+      <tr><td class="mono">L4</td><td><b>尊享会员</b></td><td class="mono">¥10,000.00</td><td>切角方 · 3 内环 · 3 刻度 · 深琥珀</td></tr>
+      <tr><td class="mono">L5</td><td><b>王者会员</b></td><td class="mono">¥50,000.00</td><td>切角方 · 4 内环 · 4 刻度 · 深琥珀 + 顶部横幅</td></tr>
+    </table>
+    <div class="blk">
+      <div class="bt">差异靠什么做（不是靠加金）</div>
+      <div class="t-note">
+        <b>① 内环层数 0→4</b>（材质密度，越大越"厚"）· <b>② 底部刻度段数 0→4</b>（与品牌「标尺线」同源）·
+        <b>③ 色相只在第 3 级跨一次</b>（低档中性石板 → 高档唯一琥珀）· <b>④ 顶部横幅</b>只给 L5 ·
+        <b>⑤ 体积 40 / 44 / 76dp</b> 三档等比。<br>
+        <b>统一来自</b>：同一个 45° 切角方轮廓（切角比例恒定 22%）+ 同一中心图形语言 + 同一 1px 描边 + 同一留白节奏。
+      </div>
+    </div>
+    <div class="blk">
+      <div class="bt">为什么不用现状的五色渐变圆标</div>
+      <div class="t-note">
+        现状 `level_style.dart:36-77` 是<b>银 → 宝蓝 → 鎏金 → 紫金 → 赤金</b>五种不同色相 + 三段渐变 + 皇冠/奖杯图标：
+        ① 违反 `docs/32 §一 铁律 3`（价格/等级只用 #B4732A）；② 违反 `docs/21`「渐变不做主视觉」；
+        ③ 五色互为竞争，反而<b>看不出高低</b>（紫和金谁高？）；④ 皇冠/奖杯属"廉价电竞风"。
+        新方案把差异交给<b>结构（环/刻度/体积）</b>，颜色只承担"是否高级"一个信息。
+      </div>
+    </div>
+    <div class="blk">
+      <div class="bt">需负责人确认（1 项，与图形无关）</div>
+      <div class="t-note">
+        `membership_page.dart:159-164` 现有 4 条权益里，<b>「专属等级徽章 · 头像旁、动态里展示」</b>中的「动态里」已失效
+        （社区模块已于 2026-10-05 整体下线）；实测等级徽章当前只在<b>好友资料页</b>出现
+        （`friend_profile_page.dart:88-97`），「我的」页只显示「L2」文字胶囊（`profile_page.dart:247`）。
+        → 文案建议改为「等级徽章（好友资料页可见）」，或本次一并把新徽章落到「我的」页。请负责人圈选。
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ 规格面板 2：徽章几何 + 品质感手段 ============================ -->
+  <div class="panel">
+    <h3>徽章几何规范（可直接实现的数字）</h3>
+    <p class="cap">全部为 CSS/SVG 中已画出的真实数值，实施时一一对应 Flutter 的 `CustomPainter` 或 `ClipPath`。</p>
+    <table class="spec-table">
+      <tr><th>项</th><th>值</th></tr>
+      <tr><td>外轮廓</td><td class="mono">正方形 R4，右上 + 左下 45° 切角 = 边长 × 22%</td></tr>
+      <tr><td>描边</td><td class="mono">1px 实色（等级色 100%）</td></tr>
+      <tr><td>底色</td><td class="mono">等级浅底（琥珀 #F7EDE0 / 中性 #EDF0F4）</td></tr>
+      <tr><td>内环</td><td class="mono">1px 同色 30% 不透明，内缩 5dp，环数 = 级 − 1</td></tr>
+      <tr><td>刻度</td><td class="mono">3×2dp 小方块，段数 = 级 − 1，贴底居中，间距 3dp</td></tr>
+      <tr><td>中心图形</td><td class="mono">同族几何（钻石 / 双钻 / 星芒 / 八芒 / 王冠），全部 1px 线稿</td></tr>
+      <tr><td>尺寸档</td><td class="mono">40 / 44 / 56 / 76dp（同一矢量等比缩放）</td></tr>
+      <tr><td>禁用</td><td class="mono">渐变 · 外发光 · 粒子 · 立体投影 · 拟物奖杯</td></tr>
+    </table>
+    <div class="blk">
+      <div class="bt">品质感的 9 条具体手段（可验收）</div>
+      <div class="t-note">
+        <b>1 比例</b>：HeroCard 徽章 44dp 对 18sp 等级名，比例 2.4:1（不是并排两个大数字）。<br>
+        <b>2 留白</b>：HeroCard 内边距 15/16dp，等级名与副标间距 3dp，刻度尺上边距 13dp —— 组内紧、组间松。<br>
+        <b>3 排版</b>：全屏只用 5 档字号（22 / 18 / 15 / 12 / 11），金额一律等宽数字（tabular）。<br>
+        <b>4 材质</b>：墨蓝实色 + 4.5% 白细网格 + 20dp 斜切角 —— 靠"精密"不靠"闪"。<br>
+        <b>5 对比</b>：<b>琥珀只在 2 处出现</b>（进度条 + 「还差 ¥713.50」），其余全是中性色 → 金色才有价值。<br>
+        <b>6 细节</b>：刻度尺两端 5×5dp 端点方块（品牌标尺线语言），不是装饰。<br>
+        <b>7 层级</b>：三档卡片（HeroCard / ContentCard / ListCard），全屏只有 1 个 HeroCard。<br>
+        <b>8 状态</b>：已达成=青瓷、当前=琥珀、未解锁=中性灰 —— 形状（勾/实心/锁）与颜色同时区分。<br>
+        <b>9 克制</b>：整屏 <b>0 处阴影、0 渐变、0 粒子、0 闪光</b>；分层只靠 1px 发丝线。
+      </div>
+    </div>
+    <div class="blk">
+      <div class="bt">我<b>没有</b>用的东西（逐条对照硬约束）</div>
+      <div class="t-note">
+        ✗ 金色堆砌（琥珀仅 2 处/屏，非整屏金边、非金色标题、非金色卡片底）<br>
+        ✗ 闪光 / 高光扫过 / 星芒叠层 ✗ 粒子 / 星空 ✗ 复杂渐变（<b>渐变面积 = 0</b>）<br>
+        ✗ 第二个金（全屏只有一个 #B4732A 色系）✗ 辉光 / 外发光 ✗ 山峰意象（未出现任何山形）<br>
+        ✗ emoji（0 个）✗ 装饰插画 ✗ 禁用词表（计价单位/个人名次/社交模块三类，见 docs/36 红线核对表）：0 次
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ============================================================================
+   徽章生成器：一枚 SVG 由 5 个参数决定（轮廓/内环数/刻度数/色/中心图形）
+   —— 同一几何语言，差异全部来自结构参数。画完即把 <template> 清掉。
+   ============================================================================ */
+(function () {
+  var C = {
+    lv1: { line:'#8A99AB', soft:'#EDF0F4', deep:'#6E7C8C', rings:0, ticks:0, glyph:'diamond' },
+    lv2: { line:'#4A5A6E', soft:'#E9EDF2', deep:'#33414F', rings:1, ticks:1, glyph:'double' },
+    lv3: { line:'#B4732A', soft:'#F7EDE0', deep:'#8F5A22', rings:2, ticks:2, glyph:'star' },
+    lv4: { line:'#8F5A22', soft:'#F4E7D6', deep:'#6E4419', rings:3, ticks:3, glyph:'burst' },
+    lv5: { line:'#6E4419', soft:'#F0E2D0', deep:'#523211', rings:4, ticks:4, glyph:'crown' }
+  };
+  /* 中心图形：5 枚同族几何线稿（0 填充块 → 实心芯 → 四芒星 → 八芒星 → 王冠线稿）
+     全部 1px 线稿 + 同一 12×12 网格，L1..L5 复杂度单调递增，绝不出现拟物奖杯/emoji */
+  function glyph(g, d) {
+    var s = d.line;
+    if (g === 'diamond')
+      return '<path d="M12 4.4 18.2 11 12 19.6 5.8 11z" fill="none" stroke="' + s + '" stroke-width="1.15"/>';
+    if (g === 'double')
+      return '<path d="M12 4.4 18.2 11 12 19.6 5.8 11z" fill="none" stroke="' + s + '" stroke-width="1.15"/>' +
+             '<path d="M12 8 15 11 12 15 9 11z" fill="' + s + '"/>';
+    if (g === 'star')
+      return '<path d="M12 4 13.4 9.6 19 11 13.4 12.4 12 18 10.6 12.4 5 11 10.6 9.6z" fill="none" stroke="' + s + '" stroke-width="1.15"/>';
+    if (g === 'burst')
+      return '<path d="M12 4 13.4 9.6 19 11 13.4 12.4 12 18 10.6 12.4 5 11 10.6 9.6z" fill="none" stroke="' + s + '" stroke-width="1.15"/>' +
+             '<path d="M12 5.6 16.2 5.6 16.2 9.8 12 16.4 7.8 9.8 7.8 5.6z" fill="' + s + '" opacity=".22"/>' +
+             '<rect x="11.4" y="4.4" width="1.2" height="13.2" fill="' + s + '" opacity=".45"/>';
+    // crown：几何王冠（线稿 3 尖 + 横带），保持与其它 4 枚同一描边粗细
+    return '<path d="M5.6 16 6.9 8.2 9.6 11.6 12 6.6 14.4 11.6 17.1 8.2 18.4 16z" fill="none" stroke="' + s + '" stroke-width="1.15" stroke-linejoin="round"/>' +
+           '<rect x="5.9" y="17.1" width="12.2" height="1.4" fill="' + s + '" opacity=".85"/>';
+  }
+  function badge(name) {
+    var d = C[name];
+    var el = document.querySelector('[data-badge="' + name + '"]');
+    if (!el) return null;
+    var size = el.classList.contains('lg') ? 76 : (el.classList.contains('sm') ? 40 : 44);
+    if (el.style.width) size = parseFloat(el.style.width);
+    var cut = Math.round(size * 0.22 * 100) / 100;
+    var gid = 'g-' + name + '-' + Math.round(size);
+    var rings = '';
+    for (var i = 0; i < d.rings; i++) {
+      var pad = 5 + i * 3.4;
+      var c = cut * (1 - pad / (size / 2));
+      rings += '<rect x="' + (pad + 0.5) + '" y="' + (pad + 0.5) + '" width="' + (size - 2 * pad - 1) +
+               '" height="' + (size - 2 * pad - 1) + '" rx="' + Math.max(1.5, 3 - i * 0.4) +
+               '" fill="none" stroke="' + d.line + '" stroke-opacity=".30" stroke-width="1"/>';
+    }
+    var ticks = '';
+    for (var t = 0; t < d.ticks; t++) {
+      var w = 3, gap = 3;
+      var total = d.ticks * w + (d.ticks - 1) * gap;
+      var x = (size - total) / 2 + t * (w + gap);
+      ticks += '<rect x="' + x + '" y="' + (size - 6.4) + '" width="' + w + '" height="2" fill="' + d.line + '" opacity=".68" rx=".5"/>';
+    }
+    el.innerHTML =
+      '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true">' +
+      '<defs><clipPath id="' + gid + '"><path d="M0 0 H' + (size - cut) + ' L' + size + ' ' + cut + ' V' + size +
+      ' H' + cut + ' L0 ' + (size - cut) + ' Z"/></clipPath></defs>' +
+      '<path d="M0 0 H' + (size - cut) + ' L' + size + ' ' + cut + ' V' + size + ' H' + cut + ' L0 ' + (size - cut) +
+      ' Z" fill="' + d.soft + '" stroke="' + d.line + '" stroke-width="1"/>' +
+      '<g clip-path="url(#' + gid + ')">' +
+      '<rect x="0" y="0" width="' + size + '" height="' + size + '" fill="none"/>' + rings + ticks +
+      '<g transform="translate(' + (size / 2 - 12) + ',' + (size / 2 - 12 - (d.ticks ? 1 : 0)) + ') scale(1)">' +
+      glyph(d.glyph, d) + '</g></g></svg>';
+    return { size: size, name: name };
+  }
+  window.__badges = ['lv1', 'lv2', 'lv3', 'lv4', 'lv5'].map(badge).filter(Boolean);
+})();
+</script>
+</body>
+</html>

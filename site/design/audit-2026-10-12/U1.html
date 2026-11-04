@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>U1 · 深色外壳验收套件与「浅色为默认」脱节 · 设计图</title>
+<!--
+  U1 设计图（对照图）—— 自包含 HTML：纯 CSS + 内联 SVG，无外部依赖、无第三方截图。
+  主题口径逐值取自 admin-web/src/styles/tokens.css（浅色为默认档）；
+  套件口径逐值取自 scripts/tools/verify-admin-dark-shell.mjs 的常量与断言行。
+  本图只是设计示意，**未改动任何产品代码**。
+-->
+<style>
+:root{
+  --brand:#2563EB;--brand-soft:rgba(37,99,235,.10);--cyan:#06B6D4;--gold:#B45309;
+  --bg:#F5F7FB;--surface:#FFFFFF;--sunken:#F1F5F9;
+  --ink:#1F2937;--ink2:#5B6B82;--ink3:#5E7085;
+  --hair:#E5E9F2;--hair2:#DCE3EE;
+  --ok:#15803D;--warn:#C2410C;--err:#DC2626;
+  --r-sm:6px;--r-ctl:8px;--r-card:10px;--r-panel:14px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:30px 26px 64px}
+.kicker{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--r-sm);
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink2);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin:12px 0 8px}
+.lead{font-size:13.5px;color:var(--ink2);max-width:960px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:var(--ink3)}
+.meta b{color:var(--ink);font-weight:700}
+h2{font-size:16.5px;font-weight:800;letter-spacing:-.2px;padding-bottom:8px;border-bottom:1px solid var(--hair);margin:30px 0 14px}
+h3{font-size:13.5px;font-weight:800;margin:0 0 8px}
+p{font-size:13px;color:var(--ink2)}
+code{background:#EEF2F8;border-radius:3px;padding:1px 4px;font-size:11.5px;color:#1E293B;font-family:var(--mono)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:900px){.cmp{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:16px 17px 18px;display:flex;flex-direction:column;gap:12px}
+.panel-head{display:flex;align-items:center;gap:9px}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--r-sm);font-size:11px;font-weight:800;letter-spacing:.02em}
+.chip-before{background:var(--sunken);border:1px solid var(--hair);color:var(--ink2)}
+.chip-after{background:var(--brand-soft);border:1px solid rgba(37,99,235,.22);color:var(--brand)}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink)}
+.panel-sub{font-size:11.5px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+/* ── 迷你外壳示意（侧栏 + 主区） ───────────────────────── */
+.mock{border:1px solid var(--hair);border-radius:var(--r-card);overflow:hidden;display:flex;height:172px}
+.mock-sider{width:118px;flex:none;border-right:1px solid var(--hair);padding:10px 9px;display:flex;flex-direction:column;gap:6px}
+.mock-sider .brand{height:9px;width:66px;border-radius:3px;background:var(--hair2);margin-bottom:4px}
+.nav-line{height:7px;border-radius:3px;background:var(--hair)}
+.nav-line.on{background:rgba(37,99,235,.28)}
+.mock-main{flex:1;padding:11px 12px;display:flex;flex-direction:column;gap:9px}
+.mock-bar{height:8px;width:88px;border-radius:3px;background:var(--hair2)}
+.mock-card{flex:1;border:1px solid var(--hair);border-radius:var(--r-ctl);background:var(--surface);padding:9px 10px;display:flex;flex-direction:column;gap:7px}
+.mock-row{height:7px;border-radius:3px;background:var(--hair)}
+.mock-row.w70{width:70%}.mock-row.w45{width:45%}
+.swatch-note{font-size:11px;color:var(--ink3);font-family:var(--mono);display:flex;gap:14px;flex-wrap:wrap}
+.swatch-note b{color:var(--ink);font-weight:700}
+/* ── 代码块 ────────────────────────────────────────────── */
+.code{background:#0B1220;border:1px solid #1E2C42;border-radius:var(--r-card);padding:11px 12px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:#CFE0FF;overflow-x:auto}
+.code .c{color:#7E93B4}
+.code .k{color:#8CA3BE}
+.code .del{color:#FFB4B4;text-decoration:line-through;text-decoration-color:rgba(255,120,120,.55)}
+.code .add{color:#A9E7C0}
+/* ── 断言结果行 ────────────────────────────────────────── */
+.assert{display:flex;align-items:flex-start;gap:8px;border:1px solid var(--hair);border-radius:var(--r-ctl);
+  padding:9px 11px;font-size:12px;line-height:1.65;background:var(--surface)}
+.assert .tag{flex:none;font-family:var(--mono);font-weight:800;font-size:11px;letter-spacing:.04em}
+.assert.fail{border-color:rgba(220,38,38,.30);background:rgba(220,38,38,.045)}
+.assert.fail .tag{color:var(--err)}
+.assert.pass{border-color:rgba(21,128,61,.28);background:rgba(21,128,61,.05)}
+.assert.pass .tag{color:var(--ok)}
+.assert .msg{color:var(--ink2)}
+.assert .msg em{font-style:normal;color:var(--ink);font-weight:700}
+/* ── 选项卡 ────────────────────────────────────────────── */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:900px){.opts{grid-template-columns:1fr}}
+.opt{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:15px 16px;display:flex;flex-direction:column;gap:9px}
+.opt.rec{border-color:rgba(37,99,235,.38);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.opt-head{display:flex;align-items:center;gap:8px}
+.opt-name{font-size:13.5px;font-weight:800}
+.opt-badge{margin-left:auto;display:inline-flex;align-items:center;height:19px;padding:0 8px;border-radius:var(--r-sm);
+  background:var(--brand-soft);border:1px solid rgba(37,99,235,.24);color:var(--brand);font-size:10.5px;font-weight:800}
+.opt ul{margin:0 0 0 16px}
+.opt li{font-size:12.5px;color:var(--ink2);margin-bottom:5px}
+.opt li b{color:var(--ink)}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+.tbl th{font-size:11.5px;font-weight:800;color:var(--ink3);background:var(--sunken)}
+.tbl td{color:var(--ink2)}
+.tbl td b{color:var(--ink)}
+.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--ink3);line-height:1.8}
+.foot b{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="kicker">U1 · 测试治理（非视觉） · 建议优先级 P0</span>
+  <h1>深色外壳验收套件与「浅色为默认」已脱节</h1>
+  <p class="lead">
+    管理端自 <code>bea8bd3</code>（2026-10-11）起<b>浅色为默认档</b>，但验收套件
+    <code>scripts/tools/verify-admin-dark-shell.mjs</code> 仍按「深色为默认」写死期望值 → 该套件<b>无条件失败</b>，
+    不再具备回归价值（红不是因为坏了，而是因为脚本前提过期）。<b>本图只做对照说明，不改脚本、不改产品代码。</b>
+  </p>
+  <div class="meta">
+    <span>对象：<b>scripts/tools/verify-admin-dark-shell.mjs</b></span>
+    <span>对照：<b>admin-web/src/styles/tokens.css</b></span>
+    <span>性质：<b>改测试断言 = 改验收标准 → 需审批</b></span>
+  </div>
+
+  <h2>对照图：套件断言的旧口径 &nbsp;vs&nbsp; 现在的实际浅色默认</h2>
+  <div class="cmp">
+
+    <!-- ============================ 左：旧口径 ============================ -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">现状 · 左</span>
+        <span class="panel-title">套件断言的旧口径（2026-10-11 之前）</span>
+        <span class="panel-sub">L72–75</span>
+      </div>
+
+      <div class="mock">
+        <div class="mock-sider" style="background:#0B1220;border-right-color:#1E2C42">
+          <div class="brand" style="background:#22304A"></div>
+          <div class="nav-line" style="background:#1E2C42"></div>
+          <div class="nav-line on" style="background:rgba(37,99,235,.55)"></div>
+          <div class="nav-line" style="background:#1E2C42"></div>
+          <div class="nav-line" style="background:#1E2C42"></div>
+          <div class="nav-line" style="background:#1E2C42;width:72%"></div>
+        </div>
+        <div class="mock-main" style="background:#0B1220">
+          <div class="mock-bar" style="background:#22304A"></div>
+          <div class="mock-card" style="background:#111C2E;border-color:#1E2C42">
+            <div class="mock-row" style="background:#1E2C42"></div>
+            <div class="mock-row w70" style="background:#1E2C42"></div>
+            <div class="mock-row w45" style="background:#1E2C42"></div>
+          </div>
+        </div>
+      </div>
+      <div class="swatch-note">
+        <span>期望 body <b>rgb(11,18,32)</b></span>
+        <span>期望侧栏 <b>rgb(11,18,32)</b></span>
+      </div>
+
+      <div class="code">
+<span class="c">// verify-admin-dark-shell.mjs:72-75（写死的期望值）</span>
+<span class="k">const</span> DARK_BODY = <span class="del">'rgb(11, 18, 32)'</span>;   <span class="c">// --color-bg-page 深色档</span>
+<span class="k">const</span> SIDER_BG  = <span class="del">'rgb(11, 18, 32)'</span>;   <span class="c">// 侧栏恒近黑 #0B1220</span>
+<span class="c">// L297：开跑前 localStorage.clear() → 落回"当前默认档"</span>
+      </div>
+
+      <div class="assert fail">
+        <span class="tag">FAIL</span>
+        <span class="msg">侧栏底色不是近黑 <em>rgb(11, 18, 32)</em>，实际 <em>rgb(255, 255, 255)</em><br>
+        工作台底色不是 <em>rgb(11, 18, 32)</em>，实际 <em>rgb(245, 247, 251)</em></span>
+      </div>
+      <p style="font-size:11.5px;color:var(--ink3)">
+        红的原因不是"坏了"，而是<b>脚本前提过期</b>：同一份输出里套件自己的反向断言显示主题机制是好的
+        （<code>--color-divider</code> 两档不同、<code>data-theme</code> 正确切换）。
+      </p>
+    </div>
+
+    <!-- ============================ 右：实际默认 ============================ -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-after">实际 · 右</span>
+        <span class="panel-title">现在的实际浅色默认（2026-10-11 起）</span>
+        <span class="panel-sub">tokens.css</span>
+      </div>
+
+      <div class="mock">
+        <div class="mock-sider" style="background:#FFFFFF">
+          <div class="brand"></div>
+          <div class="nav-line"></div>
+          <div class="nav-line on"></div>
+          <div class="nav-line"></div>
+          <div class="nav-line"></div>
+          <div class="nav-line" style="width:72%"></div>
+        </div>
+        <div class="mock-main" style="background:#F5F7FB">
+          <div class="mock-bar"></div>
+          <div class="mock-card">
+            <div class="mock-row"></div>
+            <div class="mock-row w70"></div>
+            <div class="mock-row w45"></div>
+          </div>
+        </div>
+      </div>
+      <div class="swatch-note">
+        <span>实测 body <b>rgb(245,247,251)</b></span>
+        <span>实测侧栏 <b>rgb(255,255,255)</b></span>
+      </div>
+
+      <div class="code">
+<span class="c">// stores/theme.ts：没存过偏好时的默认档</span>
+<span class="k">const</span> DEFAULT_MODE: ThemeMode = <span class="add">'light'</span>;
+<span class="c">// styles/tokens.css：浅色是 :root 默认值（不写属性分支）</span>
+<span class="k">:root</span> { --color-bg-page: <span class="add">#f5f7fb</span>; --sider-bg: <span class="add">#ffffff</span>; }
+<span class="k">html[data-theme='dark']</span> { --color-bg-page: #0b1220; }  <span class="c">// 深色档保留可切</span>
+      </div>
+
+      <div class="assert pass">
+        <span class="tag">PASS</span>
+        <span class="msg">浅色套件 ① ：默认档 body 底色逐字 <em>rgb(245, 247, 251)</em> + <em>data-theme=light</em><br>
+        深色档完整可用：右上角一键切换，两档共用同一批变量名。</span>
+      </div>
+      <p style="font-size:11.5px;color:var(--ink3)">
+        结论：<b>产品是对的，脚本是旧的。</b>修脚本 ≠ 修产品；但改断言等于改验收标准，必须负责人批准。
+      </p>
+    </div>
+  </div>
+
+  <h2>两个改法（推荐 A）</h2>
+  <div class="opts">
+    <div class="opt rec">
+      <div class="opt-head">
+        <span class="opt-name">改法 A · 脚本改为断言「浅色为默认」</span>
+        <span class="opt-badge">推荐</span>
+      </div>
+      <ul>
+        <li><b>期望值翻转</b>：默认档断言 <code>body=rgb(245,247,251)</code>、<code>sider=rgb(255,255,255)</code>、<code>data-theme=light</code>；深色档的期望值<b>一条不删</b>，改为"显式切到深色后再断言"。</li>
+        <li><b>为什么推荐</b>：套件的本职是"守住已定案的口径"。口径已改，套件就该跟着改；<b>默认档只有一个</b>，断言它才有回归价值。</li>
+        <li><b>保留深色覆盖</b>：第 6 节的反向断言（两档变量必须不同）原样保留 → 深色档被做坏照样能红。</li>
+        <li>改动量最小：只动期望常量与"先切档"的两行，<b>产品代码零改动</b>。</li>
+      </ul>
+    </div>
+    <div class="opt">
+      <div class="opt-head">
+        <span class="opt-name">改法 B · 脚本改成「两档都测」</span>
+      </div>
+      <ul>
+        <li>把套件拆成两轮：<b>浅色轮</b>（默认档断言）+ <b>深色轮</b>（显式写入 <code>localStorage.fish_admin_theme_mode='dark'</code> 后断言）。</li>
+        <li><b>好处</b>：覆盖面最大，两档都进回归。</li>
+        <li><b>代价</b>：跑一轮的时间与截图量翻倍；且深色轮的"逐页对比度抽查 6 页"要再跑一遍，在并行争抢（单设备账号被顶号）环境下更容易中断。</li>
+        <li>结论：<b>作为 A 的后续增强</b>可以，作为首修不划算。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>逐项口径</h2>
+  <table class="tbl">
+    <tr><th style="width:132px">项</th><th>内容</th></tr>
+    <tr><td><b>现状</b></td><td>套件 L72–75 硬编码深色期望（含注释"侧栏<b>恒</b>近黑"），L297 又 <code>localStorage.clear()</code> 清掉主题偏好 → 落回当前默认档（浅色）→ 断言按深色判，<b>必然红</b>；第 4 节还因选择器前提变化而崩溃。</td></tr>
+    <tr><td><b>建议</b></td><td>改 <code>scripts/tools/verify-admin-dark-shell.mjs</code>：① 期望常量翻转为浅色默认；② 深色断言前显式切档（写 localStorage 或点主题按钮）；③ 文件头"逐项断言"注释同步改写。<b>只改测试脚本。</b></td></tr>
+    <tr><td><b>影响面</b></td><td><b>不需要动服务端。</b>不碰 <code>apps/**</code>、<code>admin-web/src/**</code>、<code>server/**</code> 任何产品代码；仅改一个验收脚本。改的是验收标准 → 需负责人批准。</td></tr>
+    <tr><td><b>红线</b></td><td><code>docs/14</code>：<b>否</b>（浅色为默认本就是 docs/14「管理端外壳」的既成口径，本项是让测试追上文档）。<br><code>docs/21</code>：<b>否</b>（不涉及任何视觉决策）。</td></tr>
+    <tr><td><b>工时</b></td><td><b>0.5 天</b>（改断言 + 重跑一遍并附截图）。</td></tr>
+    <tr><td><b>设计图</b></td><td><code>site/design/audit-2026-10-12/U1.html</code>（本页）· 截图 <code>U1.png</code></td></tr>
+  </table>
+
+  <div class="foot">
+    <b>本图为设计示意</b>：全部图形为纯 CSS 与内联 SVG 绘制，不是产品截图，也未使用任何第三方素材。<br>
+    <b>本方案未实施任何代码改动</b> —— 等负责人审批后才做。制图日期 2026-10-12。
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+﻿name: fish_core
+description: 平台共享包：设计 token、API 客户端、统一响应模型（boss-app / worker-app 共用）
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^5.7.0
+  flutter_secure_storage: ^11.2.0
+  uuid: ^4.6.0
+  socket_io_client: ^3.1.6
+  crypto: ^3.0.7
+  # 云端更新：调起系统安装流程（双端共用更新弹窗）
+  open_filex: ^4.7.0
+  # 打手态「我的」换头像 / 换主页背景需要选图（负责人 2026-10-18）。
+  # 这一页在 core（worker_mine_page），选图是宿主平台能力；core 本就有 open_filex
+  # 这类平台依赖，加它不破坏边界。版本与 boss-app 对齐。
+  image_picker: ^1.2.1
+  # 液态玻璃底栏（负责人 2026-10-18）：断层第一的实时折射实现（896 likes）
+  # 用户可在「我的 → 外观」自主开关；默认关闭
+  liquid_glass_renderer: ^1.0.0-dev.1
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0

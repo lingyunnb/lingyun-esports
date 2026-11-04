@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440,initial-scale=1">
+<title>老板端 · 充值入口与充值页 · 4 套方案审批稿</title>
+<style>
+:root{
+  --primary:#2563EB; --primary-soft:#E7EEFE; --ice:#EFF6FF; --gold:#D97706; --gold-soft:#FEF3C7;
+  --bg:#F5F7FB; --surface:#FFFFFF; --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8; --muted:#5B6B80;
+  --hair:#E5E9F0; --hair-2:#EEF1F6; --error:#DC2626; --error-soft:#FDECEC; --warn:#EA580C; --warn-soft:#FFF4EC;
+  --ok:#16A34A; --ok-soft:#DCFCE7;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Noto Sans CJK SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.6}
+.page{max-width:1440px;margin:0 auto;padding:34px 40px 80px}
+header.top{border-bottom:1px solid var(--hair);padding-bottom:20px;margin-bottom:26px}
+.kicker{font-size:12px;font-weight:700;letter-spacing:1.4px;color:var(--primary);text-transform:uppercase}
+h1{font-size:30px;font-weight:800;letter-spacing:-.6px;margin-top:8px}
+.sub{font-size:14px;color:var(--muted);margin-top:9px;max-width:1000px}
+.meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--ink-3)}
+.meta b{color:var(--ink-2)}
+h2{font-size:19px;font-weight:800;letter-spacing:-.3px;margin:40px 0 6px;padding-top:12px;border-top:1px solid var(--hair)}
+h2:first-of-type{border-top:0;padding-top:0}
+h2 .n{display:inline-block;min-width:26px;color:var(--primary);font-variant-numeric:tabular-nums}
+h3{font-size:14.5px;font-weight:700;margin:22px 0 8px}
+p{margin:8px 0;color:var(--ink-2)}
+p.lead{color:var(--ink);font-size:14px}
+ul{margin:8px 0 8px 20px;color:var(--ink-2)} li{margin:4px 0}
+code{font-family:var(--mono);font-size:11.5px;background:#EFF2F7;border-radius:4px;padding:1px 4px;color:#334155}
+b{color:var(--ink);font-weight:700}
+.dim{color:var(--ink-3);font-size:11.5px}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--hair);
+  border-radius:10px;overflow:hidden;margin:12px 0;font-size:12.5px}
+th{background:#F7F9FC;text-align:left;font-weight:700;font-size:12px;color:var(--ink-2);
+  padding:9px 11px;border-bottom:1px solid var(--hair);white-space:nowrap}
+td{padding:10px 11px;border-bottom:1px solid var(--hair-2);vertical-align:top;color:var(--ink-2);line-height:1.62}
+tr:last-child td{border-bottom:0}
+table.states td:not(:first-child){text-align:center;white-space:nowrap}
+.yes{color:var(--ok);font-weight:700;font-size:11.5px}
+.no{color:var(--ink-3)}
+.warn2{color:var(--warn);font-weight:700;font-size:11.5px}
+.pill{display:inline-block;height:18px;line-height:17px;padding:0 7px;border-radius:4px;font-size:10.5px;
+  font-weight:700;border:1px solid var(--hair);background:#F1F5F9;color:var(--ink-2)}
+.pill.rec{background:var(--ok-soft);border-color:#BFE7CC;color:#15803D}
+.pill.alt{background:var(--gold-soft);border-color:#F5D08A;color:#92400E}
+.pill.no{background:var(--error-soft);border-color:#F3C4C4;color:var(--error)}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:14px}
+.setcard{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:16px}
+.seth{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{width:24px;height:24px;border-radius:6px;background:var(--primary);color:#fff;font-weight:800;
+  font-size:13px;display:flex;align-items:center;justify-content:center}
+.setname{font-size:15px;font-weight:800}
+.metric{margin-left:auto;font-size:11.5px;color:var(--ink-3)}
+.metric b{font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums}
+.setwhy{font-size:12.5px;color:var(--muted);margin-top:8px}
+.shots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+.shot{background:#FBFCFE;border:1px solid var(--hair);border-radius:10px;overflow:hidden}
+.shot img{width:100%;display:block;border-bottom:1px solid var(--hair)}
+.shot figcaption{padding:7px 8px;font-size:10.5px;color:var(--ink-3);line-height:1.45}
+.shot figcaption b{display:block;font-size:11px;color:var(--ink-2);margin-bottom:3px}
+.shot figcaption span{display:block}
+.shot .lnk{display:inline-block;margin-top:4px;color:var(--primary);font-weight:600;text-decoration:none}
+.callout{background:var(--ice);border:1px solid #CCE0FB;border-radius:10px;padding:13px 15px;margin:14px 0}
+.callout.warn{background:var(--warn-soft);border-color:#F6D3B8}
+.callout.ok{background:#F1FBF4;border-color:#BFE7CC}
+.callout .t{font-size:13.5px;font-weight:800;margin-bottom:5px}
+.callout.warn .t{color:var(--warn)} .callout.ok .t{color:#15803D}
+.callout ul{margin-left:18px}
+.files{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);background:#fff;border:1px solid var(--hair);
+  border-radius:10px;padding:14px 16px;white-space:pre-wrap;line-height:1.75}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="top">
+<div class="kicker">祁连山电竞 · 老板端 · 设计稿待审批</div>
+<h1>老板的充值入口放哪 + 点进去的界面（4 套方案）</h1>
+<p class="sub">合规形态已定案：<b>线下收款 + 人工审核</b>。收款码是管理端上传的<b>图片</b>，老板扫码在平台外付款 → 上传转账截图 → 提交申请 → 管理员核对后手工加积分。
+全链路<b>不接任何支付通道</b>，提交后唯一文案是「申请已提交，等待审核」，<b>不做提现</b>。金额 6 / 10 / 20 / 38 / 68 / 98 / 128 / 198 / 328 / 648 元 + 自定义（1–10000），1 元 = 10 积分，每人待审核上限 3 笔。</p>
+<div class="meta">
+<span>4 套 × 5 屏 = <b>20 屏 / 89 个状态</b></span>
+<span>画布 <b>390 × 844</b></span>
+<span>首屏数据来源：<code>shots.json</code>（headless Edge 实测）</span>
+<span>仓库 <code>D:\fish</code> · 产物 <code>site/design/recharge/</code></span>
+</div>
+</header>
+
+<div class="callout ok">
+<div class="t">先看结论（详见第 8 节）</div>
+<ul>
+<li><b>入口推荐 A 套（三宫格扩四宫格）</b>：唯一同时满足「同一入口只出现一次零风险 + 首屏成本 0dp + 改动最小」的方案。实测：入口 36dp 高、落在第 4 格（右起 285–373dp），「选择分部」首卡位移 <b>0dp</b>，底部小字与官方馆 Y 坐标<b>一动不动</b>（787 / 668），首屏余量仍为 57dp。代价是这一行的语义要从"售后三件套"扩为"自助服务"，有解。</li>
+<li><b>备选 C 套（独立通栏条）</b>：与已落地的 <code>RechargeCopy.entryTitle + entrySubtitle</code> 逐字同构，客户端实施成本最低；但要先裁两件事 —— 通栏条与宣传图通栏谁先（有宣传图时会切断"通栏紧贴导航"的既有定案）、条上要不要带余额数字（带 = 同一个余额在两处显示）。实测首屏代价：<b>+54dp，首屏余量 57dp → 3dp</b>。</li>
+<li><b>不推荐 B（顶部导航右侧）</b>：把资金动作塞进"内容入口行"，与 2026-10-04「投诉/打赏/退款 单独成行、不与内容入口混装」的既有判断正好相反；且 1.3× 系统字号下该行已占 279 / 358dp。</li>
+<li><b>不推荐 D（欢迎语行积分胶囊）</b>：会抢掉首页唯一的实时数据「N 位在线」，还要么把负责人指定原文挤到 3 行、要么删掉在线数；更关键的是「积分 1,286 ›」点进去是<b>充值</b>而非积分明细 → 心智错配。</li>
+<li><b>充值页推荐形态 1</b>（档位网格 + 底部收款码卡），与 A/D 天然搭配；审核压力大时备选<b>形态 3 两步式</b>。</li>
+<li><b>未配置收款码 → 入口整块不渲染</b>（与已落地的 <code>RechargeConfig.entryAvailable</code> 同源），理由见第 7 节。</li>
+</ul>
+</div>
+
+<h2><span class="n">1</span>4 套并排（每套 5 屏，点图看整屏）</h2>
+<p class="lead">4 套的<b>唯一差别是入口位置</b>；充值页形态按套分配：A/D = 形态 1、B = 形态 3（两步式）、C = 形态 2（码常驻在上）。
+每屏都带多个状态，默认态截图如下，其余状态点「打开 …html」用 <code>?state=</code> 切换。</p>
+<section id="sec-sets"><div class="grid4"><div class="setcard">
+<div class="seth"><span class="badge">A</span><span class="setname">A 套 · 三宫格扩四宫格</span>
+<span class="metric">首屏 ΔY <b>0dp</b></span>
+<span class="metric">首屏余量 <b>57dp</b></span></div>
+<p class="setwhy">与既有工具行<b>完全同构</b>：同一容器、同一格宽（89.5dp）、同一图标 15dp + 文字 12.5sp，只多一格</p>
+<div class="shots">
+<figure class="shot">
+<a href="./a1-services.html" target="_blank"><img src="./A1-%E6%9C%8D%E5%8A%A1%E9%A1%B5.png" alt="A1 服务页（入口：充值） 默认态"></a>
+<figcaption><b>A1 服务页（入口：充值）</b><span>4 个状态：default / clean / before / noqr</span>
+<a class="lnk" href="./a1-services.html" target="_blank">打开 a1-services.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./a2-recharge.html" target="_blank"><img src="./A2-%E5%85%85%E5%80%BC%E9%A1%B5-%E6%9C%AA%E9%80%89%E9%87%91%E9%A2%9D.png" alt="A2 充值页 · 未选金额（形态 1） 默认态"></a>
+<figcaption><b>A2 充值页 · 未选金额（形态 1）</b><span>7 个状态：default / lower / custom / customerr / loading / error / noconfig</span>
+<a class="lnk" href="./a2-recharge.html" target="_blank">打开 a2-recharge.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./a3-selected.html" target="_blank"><img src="./A3-%E5%B7%B2%E9%80%89%E9%87%91%E9%A2%9D.png" alt="A3 充值页 · 已选金额（形态 1） 默认态"></a>
+<figcaption><b>A3 充值页 · 已选金额（形态 1）</b><span>5 个状态：default / lower / alt / err / limit</span>
+<a class="lnk" href="./a3-selected.html" target="_blank">打开 a3-selected.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./a4-submitted.html" target="_blank"><img src="./A4-%E6%8F%90%E4%BA%A4%E5%90%8E.png" alt="A4 提交后 · 等待审核态 默认态"></a>
+<figcaption><b>A4 提交后 · 等待审核态</b><span>2 个状态：default / locked</span>
+<a class="lnk" href="./a4-submitted.html" target="_blank">打开 a4-submitted.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./a5-records.html" target="_blank"><img src="./A5-%E5%85%85%E5%80%BC%E8%AE%B0%E5%BD%95.png" alt="A5 充值记录（待审核 / 已到账 / 已驳回） 默认态"></a>
+<figcaption><b>A5 充值记录（待审核 / 已到账 / 已驳回）</b><span>4 个状态：default / empty / loading / error</span>
+<a class="lnk" href="./a5-records.html" target="_blank">打开 a5-records.html →</a></figcaption>
+</figure></div></div>
+<div class="setcard">
+<div class="seth"><span class="badge">B</span><span class="setname">B 套 · 顶部导航右侧小入口</span>
+<span class="metric">首屏 ΔY <b>0dp</b></span>
+<span class="metric">首屏余量 <b>57dp</b></span></div>
+<p class="setwhy">零新增行高，横向只吃 44dp（该行可用宽 358dp 的 12.3%），是四套里最省版面的</p>
+<div class="shots">
+<figure class="shot">
+<a href="./b1-services.html" target="_blank"><img src="./B1-%E6%9C%8D%E5%8A%A1%E9%A1%B5.png" alt="B1 服务页（入口：充值） 默认态"></a>
+<figcaption><b>B1 服务页（入口：充值）</b><span>4 个状态：default / clean / before / noqr</span>
+<a class="lnk" href="./b1-services.html" target="_blank">打开 b1-services.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./b2-recharge.html" target="_blank"><img src="./B2-%E5%85%85%E5%80%BC%E9%A1%B5-%E6%9C%AA%E9%80%89%E9%87%91%E9%A2%9D.png" alt="B2 充值页 · 未选金额（形态 3） 默认态"></a>
+<figcaption><b>B2 充值页 · 未选金额（形态 3）</b><span>7 个状态：default / lower / custom / customerr / loading / error / noconfig</span>
+<a class="lnk" href="./b2-recharge.html" target="_blank">打开 b2-recharge.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./b3-selected.html" target="_blank"><img src="./B3-%E5%B7%B2%E9%80%89%E9%87%91%E9%A2%9D.png" alt="B3 充值页 · 已选金额（形态 3） 默认态"></a>
+<figcaption><b>B3 充值页 · 已选金额（形态 3）</b><span>5 个状态：default / lower / alt / err / limit</span>
+<a class="lnk" href="./b3-selected.html" target="_blank">打开 b3-selected.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./b4-submitted.html" target="_blank"><img src="./B4-%E6%8F%90%E4%BA%A4%E5%90%8E.png" alt="B4 提交后 · 等待审核态 默认态"></a>
+<figcaption><b>B4 提交后 · 等待审核态</b><span>2 个状态：default / locked</span>
+<a class="lnk" href="./b4-submitted.html" target="_blank">打开 b4-submitted.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./b5-records.html" target="_blank"><img src="./B5-%E5%85%85%E5%80%BC%E8%AE%B0%E5%BD%95.png" alt="B5 充值记录（待审核 / 已到账 / 已驳回） 默认态"></a>
+<figcaption><b>B5 充值记录（待审核 / 已到账 / 已驳回）</b><span>4 个状态：default / empty / loading / error</span>
+<a class="lnk" href="./b5-records.html" target="_blank">打开 b5-records.html →</a></figcaption>
+</figure></div></div>
+<div class="setcard">
+<div class="seth"><span class="badge">C</span><span class="setname">C 套 · 独立通栏条（信息 + 动作合一）</span>
+<span class="metric">首屏 ΔY <b>+54dp</b></span>
+<span class="metric">首屏余量 <b>3dp</b></span></div>
+<p class="setwhy">一行里同时给出「充值」动作与一句口径（= core 既定的 entryTitle + entrySubtitle），44dp 换一次不用猜的入口</p>
+<div class="shots">
+<figure class="shot">
+<a href="./c1-services.html" target="_blank"><img src="./C1-%E6%9C%8D%E5%8A%A1%E9%A1%B5.png" alt="C1 服务页（入口：扫码付款后上传截图，超管审核发放积分） 默认态"></a>
+<figcaption><b>C1 服务页（入口：扫码付款后上传截图，超管审核发放积分）</b><span>5 个状态：default / banner / clean / before / noqr</span>
+<a class="lnk" href="./c1-services.html" target="_blank">打开 c1-services.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./c2-recharge.html" target="_blank"><img src="./C2-%E5%85%85%E5%80%BC%E9%A1%B5-%E6%9C%AA%E9%80%89%E9%87%91%E9%A2%9D.png" alt="C2 充值页 · 未选金额（形态 2） 默认态"></a>
+<figcaption><b>C2 充值页 · 未选金额（形态 2）</b><span>7 个状态：default / lower / custom / customerr / loading / error / noconfig</span>
+<a class="lnk" href="./c2-recharge.html" target="_blank">打开 c2-recharge.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./c3-selected.html" target="_blank"><img src="./C3-%E5%B7%B2%E9%80%89%E9%87%91%E9%A2%9D.png" alt="C3 充值页 · 已选金额（形态 2） 默认态"></a>
+<figcaption><b>C3 充值页 · 已选金额（形态 2）</b><span>5 个状态：default / lower / alt / err / limit</span>
+<a class="lnk" href="./c3-selected.html" target="_blank">打开 c3-selected.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./c4-submitted.html" target="_blank"><img src="./C4-%E6%8F%90%E4%BA%A4%E5%90%8E.png" alt="C4 提交后 · 等待审核态 默认态"></a>
+<figcaption><b>C4 提交后 · 等待审核态</b><span>2 个状态：default / locked</span>
+<a class="lnk" href="./c4-submitted.html" target="_blank">打开 c4-submitted.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./c5-records.html" target="_blank"><img src="./C5-%E5%85%85%E5%80%BC%E8%AE%B0%E5%BD%95.png" alt="C5 充值记录（待审核 / 已到账 / 已驳回） 默认态"></a>
+<figcaption><b>C5 充值记录（待审核 / 已到账 / 已驳回）</b><span>4 个状态：default / empty / loading / error</span>
+<a class="lnk" href="./c5-records.html" target="_blank">打开 c5-records.html →</a></figcaption>
+</figure></div></div>
+<div class="setcard">
+<div class="seth"><span class="badge">D</span><span class="setname">D 套 · 欢迎语行右侧积分胶囊</span>
+<span class="metric">首屏 ΔY <b>+16dp</b></span>
+<span class="metric">首屏余量 <b>41dp</b></span></div>
+<p class="setwhy">最轻：26dp 胶囊塞进既有欢迎语行的右槽，不新增任何一行</p>
+<div class="shots">
+<figure class="shot">
+<a href="./d1-services.html" target="_blank"><img src="./D1-%E6%9C%8D%E5%8A%A1%E9%A1%B5.png" alt="D1 服务页（入口：积分 1,286） 默认态"></a>
+<figcaption><b>D1 服务页（入口：积分 1,286）</b><span>4 个状态：default / clean / before / noqr</span>
+<a class="lnk" href="./d1-services.html" target="_blank">打开 d1-services.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./d2-recharge.html" target="_blank"><img src="./D2-%E5%85%85%E5%80%BC%E9%A1%B5-%E6%9C%AA%E9%80%89%E9%87%91%E9%A2%9D.png" alt="D2 充值页 · 未选金额（形态 1） 默认态"></a>
+<figcaption><b>D2 充值页 · 未选金额（形态 1）</b><span>7 个状态：default / lower / custom / customerr / loading / error / noconfig</span>
+<a class="lnk" href="./d2-recharge.html" target="_blank">打开 d2-recharge.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./d3-selected.html" target="_blank"><img src="./D3-%E5%B7%B2%E9%80%89%E9%87%91%E9%A2%9D.png" alt="D3 充值页 · 已选金额（形态 1） 默认态"></a>
+<figcaption><b>D3 充值页 · 已选金额（形态 1）</b><span>5 个状态：default / lower / alt / err / limit</span>
+<a class="lnk" href="./d3-selected.html" target="_blank">打开 d3-selected.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./d4-submitted.html" target="_blank"><img src="./D4-%E6%8F%90%E4%BA%A4%E5%90%8E.png" alt="D4 提交后 · 等待审核态 默认态"></a>
+<figcaption><b>D4 提交后 · 等待审核态</b><span>2 个状态：default / locked</span>
+<a class="lnk" href="./d4-submitted.html" target="_blank">打开 d4-submitted.html →</a></figcaption>
+</figure>
+<figure class="shot">
+<a href="./d5-records.html" target="_blank"><img src="./D5-%E5%85%85%E5%80%BC%E8%AE%B0%E5%BD%95.png" alt="D5 充值记录（待审核 / 已到账 / 已驳回） 默认态"></a>
+<figcaption><b>D5 充值记录（待审核 / 已到账 / 已驳回）</b><span>4 个状态：default / empty / loading / error</span>
+<a class="lnk" href="./d5-records.html" target="_blank">打开 d5-records.html →</a></figcaption>
+</figure></div></div></div></section>
+
+<h2><span class="n">2</span>入口位置对比表（含与既有元素的关系 + 首屏挤压量化）</h2>
+<section id="sec-entry">
+<table class=""><thead><tr><th>候选 / 位置</th><th>与既有元素的关系</th><th>结构规则 1「同一入口只出现一次」判定</th><th>新增行高</th><th>首屏位移（实测）</th><th>与「我的页积分卡」的关系</th><th>与底部一行小字的分工</th><th>主要代价</th></tr></thead>
+<tbody><tr><td><b>A</b> <span class="pill rec">推荐</span><br><span class="dim">投诉/打赏/退款 同一容器内新增第 4 格（行末）</span></td><td>与既有工具行<b>完全同构</b>：同容器、同白底发丝线 r6、同 15dp 线性图标 + 12.5sp w600 文字。既有三格格宽 119.3dp → 89.5dp，中心位置随之左移（肌肉记忆需要重建，但顺序不变）</td><td>通过：充值全 App 只此一处；<b>「我的」页零改动</b>（不放任何充值按钮）</td><td><b>0dp</b></td><td>底部一行小字 Y 787 → <b>787</b><br>官方自营馆 Y 668 → <b>668</b><br>首屏余量 57dp → <b>57dp</b></td><td>不带数字 → 与我的页积分卡无冲突。分工：<b>充值</b>在服务页、<b>看积分</b>在我的页积分卡 + 我的积分（流水）</td><td>小字=全局口径（建议改为「先服务后结算 · 不满意可申诉 · 充值需人工审核后发放」）；充值页说明区=本次操作口径（服务端 noticeText）</td><td>唯一的代价是<b>语义混排</b>：这一行原本是"订单售后三件套"，充值属"账户入账"。缓解：把该行语义定义为"自助服务"（页面没有任何文字声称它是售后）+ 充值居末位。另：宫格放不下 core 的 entrySubtitle，副标题需挪进充值页页头</td></tr><tr><td><b>B</b> <span class="pill no">不推荐</span><br><span class="dim">顶部导航行右侧（排行榜 · 公告 之后，右对齐）</span></td><td>复用 <code>.navitem</code> 同几何（14dp 图标 + 13sp 文字）。注意：<b>搜索已于 2026-10-05（D9 修复）移除</b>，所以"与搜索并列"实际是"与排行榜/公告并列"；顶部现存两项是<b>内容入口</b></td><td><b>形式上通过</b>（顶部只放底部没有的，充值不在底栏，且全 App 只此一处）——但违背这条规则的<b>分组精神</b>：2026-10-04 把投诉/打赏/退款 单独成行，理由正是"不与内容入口混在一行"；B 恰好做了相反的事</td><td><b>0dp</b></td><td>底部一行小字 Y 787 → <b>787</b><br>官方自营馆 Y 668 → <b>668</b><br>首屏余量 57dp → <b>57dp</b></td><td>不带数字 → 不冲突</td><td>同 A</td><td>① 顶部三项变四项：1.3× 系统字号下该行已占 279/358dp，再无余量，未来加任何入口都要重排；② 把<b>资金动作放在浏览动线最高、最易误点的位置</b>（紧邻公告）；③ 需新增一枚线性图标</td></tr><tr><td><b>C</b> <span class="pill alt">备选</span><br><span class="dim">顶部导航下方独立通栏条（44dp 内容 + 10dp 间距）</span></td><td><b>与既有定案冲突（需负责人裁）</b>：2026-10-05 宣传图通栏定案要求"通栏直接接上导航"（有宣传图时导航 bottomPadding=0 就是为了不留灰缝）。按字面"放在导航下方"，条会<b>横在导航与轮播之间</b>，切断这条紧贴关系 —— 见 c1-服务页-有宣传图.png（那就是这条要求的直接后果）。替代排法 = 条放在轮播之下、三宫格之上（保住定案，但入口更靠下）。无宣传图时两种排法完全一样（线上当前就是无图）</td><td>通过：充值只此一处</td><td><b>54dp</b></td><td>底部一行小字 Y 787 → <b>841</b><br>官方自营馆 Y 668 → <b>722</b><br>首屏余量 57dp → <b>3dp</b><br><span class="warn2">几乎吃光首屏余量</span></td><td><b>带余额数字（1,286）→ 同一数字两处出现</b>：服务页走 10 分钟字典缓存、我的页走 45 秒 SWR，刷新时机不同 → 极端情况下两个不一致的余额。二选一：条上不写数字（只留「充值 · 扫码付款后上传截图，超管审核发放积分」）或接受双展示</td><td>小字=全局口径；条上副标题=入口级口径（与 core 的 entrySubtitle 逐字相同，<b>不新增第二句话</b>）</td><td>最占首屏的一套（54dp）；但它是<b>唯一能同时给出"动作 + 一句口径"</b>的入口，且与 core 已落地的 entryTitle + entrySubtitle 逐字同构 → <b>客户端实施成本最低</b></td></tr><tr><td><b>D</b> <span class="pill no">不推荐</span><br><span class="dim">欢迎语行右侧（占掉现「N 位在线」的位置）</span></td><td><b>与「N 位在线」争同一个右槽</b>，两者不能共存：共存则负责人指定原文（42 字）从 2 行变 3 行。实测欢迎语块高度 32 → 48dp</td><td>通过：充值只此一处</td><td><b>0dp（成本转移到欢迎语：+16dp）</b></td><td>底部一行小字 Y 787 → <b>803</b><br>官方自营馆 Y 668 → <b>684</b><br>首屏余量 57dp → <b>41dp</b></td><td>同 C：带数字 → 两个余额</td><td>同 A</td><td>① 抢掉首页唯一的实时数据（12 位在线）；② 「积分 1,286 ›」点进去是<b>充值</b>而不是积分明细 → <b>心智错配</b>（用户预期点积分看明细）；改成「充值 ›」则又失去"信息与动作合一"，等于 C 的缩小版；③ 26dp 胶囊在一行小字右侧，视觉重量压过在线数</td></tr></tbody></table>
+<p class="dim">量化口径：核验器在每套的 <code>?state=before</code>（现状、无入口）与 <code>?state=default</code>（含入口）两态下逐屏实测 DOM 几何 ——
+「新增行高」= 「选择分部」首张卡片的 Y 位移；「首屏位移」= 底部一行小字与官方自营馆的 Y 坐标，以及首屏（844dp）还剩多少余量。
+入口元素本身的高度也有断言兜底（A 36dp / B 18dp / C 44dp / D 26dp，±2dp）。</p>
+</section>
+
+<h2><span class="n">3</span>充值页 3 个形态对比</h2>
+<table class=""><thead><tr><th>形态</th><th>用在</th><th>首屏能看到什么</th><th>滚动次数</th><th>关键优点</th><th>关键代价</th></tr></thead>
+<tbody><tr><td><b>形态 1</b><br><span class="dim">档位网格 + 底部收款码卡</span></td><td><span class="pill">A / D</span></td><td>档位第 1 行 + 未选金额时的码区占位（不显示码）</td><td>选完金额后 1 次</td><td>与"先定金额、再付款"的心智顺序一致；用户第一眼看到的是"要花多少钱"；未选金额时<b>不给码</b>，杜绝"先扫码再想金额"</td><td>选完金额后收款码通常在首屏下沿之下 → 需要滚一次；未选时码区是一个占位（不是码）</td></tr><tr><td><b>形态 2</b><br><span class="dim">收款码常驻在上 + 档位在下</span></td><td><span class="pill">C</span></td><td>收款码 + 档位前 2 行</td><td>0 次（付款动作最先可达）</td><td>首屏直接看到码，少一次滚动；码在页面上部，符合"来充值就是来扫码"</td><td>金额在码<b>下面</b> → 动线顺序反了（可能先扫码再看金额）；页面更长（档位 + 上传都在下方）</td></tr><tr><td><b>形态 3</b><br><span class="dim">两步式（Step1 选金额 → Step2 扫码 + 上传凭证）</span></td><td><span class="pill">B</span></td><td>Step1：10 档 + 自定义 + 说明一屏看完，几乎不用滚</td><td>每步 0 次</td><td>每屏只问一件事，错误率最低；步骤指示让"还要做什么"一目了然；越界/上限都在提交前拦住</td><td>多一次点击（下一步）；想改金额要退回上一步</td></tr></tbody></table>
+
+<h2><span class="n">4</span>与 docs/21《反 AI 味设计规范》逐条对照</h2>
+<section id="sec-doc21">
+<table class=""><thead><tr><th>docs/21 条目</th><th>本设计怎么满足</th><th>可核验的证据</th></tr></thead>
+<tbody><tr><td>渐变当主视觉</td><td>全程实色（主色 #2563EB / 琥珀金 #D97706 / 冷灰蓝底 #F5F7FB），零渐变</td><td>核验器逐屏断言渐变面积 = 0（89 态全过）</td></tr><tr><td>每卡左侧一条彩色竖条</td><td>一个都没有：分组靠白卡 + 发丝线 + 区块标题</td><td>全文无 border-left 彩色条</td></tr><tr><td>全部元素大圆角（≥16）</td><td>分档：宫格/按钮/输入框 r6、卡片/码卡 r14、标签 r4、胶囊全圆、缩略图 r6</td><td>样式表逐条可查</td></tr><tr><td>阴影铺满所有卡片</td><td>本稿<b>零阴影</b>（阴影只允许出现在弹层 .sheet，而充值链路没有弹层）</td><td>核验器断言"阴影只出现在 .sheet 内"→ 89 态零命中</td></tr><tr><td>顶部并排三个大数字</td><td>服务页既有结构一字未动；充值页只有一处大数字（应付金额 22sp），且与"可得积分"成对出现（一对换算关系，不是 hero metric）</td><td>④ 屏摘要卡是<b>列表式</b>（6 行 label-value），不是三列大数字</td></tr><tr><td>每条信息配一个彩色小标签</td><td>标签只给必须区分的项：状态（待审核/已到账/已驳回）、必传、渠道胶囊；金额/积分/时间全靠字号字重</td><td>记录行 3 层文字，只有 1 枚状态片</td></tr><tr><td>居中对称、处处均匀间距</td><td>左对齐为主；组内紧（档位 gap 10、表单内 7–10）、组间松（区块 16–22）</td><td>.sec + .sec = 22dp；档位 gap = 10dp</td></tr><tr><td>emoji 当图标</td><td>零 emoji（核验器逐屏正则扫描）；图标 100% 内联线性 SVG，stroke 1.8，同一语义同一枚</td><td>新增 5 枚：coin/bell/gift/refund/star/upload/qr</td></tr><tr><td>玻璃拟态 / 光斑 / 装饰插画</td><td>无。收款码与转账截图缩略图是<b>功能性占位</b>（内联 SVG + CSS 画的"图位"），不是装饰</td><td>document.images = 0 逐屏断言（防止用位图"美化"）</td></tr><tr><td>纯黑配纯白</td><td>近黑 #0F172A + 冷灰蓝底 #F5F7FB + 白卡 #FFFFFF（与全站同一套 token）</td><td>复用 merge-identity 稿的同一份 CSS</td></tr><tr><td>假数据（4.9 / 3589 这种整数）一眼假</td><td>1,286 积分 / 4.8 分 / 2,847 单 / 88.5 元（自定义）/ 12,000（越界）/ 驳回原因「截图里看不清金额，请重新上传转账详情页」/ 文件名 wx_transfer_20261006_2112.png · 1.24 MB</td><td>长短不一、带场景，全部可与线上字段对上</td></tr><tr><td>泛泛 CTA / 营销空话</td><td>按钮文案说清动作与结果：「下一步：扫码付款」「提交申请」「查看充值记录」「返回充值」；无"立即体验/一键开启"</td><td>—</td></tr><tr><td>必须设计空态 / 加载态 / 错误态</td><td>20 屏 89 态：加载（骨架，不整页转圈）、网络失败（中文原因 + 重试）、未配置收款码、金额越界、超出待审核上限、凭证必填、记录空态</td><td>见「状态覆盖矩阵」</td></tr><tr><td>空态给下一步动作</td><td>记录空态 →「返回充值」；未配置收款码空态 → 指向「我的 › 联系客服」的<b>纯文字</b>（不放按钮，避免与我的页那个入口重复）</td><td>—</td></tr></tbody></table>
+<p class="dim">第六节 6 条自检的答案：① 把内容换成同行也成立吗 → 不成立（贯穿"人工审核"这一形态，任何"自动到账"式设计都套不进来）；② 用了模型反射式默认吗 → 零渐变、零阴影、零 emoji、圆角分档；③ 装饰全删还剩什么 → 剩"选金额 → 扫码 → 传截图 → 等审核 → 查记录"五步结构与全部状态；④ 每个颜色/圆角/间距能说理由吗 → 见第 4 节表与样式表注释；⑤ 假数据拟真吗 → 1,286 / 4.8 / 2,847 / 88.5 / 12,000 / 驳回原因；⑥ 空态、加载、错误态都设计了吗 → 20 屏 89 态。</p>
+</section>
+
+<h2><span class="n">5</span>与已落地契约的对照（core / server 已有代码）</h2>
+<section id="sec-contract">
+<div class="callout warn">
+<div class="t">先看这条：core 的充值模型 + 结构规则 12 都已落地，本设计逐条对齐它们</div>
+<p><code>apps/packages/core/lib/src/recharge/recharge_models.dart</code>（未提交）已定义 <code>RechargeConfig</code> / <code>RechargeRequestItem</code> / <code>RechargeRules</code> / <code>RechargeCopy</code> 与 <code>entryAvailable</code> 判据；<code>server/src/modules/recharge/</code> 已建 3 张表 + 配置行（<b>但还没有 controller/service</b>）；<code>CLAUDE.md 结构规则 12</code> 已写全合规红线与全部可配项。因此本设计不是"另起一套"，而是把已落地的字段、文案与红线<b>落到屏上</b>。</p>
+</div>
+<table class=""><thead><tr><th>已落地的东西</th><th>位置</th><th>设计怎么对应</th><th>状态</th></tr></thead>
+<tbody><tr><td><code>RechargeConfig.entryAvailable</code>（有码 ∧ (有档位 ∨ 可自定义) ∧ 比例&gt;0）</td><td><code>core/recharge/recharge_models.dart</code></td><td>四套的 <b>noqr 态</b>就是这个判据的结果：入口整块不渲染、连高度都不占</td><td><span class="yes">一致（设计结论与已落地代码同源）</span></td></tr><tr><td><code>RechargeCopy.entryTitle = 充值</code> / <code>entrySubtitle = 扫码付款后上传截图，超管审核发放积分</code></td><td><code>同上</code></td><td>C 套通栏条<b>逐字</b>使用；A（宫格 12.5sp 单行）/ B（顶部 13sp 单行）/ D（26dp 胶囊）放不下副标题</td><td><span class="warn2">选 A/B/D 时：副标题挪进充值页页头；选 C 时：零改动</span></td></tr><tr><td><code>RechargeCopy.submitted = 申请已提交，等待审核</code> + <code>submittedDetail</code></td><td><code>同上</code></td><td>④ 屏唯一成功文案 + 补充说明，逐字使用</td><td><span class="yes">一致</span></td></tr><tr><td><code>RechargeCopy.scanHint = 付款后请上传截图并提交申请</code></td><td><code>同上</code></td><td>收款码下方固定一句（不随 noticeText 是否下发而消失）</td><td><span class="yes">一致</span></td></tr><tr><td><code>forbiddenWords</code>（支付成功 / 支付已完成 / 自动到账 / 充值成功 / 立即支付 / 提现 / 兑换现金）</td><td><code>同上</code></td><td>核验器<b>逐屏逐字</b>扫描稿面文本，命中即 FAIL</td><td><span class="yes">一致（89 态零命中）</span></td></tr><tr><td><code>RechargeRules.validateAmount</code> / <code>validateCustomInput</code>（最低 N 元 / 最高 N 元 / 请输入充值金额 / 请输入正确的金额（最多两位小数））</td><td><code>同上</code></td><td>② 屏 customerr 态的行内红字直接用这几句</td><td><span class="yes">一致</span></td></tr><tr><td><code>GET /public/recharge/config</code>：amountOptions / customEnabled / minYuan / maxYuan / pointsPerYuan / pendingLimitPerUser / noticeText / qrCodes</td><td><code>core 注释 + server recharge-config.ts</code></td><td>② 屏每个字段都有落点：档位网格、自定义开关与占位、口径行（1 元 = 10 积分）、底部条（待审核 2/3）、说明区、收款码卡</td><td><span class="yes">一致</span></td></tr><tr><td><code>POST /user/recharge/requests</code> → 201 {id, points, status}</td><td><code>同上</code></td><td>④ 屏摘要卡：单号 / 可得积分 / 状态=待审核</td><td><span class="yes">一致</span></td></tr><tr><td><code>GET /user/recharge/requests</code> → {list,total}（amountYuan / points / status / rejectReason / proofUrl / createdAt / grantedAt）</td><td><code>同上</code></td><td>⑤ 屏逐字段落位（含驳回原因原文、管理员发放时间）</td><td><span class="yes">一致</span></td></tr><tr><td><code>recharge_qr_code.channel / label / sort / enabled</code></td><td><code>server/modules/recharge/recharge-qr-code.entity.ts</code></td><td>③ 屏渠道胶囊（微信/支付宝/备用）+ 展示名（label，如「微信收款码 · 凌云」）</td><td><span class="yes">一致</span></td></tr><tr><td><code>recharge_request.note</code>（老板留言，人工核对用）</td><td><code>server/modules/recharge/recharge-request.entity.ts</code></td><td>③ 屏「备注（选填）」，placeholder「如：微信转账昵称 阿远」</td><td><span class="yes">一致</span></td></tr><tr><td><b>超待审核上限的 400 文案</b></td><td><code>服务端尚未实现（recharge 模块只有 entity + config，**没有 controller/service**）</code></td><td>③ 屏 limit 态：橙色告知条 + 「（后端 400 原文，逐字展示，客户端不改写）」；稿内示例文案标注"以后端返回为准"</td><td><span class="warn2">**待联调**：文案必须中文、可直接展示给用户</span></td></tr><tr><td><code>CLAUDE.md 结构规则 12</code>（充值 · 线下收款 + 人工审核，负责人 2026-10-06 定案）</td><td><code>CLAUDE.md 结构规则 12</code></td><td>本设计<b>逐条对齐</b>：不接支付通道 / 收款码只是图片 / 不做自动到账 / 不做提现 / 全站不出现「支付成功」</td><td><span class="yes">一致（核验器逐屏扫描禁词）</span></td></tr><tr><td>换算取整口径：<code>points = Math.floor(amountYuan × pointsPerYuan)</code>（<b>向下取整</b>，平台不多发）</td><td><code>CLAUDE.md 结构规则 12</code></td><td>稿内自定义金额取 88.5 元 → 885 积分（整十比例，不触发取整分歧）</td><td><span class="warn2">**待对齐**：core 的 `RechargeRules.previewPoints` 用的是 `round()`，非整十比例下会比服务端多算 ≤1 积分 → 建议 core 改 `floor`（或明确告知"预览值可能高 1"）</span></td></tr><tr><td><code>granted</code> 的官方口径 =「已发放」= 积分已由管理员<b>手工</b>发放；通知文案「充值申请已到账：+600 积分」/「你的充值申请（68 元）被驳回：&lt;原因&gt;」</td><td><code>CLAUDE.md 结构规则 12</code></td><td>⑤ 屏状态词「已到账」+ 结果行写明「审核通过 · 21:04 管理员发放」（把"人工"这件事写在状态旁边，避免被读成自动到账）+ 驳回原因原文</td><td><span class="yes">一致</span></td></tr><tr><td>媒体用途专用：<code>recharge_qr</code>（<b>public</b>，老板端直接展示）+ <code>recharge_proof</code>（<b>protected</b>，凭证不公开直连）</td><td><code>CLAUDE.md 结构规则 12 + docs/08</code></td><td>收款码卡直接展示 public 图；记录列表<b>不</b>展示凭证缩略图（本人需要时走受保护通道），避免"公开直连资金凭证"</td><td><span class="yes">一致</span></td></tr><tr><td>App 内<b>「管理员身份」受限会话</b>（≤5 个账号、仅 <code>/recharge/*</code>、12h）挂在「我的 › 身份」分组</td><td><code>CLAUDE.md 结构规则 12</code></td><td><b>与本稿的充值入口无关</b>：本稿仍主张「我的」页不放任何充值按钮；但「身份」分组会因那条任务多出一行（管理员身份），属<b>另一条并行任务</b>的范围</td><td><span class="warn2">需并行任务协调（本稿不动「我的」页）</span></td></tr></tbody></table>
+</section>
+
+<h2><span class="n">6</span>状态覆盖矩阵（89 个状态，逐屏出图）</h2>
+<section id="sec-states"><table class="states"><thead><tr><th>状态 / 屏幕</th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
+<tbody><tr><td>屏① 服务页 · 含入口（带位置标注）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏① 服务页 · 成品态（无标注）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏① 服务页 · 现状基线（无入口）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏① 服务页 · 有宣传图（C 专属，看通栏冲突）</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="yes">有图</span></td><td><span class="no">—</span></td></tr><tr><td>屏① 服务页 · 未配置收款码 → 入口不渲染</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏② 充值页 · 未选金额</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏② 自定义金额（合法 88.5 元）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏②/③ 下半屏（长页滚到底：上传 + 说明 + 提交条）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏② 金额越界（12000 → 最高 10000 元）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏② 加载中（骨架）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏② 网络失败（可重试）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏② 未配置收款码（深链兜底）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏③ 已选金额（码 + 应付 + 可得）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏③ 切换渠道</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏③ 凭证必填错误</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏③ 超出待审核上限（后端 400 原样）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏④ 提交后 · 等待审核</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏④ 提交后 · 已达上限（无「再充一笔」）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏⑤ 充值记录（三种状态）</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏⑤ 记录空态</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr><tr><td>屏⑤ 记录加载 / 失败</td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td><td><span class="yes">有图</span></td></tr></tbody></table>
+<p class="dim">核对方式：核验器对每个状态都跑 11 类断言（视口 / 手机壳宽 / 无横向溢出 / 无 U+FFFD / 有正文 / 无 emoji / 无位图 / 零渐变 / 阴影只在弹层 / 禁词扫描 / 关键内容存在），服务页另加"入口元素数量 + 标注几何一致"。</p>
+</section>
+
+<h2><span class="n">7</span>「未配置收款码」的处理结论</h2>
+<section id="sec-noconfig">
+<div class="callout ok">
+<div class="t">结论：入口整块不渲染（连高度都不占），并保留深链兜底</div>
+<ul>
+<li><b>与已落地代码同源</b>：core 的 <code>RechargeConfig.entryAvailable = hasQrCode &amp;&amp; (有档位 ∨ 可自定义) &amp;&amp; 比例 &gt; 0</code> —— 三条缺一，入口就是不渲染。设计侧照此执行，不另立判据。</li>
+<li><b>理由 1（不存在的东西不出现）</b>：没有收款码 = 用户点进去也无法付款，渲染入口等于造一个必然失败的入口；docs/21 第四节明确要求"不存在的东西不出现"。</li>
+<li><b>理由 2（首页节奏零成本）</b>：入口不渲染时页面与现状<b>逐像素一致</b>（见各套 <code>?state=noqr</code>），不需要为"暂未开放"设计一个占位块 —— 占位块是纯装饰，且每次进首页都要解释一次。</li>
+<li><b>理由 3（兜底链路已经存在）</b>：商品列表底部那行来自 <code>GET /public/purchase-hint</code> 的运营文案本来就写着「如需下单请联系凌云进行积分充值」—— 收款码没配时，用户仍有"找谁充值"的文字路径，不会失去可达性。</li>
+<li><b>代价（如实说明）</b>：管理员若只是临时停用收款码，用户会以为平台不支持充值。建议在<b>管理端</b>给"充值配置里一张启用码都没有"加一条醒目提示（这属于管理端职责，不进客户端）。</li>
+<li><b>另一种情况要分开处理</b>：用户已在充值页（或深链直达）时配置被清空 → 页面显示空态「暂未配置收款码」+ 提交置灰，并指向「我的 › 联系客服」的<b>纯文字</b>（不放客服按钮，避免与我的页那个入口形成"同一入口两处出现"）。见 <code>?state=noconfig</code>。</li>
+</ul>
+</div>
+</section>
+
+<h2><span class="n">8</span>实施成本</h2>
+<section id="sec-cost">
+<table class=""><thead><tr><th>套</th><th>服务页改动</th><th>新增页面</th><th>净新增代码量（估）</th><th>风险</th></tr></thead>
+<tbody><tr><td><b>A</b></td><td><code>_supportBar()</code> 加第 4 格 + 首屏拉一次 config（与既有 4 个请求并发）</td><td>新增 recharge_page.dart / recharge_records_page.dart（形态 1）</td><td><b>~640 行</b></td><td>低：纯增量，既有三格顺序/图标/间距一字不改</td></tr><tr><td><b>B</b></td><td><code>_topNav()</code> 右侧加一项 + 拉 config</td><td>同上 + 两步式多一个 step 状态</td><td><b>~700 行</b></td><td>中：顶部行宽已 279/358dp（1.3× 字号），且与"内容入口行"语义冲突</td></tr><tr><td><b>C</b></td><td>新增 <code>_rechargeBar()</code>；<b>需先裁"通栏紧贴导航"冲突</b>（有宣传图时的先后顺序）</td><td>同上（形态 2）</td><td><b>~660 行</b></td><td>中：宣传图定案冲突需负责人拍板；条上是否带余额也需拍板</td></tr><tr><td><b>D</b></td><td>改 <code>_headline()</code>（右槽换胶囊 + 决定「N 位在线」去向）</td><td>同上（形态 1）</td><td><b>~650 行</b></td><td>中高：动到了既有欢迎语排版（负责人指定原文的降档兜底逻辑）</td></tr></tbody></table>
+<h3>最快可改点（最小可用闭环）</h3>
+<section id="sec-quick"><ul><li><b>服务端</b>：补 <code>GET /public/recharge/config</code>（读 system_setting.recharge_config + recharge_qr_code 启用行）+ <code>POST|GET /user/recharge/requests</code>。core 的 fromJson 按<b>多候选键</b>解析，字段名有出入也能跑通。</li><li><b>入口</b>：只做 A 套（四宫格第 4 格）—— 纯增量，既有三格不动，未配置收款码时同一条 Row 少画一格。</li><li><b>充值页</b>：只做形态 1（档位网格 + 底部收款码卡）+ 提交按钮 + 上传凭证 + 说明区 = 最小可提交闭环。</li><li><b>记录页</b>：只做 default + empty 两态；加载/失败复用既有 AppEmpty 与重试样式。</li><li>→ 估 <b>1.5 天</b>可打通上线（不含管理端审核台）；要做齐本稿 89 态验收 ≈ 3 天。</li></ul></section>
+</section>
+
+<h2><span class="n">9</span>审批要点</h2>
+<section id="sec-reco">
+<h3>推荐入口：A 套（三宫格扩成四宫格）</h3>
+<ul>
+<li><b>规则风险为零</b>：「同一入口只出现一次」—— 充值全 App 只此一处，「我的」页零改动（不放任何充值按钮）。</li>
+<li><b>首屏成本 0dp</b>：格数从 3 变 4 <b>不改变行高</b>，实测「选择分部」首卡 Y 位移 = 0，首屏可见分部卡数量不变。</li>
+<li><b>改动最小、可回滚</b>：与既有工具行完全同构（同容器 / 同格宽 / 同图标尺寸 / 同字重），既有三格的顺序、图标、间距一字不改；不想要了删一行即可。</li>
+<li><b>未配置收款码的成本最低</b>：同一条 Row 少画一格，没有"空条"要处理。</li>
+<li><b>代价与解</b>：语义混排（售后 → 自助服务），靠"充值居末位 + 全页不出现任何'售后'字样的自称"化解。</li>
+</ul>
+<h3>推荐充值页形态：形态 1（档位网格 + 底部收款码卡）</h3>
+<p>与"先定金额、再付款"的心智顺序一致，未选金额时不给码（杜绝"先扫码再想金额"）；与 A/D 天然搭配。审核压力大或投诉多时，切<b>形态 3 两步式</b>（每屏只问一件事，越界/上限都在提交前拦住）。</p>
+<h3>待负责人拍板（4 条）</h3>
+<ul><li><b>入口最终位置</b>：推荐 A（四宫格第 4 格，充值居末位）。若要求"一眼可见 + 带一句口径"，则选 C，但需同时裁两件事（通栏 vs 宣传图的先后、条上要不要带余额）。</li><li><b>余额展示口径</b>：推荐"服务页入口不带任何余额数字"，余额只在「我的」页积分卡 + 「我的 › 我的积分」（流水）。理由：同一个数字两处显示、两套刷新时机，迟早出现不一致。</li><li><b>底部一行小字</b>：建议随本次改为「先服务后结算 · 不满意可申诉 · 充值需人工审核后发放」（现状「积分由平台发放」在有了充值之后口径不完整）。「我的」页那句「积分由管理员发放 · 仅用于平台下单」<b>不需要改</b> —— 充值的积分同样是管理员手工发放，语义仍然成立。</li><li><b>换算取整口径</b>：结构规则 12 定的是 <code>floor</code>（向下取整），而 core 已落地的 <code>RechargeRules.previewPoints</code> 用的是 <code>round()</code> —— 非整十比例下客户端预览会比服务端多 ≤1 积分。建议 core 改 <code>floor</code>，或明确"预览值可能高 1"（本稿已避开：自定义金额取 88.5 → 885，整十比例不触发分歧）。</li><li><b>后端 400 上限文案</b>：需中文、可直接展示（客户端原样透传）。</li></ul>
+</section>
+
+<h2><span class="n">10</span>产物与复现</h2>
+<p>全部产物在 <code>site/design/recharge/</code>：20 屏 HTML + <code>index.html</code>（本页）+ 89 张 390×844 PNG + 审批页长图/分区图 + <code>shots.json</code>（实测几何）。本任务<b>未改 <code>apps/**</code>、未动既有 <code>site/design/**</code>、未 commit、未打包</b>。</p>
+<div class="files">node scripts/tmp/make-recharge.mjs     # 生成 20 屏 + index.html
+node scripts/tmp/recharge-shot.mjs     # headless Edge 出图 + 核验（89 态断言）
+curl http://127.0.0.1:3100/design/recharge/index.html   # 本页（静态服务器已在 3100）</div>
+<p class="dim">核验器逐屏断言：视口 390×844 · 手机壳 390 · 无横向溢出 · 无 U+FFFD · 无 emoji · 无位图（收款码/截图缩略图一律内联 SVG + CSS，<code>document.images = 0</code>）· 零渐变 · 阴影只在弹层 · 禁词扫描（支付成功 / 支付已完成 / 自动到账 / 充值成功 / 立即支付 / 提现 / 兑换现金）· 「在线支付」只允许出现在「不提供在线支付」这一否定句式里 · 每屏关键内容存在 · 服务页入口元素数量与标注几何一致（before/noqr 两态必须一个入口都没有）。</p>
+
+</div>
+</body>
+</html>

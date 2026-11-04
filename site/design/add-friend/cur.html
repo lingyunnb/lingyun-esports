@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>现状对照 · 添加好友 / 好友申请（按源码逐行复刻）</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#E9EDF3;color:#0F172A;font-family:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+.wrap{padding:26px 30px 54px}
+.pagehead h1{font-size:22px;font-weight:800;margin:0 0 8px}
+.pagehead .sub{font-size:12.5px;color:#475569;line-height:1.85;max-width:1180px}
+.pagehead .sub b{color:#0F172A}
+.chips{display:flex;gap:8px;margin:14px 0 20px;flex-wrap:wrap}
+.chip{font-size:11.5px;padding:4px 9px;border-radius:6px;background:#fff;border:1px solid #E2E8F0;color:#475569}
+.chip.ok{border-color:#BBE5C8;background:#F1FBF4;color:#15803D}
+.chip.no{border-color:#F5C6C6;background:#FEF2F2;color:#B91C1C}
+.chip.info{border-color:#C7DAFB;background:#EFF6FF;color:#1D4ED8}
+
+.rows{display:flex;flex-direction:column;gap:26px}
+.frames{display:flex;gap:22px;align-items:flex-start}
+.frame{width:392px;flex:none}
+.frame .cap{margin:0 0 8px;min-height:38px}
+.frame .cap .n{font-size:12.5px;font-weight:800;color:#2563EB}
+.frame .cap .t{font-size:13px;font-weight:700;margin-left:6px}
+.frame .cap .d{font-size:11px;color:#475569;margin-top:4px;line-height:1.5}
+.frame .cap .a{font-size:10.5px;color:#475569;background:#fff;border:1px solid #E2E8F0;border-radius:6px;
+  padding:4px 7px;margin-top:5px;line-height:1.5;font-family:ui-monospace,Consolas,monospace;word-break:break-all}
+
+/* 手机：外框 392 + 左右各 1px 描边 → 内容区精确 390（避免滚动条把内容压成 388） */
+.phone{position:relative;width:392px;height:844px;background:#F5F7FB;border:1px solid #DFE5EE;overflow:hidden}
+.st{height:26px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#fff;
+  font-size:11.5px;font-weight:700}
+.st .r{display:flex;align-items:center;gap:5px}
+.sig{display:flex;align-items:flex-end;gap:2px;height:11px}
+.sig i{display:block;width:2.5px;background:#0F172A;border-radius:1px}
+.batt{width:20px;height:10px;border:1px solid #0F172A;border-radius:2.5px;padding:1.5px}
+.batt i{display:block;height:100%;width:72%;background:#0F172A;border-radius:1px}
+
+.hdr{position:absolute;left:0;right:0;top:26px;height:58px;background:#FFFFFF;border-bottom:1px solid #E2E8F0;z-index:3}
+.hdr-row{height:58px;display:flex;align-items:center;gap:6px;padding:0 12px 0 6px}
+.hdr-ico{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex:none}
+.hdr-tt{flex:1 1 auto;min-width:0}
+.hdr-t{font-size:20px;font-weight:800;letter-spacing:.2px;line-height:1.2}
+.hdr-s{font-size:10.5px;color:#5B6B80;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-act{flex:none;display:flex;align-items:center}
+
+.scroll{position:absolute;left:0;right:0;top:84px;bottom:0;overflow:hidden;padding-bottom:14px;
+  display:flex;flex-direction:column}
+/* C 套：事实行做成贴底卡片，靠 .fill 顶到屏幕底部 */
+.scroll-c{display:flex;flex-direction:column;gap:18px;padding:18px 16px 0}
+.fill{flex:1 1 auto;min-height:0}
+
+.ic{display:inline-block;flex:none;vertical-align:-3px;object-fit:contain}
+
+/* 搜索域 */
+.fieldwrap{padding:14px 16px 0}
+.field{height:44px;display:flex;align-items:center;gap:9px;background:#FFFFFF;border:1px solid #E2E8F0;
+  border-radius:10px;padding:0 12px}
+.field.is-focus{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.10)}
+.field-in{flex:1 1 auto;min-width:0;display:flex;align-items:center;font-size:14px;color:#0F172A;
+  white-space:nowrap;overflow:hidden}
+.fph{color:#7C8CA5}
+.fval{font-family:ui-monospace,Consolas,monospace;font-size:13.5px}
+.caret{display:inline-block;width:1.5px;height:18px;background:#2563EB;margin-left:1px}
+.fclear{width:17px;height:17px;border-radius:50%;background:#7C8CA5;display:flex;align-items:center;justify-content:center}
+.fhint{font-size:11.5px;color:#5B6B80;margin-top:7px;line-height:1.5}
+
+/* 按钮：实色 / 描边 / 灰禁用 / 纯文字 —— 无渐变无阴影 */
+.btn{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 16px;border-radius:6px;
+  font-size:14px;font-weight:600;white-space:nowrap;flex:none}
+.btn-sm{height:32px;padding:0 13px;font-size:13px}
+.btn-wide{display:flex;width:100%;margin-top:10px}
+.btn-primary{background:#2563EB;color:#fff}
+.btn-outline{background:#FFFFFF;color:#0F172A;border:1px solid #E2E8F0}
+.btn-muted{background:#F1F4F9;color:#5B6B80}
+.btn-ghost{background:#FFFFFF;color:#5B6B80;border:1px solid #E2E8F0}
+.btn-text{background:transparent;color:#2563EB;padding:0 6px;height:28px;font-size:12.5px}
+
+/* 列表行：发丝线分隔，卡片无阴影 */
+.row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#FFFFFF}
+.row-lead{width:38px;height:38px;border-radius:6px;background:#E7EEFE;display:flex;align-items:center;justify-content:center;flex:none}
+.row-mid{flex:1 1 auto;min-width:0}
+.row-n{font-size:15px;font-weight:600;line-height:1.3;display:flex;align-items:center;gap:7px}
+.row-i{font-size:12px;color:#5B6B80;margin-top:3px;font-family:ui-monospace,Consolas,monospace;display:flex;gap:6px;flex-wrap:wrap;
+  white-space:nowrap;overflow:hidden}
+.row-note{font-family:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif;color:#5B6B80;white-space:normal}
+.row-sub{padding:0 16px 10px;background:#FFFFFF}
+.row-quiet{background:transparent}
+.row-flat{padding-left:0;padding-right:0;background:transparent}
+.row-entry{background:#FFFFFF}
+.av{border-radius:50%;background:#E7EEFE;color:#1D4ED8;font-weight:700;display:inline-flex;align-items:center;
+  justify-content:center;flex:none}
+.hair{height:1px;background:#E2E8F0;margin-left:16px}
+.hair-strong{background:#EEF1F6;height:8px;margin-left:0}
+.badge{min-width:18px;height:18px;border-radius:999px;background:#DC2626;color:#fff;font-size:10.5px;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.wait{font-size:12px;color:#5B6B80;display:inline-flex;align-items:center;gap:5px;flex:none}
+.tag-soft{font-size:10.5px;font-weight:600;color:#EA580C;background:#FDECEC;border-radius:4px;padding:1px 5px;
+  font-family:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif}
+
+/* B 套分区 */
+.band{background:#FFFFFF;padding:14px 16px 16px}
+.band-t{font-size:13px;font-weight:700;color:#475569;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.band-c{font-size:11.5px;font-weight:600;color:#2563EB;background:#E7EEFE;border-radius:4px;padding:1px 6px}
+.band .fieldwrap{padding:0}
+.myid{display:flex;align-items:flex-start;gap:12px}
+.myid-l{flex:1 1 auto;min-width:0}
+.myid-k{font-size:12px;color:#5B6B80}
+.myid-v{font-size:19px;font-weight:800;letter-spacing:.3px;margin:5px 0 6px;font-family:ui-monospace,Consolas,monospace}
+.myid-n{font-size:11.5px;color:#5B6B80;line-height:1.55}
+
+/* 申请列表 */
+.tabs{display:flex;gap:8px;padding:12px 16px 4px}
+.tab{font-size:13px;font-weight:600;color:#475569;padding:6px 12px;border-radius:999px;background:#FFFFFF;
+  border:1px solid #E2E8F0}
+.tab.is-on{background:#2563EB;border-color:#2563EB;color:#fff}
+.tab b{font-weight:800}
+.req{display:flex;align-items:center;gap:12px;padding:13px 16px;background:#FFFFFF}
+.req-flat{padding-left:0;padding-right:0;background:transparent}
+.req-mid{flex:1 1 auto;min-width:0}
+.req-n{font-size:15px;font-weight:600}
+.req-m{font-size:12px;color:#5B6B80;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.req-a{display:flex;gap:8px;flex:none}
+
+/* 区块标题 / 提示 / 空态 / 错误 */
+.sec{display:flex;align-items:baseline;gap:8px;padding:20px 16px 8px}
+.sec-t{font-size:13px;font-weight:700;color:#475569}
+.sec-x{font-size:11.5px;color:#5B6B80}
+.tip{font-size:11.5px;color:#5B6B80;line-height:1.6;padding:14px 16px 0}
+.tip-in{padding:10px 0 0}
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:56px 34px 0}
+.empty-ic{width:52px;height:52px;border-radius:50%;background:#FFFFFF;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center}
+.empty-t{font-size:14.5px;font-weight:700;margin-top:4px}
+.empty-s{font-size:12px;color:#5B6B80;line-height:1.65}
+.empty-a{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.err{display:flex;gap:10px;margin:14px 16px 0;padding:12px;background:#FDECEC;border:1px solid #F3C9C9;border-radius:10px}
+.err-ic{flex:none;margin-top:1px}
+.err-t{font-size:13.5px;font-weight:700;color:#991B1B}
+.err-b{font-size:12px;color:#B91C1C;line-height:1.6;margin-top:4px}
+.err-a{display:flex;gap:8px;padding:10px 16px 0}
+.stack{margin:18px 16px 0;background:#FFFFFF;border:1px solid #E2E8F0;border-radius:10px;padding:12px}
+.stack-t{font-size:12.5px;font-weight:700;color:#475569;margin-bottom:8px}
+.stack-r{display:flex;gap:10px;padding:6px 0;font-size:11.5px;color:#5B6B80;line-height:1.55;align-items:baseline}
+.stack-r+.stack-r{border-top:1px solid #EEF1F6}
+.stack-r code{font-family:ui-monospace,Consolas,monospace;color:#991B1B;flex:none;max-width:172px}
+.skel{padding:12px 16px 0}
+.skel-l{height:60px;border-radius:10px;background:#EDF1F7}
+.skel-tall{padding:0}
+
+/* 事实行：滚动区内贴内容（A/B 套）；C 套用贴底卡片 */
+.facts{background:#FFFFFF;border-top:1px solid #E2E8F0;padding:12px 16px 10px;margin-top:0}
+.fact{display:flex;gap:8px;font-size:11.5px;color:#5B6B80;line-height:1.6;padding:3px 0}
+.fact i{font-style:normal;color:#475569;flex:none;font-weight:600}
+.facts-card{flex:none;background:#FFFFFF;border:1px solid #E2E8F0;border-radius:10px;padding:12px 13px;margin:12px 0 4px}
+
+/* 「搜索中」面板：把等待时间变成有用的确认动作 */
+.panel{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:10px;margin:14px 16px 0;padding:14px}
+.panel-t{font-size:13px;font-weight:700;color:#475569;display:flex;align-items:center;gap:8px}
+.panel-r{display:flex;gap:10px;font-size:12px;color:#5B6B80;line-height:1.6;padding:7px 0;align-items:baseline}
+.panel-r+.panel-r{border-top:1px solid #EEF1F6}
+.panel-r b{color:#0F172A;font-weight:700;font-family:ui-monospace,Consolas,monospace}
+.spin{width:13px;height:13px;border-radius:50%;border:1.6px solid #E7EEFE;border-top-color:#2563EB;
+  display:inline-block;flex:none}
+
+/* C 套 */
+.c-hero{padding:6px 0 0}
+.c-t{font-size:22px;font-weight:800;letter-spacing:.2px}
+.c-s{font-size:12.5px;color:#475569;line-height:1.7;margin-top:8px}
+.c-sec{display:flex;align-items:baseline;gap:8px;padding-top:6px}
+.c-sec .t{font-size:12.5px;font-weight:700;color:#475569}
+.c-sec .x{font-size:11.5px;color:#5B6B80}
+.c-recent{display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #E2E8F0;
+  border-radius:10px;padding:11px 12px}
+.c-recent+.c-recent{margin-top:8px}
+.c-recent .m{flex:1 1 auto;min-width:0;font-size:13px}
+.c-recent .m b{display:block;font-weight:600}
+.c-recent .m i{font-style:normal;font-size:11.5px;color:#5B6B80;font-family:ui-monospace,Consolas,monospace}
+.c-chip{font-family:ui-monospace,Consolas,monospace;font-size:14px;font-weight:700;background:#FFFFFF;border:1px solid #E2E8F0;
+  border-radius:6px;padding:8px 12px;align-self:flex-start}
+.c-mine{font-size:12.5px;color:#475569;display:flex;align-items:center;gap:8px;padding-top:2px}
+.c-mine b{font-family:ui-monospace,Consolas,monospace;font-size:13px;color:#0F172A}
+.c-mine-q{font-size:11.5px;color:#5B6B80;margin-top:-8px}
+.c-note{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#475569;background:#FFFFFF;
+  border:1px solid #E2E8F0;border-radius:10px;padding:12px}
+.c-note span{flex:1 1 auto}
+.c-card{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:14px;padding:22px 18px 18px;
+  display:flex;flex-direction:column;align-items:center;gap:6px}
+.c-card-quiet{background:#FAFBFD}
+.c-name{font-size:17px;font-weight:700;margin-top:8px}
+.c-id{font-size:12.5px;color:#5B6B80;font-family:ui-monospace,Consolas,monospace}
+.c-meta{font-size:11.5px;color:#475569;margin-top:2px}
+.c-card .btn-wide{margin-top:14px}
+.c-sub{font-size:11.5px;color:#5B6B80;line-height:1.6;text-align:center;margin-top:8px}
+.c-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:26px 22px 0}
+
+/* ── 现状复刻（按源码尺寸，非本设计语言） ── */
+.cur-searchrow{display:flex;align-items:center;gap:8px;padding:16px}
+.cur-field{flex:1 1 auto;height:40px;background:#F5F7FB;border-radius:10px;display:flex;align-items:center;
+  padding:0 16px;font-size:13px;color:#0F172A;font-family:ui-monospace,Consolas,monospace}
+.cur-ph{color:#7C8CA5;font-family:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif;font-size:13px}
+.cur-btn{height:40px;padding:0 16px;border-radius:6px;background:#E9EDF4;color:#5B6B80;font-size:14px;font-weight:600;
+  display:inline-flex;align-items:center;flex:none}
+.cur-btn-primary{background:#2563EB;color:#fff}
+.cur-btn-tonal{background:#E7EEFE;color:#1D4ED8}
+.cur-hint{padding:0 16px;font-size:13px;color:#5B6B80;line-height:1.7}
+.cur-card{margin:5px 12px;padding:16px;border-radius:10px;background:#FFFFFF;border:1px solid #E2E8F0;
+  display:flex;align-items:center;gap:16px;box-shadow:0 6px 18px rgba(15,23,42,.06)}
+.cur-mid{flex:1 1 auto;min-width:0}
+.cur-n{font-size:16px;font-weight:600}
+.cur-i{font-size:12px;color:#5B6B80;margin-top:3px;font-family:ui-monospace,Consolas,monospace}
+.cur-pill{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:10px;background:rgba(37,99,235,.08);
+  color:#2563EB;font-size:11px}
+.cur-note{font-size:11.5px;color:#B45309;background:#FEF7EC;border:1px solid #FCD9A8;border-radius:6px;
+  margin:14px 16px 0;padding:9px 11px;line-height:1.6}
+.cur-sec{font-size:13px;color:#5B6B80;padding:16px 16px 8px}
+.cur-tile{display:flex;align-items:center;gap:16px;padding:10px 16px}
+.cur-tilemid{flex:1 1 auto;min-width:0}
+.cur-sub{font-size:14px;color:#475569;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cur-div{height:24px}
+.cur-wait{font-size:12px;color:#5B6B80}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="pagehead">
+    <h1>现状对照 · 添加好友 / 好友申请（390×844）</h1>
+    <div class="sub">
+      <b>取证方式（如实说明）：</b>本机无真机（<code>adb devices</code> 为空），所以这三屏是
+      <b>按源码逐行复刻</b>的现状稿——尺寸/色值/文案全部取自源码，未做美化或夸张：<br>
+      页壳 <code>fish_glass.dart:114-162</code>（白底 58 高顶栏 + 20/800 标题）；
+      搜索行与结果卡 <code>friend_search_page.dart:71-93 / 113-167</code>（GlassSurface padding 16 / radius 12 /
+      borderColor #E2E8F0 / glassMargin 左右 12 上下 5 + 阴影）；申请列表 <code>friend_requests_page.dart:86-129</code>
+      （ListTile + Divider height 24）。<br>
+      <b>结论不受影响：</b>下面 8 条缺陷全部能指到具体源码行，不依赖截图。
+    </div>
+    <div class="chips">
+      <span class="chip no">结果卡带阴影（违反 docs/21 · 列表用发丝线）</span>
+      <span class="chip no">圆角 12 / 胶囊 10 不在分档</span>
+      <span class="chip no">三种按钮语义混用</span>
+      <span class="chip no">无「我的好友 ID」</span>
+      <span class="chip no">无空态动作 · 无错误分层</span>
+      <span class="chip no">搜索需点按钮</span>
+    </div>
+  </div>
+  <div class="frames">
+    
+  <div class="frame" data-state="cur" data-variant="CUR">
+    <div class="cap">
+      <div><span class="n">现状</span><span class="t">添加好友（搜索前）</span></div>
+      <div class="d">输入框 + 搜索按钮并排；正文是 13 号灰字说明，40 字长句一行读完，没有可点的下一步。</div>
+      <div class="a">friend_search_page.dart:71-93 / 99-100<br>对应接口：GET /user/friends/search?uid=（必须点「搜索」或回车才发）</div>
+    </div>
+    <div class="phone">
+      <div class="st"><span>9:41</span><span class="r">
+        <span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:11px"></i></span>
+        <span style="font-size:9.5px;font-weight:700">5G</span>
+        <span class="batt"><i></i></span></span></div>
+      
+    
+  <div class="hdr">
+    <div class="hdr-row">
+      <span class="hdr-ico"><img class="ic" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%230F172A%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M15%204L7%2012l8%208%22%2F%3E%3C%2Fsvg%3E" width="20" height="20" alt="" style=""></span>
+      <div class="hdr-tt">
+        <div class="hdr-t">添加好友</div>
+        
+      </div>
+      
+    </div>
+  </div>
+    <div class="scroll">
+      <div class="cur-searchrow">
+        <div class="cur-field"><span class="cur-ph">输入对方 ID 或昵称（支持中文）</span></div>
+        <span class="cur-btn">搜索</span>
+      </div>
+      <div class="cur-hint">按 ID 或昵称搜索用户，例如：U2741312533 或中文 ID/昵称</div>
+    </div>
+    </div>
+  </div>
+    
+  <div class="frame" data-state="cur" data-variant="CUR">
+    <div class="cap">
+      <div><span class="n">现状</span><span class="t">添加好友（有结果）</span></div>
+      <div class="d">整页只有一张玻璃卡：16/600 昵称 + 12 灰 ID + 11 号主色等级胶囊 + 主色按钮；卡上下留 5px、左右留 12px。</div>
+      <div class="a">friend_search_page.dart:113-167<br>对应接口：GET /user/friends/search?uid= → friendStatus 5 态复用 3 种按钮</div>
+    </div>
+    <div class="phone">
+      <div class="st"><span>9:41</span><span class="r">
+        <span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:11px"></i></span>
+        <span style="font-size:9.5px;font-weight:700">5G</span>
+        <span class="batt"><i></i></span></span></div>
+      
+    
+  <div class="hdr">
+    <div class="hdr-row">
+      <span class="hdr-ico"><img class="ic" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%230F172A%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M15%204L7%2012l8%208%22%2F%3E%3C%2Fsvg%3E" width="20" height="20" alt="" style=""></span>
+      <div class="hdr-tt">
+        <div class="hdr-t">添加好友</div>
+        
+      </div>
+      
+    </div>
+  </div>
+    <div class="scroll">
+      <div class="cur-searchrow">
+        <div class="cur-field">he_yutong</div>
+        <span class="cur-btn">搜索</span>
+      </div>
+      <div class="cur-card">
+        <span class="av" style="width:52px;height:52px;font-size:20px">何</span>
+        <div class="cur-mid">
+          <div class="cur-n">何雨桐</div>
+          <div class="cur-i">ID: he_yutong</div>
+          <div class="cur-pill">L4 白银会员</div>
+        </div>
+        <span class="cur-btn cur-btn-primary">添加好友</span>
+      </div>
+      <div class="cur-note">整页只有这一张卡：没有分区、没有「我的 ID」、没有申请入口</div>
+    </div>
+    </div>
+  </div>
+    
+  <div class="frame" data-state="cur" data-variant="CUR">
+    <div class="cap">
+      <div><span class="n">现状</span><span class="t">好友申请</span></div>
+      <div class="d">两组 ListTile 用 Divider(height:24) 硬分；「我发出的」无动作只有灰字「等待验证」。</div>
+      <div class="a">friend_requests_page.dart:86-129<br>对应接口：GET /user/friends/requests/incoming + /outgoing；POST /requests/:id/accept|reject</div>
+    </div>
+    <div class="phone">
+      <div class="st"><span>9:41</span><span class="r">
+        <span class="sig"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:11px"></i></span>
+        <span style="font-size:9.5px;font-weight:700">5G</span>
+        <span class="batt"><i></i></span></span></div>
+      
+    
+  <div class="hdr">
+    <div class="hdr-row">
+      <span class="hdr-ico"><img class="ic" src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%230F172A%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M15%204L7%2012l8%208%22%2F%3E%3C%2Fsvg%3E" width="20" height="20" alt="" style=""></span>
+      <div class="hdr-tt">
+        <div class="hdr-t">好友申请</div>
+        
+      </div>
+      
+    </div>
+  </div>
+    <div class="scroll">
+      <div class="cur-sec">收到的申请</div>
+      <div class="cur-tile">
+        <span class="av" style="width:46px;height:46px;font-size:17px">蒋</span>
+        <div class="cur-tilemid">
+          <div class="cur-n">蒋雪（夜场）</div>
+          <div class="cur-sub">你好，我是 蒋雪（夜场）</div>
+        </div>
+        <span class="cur-btn cur-btn-tonal">拒绝</span>
+        <span class="cur-btn cur-btn-primary">同意</span>
+      </div>
+      <div class="cur-tile">
+        <span class="av" style="width:46px;height:46px;font-size:17px">莫</span>
+        <div class="cur-tilemid">
+          <div class="cur-n">莫离</div>
+          <div class="cur-sub">请求添加你为好友</div>
+        </div>
+        <span class="cur-btn cur-btn-tonal">拒绝</span>
+        <span class="cur-btn cur-btn-primary">同意</span>
+      </div>
+      <div class="cur-div"></div>
+      <div class="cur-sec">我发出的</div>
+      <div class="cur-tile">
+        <span class="av" style="width:46px;height:46px;font-size:17px">宁</span>
+        <div class="cur-tilemid">
+          <div class="cur-n">宁川</div>
+          <div class="cur-sub">ID: NC.</div>
+        </div>
+        <span class="cur-wait">等待验证</span>
+      </div>
+      <div class="cur-note">本页唯一稳定入口是消息页空白好友分区的「新的好友申请」行；</div>
+      <div class="cur-note">搜索页只有一个 Toast 提示，没有可达路径。</div>
+    </div>
+    </div>
+  </div>
+  </div>
+</div>
+</body>
+</html>

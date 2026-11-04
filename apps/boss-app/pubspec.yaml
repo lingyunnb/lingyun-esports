@@ -1,0 +1,55 @@
+﻿name: boss_app
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  fish_core:
+    path: ../packages/core
+  video_player: ^2.14.0
+  image_picker: ^1.2.1
+  # 液态玻璃 UI（负责人选定：小米 HyperOS 风格开源组件库，Apache-2.0）
+  flutter_miuix: ^1.2.0
+  # 聊天 UI（负责人 2026-09-25 指定开源项目 flyerhq/flutter_chat_ui：会话+气泡+输入+状态全托管）
+  flutter_chat_ui: ^2.4.0
+  flutter_chat_core: ^2.9.1
+  shimmer: ^4.0.0
+  image_cropper: ^12.2.1
+  emoji_picker_flutter: ^4.5.4
+  photo_view: ^0.15.0
+  fl_chart: ^1.2.0
+  flutter_local_notifications: ^22.3.2
+  # 液态玻璃底栏（负责人 2026-10-18）：社区断层第一的实时折射实现（896 likes）
+  # 注意是 v1.0.0-dev.1 预发布 —— 若构建失败就降级到 liquid_glass_easy v5.0.0
+  liquid_glass_renderer: ^1.0.0-dev.1
+  # path_provider/open_filex/crypto 已随云端更新能力下沉到 fish_core，由 core 传递依赖
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  # 仅测试使用：注入假 Dio 适配器渲染真实页面
+  dio: ^5.7.0
+  # 仅测试使用（打手态通知权限"只问一次"那条用例）：用插件自带的测试替身
+  # `FlutterSecureStorage.setMockInitialValues` 做内存实现，验证"已问过"这个标记
+  # **真的写下去、下次真的读得回来**。它本来就是 fish_core 的传递依赖，
+  # 这里显式声明只为满足 lint `depend_on_referenced_packages`，不新增任何包。
+  flutter_secure_storage: ^11.2.0
+  # 仅测试使用：注入假选图器（断言 image_picker 真的收到了 maxWidth/imageQuality，
+  # 即"上传前压缩收紧一档"这件事是可验证的）。image_picker 的传递依赖，
+  # 显式声明只为满足 lint `depend_on_referenced_packages`，不新增任何包。
+  image_picker_platform_interface: ^2.11.1
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: MiSans
+      fonts:
+        - asset: assets/fonts/MiSans-Normal.ttf

@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>U3 · 日期时间格式未单点 · 设计图</title>
+<!--
+  U3 设计图 —— 自包含 HTML：纯 CSS + 内联 SVG，无外部依赖、无第三方截图。
+  三种现状写法逐字取自真实源码：
+    A. toLocaleString('zh-CN',{hour12:false})  → UsersView/WorkersView/OrdersView/AuditView 等 18 个文件（25 处）
+    B. getFullYear()+padStart 手写             → AnnouncementView/BannersView/RechargeView/WithdrawView/LeaderboardView（5 处）
+    C. 缺占位符 / 返回空串                      → BannersView（''）vs UsersView（'-'）vs WithdrawView（'—'）
+  本图只是设计示意，**未改动任何产品代码**。
+-->
+<style>
+:root{
+  --brand:#2563EB;--brand-soft:rgba(37,99,235,.10);--cyan:#06B6D4;--gold:#B45309;
+  --bg:#F5F7FB;--surface:#FFFFFF;--sunken:#F1F5F9;
+  --ink:#1F2937;--ink2:#5B6B82;--ink3:#5E7085;
+  --hair:#E5E9F2;--hair2:#DCE3EE;
+  --ok:#15803D;--warn:#C2410C;--err:#DC2626;
+  --r-sm:6px;--r-ctl:8px;--r-card:10px;--r-panel:14px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:30px 26px 64px}
+.kicker{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--r-sm);
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink2);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin:12px 0 8px}
+.lead{font-size:13.5px;color:var(--ink2);max-width:960px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:var(--ink3)}
+.meta b{color:var(--ink);font-weight:700}
+h2{font-size:16.5px;font-weight:800;letter-spacing:-.2px;padding-bottom:8px;border-bottom:1px solid var(--hair);margin:30px 0 14px}
+p{font-size:13px;color:var(--ink2)}
+code{background:#EEF2F8;border-radius:3px;padding:1px 4px;font-size:11.5px;color:#1E293B;font-family:var(--mono)}
+.stack{display:flex;flex-direction:column;gap:16px}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:16px 17px 18px;display:flex;flex-direction:column;gap:12px}
+.panel-head{display:flex;align-items:center;gap:9px}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--r-sm);font-size:11px;font-weight:800;letter-spacing:.02em}
+.chip-before{background:var(--sunken);border:1px solid var(--hair);color:var(--ink2)}
+.chip-after{background:var(--brand-soft);border:1px solid rgba(37,99,235,.22);color:var(--brand)}
+.chip-a{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.22);color:var(--err)}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink)}
+.panel-sub{font-size:11.5px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+/* ── 三列现状 ─────────────────────────────────────────── */
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:960px){.three{grid-template-columns:1fr}}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:960px){.two{grid-template-columns:1fr}}
+.var{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:14px 15px;display:flex;flex-direction:column;gap:10px}
+.var-head{display:flex;align-items:center;gap:8px}
+.var-tag{display:inline-flex;align-items:center;height:19px;padding:0 7px;border-radius:var(--r-sm);
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink2);font-size:10.5px;font-weight:800;font-family:var(--mono)}
+.var-name{font-size:12.5px;font-weight:800}
+.var-files{font-size:11px;color:var(--ink3);line-height:1.6}
+.var-files b{color:var(--ink2);font-family:var(--mono)}
+/* ── 迷你表格（复刻 n-data-table 行） ─────────────────── */
+.mini{border:1px solid var(--hair2);border-radius:var(--r-ctl);overflow:hidden;background:var(--surface)}
+.mini-hd{display:flex;background:var(--sunken);border-bottom:1px solid var(--hair2)}
+.mini-hd span{font-size:10.5px;font-weight:800;color:var(--ink3);padding:6px 9px}
+.mini-row{display:flex;border-bottom:1px solid var(--hair)}
+.mini-row:last-child{border-bottom:none}
+.mini-row span{font-size:11.5px;color:var(--ink2);padding:7px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-row .num{font-variant-numeric:tabular-nums}
+.c-date{flex:none;width:142px;border-left:1px solid var(--hair)}
+.c-name{flex:1;min-width:0}
+.mini-hd .c-date{font-family:var(--mono)}
+/* ── 代码块 ────────────────────────────────────────────── */
+.code{background:#0B1220;border:1px solid #1E2C42;border-radius:var(--r-card);padding:11px 12px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:#CFE0FF;overflow-x:auto;white-space:pre}
+.code .c{color:#7E93B4}
+.code .k{color:#8CA3BE}
+.code .del{color:#FFB4B4;text-decoration:line-through;text-decoration-color:rgba(255,120,120,.55)}
+.code .add{color:#A9E7C0}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+.tbl th{font-size:11.5px;font-weight:800;color:var(--ink3);background:var(--sunken)}
+.tbl td{color:var(--ink2)}
+.tbl td b{color:var(--ink)}
+.tbl td.mono{font-family:var(--mono);font-size:11.5px;color:var(--ink)}
+.note{display:flex;gap:9px;border:1px solid var(--hair);border-left:3px solid var(--brand);
+  border-radius:var(--r-ctl);padding:10px 12px;background:var(--surface);font-size:12.5px;color:var(--ink2)}
+.note.warn{border-left-color:var(--warn)}
+.note.ok{border-left-color:var(--ok)}
+.note b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11.5px;color:var(--ink3)}
+.legend b{color:var(--ink)}
+.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--ink3);line-height:1.8}
+.foot b{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="kicker">U3 · 口径单点 · 建议优先级 P2</span>
+  <h1>日期时间格式没有单点，各页各写各的</h1>
+  <p class="lead">
+    金额早就收敛到 <code>@/utils/format.ts</code> 一处（文件头明文写着"禁止各页面自己 <code>toFixed</code> / <code>toLocaleString</code> 拼金额"），
+    <b>日期时间却没人管</b>：18 个页面各自写 <code>toLocaleString('zh-CN')</code>，另外 5 个页面手写 <code>padStart</code> 拼接，
+    连"缺失值占位符"都有三种写法。<b>本图只出方案，不改代码。</b>
+  </p>
+  <div class="meta">
+    <span>写法 A：<b>25 处 / 18 个文件</b></span>
+    <span>写法 B：<b>5 个文件</b></span>
+    <span>落点：<b>admin-web/src/utils/format.ts</b></span>
+    <span>同类先例：<b>formatYuan（金额）</b></span>
+  </div>
+
+  <h2>同一时间在不同页面的三种现状写法</h2>
+  <p style="margin-bottom:12px">同一个时刻 <b>2026-10-12 14:30:25</b>（UTC <code>2026-10-12T06:30:25.000Z</code>），在三种写法下渲染出的结果：</p>
+  <div class="three">
+
+    <!-- ============ A ============ -->
+    <div class="var">
+      <div class="var-head"><span class="var-tag">写法 A</span><span class="var-name">toLocaleString</span></div>
+      <div class="var-files">18 个文件 / 25 处：<br><b>UsersView</b> <b>WorkersView</b> <b>OrdersView</b> <b>AuditView</b> <b>ChatView</b> <b>AdminsView</b> <b>AppUpdateView</b> <b>CommissionView</b> <b>RefundsView</b> <b>ComplaintsView</b> <b>FeedbackView</b> <b>TipsView</b> <b>LeaderboardView</b> <b>WalletsView</b> <b>AppealsView</b> <b>IdentityBindingsView</b> <b>SettingsView</b> <b>DashboardView</b></div>
+      <div class="mini">
+        <div class="mini-hd"><span class="c-name">账号</span><span class="c-date">最近登录</span></div>
+        <div class="mini-row"><span class="c-name">阿岩不熬夜</span><span class="c-date num">2026/10/12 14:30:25</span></div>
+        <div class="mini-row"><span class="c-name">小满不满</span><span class="c-date num">2026/10/11 09:05:07</span></div>
+      </div>
+      <div class="code"><span class="c">// UsersView.vue:80-84（WorkersView / IdentityBindingsView 同形）</span>
+<span class="k">function</span> fmt(v) {
+  <span class="k">if</span> (!v) <span class="del">return '-'</span>;
+  <span class="k">const</span> d = <span class="k">new</span> Date(v);
+  <span class="k">return</span> Number.isNaN(d.getTime()) ? v
+    : d.toLocaleString(<span class="add">'zh-CN'</span>, { hour12: <span class="k">false</span> });
+}</div>
+      <div class="note warn" style="font-size:11.5px"><span>⚠</span><span>
+        <b>斜杠分隔 + 带秒</b>。秒对管理端是<b>噪音</b>（一屏 20 行全是 <code>:00</code> 结尾）；
+        且 <code>/</code> 是浏览器 locale 决定的 —— 换 Node/浏览器版本可能变成 <code>2026-10-12</code>，<b>渲染结果不稳定</b>。
+      </span></div>
+    </div>
+
+    <!-- ============ B ============ -->
+    <div class="var">
+      <div class="var-head"><span class="var-tag">写法 B</span><span class="var-name">手写 padStart 拼接</span></div>
+      <div class="var-files">5 个文件：<br><b>AnnouncementView</b> <b>BannersView</b> <b>RechargeView</b> <b>WithdrawView</b> <b>LeaderboardView</b></div>
+      <div class="mini">
+        <div class="mini-hd"><span class="c-name">打手</span><span class="c-date">申请时间</span></div>
+        <div class="mini-row"><span class="c-name">阿岩不熬夜</span><span class="c-date num">2026-10-12 14:30</span></div>
+        <div class="mini-row"><span class="c-name">祁连山小满</span><span class="c-date num">2026-10-11 09:05</span></div>
+      </div>
+      <div class="code"><span class="c">// WithdrawView.vue:366-371（另 4 个文件逐字同形）</span>
+<span class="k">function</span> fmtTime(v) {
+  <span class="k">if</span> (!v) <span class="add">return '—'</span>;
+  <span class="k">const</span> d = <span class="k">new</span> Date(v);
+  <span class="k">if</span> (Number.isNaN(d.getTime())) <span class="add">return '—'</span>;
+  <span class="k">const</span> p = (n) => String(n).padStart(2, <span class="add">'0'</span>);
+  <span class="k">return</span> `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} `
+       + `${p(d.getHours())}:${p(d.getMinutes())}`;
+}</div>
+      <div class="note" style="font-size:11.5px"><span>✓</span><span>
+        <b>连字符 + 无秒</b>（<code>YYYY-MM-DD HH:mm</code>）—— 这个形态本身<b>就是建议的统一写法</b>；
+        问题不在写法，而在它<b>被复制了 5 份</b>。
+      </span></div>
+    </div>
+
+    <!-- ============ C ============ -->
+    <div class="var">
+      <div class="var-head"><span class="var-tag chip-a">写法 C</span><span class="var-name">占位符也不统一</span></div>
+      <div class="var-files">缺失 / 非法值时的返回值：<br>
+        <b>UsersView / WorkersView</b> → <code>'-'</code>（半角减号）<br>
+        <b>IdentityBindingsView / WithdrawView / RechargeView</b> → <code>'—'</code>（破折号）<br>
+        <b>BannersView</b> → <code>''</code>（空白单元格）</div>
+      <div class="mini">
+        <div class="mini-hd"><span class="c-name">账号</span><span class="c-date">最近登录</span></div>
+        <div class="mini-row"><span class="c-name">（从未登录）</span><span class="c-date num">-</span></div>
+        <div class="mini-row"><span class="c-name">（从未登录）</span><span class="c-date num">—</span></div>
+        <div class="mini-row"><span class="c-name">（从未登录）</span><span class="c-date num" style="color:#B9C2D0">（空）</span></div>
+      </div>
+      <div class="code"><span class="c">// 三个文件，三种占位符</span>
+UsersView.vue:81            <span class="k">if</span> (!v) <span class="del">return '-'</span>;
+IdentityBindingsView.vue:70 <span class="k">if</span> (!v) <span class="del">return '—'</span>;
+BannersView.vue:275         <span class="k">if</span> (!v) <span class="del">return ''</span>;
+
+<span class="c">// 对照：金额早就统一了（format.ts:62）</span>
+<span class="k">export function</span> formatYuanOr(v, placeholder = <span class="add">'—'</span>) { … }</div>
+      <div class="note warn" style="font-size:11.5px"><span>⚠</span><span>
+        <code>-</code> 与 <code>—</code> 在<b>同屏两张表里并排出现</b>时会看得出不一致；<code>''</code> 更糟 ——
+        单元格全空，读者分不清"没这个值"还是"渲染坏了"。金额那边已经用 <code>'—'</code> 定案，日期应对齐它。
+      </span></div>
+    </div>
+  </div>
+
+  <h2>统一后的写法</h2>
+  <div class="two">
+    <div class="panel" style="border-color:rgba(37,99,235,.38)">
+      <div class="panel-head">
+        <span class="chip chip-after">建议</span>
+        <span class="panel-title">唯一实现：formatDateTime / formatDateTimeOr</span>
+        <span class="panel-sub">format.ts</span>
+      </div>
+      <div class="mini">
+        <div class="mini-hd"><span class="c-name">打手</span><span class="c-date">申请时间</span></div>
+        <div class="mini-row"><span class="c-name">阿岩不熬夜</span><span class="c-date num">2026-10-12 14:30</span></div>
+        <div class="mini-row"><span class="c-name">祁连山小满</span><span class="c-date num">昨天 09:05</span></div>
+        <div class="mini-row"><span class="c-name">不接急单</span><span class="c-date num">今天 08:12</span></div>
+        <div class="mini-row"><span class="c-name">（无记录）</span><span class="c-date num">—</span></div>
+      </div>
+      <div class="legend">
+        <span>形态：<b>YYYY-MM-DD HH:mm</b></span>
+        <span>今天 → <b>今天 HH:mm</b></span>
+        <span>昨天 → <b>昨天 HH:mm</b></span>
+        <span>缺失 → <b>—</b></span>
+      </div>
+      <div class="note ok" style="font-size:11.5px"><span>✓</span><span>
+        <b>相对词只用在"今天 / 昨天"两天内</b>，再往前一律给完整日期 ——
+        管理端要的是"这条是几点发生的"，而不是"3 天前"这种要心算的说法。
+      </span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">落点</span>
+        <span class="panel-title">加什么函数</span>
+        <span class="panel-sub">format.ts</span>
+      </div>
+      <div class="code"><span class="c">// admin-web/src/utils/format.ts（追加，与 formatYuan 同一文件）</span>
+<span class="c">/**
+ * 日期时间显示（管理端**唯一实现**）
+ * 形态：YYYY-MM-DD HH:mm；今天/昨天用相对词；缺失/非法 → '—'
+ * 与金额同思路：口径单点，禁止各页面自己 toLocaleString / padStart。
+ */</span>
+<span class="k">export function</span> formatDateTime(v: string | number | Date | null | undefined): string;
+
+<span class="c">/** 表格用：缺失给占位符（默认 '—'，与 formatYuanOr 同款） */</span>
+<span class="k">export function</span> formatDateTimeOr(v, placeholder = <span class="add">'—'</span>): string;
+
+<span class="c">/** 只有日期没有时间时（榜单周期这类） */</span>
+<span class="k">export function</span> formatDate(v): string;   <span class="c">// YYYY-MM-DD</span></div>
+      <div class="note" style="font-size:11.5px"><span>✓</span><span>
+        <b>为什么放同一个文件</b>：<code>format.ts</code> 已经是"管理端显示口径的唯一出口"，
+        日期与金额是同一类东西（都是"后端原始值 → 给人看"）。放一起，后人才不会另开一个 <code>date.ts</code>。
+      </span></div>
+    </div>
+  </div>
+
+  <h2>逐条替换清单（15+ 页面）</h2>
+  <table class="tbl">
+    <tr><th style="width:210px">文件</th><th style="width:150px">现状</th><th>替换为</th></tr>
+    <tr><td class="mono">UsersView.vue</td><td>本地 fmt()，占位 <code>'-'</code></td><td>删本地 <code>fmt</code>，改 <code>formatDateTimeOr(row.lastLoginAt)</code></td></tr>
+    <tr><td class="mono">WorkersView.vue</td><td>本地 fmt()，占位 <code>'-'</code></td><td>同上（占位统一为 <code>—</code>）</td></tr>
+    <tr><td class="mono">IdentityBindingsView.vue</td><td>本地 fmt()，占位 <code>'—'</code></td><td>删本地 <code>fmt</code>，改 <code>formatDateTimeOr</code></td></tr>
+    <tr><td class="mono">OrdersView.vue</td><td>内联 <code>toLocaleString</code>（2 处）</td><td><code>formatDateTime</code>（表格列 + 详情抽屉）</td></tr>
+    <tr><td class="mono">AuditView.vue</td><td>内联（2 处）</td><td><code>formatDateTime</code></td></tr>
+    <tr><td class="mono">AdminsView / AppUpdateView / CommissionView / RefundsView / ComplaintsView / FeedbackView / TipsView / WalletsView / AppealsView / ChatView / LeaderboardView / SettingsView</td><td>内联 <code>toLocaleString</code>（共 18 处）</td><td><code>formatDateTime</code>（SettingsView 的 5 处一并收）</td></tr>
+    <tr><td class="mono">AnnouncementView / BannersView / RechargeView / WithdrawView</td><td>本地 <code>fmtTime</code>（写法 B）</td><td>删本地 <code>fmtTime</code>，改 <code>formatDateTime</code>；<b>输出逐字不变</b>（B 的形态就是统一形态）</td></tr>
+  </table>
+
+  <h2>逐项口径</h2>
+  <table class="tbl">
+    <tr><th style="width:132px">项</th><th>内容</th></tr>
+    <tr><td><b>现状</b></td><td>日期时间<b>没有唯一实现</b>：写法 A（<code>toLocaleString('zh-CN')</code>，18 文件 / 25 处，渲染成 <code>2026/10/12 14:30:25</code>）与写法 B（手写 <code>padStart</code>，5 文件，渲染成 <code>2026-10-12 14:30</code>）<b>并存</b>；缺失值占位符还有 <code>'-'</code> / <code>'—'</code> / <code>''</code> 三种。</td></tr>
+    <tr><td><b>建议</b></td><td>① <code>admin-web/src/utils/format.ts</code> 新增 <code>formatDateTime(v)</code> / <code>formatDateTimeOr(v, placeholder='—')</code> / <code>formatDate(v)</code>；<br>
+      ② 统一形态 <b><code>YYYY-MM-DD HH:mm</code></b>（连字符、24 小时、无秒），<b>今天 / 昨天</b>用相对词（<code>今天 14:30</code> / <code>昨天 09:05</code>）；<br>
+      ③ 缺失 / 非法值一律 <code>'—'</code>（与 <code>formatYuanOr</code> 同款）；<br>
+      ④ 逐页删掉本地 <code>fmt</code> / <code>fmtTime</code> 与内联 <code>toLocaleString</code>，改调新函数（约 38 处 / 15+ 文件）。</td></tr>
+    <tr><td><b>影响面</b></td><td><b>不需要动服务端。</b>纯展示层、零业务风险、不动接口与数据结构。<br>
+      <b>两处需留意的可见变化</b>：① 写法 A 的页面会从 <code>2026/10/12 14:30:25</code> 变成 <code>2026-10-12 14:30</code>（<b>去掉秒</b>、分隔符改连字符）→ 定宽列会略微变窄，建议复跑一次 <code>verify-admin-table-actions.mjs</code> 确认无折行；② <code>'-'</code> → <code>'—'</code> 会让极少数定宽列宽度微变（同上）。</td></tr>
+    <tr><td><b>红线</b></td><td><code>docs/14</code>：<b>否</b>。§「字体层级」里"辅助 13 / 说明 12"是字号口径，本次不动字号；去掉秒属<b>信息密度</b>的合理收敛，与"管理端信息密度优先"不冲突。<br>
+      <code>docs/21</code>：<b>否</b>。不涉及任何视觉决策（无颜色、无圆角、无阴影、无渐变）；<b>反而更符合</b>「要：文案具体可验证」—— 统一口径本身就是在消除"三种写法"的机器味。</td></tr>
+    <tr><td><b>工时</b></td><td><b>1 天</b>（含 38 处替换 + <code>vue-tsc</code> + <code>table-actions</code> 复跑）。</td></tr>
+    <tr><td><b>设计图</b></td><td><code>site/design/audit-2026-10-12/U3.html</code>（本页）· 截图 <code>U3.png</code></td></tr>
+  </table>
+
+  <div class="foot">
+    <b>本图为设计示意</b>：全部图形为纯 CSS 与内联 SVG 绘制，不是产品截图，也未使用任何第三方素材。<br>
+    <b>本方案未实施任何代码改动</b> —— 等负责人审批后才做。制图日期 2026-10-12。
+  </div>
+</div>
+</body>
+</html>

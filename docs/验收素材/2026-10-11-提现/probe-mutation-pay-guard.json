@@ -1,0 +1,15 @@
+{
+  "mutate": true,
+  "verdict": "RED",
+  "canProbePerm": true,
+  "listButtons": [
+    "处理",
+    "驳回"
+  ],
+  "fails": [
+    "无 pay 账号在**列表行内**看到了「驳回」按钮",
+    "抽屉里出现了「已提现」按钮（无 pay 权限不该有）",
+    "抽屉里出现了「驳回」按钮（无 pay 权限不该有）",
+    "抽屉里没有说明缺哪个权限点（withdraw:pay）"
+  ]
+}

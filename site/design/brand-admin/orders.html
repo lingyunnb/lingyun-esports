@@ -1,0 +1,484 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>管理端 · 订单管理 · 品牌化设计图</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#0F2440; --primary:#1D5FA8; --primary-hover:#18528F; --celadon:#0E7C7B;
+  --gold:#B4732A; --page:#F4F6F9; --card:#FFFFFF; --hair:#E3E8EF;
+  --ink:#14202E; --ink2:#4A5A6E; --ink3:#8A99AB;
+  --primary-soft:#E8EEF7; --celadon-soft:#E3F0EF; --amber-soft:#F7EDE0;
+  --ok:#0E7C7B; --warn:#B45309; --err:#B42318;
+  --slot:#EDF1F7; --skel:#E7ECF3;
+  --r-xs:4px; --r-sm:6px; --r-md:10px; --r-lg:14px; --r-pill:999px;
+  --pad:16px;
+  --font:"MiSans","HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",-apple-system,"Segoe UI",sans-serif;
+}
+html{background:var(--page)}
+body{font-family:var(--font);color:var(--ink);background:var(--page);font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased}
+svg.ic{display:block;flex:none}
+.mono{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+h1,h2,h3{font-weight:700}
+
+.admin{width:1440px;display:flex;background:var(--card);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.side{width:220px;flex:0 0 220px;background:var(--card);border-right:1px solid var(--hair);display:flex;flex-direction:column;padding:0 0 14px}
+.sbrand{display:flex;align-items:center;gap:9px;height:56px;padding:0 14px;border-bottom:1px solid var(--hair)}
+.smark{width:28px;height:28px;flex:none;border-radius:var(--r-sm);background:var(--brand);display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%)}
+.smark span{font-size:15px;font-weight:700;color:#fff;line-height:1}
+.sbname{font-size:14px;font-weight:700;letter-spacing:.2px;line-height:1.15}
+.sbsub{font-size:11px;color:var(--ink2);line-height:1.2;margin-top:2px}
+.snav{padding:10px 8px 0;display:flex;flex-direction:column;gap:1px}
+.gp{display:flex;align-items:center;gap:9px;height:32px;padding:0 9px;border-radius:var(--r-sm);color:var(--ink);font-size:13px;font-weight:600}
+.gp.on{background:var(--primary-soft);color:var(--primary);font-weight:700;position:relative}
+.gp.on::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:3px;border-radius:0 3px 3px 0;background:var(--primary)}
+.gp .cv{margin-left:auto;transition:none}
+.gp.on .cv{transform:rotate(90deg)}
+.gsub{display:flex;flex-direction:column;gap:1px;margin:2px 0 4px}
+.gc{height:28px;display:flex;align-items:center;padding-left:34px;border-radius:var(--r-sm);font-size:12px;color:var(--ink2)}
+.gc.on{background:var(--primary-soft);color:var(--primary);font-weight:700;position:relative}
+.gc.on::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;border-radius:0 3px 3px 0;background:var(--primary)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--page)}
+.tbar{height:56px;flex:none;display:flex;align-items:center;gap:12px;padding:0 18px;background:var(--card);border-bottom:1px solid var(--hair)}
+.crumb{font-size:13px;color:var(--ink2)}
+.crumb b{color:var(--ink);font-weight:700}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.tbtn{height:30px;display:inline-flex;align-items:center;gap:6px;padding:0 11px;background:var(--card);border:1px solid var(--hair);
+  border-radius:var(--r-sm);font-size:12px;font-weight:600;color:var(--ink2)}
+.tbtn.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+.tabs{height:40px;flex:none;display:flex;align-items:flex-end;gap:2px;padding:0 18px;background:var(--card);border-bottom:1px solid var(--hair)}
+.tab{height:32px;display:inline-flex;align-items:center;gap:7px;padding:0 11px;font-size:12px;color:var(--ink2);border:1px solid var(--hair);border-bottom:0;
+  border-radius:var(--r-xs) var(--r-xs) 0 0;background:var(--page);position:relative;top:1px}
+.tab.on{background:var(--card);border-bottom:1px solid var(--card);color:var(--ink);font-weight:600}
+.tab.on::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--primary)}
+.abody{padding:16px 18px 22px;display:flex;flex-direction:column;gap:14px}
+.ph h1{font-size:18px;line-height:1.25;letter-spacing:-.2px}
+.ph p{margin-top:5px;font-size:12px;color:var(--ink2)}
+.ph-row{display:flex;align-items:flex-start;gap:14px}
+.ph-row .sp{flex:1}
+.panel{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-lg)}
+.panel-h{height:44px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--hair)}
+.panel-h h3{font-size:14px}
+.panel-h .hint{font-size:11px;color:var(--ink2)}
+table{width:100%;border-collapse:collapse}
+th{height:38px;padding:0 12px;text-align:left;font-size:12px;font-weight:600;color:var(--ink2);background:var(--slot);
+  border-bottom:1px solid var(--hair);white-space:nowrap}
+td{height:44px;padding:0 12px;font-size:13px;border-bottom:1px solid var(--hair);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+th.r,td.r{text-align:right}
+th.c,td.c{text-align:center}
+.tag{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 7px;border-radius:var(--r-xs);font-size:11px;font-weight:700}
+.tag i{width:5px;height:5px;flex:none;display:block}
+.money{color:var(--gold);font-weight:700}
+.tot{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;font-size:12px;color:var(--ink2);border-top:1px solid var(--hair)}
+.pager{margin-left:auto;display:flex;align-items:center;gap:6px}
+.pg{min-width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--hair);
+  border-radius:var(--r-sm);font-size:12px;color:var(--ink2);background:var(--card)}
+.pg.on{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:700}
+.sel,.inp{height:32px;display:inline-flex;align-items:center;gap:8px;padding:0 10px;background:var(--card);border:1px solid var(--hair);
+  border-radius:var(--r-sm);font-size:12px;color:var(--ink2);min-width:120px}
+.inp.on{border-color:var(--primary);color:var(--ink)}
+.sel .ph{color:var(--ink3)}
+.chip{height:28px;display:inline-flex;align-items:center;gap:6px;padding:0 11px;border-radius:var(--r-pill);
+  background:var(--card);border:1px solid var(--hair);font-size:12px;font-weight:600;color:var(--ink2)}
+.chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.statline{display:flex;background:var(--card);border:1px solid var(--hair);border-radius:var(--r-lg);overflow:hidden}
+.statline .c{flex:1;min-width:0;padding:14px 16px;border-left:1px solid var(--hair)}
+.statline .c:first-child{border-left:0}
+.statline .k{font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.statline .v{margin-top:6px;font-size:18px;font-weight:700;letter-spacing:-.3px}
+.statline .v.gold{color:var(--gold)}
+.statline .d{margin-top:4px;font-size:11px;color:var(--ink2)}
+.todo{display:flex;flex-direction:column}
+.todo .r{display:flex;align-items:center;gap:11px;height:44px;padding:0 14px;border-top:1px solid var(--hair)}
+.todo .r:first-child{border-top:0}
+.todo .r .k{flex:1;font-size:13px}
+.todo .r .v{font-size:15px;font-weight:700;letter-spacing:-.2px}
+.todo .r .g{font-size:11px;color:var(--ink2)}
+.empty{padding:44px 20px;text-align:center;position:relative;overflow:hidden}
+.empty .gi{width:44px;height:44px;margin:0 auto;border-radius:var(--r-lg);background:var(--card);border:1px solid var(--hair);
+  display:flex;align-items:center;justify-content:center;color:var(--ink3)}
+.empty .t{margin-top:11px;font-size:14px;font-weight:600;color:var(--ink2)}
+.empty .s{margin-top:6px;font-size:12px;color:var(--ink2);line-height:1.55}
+.drawer-mask{position:relative}
+.dw{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-lg);overflow:hidden}
+.dw-h{height:52px;display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--hair)}
+.dw-h h3{font-size:15px}
+.dw-b{padding:16px}
+.fg{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.fg>label{font-size:12px;font-weight:600;color:var(--ink2)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dw-f{height:56px;display:flex;align-items:center;gap:10px;padding:0 16px;border-top:1px solid var(--hair);background:var(--page)}
+.btn{height:32px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border-radius:var(--r-sm);font-size:13px;font-weight:600;
+  background:var(--card);border:1px solid var(--hair);color:var(--ink2)}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.warn{background:var(--card);border-color:#E7C9A6;color:var(--warn)}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.2 3 7.4 7 8.5 4-1.1 7-4.3 7-8.5V6z"/></symbol><symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4.5h-4.5"/></symbol><symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9.5 5.5 16 12l-6.5 6.5"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6H17a2 2 0 0 1 2 2v1"/><path d="M4 8.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5"/><path d="M4 8.5h13"/><path d="M21 11.5h-4.5a2.25 2.25 0 0 0 0 4.5H21z"/></symbol><symbol id="i-receipt" viewBox="0 0 24 24"><path d="M7 3.5h8.5L19 7v13.5H7z"/><path d="M15 3.5V7h3.5"/><path d="M10 11h6"/><path d="M10 14.5h6"/><path d="M10 18h4"/></symbol><symbol id="i-headset" viewBox="0 0 24 24"><path d="M4.5 14v-2a7.5 7.5 0 0 1 15 0v2"/><path d="M4.5 13.5h1.6a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1z"/><path d="M19.5 13.5h-1.6a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h.6a1 1 0 0 0 1-1z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 7v5.2l3.4 2"/><path d="M12 3.6a8.4 8.4 0 1 1 0 16.8 8.4 8.4 0 0 1 0-16.8Z"/></symbol><symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3.5 13.5h4l1.5 2.5h6l1.5-2.5h4"/><path d="M3.5 13.5 6 5.5h12l2.5 8v4a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5S6.5 14 6.5 10Z"/><path d="M10 19a2 2 0 0 0 4 0"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M12 3.6a8.4 8.4 0 1 1 0 16.8 8.4 8.4 0 0 1 0-16.8Z"/><path d="M8.4 12.3l2.5 2.5 4.7-5"/></symbol><symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5.5 13.5H11L10 21l7.5-10.5H12z"/></symbol><symbol id="i-info" viewBox="0 0 24 24"><path d="M12 3.6a8.4 8.4 0 1 1 0 16.8 8.4 8.4 0 0 1 0-16.8Z"/><path d="M12 11v5.5"/><path d="M12 7.8v.01"/></symbol><symbol id="i-linkoff" viewBox="0 0 24 24"><path d="M9.5 14.5 14.5 9.5"/><path d="M8 11 6 13a3.5 3.5 0 0 0 5 5l2-2"/><path d="M16 13l2-2a3.5 3.5 0 0 0-5-5l-2 2"/></symbol><symbol id="i-swap" viewBox="0 0 24 24"><path d="M7.5 5.5h9l-2.5-2.5"/><path d="M16.5 18.5h-9l2.5 2.5"/><path d="M16.5 5.5l-2.5 2.5"/><path d="M7.5 18.5l2.5-2.5"/></symbol><symbol id="i-person" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><path d="M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13Z"/><path d="M15.5 15.5 20.5 20.5"/></symbol><symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></symbol><symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></symbol><symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4 3.5 19h17z"/><path d="M12 10v4"/><path d="M12 16.5v.01"/></symbol><symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3.5h8.5L19 7v13.5H7z"/><path d="M15 3.5V7h3.5"/><path d="M10 15h6"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V11"/><path d="M12 20V5"/><path d="M20 20v-6"/><path d="M3 20h18"/></symbol><symbol id="i-settings" viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M12 3.5v2.2"/><path d="M12 18.3v2.2"/><path d="M20.5 12h-2.2"/><path d="M5.7 12H3.5"/><path d="M18 6l-1.6 1.6"/><path d="M7.6 16.4 6 18"/><path d="M18 18l-1.6-1.6"/><path d="M7.6 7.6 6 6"/></symbol><symbol id="i-people" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.5 5.2a3.5 3.5 0 0 1 0 6.6"/><path d="M18 20a6.6 6.6 0 0 0-1.2-3.8"/></symbol><symbol id="i-coins" viewBox="0 0 24 24"><path d="M9.5 12.5a5 3.5 0 1 0 0-7 5 3.5 0 0 0 0 7Z"/><path d="M4.5 9v5c0 1.9 2.2 3.5 5 3.5s5-1.6 5-3.5V9"/><path d="M14.5 6.2a5 3.5 0 0 1 0 6.6c1 .6 2 .9 3 .9 2.8 0 5-1.6 5-3.5V5.2c0-1.9-2.2-3.5-5-3.5-1.4 0-2.7.4-3.6 1"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12Z"/><path d="M12 14.6a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2Z"/></symbol><symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v10.5"/><path d="M8 11l4 4 4-4"/><path d="M5 19.5h14"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h6.5v6.5H4z"/><path d="M13.5 4H20v6.5h-6.5z"/><path d="M4 13.5h6.5V20H4z"/><path d="M13.5 13.5H20V20h-6.5z"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><path d="M4 7.5A2 2 0 0 1 6 5.5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 10.5h16"/><path d="M8.5 3.5v4"/><path d="M15.5 3.5v4"/></symbol><symbol id="i-clipboard" viewBox="0 0 24 24"><path d="M9 4.5h6v2H9z"/><path d="M7.5 5.5H6a1.5 1.5 0 0 0-1.5 1.5v12A1.5 1.5 0 0 0 6 20.5h12a1.5 1.5 0 0 0 1.5-1.5V7A1.5 1.5 0 0 0 18 5.5h-1.5"/><path d="M9 12h6"/><path d="M9 15.5h4"/></symbol><symbol id="i-arrowup" viewBox="0 0 24 24"><path d="M12 19.5V5"/><path d="M6.5 10.5 12 5l5.5 5.5"/></symbol><symbol id="i-arrowdown" viewBox="0 0 24 24"><path d="M12 4.5V19"/><path d="M6.5 13.5 12 19l5.5-5.5"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3.5 9.5 12 4l8.5 5.5"/><path d="M5.5 10v8"/><path d="M9.5 10v8"/><path d="M14.5 10v8"/><path d="M18.5 10v8"/><path d="M3.5 20.5h17"/></symbol></defs></svg>
+<div class="sheet" style="padding:20px 24px 30px;gap:16px">
+  <header class="sheet-head" style="width:1440px">
+    <h1>管理端「订单管理」· 品牌化设计图（1440 桌面）</h1>
+    <p>高信息密度 + 好扫读：表头 38 / 行高 44 / 字号 12–13；状态标签统一形态；金额只走琥珀金；资金类动作集中在操作列右端并带二次确认。</p>
+    <div class="meta"><span>1440 × 桌面</span><span>9 个订单状态</span><span>筛选抽屉 + 取消确认</span><span>空态 / 骨架齐全</span></div>
+  </header>
+  <figure class="shot" style="width:1440px;flex:none"><figcaption><span class="n">1</span>首屏 <em>1440 宽 · 页签 + 工具条 + 10 行订单表 + 分页</em></figcaption>
+    <div class="admin">
+  <aside class="side">
+    <div class="sbrand"><span class="smark"><span>祁</span></span>
+      <div><div class="sbname">祁连山电竞</div><div class="sbsub">管理后台</div></div></div>
+    <nav class="snav"><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-grid"/></svg><span>工作台</span></div><div class="gp on"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-receipt"/></svg><span>订单与售后</span><span class="cv" style="display:flex;transform:rotate(90deg)"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gc on">订单管理</div><div class="gc">售后管理</div><div class="gc">退款审批</div><div class="gc">投诉工单</div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-people"/></svg><span>用户与身份</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-coins"/></svg><span>资金与抽成</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-clipboard"/></svg><span>商品与内容</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-headset"/></svg><span>客服与消息</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chart"/></svg><span>排行榜</span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-settings"/></svg><span>系统管理</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div></nav>
+  </aside>
+  <section class="main">
+    <div class="tbar"><span class="crumb">订单与售后 <span style="color:var(--ink3)">/</span> <b>订单管理</b></span>
+      <span class="tb-right">
+        <span class="tbtn"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-search"/></svg>搜索</span>
+        <span class="tbtn"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-person"/></svg>会长（全权限）</span>
+      </span></div>
+    <div class="tabs"><span class="tab">工作台</span><span class="tab on">订单管理 <span style="color:var(--ink2)">✕</span></span></div>
+    <div class="abody">
+      <div class="ph"><div class="ph-row"><div class="sp"><h1>订单管理</h1><p>全量订单检索、派单与强制完成；管理员取消会真实退款并冲正结算。</p></div><span style="display:inline-flex;gap:8px"><span class="chip on"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-filter"/></svg>筛选 · 已选 0</span><span class="chip">状态：全部</span><span class="chip">近 7 天</span></span></div></div>
+      <div class="panel">
+   <div class="panel-h"><h3>订单列表</h3><span class="hint">共 1,247 单 · 命中筛选 9 单</span>
+     <span style="flex:1"></span>
+     <span class="tbtn"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-download"/></svg>导出</span>
+     <span class="tbtn"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-refresh"/></svg>刷新</span></div>
+   <table>
+     <thead><tr>
+       <th style="width:170px">订单号</th><th style="width:110px">用户</th><th>商品</th>
+       <th style="width:150px">分部</th><th class="r" style="width:110px">订单金额</th>
+       <th style="width:130px">状态</th><th style="width:150px">创建时间</th><th class="r" style="width:196px">操作</th>
+     </tr></thead>
+     <tbody>
+     <tr>
+       <td class="mono">ORDMUZQ8MHI8946</td><td>凌云</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">37.8保678万（绝密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥75.60</td>
+       <td><span class="tag" style="background:var(--amber-soft);color:var(--warn)"><i style="background:currentColor;border-radius:50%"></i>待接单</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 21:18</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn pri" style="height:28px;padding:0 10px">派单</span><span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ5LBR6879</td><td>发好久的呆</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">68.8清图绝密</td>
+       <td style="color:var(--ink2)">和平精英 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥68.80</td>
+       <td><span class="tag" style="background:var(--amber-soft);color:var(--warn)"><i style="background:currentColor;border-radius:50%"></i>待确认派单</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 20:56</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn warn" style="height:28px;padding:0 10px">撤销派单</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ12638298</td><td>阿七</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">8.8保148万（机密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥8.80</td>
+       <td><span class="tag" style="background:var(--slot);color:var(--ink2)"><i style="background:currentColor;border-radius:1px"></i>已接单</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 19:42</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ128E7376</td><td>柚子</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">25清图机密</td>
+       <td style="color:var(--ink2)">三角洲行动 · 端游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥25.00</td>
+       <td><span class="tag" style="background:var(--slot);color:var(--ink2)"><i style="background:currentColor;border-radius:1px"></i>进行中</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 18:20</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ9KDM3320</td><td>老陈</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">15.8保248万（机密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥15.80</td>
+       <td><span class="tag" style="background:var(--primary-soft);color:var(--primary)"><i style="background:currentColor;border-radius:1px"></i>待用户确认</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 17:31</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ4TNB5517</td><td>凌云</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">88.8保2000万（绝密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥88.80</td>
+       <td><span class="tag" style="background:var(--celadon-soft);color:var(--celadon)"><i style="background:currentColor;border-radius:50%"></i>已完成</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 16:04</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px">结算详情</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ7WQP2204</td><td>阿七</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">49.9包1000万（绝密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥149.70</td>
+       <td><span class="tag" style="background:var(--celadon-soft);color:var(--celadon)"><i style="background:currentColor;border-radius:50%"></i>已完成</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 15:12</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px">结算详情</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ2HJX9931</td><td>发好久的呆</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">保2红单48.8</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥48.80</td>
+       <td><span class="tag" style="background:#FBEBE9;color:var(--err)"><i style="background:currentColor;border-radius:1px"></i>已取消</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 14:47</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ6PLM4418</td><td>柚子</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">37.8保678万（绝密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥37.80</td>
+       <td><span class="tag" style="background:#FBEBE9;color:var(--err)"><i style="background:currentColor;border-radius:1px"></i>售后 / 申诉</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 13:29</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ3KVS7752</td><td>老陈</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">出5金续单（机密）68.8</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥68.80</td>
+       <td><span class="tag" style="background:#FBEBE9;color:var(--err)"><i style="background:currentColor;border-radius:1px"></i>异常</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 12:05</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr>
+     </tbody>
+   </table>
+   <div class="tot">第 1–10 条 / 共 9 条命中，全量 1,247 条
+     <span class="pager"><span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">…</span><span class="pg">63</span><span class="pg">›</span></span></div>
+  </div>
+    </div>
+  </section></div>
+  </figure>
+  <div class="sec" style="width:1440px"><h3>代表性交互态</h3><span class="hint">筛选抽屉（高频）· 取消确认（不可逆资金动作）· 空态</span></div>
+  <div style="width:1440px;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:14px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <figure class="shot" style="width:100%;flex:none">
+        <figcaption><span class="n">2</span>筛选后（8 行命中）<em>工具条同步回显已选条件</em></figcaption>
+        <div class="admin">
+  <aside class="side">
+    <div class="sbrand"><span class="smark"><span>祁</span></span>
+      <div><div class="sbname">祁连山电竞</div><div class="sbsub">管理后台</div></div></div>
+    <nav class="snav"><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-grid"/></svg><span>工作台</span></div><div class="gp on"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-receipt"/></svg><span>订单与售后</span><span class="cv" style="display:flex;transform:rotate(90deg)"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gc on">订单管理</div><div class="gc">售后管理</div><div class="gc">退款审批</div><div class="gc">投诉工单</div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-people"/></svg><span>用户与身份</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-coins"/></svg><span>资金与抽成</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-clipboard"/></svg><span>商品与内容</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-headset"/></svg><span>客服与消息</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chart"/></svg><span>排行榜</span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-settings"/></svg><span>系统管理</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div></nav>
+  </aside>
+  <section class="main">
+    <div class="tbar"><span class="crumb">订单与售后 <span style="color:var(--ink3)">/</span> <b>订单管理</b></span>
+      <span class="tb-right">
+        <span class="tbtn"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-search"/></svg>搜索</span>
+        <span class="tbtn"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-person"/></svg>会长（全权限）</span>
+      </span></div>
+    <div class="tabs"><span class="tab">工作台</span><span class="tab on">订单管理 <span style="color:var(--ink2)">✕</span></span></div>
+    <div class="abody">
+      <div class="ph"><div class="ph-row"><div class="sp"><h1>订单管理</h1><p>共 1,247 单 · 命中筛选 9 单（状态 待接单 / 分部 三角洲行动 · 手游 / 近 7 天）</p></div><span style="display:inline-flex;gap:8px"><span class="chip on"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-filter"/></svg>筛选 · 已选 3</span><span class="chip on">待接单 ✕</span><span class="chip on">三角洲行动 · 手游 ✕</span></span></div></div>
+      <div class="panel">
+   <div class="panel-h"><h3>订单列表</h3><span class="hint">共 1,247 单 · 命中筛选 9 单</span>
+     <span style="flex:1"></span>
+     <span class="tbtn"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-download"/></svg>导出</span>
+     <span class="tbtn"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-refresh"/></svg>刷新</span></div>
+   <table>
+     <thead><tr>
+       <th style="width:170px">订单号</th><th style="width:110px">用户</th><th>商品</th>
+       <th style="width:150px">分部</th><th class="r" style="width:110px">订单金额</th>
+       <th style="width:130px">状态</th><th style="width:150px">创建时间</th><th class="r" style="width:196px">操作</th>
+     </tr></thead>
+     <tbody>
+     <tr>
+       <td class="mono">ORDMUZQ8MHI8946</td><td>凌云</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">37.8保678万（绝密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥75.60</td>
+       <td><span class="tag" style="background:var(--amber-soft);color:var(--warn)"><i style="background:currentColor;border-radius:50%"></i>待接单</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 21:18</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn pri" style="height:28px;padding:0 10px">派单</span><span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ5LBR6879</td><td>发好久的呆</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">68.8清图绝密</td>
+       <td style="color:var(--ink2)">和平精英 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥68.80</td>
+       <td><span class="tag" style="background:var(--amber-soft);color:var(--warn)"><i style="background:currentColor;border-radius:50%"></i>待确认派单</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 20:56</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn warn" style="height:28px;padding:0 10px">撤销派单</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ12638298</td><td>阿七</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">8.8保148万（机密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥8.80</td>
+       <td><span class="tag" style="background:var(--slot);color:var(--ink2)"><i style="background:currentColor;border-radius:1px"></i>已接单</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 19:42</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ128E7376</td><td>柚子</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">25清图机密</td>
+       <td style="color:var(--ink2)">三角洲行动 · 端游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥25.00</td>
+       <td><span class="tag" style="background:var(--slot);color:var(--ink2)"><i style="background:currentColor;border-radius:1px"></i>进行中</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 18:20</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ9KDM3320</td><td>老陈</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">15.8保248万（机密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥15.80</td>
+       <td><span class="tag" style="background:var(--primary-soft);color:var(--primary)"><i style="background:currentColor;border-radius:1px"></i>待用户确认</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 17:31</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ4TNB5517</td><td>凌云</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">88.8保2000万（绝密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥88.80</td>
+       <td><span class="tag" style="background:var(--celadon-soft);color:var(--celadon)"><i style="background:currentColor;border-radius:50%"></i>已完成</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 16:04</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px">结算详情</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ7WQP2204</td><td>阿七</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">49.9包1000万（绝密）</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥149.70</td>
+       <td><span class="tag" style="background:var(--celadon-soft);color:var(--celadon)"><i style="background:currentColor;border-radius:50%"></i>已完成</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 15:12</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px">结算详情</span>
+       </span></td></tr><tr>
+       <td class="mono">ORDMUZQ2HJX9931</td><td>发好久的呆</td>
+       <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis">保2红单48.8</td>
+       <td style="color:var(--ink2)">三角洲行动 · 手游</td>
+   <td class="r mono" style="color:var(--gold);font-weight:700">¥48.80</td>
+       <td><span class="tag" style="background:#FBEBE9;color:var(--err)"><i style="background:currentColor;border-radius:1px"></i>已取消</span></td>
+       <td class="mono" style="color:var(--ink2)">10-14 14:47</td>
+       <td class="r"><span style="display:inline-flex;gap:6px">
+         <span class="btn" style="height:28px;padding:0 10px">详情</span>
+         <span class="btn" style="height:28px;padding:0 10px;color:var(--err);border-color:#EFCFCB">取消</span>
+       </span></td></tr>
+     </tbody>
+   </table>
+   <div class="tot">第 1–8 条 / 共 9 条命中，全量 1,247 条
+     <span class="pager"><span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span><span class="pg">…</span><span class="pg">63</span><span class="pg">›</span></span></div>
+  </div>
+    </div>
+  </section></div>
+      </figure>
+      <figure class="shot" style="width:100%;flex:none">
+        <figcaption><span class="n">3</span>空态 <em>回显已选条件 + 两个下一步</em></figcaption>
+        <div class="admin">
+  <aside class="side">
+    <div class="sbrand"><span class="smark"><span>祁</span></span>
+      <div><div class="sbname">祁连山电竞</div><div class="sbsub">管理后台</div></div></div>
+    <nav class="snav"><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-grid"/></svg><span>工作台</span></div><div class="gp on"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-receipt"/></svg><span>订单与售后</span><span class="cv" style="display:flex;transform:rotate(90deg)"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gc on">订单管理</div><div class="gc">售后管理</div><div class="gc">退款审批</div><div class="gc">投诉工单</div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-people"/></svg><span>用户与身份</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-coins"/></svg><span>资金与抽成</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-clipboard"/></svg><span>商品与内容</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-headset"/></svg><span>客服与消息</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chart"/></svg><span>排行榜</span></div><div class="gp"><svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-settings"/></svg><span>系统管理</span><span class="cv" style="display:flex;transform:none"><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div></nav>
+  </aside>
+  <section class="main">
+    <div class="tbar"><span class="crumb">订单与售后 <span style="color:var(--ink3)">/</span> <b>订单管理</b></span>
+      <span class="tb-right">
+        <span class="tbtn"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-search"/></svg>搜索</span>
+        <span class="tbtn"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-person"/></svg>会长（全权限）</span>
+      </span></div>
+    <div class="tabs"><span class="tab">工作台</span><span class="tab on">订单管理 <span style="color:var(--ink2)">✕</span></span></div>
+    <div class="abody">
+      <div class="ph"><div class="ph-row"><div class="sp"><h1>订单管理</h1><p>没有任何订单命中这组条件。</p></div></div></div>
+      <div class="panel">
+   <div class="panel-h"><h3>订单列表</h3><span class="hint">共 1,247 单 · 命中筛选 0 单</span>
+     <span style="flex:1"></span><span class="tbtn"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-refresh"/></svg>刷新</span></div>
+   <table><thead><tr>
+     <th style="width:170px">订单号</th><th style="width:110px">用户</th><th>商品</th><th style="width:150px">分部</th>
+     <th class="r" style="width:110px">订单金额</th><th style="width:130px">状态</th><th style="width:150px">创建时间</th><th class="r" style="width:196px">操作</th>
+   </tr></thead></table>
+   <div class="empty">
+     <div style="position:absolute;inset:0;background-image:linear-gradient(to right,rgba(29,95,168,.045) 1px,transparent 1px),linear-gradient(to bottom,rgba(29,95,168,.045) 1px,transparent 1px);background-size:24px 24px"></div>
+     <div style="position:relative">
+       <div class="gi"><svg class="ic " width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-search"/></svg></div>
+       <div class="t">没有符合这组条件的订单</div>
+       <div class="s">已选条件：状态「待接单」+ 分部「三角洲行动 · 手游」+ 时间「近 7 天」。<br>放宽任一条，或清空条件看全部 1,247 单。</div>
+       <div style="margin-top:14px;display:flex;gap:8px;justify-content:center">
+         <span class="btn pri">清空条件</span><span class="btn">只看待接单</span></div>
+     </div>
+   </div>
+  </div>
+    </div>
+  </section></div>
+      </figure>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <figure class="shot" style="width:400px;flex:none"><figcaption><span class="n">4</span>筛选抽屉 <em>7 组条件，全部进服务端查询</em></figcaption><div class="dw">
+   <div class="dw-h"><h3>筛选订单</h3><span class="hint">所有条件都进服务端查询，不在前端过滤</span>
+     <span style="flex:1"></span><span class="icbtn" style="border:0;width:26px;height:26px"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-close"/></svg></span></div>
+   <div class="dw-b">
+     <div class="fg"><label>关键词</label>
+       <span class="inp on" style="min-width:0"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-search"/></svg><span class="mono" style="color:var(--ink)">ORDMUZQ8MHI8946</span></span>
+       <span style="font-size:11px;color:var(--ink2)">订单号前缀 / 用户昵称 / 中文 ID 均可；留空 = 不限</span></div>
+     <div class="fg"><label>订单状态</label>
+       <div style="display:flex;flex-wrap:wrap;gap:7px">
+         <span class="chip on">待接单</span><span class="chip">待确认派单</span><span class="chip">已接单</span><span class="chip">进行中</span><span class="chip">待用户确认</span><span class="chip">已完成</span><span class="chip">已取消</span><span class="chip">售后 / 申诉</span><span class="chip">异常</span>
+       </div></div>
+     <div class="f2">
+       <div class="fg"><label>游戏分部</label><span class="sel">三角洲行动 · 手游 <svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
+       <div class="fg"><label>下单平台</label><span class="sel"><span class="ph">全部平台</span><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
+     </div>
+     <div class="fg"><label>创建时间</label>
+       <span class="sel" style="min-width:0"><svg class="ic " width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-calendar"/></svg><span class="mono" style="color:var(--ink)">2026-10-01 00:00</span>
+         <span style="color:var(--ink3)">至</span><span class="mono" style="color:var(--ink)">2026-10-14 23:59</span></span>
+       <div style="display:flex;gap:7px;margin-top:2px"><span class="chip" style="height:26px">今天</span><span class="chip on" style="height:26px">近 7 天</span><span class="chip" style="height:26px">近 30 天</span><span class="chip" style="height:26px">本月</span></div></div>
+     <div class="f2">
+       <div class="fg"><label>金额区间（¥）</label>
+         <div style="display:flex;align-items:center;gap:8px">
+           <span class="inp" style="flex:1;min-width:0"><span class="mono" style="color:var(--ink)">10.00</span></span>
+           <span style="color:var(--ink3)">—</span>
+           <span class="inp" style="flex:1;min-width:0"><span class="ph">不限</span></span></div></div>
+       <div class="fg"><label>售后状态</label><span class="sel"><span class="ph">不限</span><svg class="ic " width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
+     </div>
+     <div class="fg" style="margin-bottom:0"><label>排序</label>
+       <div style="display:flex;gap:7px"><span class="chip on">创建时间 ↓</span><span class="chip">订单金额 ↓</span><span class="chip">状态</span></div></div>
+   </div>
+   <div class="dw-f"><span style="font-size:12px;color:var(--ink2)">已选 <b class="mono" style="color:var(--ink)">3</b> 个条件</span>
+     <span style="flex:1"></span>
+     <span class="btn">重置</span><span class="btn pri">应用筛选</span></div>
+  </div></figure>
+      <figure class="shot" style="width:400px;flex:none"><figcaption><span class="n">5</span>取消订单确认 <em>不可逆资金动作：影响面逐项列出</em></figcaption><div class="dw">
+   <div class="dw-h" style="border-bottom:0"><h3>取消订单（全额退款）</h3>
+     <span style="flex:1"></span><span class="icbtn" style="border:0;width:26px;height:26px"><svg class="ic " width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-close"/></svg></span></div>
+   <div class="dw-b" style="padding-top:0">
+     <div style="padding:12px 14px;background:var(--amber-soft);border:1px solid #E7C9A6;border-radius:var(--r-md)">
+       <div style="display:flex;gap:9px;align-items:flex-start">
+         <svg class="ic " width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-warn"/></svg>
+         <div style="flex:1;min-width:0">
+           <div style="font-size:13px;font-weight:700;color:var(--warn)">此操作不可撤销</div>
+           <div style="margin-top:4px;font-size:12px;line-height:1.55;color:var(--ink)">订单 <b class="mono">ORDMUZQ8MHI8946</b>（<b class="mono money">¥75.60</b>）将被取消，<b>款项全额退回老板余额</b>；已结算的订单会同时冲正打手收益 ¥56.70 与平台抽成 ¥18.90。</div>
+         </div></div></div>
+     <div class="fg" style="margin-top:16px"><label>取消原因（写入操作日志与订单状态流转日志）</label>
+       <span class="inp on" style="min-width:0;height:34px"><span style="color:var(--ink)">老板申请取消，已电话确认</span></span>
+       <span style="font-size:11px;color:var(--ink2)">例：老板申请取消 / 打手无法履约 / 重复下单</span></div>
+     <div style="margin-top:4px;border:1px solid var(--hair);border-radius:var(--r-md);overflow:hidden">
+       <table><thead><tr><th>影响面</th><th class="r">金额</th><th>去向</th></tr></thead><tbody>
+         <tr><td>老板余额</td><td class="r money mono">+¥75.60</td><td style="color:var(--ink2)">order_refund</td></tr>
+         <tr><td>打手收益（已结算）</td><td class="r mono">-¥56.70</td><td style="color:var(--ink2)">settlement_reversal</td></tr>
+         <tr><td>平台抽成</td><td class="r mono">-¥18.90</td><td style="color:var(--ink2)">platform_commission_reversal</td></tr>
+       </tbody></table></div>
+     <div style="margin-top:12px;font-size:11px;line-height:1.55;color:var(--ink2)">退款时战绩与钱包同步回退：worker_stats 退回 −1 单 / −1 完成 / −原结算额，榜单重算会排除已冲正结算 —— 只退钱不退战绩 = 打手战绩与名次永久虚高。</div>
+   </div>
+   <div class="dw-f"><span style="font-size:12px;color:var(--ink2)">动作会写 operation_log</span>
+     <span style="flex:1"></span><span class="btn">再想想</span>
+     <span class="btn" style="background:var(--err);border-color:var(--err);color:#fff">确认取消并退款</span></div>
+  </div></figure>
+    </div>
+  </div>
+  <div class="sec" style="width:1440px"><h3>本屏设计口径</h3><span class="hint">专业 · 高密度 · 好扫读（不是把 App 那套搬过来）</span></div>
+  <div style="width:1440px"><div class="specs"><div class="spec"><dl><dt>表格密度</dt><dd>行高 44、表头 38、字号 13/12，1600 内一屏 10 行；列宽固定，操作列贴右不折行</dd></dl></div><div class="spec"><dl><dt>状态标签</dt><dd>9 个状态统一「6px 圆角 + 11/700 + 5px 圆点」，<b>形状也参与区分</b>：圆点=待处理/成功，方点=已受理，竖条=异常</dd></dl></div><div class="spec"><dl><dt>金额</dt><dd>订单金额一律琥珀金 #B4732A 且等宽数字；同一行不出现第二个金色</dd></dl></div><div class="spec"><dl><dt>危险动作</dt><dd>「取消（全额退款）」与「详情」不相邻语义、带二次确认 + 影响面三行表，红字描边而不是红色实心（避免误点）</dd></dl></div><div class="spec"><dl><dt>筛选</dt><dd>抽屉式：关键词 / 状态 / 分部 / 平台 / 时间 / 金额区间 / 排序；所有条件进服务端查询</dd></dl></div><div class="spec"><dl><dt>空态</dt><dd>给「已选条件」回显 + 两个下一步（清空条件 / 只看待接单），不是一句"暂无数据"</dd></dl></div><div class="spec"><dl><dt>品牌克制</dt><dd>侧栏与页签承担品牌表达；正文区只有灰阶 + 琥珀金 + 状态色，主色只出现在选中态与主按钮</dd></dl></div></div></div>
+</div></body></html>

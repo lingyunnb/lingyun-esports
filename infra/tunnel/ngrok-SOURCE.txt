@@ -1,0 +1,55 @@
+ngrok agent binary - PROVENANCE RECORD (FISH tunnel)
+====================================================
+
+WHY NGROK (decision 2026-10-04)
+  The owner has NO domain and needs a FIXED public address at zero cost.
+  Cloudflare Quick Tunnel gives a RANDOM trycloudflare.com subdomain on every
+  restart. SakuraFrp was abandoned: its TCP nodes intercept plaintext HTTP, and
+  TLS there needs a domain or a self-signed cert plus a patched client.
+  The ngrok FREE plan includes ONE permanent static domain (xxxx.ngrok-free.app)
+  with HTTPS and WebSocket support, so no domain purchase is required.
+
+WHAT WAS DOWNLOADED
+  file    : ngrok-v3-stable-windows-amd64.zip
+  source  : https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip
+            (official ngrok CDN; this is the stable "windows-amd64" link from
+             https://ngrok.com/download)
+  fetched : 2026-10-04
+  agent   : ngrok version 3.39.11
+
+INTEGRITY
+  zip  SHA256 : 699BBF1932EC43A573B764BD03E6568EFA2C4E45955EB3CC2089C19BB4BE4464
+  zip  bytes  : 12257844
+  exe  SHA256 : D339BCBD0713233337E860163F5249EEA679CF26750A5700510DBC241D201748
+  exe  bytes  : 33274696
+
+  Authenticode signature of ngrok.exe (Get-AuthenticodeSignature):
+    Status  : Valid
+    Signer  : CN="ngrok, Inc.", O="ngrok, Inc.", L=San Francisco, S=California, C=US
+    Issuer  : CN=DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1
+    Expires : 2029-01-25
+
+  NOTE: ngrok does not publish per-file SHA256 sums for this zip, so the two
+  hashes above are a PIN of the bytes we actually fetched and verified, not an
+  independently published value. The authoritative provenance proofs are
+  (a) HTTPS transport from bin.equinox.io, and (b) the Valid DigiCert
+  Authenticode signature by "ngrok, Inc.". If you re-download and the hash
+  differs, re-check the signature before use.
+
+FLAG COMPATIBILITY (probed on this build, 2026-10-04)
+  `ngrok http <port> --domain=<host>`  still works but logs:
+      "Flag --domain has been deprecated, use --url instead"
+  Our scripts therefore use the forward-compatible form:
+      ngrok http 3100 --url https://<domain> --log=stdout
+  Both forms were confirmed to be accepted; only authentication is required to
+  actually open a session (ERR_NGROK_4018 until an authtoken is registered).
+
+LOCAL SIDE EFFECTS (expected, documented so nothing is a surprise)
+  - %LOCALAPPDATA%\ngrok\ngrok.yml   authtoken store written by `config add-authtoken`
+  - the ngrok agent also binds 127.0.0.1:4040 for its local web inspector;
+    port 4040 was verified free on this machine before adoption.
+
+SECRETS - never commit
+  ngrok-token.txt   authtoken  (ignored by infra/tunnel/.gitignore)
+  ngrok-domain.txt  static domain (ignored; not secret, but kept per-machine)
+  ngrok/            binary + zip  (ignored)

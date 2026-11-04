@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>U2 · 工作台快捷导航漏「提现审核」· 设计图</title>
+<!--
+  U2 设计图 —— 自包含 HTML：纯 CSS + 内联 SVG，无外部依赖、无第三方截图。
+  现状口径取自 admin-web/src/views/DashboardView.vue 的 NAV_CANDIDATES（16 个候选）与 .nav-grid；
+  权限点取自 server/src/modules/rbac/permissions.const.ts（withdraw:review / withdraw:pay）与 LayoutView.vue:241。
+  本图只是设计示意，**未改动任何产品代码**。
+-->
+<style>
+:root{
+  --brand:#2563EB;--brand-soft:rgba(37,99,235,.10);--cyan:#06B6D4;--gold:#B45309;
+  --bg:#F5F7FB;--surface:#FFFFFF;--sunken:#F1F5F9;
+  --ink:#1F2937;--ink2:#5B6B82;--ink3:#5E7085;
+  --hair:#E5E9F2;--hair2:#DCE3EE;
+  --ok:#15803D;--warn:#C2410C;--err:#DC2626;
+  --r-sm:6px;--r-ctl:8px;--r-card:10px;--r-panel:14px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:30px 26px 64px}
+.kicker{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--r-sm);
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink2);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin:12px 0 8px}
+.lead{font-size:13.5px;color:var(--ink2);max-width:960px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:var(--ink3)}
+.meta b{color:var(--ink);font-weight:700}
+h2{font-size:16.5px;font-weight:800;letter-spacing:-.2px;padding-bottom:8px;border-bottom:1px solid var(--hair);margin:30px 0 14px}
+h3{font-size:13.5px;font-weight:800;margin:0 0 8px}
+p{font-size:13px;color:var(--ink2)}
+code{background:#EEF2F8;border-radius:3px;padding:1px 4px;font-size:11.5px;color:#1E293B;font-family:var(--mono)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:960px){.cmp{grid-template-columns:1fr}}
+/* 宫格示意图要看清"每行几个"，所以这两节走整宽上下排（左右分栏会把格子压到 ~200px） */
+.stack{display:flex;flex-direction:column;gap:16px}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:16px 17px 18px;display:flex;flex-direction:column;gap:12px}
+.panel-head{display:flex;align-items:center;gap:9px}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--r-sm);font-size:11px;font-weight:800;letter-spacing:.02em}
+.chip-before{background:var(--sunken);border:1px solid var(--hair);color:var(--ink2)}
+.chip-after{background:var(--brand-soft);border:1px solid rgba(37,99,235,.22);color:var(--brand)}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink)}
+.panel-sub{font-size:11.5px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+/* ── 工作台宫格 ────────────────────────────────────────── */
+.grid{display:grid;gap:10px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tile{display:flex;align-items:center;gap:9px;padding:11px 11px;border:1px solid var(--hair);
+  border-radius:var(--r-card);background:var(--surface);min-width:0}
+.tile-ico{width:30px;height:30px;flex:none;display:inline-flex;align-items:center;justify-content:center;border-radius:8px}
+.tile-txt{display:flex;flex-direction:column;min-width:0;gap:1px}
+.tile-title{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile-desc{font-size:10.5px;line-height:1.35;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile.new{border-color:rgba(37,99,235,.40);background:rgba(37,99,235,.035)}
+.tile.bad{border-style:dashed;border-color:rgba(220,38,38,.42);background:rgba(220,38,38,.035)}
+.ghost{display:flex;align-items:center;justify-content:center;padding:11px;border:1px dashed var(--hair2);
+  border-radius:var(--r-card);color:var(--ink3);font-size:11px;background:rgba(241,245,249,.5)}
+/* ── 代码块 ────────────────────────────────────────────── */
+.code{background:#0B1220;border:1px solid #1E2C42;border-radius:var(--r-card);padding:11px 12px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:#CFE0FF;overflow-x:auto;white-space:pre}
+.code .c{color:#7E93B4}
+.code .k{color:#8CA3BE}
+.code .del{color:#FFB4B4;text-decoration:line-through;text-decoration-color:rgba(255,120,120,.55)}
+.code .add{color:#A9E7C0}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+.tbl th{font-size:11.5px;font-weight:800;color:var(--ink3);background:var(--sunken)}
+.tbl td{color:var(--ink2)}
+.tbl td b{color:var(--ink)}
+.note{display:flex;gap:9px;border:1px solid var(--hair);border-left:3px solid var(--brand);
+  border-radius:var(--r-ctl);padding:10px 12px;background:var(--surface);font-size:12.5px;color:var(--ink2)}
+.note.warn{border-left-color:var(--warn)}
+.note b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11.5px;color:var(--ink3)}
+.legend b{color:var(--ink)}
+.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--ink3);line-height:1.8}
+.foot b{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="kicker">U2 · 功能可达性 · 建议优先级 P1</span>
+  <h1>工作台快捷导航漏了「提现审核」</h1>
+  <p class="lead">
+    提现功能已上线（打手发起 → 管理员核对收款信息 → 线下人工打款/驳回退余额），侧栏「资金与抽成」组里
+    也有「提现审核」，但工作台<b>快捷导航宫格</b>的候选表里根本没有它 —— 宫格按权限取<b>前 6 个</b>，
+    于是这个入口在首屏不存在。<b>本图只出方案，不改代码。</b>
+  </p>
+  <div class="meta">
+    <span>文件：<b>admin-web/src/views/DashboardView.vue</b></span>
+    <span>候选表：<b>NAV_CANDIDATES（16 个）</b></span>
+    <span>取数：<b>.slice(0, 6)</b></span>
+    <span>侧栏对照：<b>LayoutView.vue:241</b></span>
+  </div>
+
+  <h2>现状 6 格 &nbsp;vs&nbsp; 建议 7 格</h2>
+  <div class="stack">
+
+    <!-- ======================= 现状 6 格 ======================= -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">现状 · 上</span>
+        <span class="panel-title">六宫格（3 列 × 2 行）</span>
+        <span class="panel-sub">slice(0, 6)</span>
+      </div>
+      <div class="grid g3">
+        <div class="tile"><span class="tile-ico" style="color:#2563EB;background:rgba(37,99,235,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6H18a2 2 0 0 1 2 2v1M3 8.5V17a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-2M3 8.5h14M21 12h-3.5a2 2 0 0 0 0 4H21z"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">余额管理</span><span class="tile-desc">发放 / 回收余额，逐笔流水可回溯</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#06B6D4;background:rgba(6,182,212,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17a2 2 0 0 1 2 2v1M4 7.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5M4 7.5h13M21 11.5h-4.5a2.25 2.25 0 0 0 0 4.5H21z"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">充值管理</span><span class="tile-desc">线下扫码申请的人工核对与发放</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#7C3AED;background:rgba(124,58,237,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h8.5L19 7v13.5H7zM15 3.5V7h3.5M10 11h6M10 14.5h6M10 18h4"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">订单管理</span><span class="tile-desc">全量订单检索、派单与强制完成</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#D97706;background:rgba(217,119,6,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5 12 4l8 4.5v7L12 20l-8-4.5zM4 8.5 12 13l8-4.5M12 13v7"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">游戏与商品</span><span class="tile-desc">游戏 / 分部 / 分类 / 商品的上下架</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#0891B2;background:rgba(8,145,178,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM2.5 20a6.5 6.5 0 0 1 13 0M16.5 5.2a3.5 3.5 0 0 1 0 6.6M18 20a6.6 6.6 0 0 0-1.2-3.8"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">用户管理</span><span class="tile-desc">老板账号检索、封禁与解封</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#16A34A;background:rgba(22,163,74,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.07A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.07A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.33-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6h.08A1.7 1.7 0 0 0 10 3.05V3a2 2 0 1 1 4 0v.07a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.08a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.07a1.7 1.7 0 0 0-1.53 1Z"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">系统设置</span><span class="tile-desc">平台抽成比例等全局参数</span></span></div>
+      </div>
+      <div class="legend">
+        <span>网格：<b>repeat(3, minmax(0,1fr))</b></span>
+        <span>≤1100px → <b>2 列</b></span>
+        <span>提现审核：<b>不在候选表里</b></span>
+      </div>
+      <div class="code"><span class="c">// DashboardView.vue:70-88（16 个候选，按顺序取前 6）</span>
+<span class="k">const</span> NAV_CANDIDATES = [
+  { key: <span class="del">'wallets'</span>,  title: '余额管理', perm: 'admin:wallet:read',  accent: '#2563EB' },
+  { key: <span class="del">'recharge'</span>, title: '充值管理', perm: 'admin:setting:read', accent: '#06B6D4' },
+  <span class="c">// …… 后面还有 14 个备用位</span>
+  <span class="c">// ⚠️ 全表 16 项里**没有** withdraw —— 提现审核不在任何位置</span>
+];
+<span class="c">// :91  取前 6 → 宫格永远是 6 格</span>
+NAV_CANDIDATES.filter(n =&gt; auth.hasPermission(n.perm)).slice(0, 6)</div>
+      <div class="note warn">
+        <span>⚠</span>
+        <span><b>后果</b>：超管在侧栏能看到「提现审核」，但工作台首屏没有它 —— 一个<b>已经上线、且管着真金白银出账</b>的入口，
+        只能靠"记得去侧栏找"。而首屏宫格恰恰是"今天该办什么"的入口。</span>
+      </div>
+    </div>
+
+    <!-- ======================= 建议 7 格 ======================= -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-after">建议 · 下</span>
+        <span class="panel-title">七格（4 + 3 两行）</span>
+        <span class="panel-sub">slice(0, 7)</span>
+      </div>
+      <div class="grid g4">
+        <div class="tile"><span class="tile-ico" style="color:#2563EB;background:rgba(37,99,235,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6H18a2 2 0 0 1 2 2v1M3 8.5V17a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-2M3 8.5h14M21 12h-3.5a2 2 0 0 0 0 4H21z"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">余额管理</span><span class="tile-desc">发放 / 回收余额</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#06B6D4;background:rgba(6,182,212,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17a2 2 0 0 1 2 2v1M4 7.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1.5M4 7.5h13M21 11.5h-4.5a2.25 2.25 0 0 0 0 4.5H21z"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">充值管理</span><span class="tile-desc">人工核对与发放</span></span></div>
+        <div class="tile new"><span class="tile-ico" style="color:#0E7490;background:rgba(14,116,144,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5h17v9h-17zM12 15.5V9.5M9.5 12 12 9.5l2.5 2.5"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">提现审核</span><span class="tile-desc">核对收款信息、线下打款</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#7C3AED;background:rgba(124,58,237,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h8.5L19 7v13.5H7zM15 3.5V7h3.5M10 11h6M10 14.5h6M10 18h4"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">订单管理</span><span class="tile-desc">检索、派单与强制完成</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#D97706;background:rgba(217,119,6,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5 12 4l8 4.5v7L12 20l-8-4.5zM4 8.5 12 13l8-4.5M12 13v7"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">游戏与商品</span><span class="tile-desc">上下架与分部归属</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#0891B2;background:rgba(8,145,178,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM2.5 20a6.5 6.5 0 0 1 13 0M16.5 5.2a3.5 3.5 0 0 1 0 6.6M18 20a6.6 6.6 0 0 0-1.2-3.8"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">用户管理</span><span class="tile-desc">检索、封禁与解封</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#16A34A;background:rgba(22,163,74,.12)">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.07A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.07A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.33-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6h.08A1.7 1.7 0 0 0 10 3.05V3a2 2 0 1 1 4 0v.07a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.08a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.07a1.7 1.7 0 0 0-1.53 1Z"/></svg></span>
+          <span class="tile-txt"><span class="tile-title">系统设置</span><span class="tile-desc">抽成比例等全局参数</span></span></div>
+      </div>
+      <div class="legend">
+        <span>网格：<b>repeat(4, minmax(0,1fr))</b></span>
+        <span>第一行 4 格 / 第二行 3 格，<b>不留空位、不拉伸</b></span>
+        <span>提现审核插在<b>充值管理之后</b></span>
+      </div>
+      <div class="code"><span class="c">// ① 候选表新增一项（插在充值管理之后：同一条资金链路的两端）</span>
+{ key: <span class="add">'withdraw'</span>, title: <span class="add">'提现审核'</span>,
+  desc: <span class="add">'打手提现的收款核对与线下打款'</span>,
+  anyPerm: <span class="add">['withdraw:review', 'withdraw:pay']</span>, accent: <span class="add">'#0E7490'</span> },
+
+<span class="c">// ② 取数上限 6 → 7</span>
+NAV_CANDIDATES.filter(...).slice(0, <span class="del">6</span><span class="add">7</span>)
+
+<span class="c">// ③ 宫格列数：3 → 4（7 格 = 4 + 3，两行放满不落单）</span>
+.nav-grid { grid-template-columns: repeat(<span class="del">3</span><span class="add">4</span>, minmax(0, 1fr)); }</div>
+      <div class="note">
+        <span>✓</span>
+        <span><b>权限点为什么用 anyPerm</b>：与侧栏 <code>LayoutView.vue:241</code> 同一口径 ——
+        「<b>两个都没有才隐藏</b>」。只持有 <code>withdraw:pay</code>（能打款不能看列表）的账号也该看到入口。
+        宫格要复用同一句判定，不再写第二套权限逻辑。</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>格数变化对布局的影响（2×3 → 4+3 怎么不破版）</h2>
+  <div class="cmp">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">反例</span>
+        <span class="panel-title">三种会「破版」的改法（都不要）</span>
+      </div>
+      <div class="grid g3" style="margin-bottom:4px">
+        <div class="tile"><span class="tile-ico" style="color:#2563EB;background:rgba(37,99,235,.12)"></span><span class="tile-txt"><span class="tile-title">余额管理</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#06B6D4;background:rgba(6,182,212,.12)"></span><span class="tile-txt"><span class="tile-title">充值管理</span></span></div>
+        <div class="tile new"><span class="tile-ico" style="color:#0E7490;background:rgba(14,116,144,.12)"></span><span class="tile-txt"><span class="tile-title">提现审核</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#7C3AED;background:rgba(124,58,237,.12)"></span><span class="tile-txt"><span class="tile-title">订单管理</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#D97706;background:rgba(217,119,6,.12)"></span><span class="tile-txt"><span class="tile-title">游戏与商品</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#0891B2;background:rgba(8,145,178,.12)"></span><span class="tile-txt"><span class="tile-title">用户管理</span></span></div>
+        <div class="tile bad" style="grid-column:1 / -1"><span class="tile-ico" style="color:#16A34A;background:rgba(22,163,74,.12)"></span><span class="tile-txt"><span class="tile-title">系统设置</span><span class="tile-desc">✗ 破版 A：第 7 格被拉通栏（grid-column: 1 / -1）→ 宽度与上面 6 格不一致，像"另一类东西"</span></span></div>
+      </div>
+      <div class="grid g3" style="margin-bottom:4px">
+        <div class="ghost" style="grid-column:1 / -1">✗ 破版 B：为凑满 8 格硬塞一个占位/凑数入口 → 首屏出现"没有理由的格子"</div>
+      </div>
+      <div class="grid g4" style="margin-bottom:4px">
+        <div class="tile"><span class="tile-ico" style="color:#2563EB;background:rgba(37,99,235,.12)"></span><span class="tile-txt"><span class="tile-title">余额管理</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#06B6D4;background:rgba(6,182,212,.12)"></span><span class="tile-txt"><span class="tile-title">充值管理</span></span></div>
+        <div class="tile new"><span class="tile-ico" style="color:#0E7490;background:rgba(14,116,144,.12)"></span><span class="tile-txt"><span class="tile-title">提现审核</span></span></div>
+        <div class="tile"><span class="tile-ico" style="color:#7C3AED;background:rgba(124,58,237,.12)"></span><span class="tile-txt"><span class="tile-title">订单管理</span></span></div>
+      </div>
+      <div class="note warn" style="margin-top:6px">
+        <span>⚠</span>
+        <span>破版 C（最隐蔽）：<b>降到窄屏仍用 4 列</b> —— 每格约 200px 时，<code>desc</code> 的
+        <code>nowrap + ellipsis</code> 会把说明截成"发放 / 回收…"，等于白写。所以列数必须跟着断点降。</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-after">建议</span>
+        <span class="panel-title">断点降列（列数随宽度走）</span>
+      </div>
+      <div class="grid g4" style="margin-bottom:2px">
+        <div class="tile new" style="padding:9px"><span class="tile-ico" style="width:26px;height:26px;color:#0E7490;background:rgba(14,116,144,.12)"></span><span class="tile-txt"><span class="tile-title" style="font-size:11.5px">提现审核</span></span></div>
+        <div class="tile" style="padding:9px"><span class="tile-ico" style="width:26px;height:26px;color:#2563EB;background:rgba(37,99,235,.12)"></span><span class="tile-txt"><span class="tile-title" style="font-size:11.5px">余额管理</span></span></div>
+        <div class="tile" style="padding:9px"><span class="tile-ico" style="width:26px;height:26px;color:#06B6D4;background:rgba(6,182,212,.12)"></span><span class="tile-txt"><span class="tile-title" style="font-size:11.5px">充值管理</span></span></div>
+        <div class="tile" style="padding:9px"><span class="tile-ico" style="width:26px;height:26px;color:#7C3AED;background:rgba(124,58,237,.12)"></span><span class="tile-txt"><span class="tile-title" style="font-size:11.5px">订单管理</span></span></div>
+      </div>
+      <div class="legend" style="margin-bottom:8px"><span>≥1240px → <b>4 列</b>（4+3）· 每格 ≈ 300px，说明行放得下</span></div>
+      <div class="grid g3" style="margin-bottom:2px">
+        <div class="tile new" style="padding:9px"><span class="tile-ico" style="width:26px;height:26px;color:#0E7490;background:rgba(14,116,144,.12)"></span><span class="tile-txt"><span class="tile-title" style="font-size:11.5px">提现审核</span></span></div>
+        <div class="tile" style="padding:9px"><span class="tile-ico" style="width:26px;height:26px;color:#2563EB;background:rgba(37,99,235,.12)"></span><span class="tile-txt"><span class="tile-title" style="font-size:11.5px">余额管理</span></span></div>
+        <div class="tile" style="padding:9px"><span class="tile-ico" style="width:26px;height:26px;color:#06B6D4;background:rgba(6,182,212,.12)"></span><span class="tile-txt"><span class="tile-title" style="font-size:11.5px">充值管理</span></span></div>
+      </div>
+      <div class="legend" style="margin-bottom:8px"><span>960–1240px → <b>3 列</b>（3+3+1，末行 1 格<b>保持同宽</b>，不拉伸）</span></div>
+      <div class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:2px">
+        <div class="tile new" style="padding:9px"><span class="tile-ico" style="width:26px;height:26px;color:#0E7490;background:rgba(14,116,144,.12)"></span><span class="tile-txt"><span class="tile-title" style="font-size:11.5px">提现审核</span></span></div>
+        <div class="tile" style="padding:9px"><span class="tile-ico" style="width:26px;height:26px;color:#2563EB;background:rgba(37,99,235,.12)"></span><span class="tile-txt"><span class="tile-title" style="font-size:11.5px">余额管理</span></span></div>
+      </div>
+      <div class="legend"><span>&lt;960px → <b>2 列</b>（既有断点，保持不动）</span></div>
+      <div class="code" style="margin-top:4px">.nav-grid { grid-template-columns: repeat(<span class="add">4</span>, minmax(0,1fr)); }
+@media (max-width: <span class="add">1240px</span>) { .nav-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@media (max-width: 1100px) { .nav-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+<span class="c">/* 断点只改"每行几个"，格子永远等宽 —— 末行不满就空着，不拉伸、不居中 */</span></div>
+      <div class="note">
+        <span>✓</span>
+        <span><b>一句话口径</b>：<b>格数变化只影响"每行几个"，不影响"格子多大"</b>。只要列宽是
+        <code>minmax(0,1fr)</code> 的等分列，7 格与 6 格的格子宽度在同断点下完全一致 —— 这就是"不破版"的全部秘密。</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>新增项的三个字段</h2>
+  <table class="tbl">
+    <tr><th style="width:104px">字段</th><th style="width:230px">取值</th><th>理由</th></tr>
+    <tr><td><b>图标</b></td><td>新增线性图标 <code>withdraw</code>（24 视框 / 1.8 描边，与其余 16 个同体系）<br>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E7490" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-5px"><path d="M3.5 7.5h17v9h-17zM12 15.5V9.5M9.5 12 12 9.5l2.5 2.5"/></svg>
+      <code>M3.5 7.5h17v9h-17zM12 15.5V9.5M9.5 12 12 9.5l2.5 2.5</code></td>
+      <td>纸币轮廓 + 向上箭头 = <b>出账</b>，与「充值管理」的入账语义互为镜像；同描边、同视框、无实心块、<b>不用 emoji</b>（docs/21 三条底线之一）。</td></tr>
+    <tr><td><b>文案</b></td><td>标题 <b>提现审核</b><br>说明 <b>打手提现的收款核对与线下打款</b></td>
+      <td>说明写清"去哪做什么"（docs/14 §5 口径），且是<b>具体可验证</b>的动作：核对收款信息 → 线下打款。不用"管理提现申请"这类空话（docs/21 第三节）。</td></tr>
+    <tr><td><b>权限点</b></td><td><code>anyPerm: ['withdraw:review', 'withdraw:pay']</code></td>
+      <td>与侧栏 <code>LayoutView.vue:241</code> <b>逐字同源</b>（两个都没有才隐藏）。注意宫格候选项当前只支持单个 <code>perm</code> → 需要给候选类型加上 <code>anyPerm?</code> 字段（与侧栏的 <code>NavChild</code> 同形），<b>判定仍复用同一句 <code>auth.hasPermission</code></b>，不新造权限逻辑。</td></tr>
+  </table>
+
+  <h2>逐项口径</h2>
+  <table class="tbl">
+    <tr><th style="width:132px">项</th><th>内容</th></tr>
+    <tr><td><b>现状</b></td><td><code>DashboardView.vue</code> 的 <code>NAV_CANDIDATES</code>（16 项）里<b>没有</b>提现审核；宫格 <code>.slice(0, 6)</code> 取前 6 → 首屏永远 6 格。侧栏却已有该入口（<code>withdraw:review</code> / <code>withdraw:pay</code> 任一可见）。</td></tr>
+    <tr><td><b>建议</b></td><td>改 <code>admin-web/src/views/DashboardView.vue</code>：① <code>NAV_CANDIDATES</code> 在「充值管理」后新增 <code>{ key:'withdraw', title:'提现审核', desc:'打手提现的收款核对与线下打款', anyPerm:['withdraw:review','withdraw:pay'], accent:'#0E7490' }</code>；② 新增 <code>withdraw</code> 图标路径到 <code>ICONS</code>；③ 候选类型加 <code>anyPerm?</code> 并按"任一命中"过滤；④ <code>slice(0, 6)</code> → <code>slice(0, 7)</code>；⑤ <code>.nav-grid</code> 改 4 列 + 新增 <code>1240px</code> 断点降 3 列。</td></tr>
+    <tr><td><b>影响面</b></td><td><b>不需要动服务端。</b>不动路由、不动侧栏、不动权限点定义、不动任何接口。只动一个页面的候选表、图标表、取数上限与一段 CSS。<br>
+      <b>一处需确认的副作用</b>：宫格取"前 N 个"是按候选表<b>顺序</b>决定的 —— 加上第 7 项后，权限齐全的超管看到的仍是这 7 项（顺序 = 候选表顺序），但<b>权限较窄的账号</b>其宫格内容可能因位次变化而改变（原本第 7 位候补的「工作端管理」会被挤到第 8 位）。这是"取前 N"机制的固有结果，需负责人确认取舍。</td></tr>
+    <tr><td><b>红线</b></td><td><code>docs/14</code>：<b>否</b>。§5 写的是"按权限点过滤后取<b>前 6</b> 个入口" —— 本项把 6 改成 7，属<b>对该条定案的有意修订</b>，需负责人点头；改完应同步回写 docs/14 §5 的"前 6"为"前 7"。<br>
+      <code>docs/21</code>：<b>否</b>。仍为实色线性图标卡（无渐变主视觉、无 emoji、无装饰插画）；新增的 <code>#0E7490</code> 是<b>同色系更深一档</b>，与「充值管理」的 <code>#06B6D4</code> 区分开，不是"每条信息配彩标"。</td></tr>
+    <tr><td><b>工时</b></td><td><b>半天</b>（含 3 个断点的真浏览器核对 + 出图）。</td></tr>
+    <tr><td><b>设计图</b></td><td><code>site/design/audit-2026-10-12/U2.html</code>（本页）· 截图 <code>U2.png</code></td></tr>
+  </table>
+
+  <div class="foot">
+    <b>本图为设计示意</b>：全部图形为纯 CSS 与内联 SVG 绘制，不是产品截图，也未使用任何第三方素材。<br>
+    <b>本方案未实施任何代码改动</b> —— 等负责人审批后才做。制图日期 2026-10-12。
+  </div>
+</div>
+</body>
+</html>

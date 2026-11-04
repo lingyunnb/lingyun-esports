@@ -1,0 +1,11 @@
+cloudflared.exe
+tunnel.log
+
+# SakuraFrp frpc binary (downloaded, not committed) + its access token (SECRET)
+frpc/
+frpc-token.txt
+
+# ngrok agent binary (downloaded, not committed) + SECRETS (authtoken / static domain)
+ngrok/
+ngrok-token.txt
+ngrok-domain.txt

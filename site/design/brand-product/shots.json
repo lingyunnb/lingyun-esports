@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-10-13T17:48:35.399Z",
+  "viewportWidth": 1740,
+  "deviceScaleFactor": 2,
+  "manifest": [
+    {
+      "file": "list.png",
+      "sheet": "list",
+      "bytes": 1284516,
+      "cssWidth": 1740,
+      "cssHeight": 2830,
+      "scale": 2,
+      "pixelWidth": 3480
+    },
+    {
+      "file": "detail.png",
+      "sheet": "detail",
+      "bytes": 1268286,
+      "cssWidth": 1740,
+      "cssHeight": 2716,
+      "scale": 2,
+      "pixelWidth": 3480
+    }
+  ]
+}

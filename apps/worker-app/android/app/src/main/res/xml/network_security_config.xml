@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 网络安全配置（docs/11）：
+     开发阶段允许明文 HTTP（真机经局域网 IP / adb reverse 访问后端）；
+     生产部署走 Cloudflare Tunnel HTTPS，明文仅用于开发调试，不影响生产安全。 -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

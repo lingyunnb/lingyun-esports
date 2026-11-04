@@ -1,0 +1,34 @@
+name: worker_app
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  fish_core:
+    path: ../packages/core
+  video_player: ^2.14.0
+  image_picker: ^1.2.1
+  flutter_miuix: ^1.2.0
+  # 聊天 UI（与老板端统一，flyerhq/flutter_chat_ui）
+  flutter_chat_ui: ^2.4.0
+  flutter_chat_core: ^2.9.1
+  shimmer: ^4.0.0
+  image_cropper: ^12.2.1
+  emoji_picker_flutter: ^4.5.4
+  photo_view: ^0.15.0
+  fl_chart: ^1.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  # 仅测试使用：注入假 Dio 适配器渲染真实页面
+  dio: ^5.7.0
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

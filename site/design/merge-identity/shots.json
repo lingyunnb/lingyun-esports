@@ -1,0 +1,461 @@
+{
+  "generatedAt": "2026-10-06T05:02:20.922Z",
+  "manifest": [
+    {
+      "file": "p-a1.png",
+      "screen": "a1-boss-mine.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 39944,
+      "title": "A1 老板态 · 我的（含「切换身份」入口）"
+    },
+    {
+      "file": "p-a2.png",
+      "screen": "a2-switch-sheet.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 38060,
+      "title": "A2 切换身份 · 底部弹层"
+    },
+    {
+      "file": "p-a2-error.png",
+      "screen": "a2-switch-sheet.html",
+      "state": "error",
+      "kind": "boss",
+      "bytes": 38144,
+      "title": "A2 切换身份 · 底部弹层"
+    },
+    {
+      "file": "p-a2-role.png",
+      "screen": "a2-switch-sheet.html",
+      "state": "role",
+      "kind": "boss",
+      "bytes": 42074,
+      "title": "A2 切换身份 · 底部弹层"
+    },
+    {
+      "file": "p-a2-banned.png",
+      "screen": "a2-switch-sheet.html",
+      "state": "banned",
+      "kind": "boss",
+      "bytes": 40009,
+      "title": "A2 切换身份 · 底部弹层"
+    },
+    {
+      "file": "p-a2-conflict.png",
+      "screen": "a2-switch-sheet.html",
+      "state": "conflict",
+      "kind": "boss",
+      "bytes": 48147,
+      "title": "A2 切换身份 · 底部弹层"
+    },
+    {
+      "file": "p-a2-noperm.png",
+      "screen": "a2-switch-sheet.html",
+      "state": "noperm",
+      "kind": "boss",
+      "bytes": 43457,
+      "title": "A2 切换身份 · 底部弹层"
+    },
+    {
+      "file": "p-a2-bound.png",
+      "screen": "a2-switch-sheet.html",
+      "state": "bound",
+      "kind": "boss",
+      "bytes": 44723,
+      "title": "A2 切换身份 · 底部弹层"
+    },
+    {
+      "file": "p-a3.png",
+      "screen": "a3-worker-hall.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 51496,
+      "title": "A3 打手态 · 接单大厅"
+    },
+    {
+      "file": "p-a3-empty.png",
+      "screen": "a3-worker-hall.html",
+      "state": "empty",
+      "kind": "worker",
+      "bytes": 24856,
+      "title": "A3 打手态 · 接单大厅"
+    },
+    {
+      "file": "p-a3-noperm.png",
+      "screen": "a3-worker-hall.html",
+      "state": "noperm",
+      "kind": "worker",
+      "bytes": 24930,
+      "title": "A3 打手态 · 接单大厅"
+    },
+    {
+      "file": "p-a3-kicked.png",
+      "screen": "a3-worker-hall.html",
+      "state": "kicked",
+      "kind": "worker",
+      "bytes": 36407,
+      "title": "A3 打手态 · 接单大厅"
+    },
+    {
+      "file": "p-a4.png",
+      "screen": "a4-worker-messages.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 28741,
+      "title": "A4 打手态 · 消息（老板 / 客服）"
+    },
+    {
+      "file": "p-a4-cs.png",
+      "screen": "a4-worker-messages.html",
+      "state": "cs",
+      "kind": "worker",
+      "bytes": 27833,
+      "title": "A4 打手态 · 消息（老板 / 客服）"
+    },
+    {
+      "file": "p-a5.png",
+      "screen": "a5-worker-mine.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 45296,
+      "title": "A5 打手态 · 我的"
+    },
+    {
+      "file": "p-a6.png",
+      "screen": "a6-boss-mine-bound.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 43069,
+      "title": "A6 切回老板态 · 我的（已绑定 / 解绑）"
+    },
+    {
+      "file": "p-a6-unbind.png",
+      "screen": "a6-boss-mine-bound.html",
+      "state": "unbind",
+      "kind": "boss",
+      "bytes": 44529,
+      "title": "A6 切回老板态 · 我的（已绑定 / 解绑）"
+    },
+    {
+      "file": "p-b1.png",
+      "screen": "b1-boss-mine.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 41286,
+      "title": "B1 老板态 · 我的（工作台入口条）"
+    },
+    {
+      "file": "p-b2.png",
+      "screen": "b2-switch-sheet.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 42010,
+      "title": "B2 切换身份 · 弹层（全屏工作区告知）"
+    },
+    {
+      "file": "p-b2-error.png",
+      "screen": "b2-switch-sheet.html",
+      "state": "error",
+      "kind": "boss",
+      "bytes": 37355,
+      "title": "B2 切换身份 · 弹层（全屏工作区告知）"
+    },
+    {
+      "file": "p-b2-conflict.png",
+      "screen": "b2-switch-sheet.html",
+      "state": "conflict",
+      "kind": "boss",
+      "bytes": 45529,
+      "title": "B2 切换身份 · 弹层（全屏工作区告知）"
+    },
+    {
+      "file": "p-b2-bound.png",
+      "screen": "b2-switch-sheet.html",
+      "state": "bound",
+      "kind": "boss",
+      "bytes": 41754,
+      "title": "B2 切换身份 · 弹层（全屏工作区告知）"
+    },
+    {
+      "file": "p-b3.png",
+      "screen": "b3-worker-hall.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 68037,
+      "title": "B3 打手工作台 · 接单大厅（高密度）"
+    },
+    {
+      "file": "p-b3-empty.png",
+      "screen": "b3-worker-hall.html",
+      "state": "empty",
+      "kind": "worker",
+      "bytes": 24245,
+      "title": "B3 打手工作台 · 接单大厅（高密度）"
+    },
+    {
+      "file": "p-b3-noperm.png",
+      "screen": "b3-worker-hall.html",
+      "state": "noperm",
+      "kind": "worker",
+      "bytes": 21987,
+      "title": "B3 打手工作台 · 接单大厅（高密度）"
+    },
+    {
+      "file": "p-b4.png",
+      "screen": "b4-worker-messages.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 22519,
+      "title": "B4 打手工作台 · 消息"
+    },
+    {
+      "file": "p-b4-cs.png",
+      "screen": "b4-worker-messages.html",
+      "state": "cs",
+      "kind": "worker",
+      "bytes": 20418,
+      "title": "B4 打手工作台 · 消息"
+    },
+    {
+      "file": "p-b5.png",
+      "screen": "b5-worker-mine.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 36427,
+      "title": "B5 打手工作台 · 我的"
+    },
+    {
+      "file": "p-b6.png",
+      "screen": "b6-boss-mine-bound.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 42155,
+      "title": "B6 切回老板态 · 我的（已绑定）"
+    },
+    {
+      "file": "p-b6-unbind.png",
+      "screen": "b6-boss-mine-bound.html",
+      "state": "unbind",
+      "kind": "boss",
+      "bytes": 45248,
+      "title": "B6 切回老板态 · 我的（已绑定）"
+    },
+    {
+      "file": "p-c1.png",
+      "screen": "c1-boss-mine.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 38650,
+      "title": "C1 老板态 · 我的（顶部身份切换器）"
+    },
+    {
+      "file": "p-c2.png",
+      "screen": "c2-switch-sheet.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 38999,
+      "title": "C2 切换身份 · 弹层（两枚身份卡）"
+    },
+    {
+      "file": "p-c2-error.png",
+      "screen": "c2-switch-sheet.html",
+      "state": "error",
+      "kind": "boss",
+      "bytes": 39130,
+      "title": "C2 切换身份 · 弹层（两枚身份卡）"
+    },
+    {
+      "file": "p-c2-noperm.png",
+      "screen": "c2-switch-sheet.html",
+      "state": "noperm",
+      "kind": "boss",
+      "bytes": 43700,
+      "title": "C2 切换身份 · 弹层（两枚身份卡）"
+    },
+    {
+      "file": "p-c2-bound.png",
+      "screen": "c2-switch-sheet.html",
+      "state": "bound",
+      "kind": "boss",
+      "bytes": 41110,
+      "title": "C2 切换身份 · 弹层（两枚身份卡）"
+    },
+    {
+      "file": "p-c3.png",
+      "screen": "c3-worker-hall.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 51858,
+      "title": "C3 打手态 · 接单大厅（同骨架改写）"
+    },
+    {
+      "file": "p-c3-empty.png",
+      "screen": "c3-worker-hall.html",
+      "state": "empty",
+      "kind": "worker",
+      "bytes": 27862,
+      "title": "C3 打手态 · 接单大厅（同骨架改写）"
+    },
+    {
+      "file": "p-c4.png",
+      "screen": "c4-worker-messages.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 32263,
+      "title": "C4 打手态 · 消息（含好友段条件显示对比）"
+    },
+    {
+      "file": "p-c4-cs.png",
+      "screen": "c4-worker-messages.html",
+      "state": "cs",
+      "kind": "worker",
+      "bytes": 27104,
+      "title": "C4 打手态 · 消息（含好友段条件显示对比）"
+    },
+    {
+      "file": "p-c4-withfriend.png",
+      "screen": "c4-worker-messages.html",
+      "state": "withfriend",
+      "kind": "worker",
+      "bytes": 29677,
+      "title": "C4 打手态 · 消息（含好友段条件显示对比）"
+    },
+    {
+      "file": "p-c5.png",
+      "screen": "c5-worker-mine.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 44670,
+      "title": "C5 打手态 · 我的"
+    },
+    {
+      "file": "p-c6.png",
+      "screen": "c6-boss-mine-bound.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 36568,
+      "title": "C6 切回老板态 · 我的（身份切换器选中老板）"
+    },
+    {
+      "file": "p-c6-unbind.png",
+      "screen": "c6-boss-mine-bound.html",
+      "state": "unbind",
+      "kind": "boss",
+      "bytes": 46087,
+      "title": "C6 切回老板态 · 我的（身份切换器选中老板）"
+    },
+    {
+      "file": "p-aplus1.png",
+      "screen": "aplus1-boss-mine.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 42925,
+      "title": "A+1 老板态 · 我的（当前身份：老板）"
+    },
+    {
+      "file": "p-aplus1b.png",
+      "screen": "aplus1b-boss-mine-bound-limit.html",
+      "state": "default",
+      "kind": "boss",
+      "bytes": 48821,
+      "title": "A+1b 老板态 · 我的（绑定上限已满）"
+    },
+    {
+      "file": "p-aplus2-toast.png",
+      "screen": "aplus2-switch-transition.html",
+      "state": "toast",
+      "kind": "worker",
+      "bytes": 44704,
+      "title": "A+2 切换中 · 过渡提示（Toast / 骨架就位）"
+    },
+    {
+      "file": "p-aplus2-midway.png",
+      "screen": "aplus2-switch-transition.html",
+      "state": "midway",
+      "kind": "worker",
+      "bytes": 20052,
+      "title": "A+2 切换中 · 过渡提示（Toast / 骨架就位）"
+    },
+    {
+      "file": "p-aplus3.png",
+      "screen": "aplus3-worker-hall.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 51150,
+      "title": "A+3 打手态 · 接单大厅（含身份细带）"
+    },
+    {
+      "file": "p-aplus3-empty.png",
+      "screen": "aplus3-worker-hall.html",
+      "state": "empty",
+      "kind": "worker",
+      "bytes": 26681,
+      "title": "A+3 打手态 · 接单大厅（含身份细带）"
+    },
+    {
+      "file": "p-aplus3-noperm.png",
+      "screen": "aplus3-worker-hall.html",
+      "state": "noperm",
+      "kind": "worker",
+      "bytes": 26733,
+      "title": "A+3 打手态 · 接单大厅（含身份细带）"
+    },
+    {
+      "file": "p-aplus3-kicked.png",
+      "screen": "aplus3-worker-hall.html",
+      "state": "kicked",
+      "kind": "worker",
+      "bytes": 38283,
+      "title": "A+3 打手态 · 接单大厅（含身份细带）"
+    },
+    {
+      "file": "p-aplus4.png",
+      "screen": "aplus4-worker-messages.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 30418,
+      "title": "A+4 打手态 · 消息（老板 / 客服，含身份细带）"
+    },
+    {
+      "file": "p-aplus4-cs.png",
+      "screen": "aplus4-worker-messages.html",
+      "state": "cs",
+      "kind": "worker",
+      "bytes": 29752,
+      "title": "A+4 打手态 · 消息（老板 / 客服，含身份细带）"
+    },
+    {
+      "file": "p-aplus5.png",
+      "screen": "aplus5-worker-mine.html",
+      "state": "default",
+      "kind": "worker",
+      "bytes": 50275,
+      "title": "A+5 打手态 · 我的（工号 / 切回老板 / 解绑）"
+    },
+    {
+      "file": "p-aplus5-unbind.png",
+      "screen": "aplus5-worker-mine.html",
+      "state": "unbind",
+      "kind": "worker",
+      "bytes": 54786,
+      "title": "A+5 打手态 · 我的（工号 / 切回老板 / 解绑）"
+    },
+    {
+      "file": "p-aplus6-done.png",
+      "screen": "aplus6-boss-mine-unbound.html",
+      "state": "done",
+      "kind": "boss",
+      "bytes": 42728,
+      "title": "A+6 解绑后回到老板态 · 我的"
+    },
+    {
+      "file": "p-aplus6-after.png",
+      "screen": "aplus6-boss-mine-unbound.html",
+      "state": "after",
+      "kind": "boss",
+      "bytes": 42728,
+      "title": "A+6 解绑后回到老板态 · 我的"
+    }
+  ]
+}

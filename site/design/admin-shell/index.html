@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>管理端外壳 · 设计预览（2026-10-11 定案）</title>
+<!--
+  管理端外壳（admin-web）静态预览页 —— 自包含、无外部依赖（无 CDN / 无字体外链 / 无图片文件 / 无第三方截图）。
+  用途：把 2026-10-11 定案的管理端外壳口径画出来，供以后回看与对齐。
+  权威文字：docs/14-UI设计规范.md「管理端外壳（2026-10-11 定案）」；范围说明：docs/21-反AI味设计规范.md。
+  本页所有图形均为纯 CSS / 内联 SVG 示意，不是产品截图。
+-->
+<style>
+:root{
+  /* 与 admin-web/src/styles/tokens.css 浅色档逐值一致 */
+  --brand-primary:#2563EB;--brand-cyan:#06B6D4;--gold:#B45309;
+  --bg:#F5F7FB;--surface:#FFFFFF;--sunken:#F1F5F9;
+  --ink:#1F2937;--ink-2:#5B6B82;--ink-3:#5E7085;
+  --hair:#E5E9F2;--hair-2:#EEF1F6;--table-hair:#DCE3EE;
+  --primary-soft:rgba(37,99,235,.07);--primary-tint:rgba(37,99,235,.10);
+  --success:#15803D;--warn:#C2410C;--error:#DC2626;--info:#0369A1;
+  --r-sm:6px;--r-ctl:8px;--r-card:14px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+header.top{background:var(--surface);border-bottom:1px solid var(--hair);padding:26px 0 20px;margin-bottom:8px}
+.kicker{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--r-sm);
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink-2);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+h1{font-size:25px;font-weight:800;letter-spacing:-.4px;margin:11px 0 8px}
+.lead{font-size:13.5px;color:var(--ink-2);max-width:940px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:13px;font-size:12px;color:var(--ink-3)}
+.meta b{color:var(--ink);font-weight:700}
+nav.toc{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+nav.toc a{font-size:12px;font-weight:600;color:var(--ink-2);text-decoration:none;border:1px solid var(--hair);
+  background:var(--surface);border-radius:999px;padding:4px 11px}
+nav.toc a:hover{border-color:var(--brand-primary);color:var(--brand-primary)}
+main{padding-bottom:70px}
+section{margin:34px 0 0}
+h2{font-size:19px;font-weight:800;letter-spacing:-.2px;padding-bottom:9px;border-bottom:1px solid var(--hair);margin-bottom:14px}
+h2 .n{color:var(--ink-3);margin-right:8px}
+h3{font-size:14px;font-weight:800;margin:20px 0 9px}
+p{font-size:13px;color:var(--ink-2);margin-bottom:9px}
+.note{font-size:12.5px;color:var(--ink-3)}
+code{background:#EEF2F8;border-radius:3px;padding:1px 4px;font-size:11.5px;color:#1E293B;font-family:var(--mono)}
+ul.tight{margin:0 0 10px 18px}
+ul.tight li{font-size:12.5px;color:var(--ink-2);margin-bottom:4px}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);padding:16px 17px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px}
+
+/* ── 色板 ───────────────────────────────────────────────── */
+.palette{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:10px;margin-top:10px}
+.sw{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--hair);
+  border-radius:10px;padding:9px 10px}
+.chip{width:40px;height:40px;border-radius:8px;border:1px solid rgba(15,23,42,.10);flex:0 0 auto}
+.sw .hex{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--ink)}
+.sw .use{font-size:11.5px;color:var(--ink-3);line-height:1.45}
+.sw .tok{font-family:var(--mono);font-size:10.5px;color:var(--ink-3)}
+.dark-panel{background:#0B1220;border-color:#1E2C42}
+.dark-panel h3{color:#E8EEF7}
+.dark-panel .sw{background:#111C2E;border-color:#1E2C42}
+.dark-panel .sw .hex{color:#E8EEF7}
+.dark-panel .sw .use,.dark-panel .sw .tok{color:#9DB0C8}
+.dark-panel code{background:rgba(127,176,255,.14);color:#CFE0FF}
+.dark-panel .chip{border-color:rgba(226,236,255,.16)}
+
+/* ── 外壳示意（侧栏 + 顶栏 + 内容区） ─────────────────────── */
+.shell{display:flex;background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);
+  overflow:hidden;height:430px;margin-top:6px}
+.m-sider{width:220px;flex:0 0 220px;background:#FFFFFF;border-right:1px solid var(--hair);
+  padding:10px 8px;display:flex;flex-direction:column;gap:2px}
+.m-brand{display:flex;align-items:center;gap:8px;padding:6px 8px 10px}
+.m-brand .nm{font-size:12px;font-weight:800}
+.m-brand .sub{font-size:10px;color:var(--ink-3)}
+.m-item{display:flex;align-items:center;gap:9px;height:30px;padding:0 9px;border-radius:7px;
+  font-size:12.5px;color:var(--ink);position:relative;background:none;border:0;width:100%;text-align:left;font-family:var(--font)}
+.m-item .lbl{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-item svg{flex:0 0 auto;color:var(--ink-2)}
+.m-item.is-active{background:var(--primary-soft);color:var(--brand-primary);font-weight:700}
+.m-item.is-active svg{color:var(--brand-primary)}
+.m-item.is-active::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;
+  border-radius:0 3px 3px 0;background:var(--brand-primary)}
+.chev{width:6px;height:6px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;
+  transform:rotate(-45deg);transition:transform 200ms ease;flex:0 0 auto;margin-right:2px;opacity:.75}
+.is-open>.chev{transform:rotate(45deg)}
+.m-children{display:flex;flex-direction:column;gap:1px;margin:2px 0 4px}
+.m-child{height:27px;padding-left:34px;font-size:12px;display:flex;align-items:center;gap:8px;
+  border-radius:7px;color:var(--ink-2);position:relative}
+.m-child.is-active{background:var(--primary-soft);color:var(--brand-primary);font-weight:700}
+.m-child.is-active::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;
+  border-radius:0 3px 3px 0;background:var(--brand-primary)}
+.m-main{flex:1;display:flex;flex-direction:column;background:var(--bg);min-width:0}
+.m-top{height:46px;flex:0 0 46px;background:var(--surface);border-bottom:1px solid var(--hair);
+  display:flex;align-items:center;gap:10px;padding:0 14px;font-size:12px;color:var(--ink-3)}
+.m-top .crumb b{color:var(--ink);font-weight:700}
+.m-top .spacer{flex:1}
+.pill{border:1px solid var(--hair);border-radius:999px;padding:2px 10px;font-size:11px;color:var(--ink-2);background:var(--surface)}
+.pill.on{background:var(--primary-soft);border-color:rgba(37,99,235,.28);color:var(--brand-primary);font-weight:700}
+.m-body{padding:16px;overflow:hidden}
+.m-h{font-size:12px;font-weight:800;color:var(--ink);margin-bottom:9px}
+.six{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+.six .cell{background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:10px 9px}
+.six .ic{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.six .t{font-size:11.5px;font-weight:700;margin-bottom:3px}
+.six .d{font-size:10px;color:var(--ink-3);line-height:1.4}
+.overview{margin-top:14px;background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:13px 14px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.metrics .m{border-left:1px solid var(--hair-2);padding-left:12px}
+.metrics .m:first-child{border-left:0;padding-left:0}
+.tag{display:inline-block;font-size:10px;font-weight:700;color:var(--ink-3);background:var(--sunken);
+  border-radius:4px;padding:1px 6px;margin-bottom:5px}
+.metrics .num{font-size:21px;font-weight:800;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.metrics .num small{font-size:11px;font-weight:700;color:var(--ink-3);margin-left:3px}
+.metrics .cap{font-size:10.5px;color:var(--ink-3)}
+
+/* ── 折叠态图标条 ───────────────────────────────────────── */
+.collapsed-demo{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.strip{width:64px;background:#FFFFFF;border:1px solid var(--hair);border-radius:10px;padding:8px 0;
+  display:flex;flex-direction:column;align-items:center;gap:4px}
+.strip .s-ic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.strip .s-ic.is-active{background:var(--primary-soft);color:var(--brand-primary)}
+.strip .hint{font-size:9px;color:var(--ink-3);margin-top:2px}
+
+/* ── 登录页示意 ─────────────────────────────────────────── */
+.demo{position:relative;border:1px solid var(--hair);border-radius:var(--r-card);overflow:hidden;height:392px;
+  display:flex;align-items:center;justify-content:center;background:#F5F7FB}
+.demo .g{position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(to right,rgba(31,41,55,.045) 1px,transparent 1px),
+                   linear-gradient(to bottom,rgba(31,41,55,.045) 1px,transparent 1px);
+  background-size:40px 40px}
+.demo .glow{position:absolute;left:50%;top:50%;width:520px;height:520px;transform:translate(-50%,-58%);
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(37,99,235,.10) 0%,rgba(6,182,212,.06) 42%,transparent 68%)}
+.login-card{position:relative;width:330px;background:#FFFFFF;border:1px solid var(--hair);border-radius:var(--r-card);
+  padding:22px 22px 16px;box-shadow:0 12px 32px rgba(15,23,42,.07);overflow:hidden}
+.login-card .accent{position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#2563EB 0%,#06B6D4 100%)}
+.login-card .brand{display:flex;align-items:center;gap:9px;margin-bottom:16px}
+.login-card .bn{font-size:14px;font-weight:800;letter-spacing:-.2px}
+.login-card .bs{font-size:10.5px;color:var(--ink-3)}
+.fld{display:block;margin-bottom:10px}
+.fld .fl{display:block;font-size:11px;color:var(--ink-2);margin-bottom:4px}
+.input{height:32px;border:1px solid var(--hair);border-radius:var(--r-ctl);background:#FFFFFF;
+  display:flex;align-items:center;padding:0 10px;font-size:11.5px;color:var(--ink-3)}
+.btn-main{height:34px;border-radius:var(--r-ctl);background:var(--brand-primary);color:#FFFFFF;font-size:12.5px;
+  font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:14px}
+.login-card .foot{font-size:10px;color:var(--ink-3);margin-top:12px;padding-top:10px;border-top:1px solid var(--hair-2);display:flex;gap:6px;align-items:center}
+.foot-dot{width:5px;height:5px;border-radius:50%;background:var(--brand-cyan);flex:0 0 auto}
+.rejected{border:1.5px dashed #94A3B8;background:#F8FAFC;filter:saturate(.55)}
+.rejected .split{display:flex;width:100%;height:100%}
+.rejected .bigpic{flex:0 0 58%;background:repeating-linear-gradient(135deg,#E2E8F0 0 12px,#E8EDF3 12px 24px);
+  display:flex;align-items:center;justify-content:center;color:#94A3B8;font-size:12px;font-weight:700;letter-spacing:.14em}
+.rejected .right{flex:1;display:flex;align-items:center;justify-content:center;background:#FFFFFF;border-left:1px solid var(--hair)}
+.badge-no{position:absolute;top:12px;left:12px;z-index:3;background:#FFF4EC;border:1px solid #F6D3B8;color:var(--warn);
+  border-radius:5px;padding:2px 9px;font-size:11px;font-weight:800}
+.badge-yes{position:absolute;top:12px;left:12px;z-index:3;background:var(--primary-soft);border:1px solid rgba(37,99,235,.28);
+  color:var(--brand-primary);border-radius:5px;padding:2px 9px;font-size:11px;font-weight:800}
+.cap{font-size:12px;color:var(--ink-3);margin-top:8px}
+
+/* ── 欢迎语时序 ─────────────────────────────────────────── */
+.track{display:flex;height:40px;border-radius:8px;overflow:hidden;border:1px solid var(--hair);margin-top:8px}
+.seg{display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;
+  border-right:1px solid rgba(255,255,255,.7);text-align:center;line-height:1.25;padding:0 2px}
+.seg.f1{background:#DBEAFE;color:#1E40AF}
+.seg.h1{background:#EFF6FF;color:#3B6EA5}
+.seg.h2{background:#E0F2FE;color:#0E5C7A}
+.seg.out{background:#F1F5F9;color:var(--ink-2)}
+.ruler{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-3);font-family:var(--mono);margin-top:5px}
+.screens{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:16px}
+.screen{background:#000;border-radius:var(--r-card);height:220px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;padding:18px}
+.screen .ln{color:#FFFFFF;font-weight:800;font-size:22px;letter-spacing:.02em;text-align:center;line-height:1.3}
+.screen .rule{width:64px;height:2px;border-radius:999px;background:var(--brand-primary)}
+.screen-cap{font-size:11.5px;color:var(--ink-3);margin-top:7px}
+
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--hair);
+  border-radius:var(--r-card);overflow:hidden;font-size:12.5px;margin-top:10px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--hair-2);vertical-align:top}
+th{background:#F7F9FC;font-weight:700;font-size:12px;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td{color:var(--ink-2)}
+td.k{color:var(--ink);font-weight:700;white-space:nowrap}
+td code{white-space:nowrap}
+footer{border-top:1px solid var(--hair);background:var(--surface);padding:18px 0;font-size:12px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <span class="kicker">静态预览 · 回写规范</span>
+    <h1>管理端外壳 · 设计预览</h1>
+    <p class="lead">
+      把 2026-10-11 定案的 <code>admin-web</code> 外壳口径画出来：<b>浅色为默认</b>的主题色板、侧栏<b>分组折叠</b>结构、
+      登录页<b>居中白卡</b>布局（含被否掉的「左大图 + 右登录卡」）、以及登录成功<b>欢迎语时序</b>。
+      本页是<b>示意</b>，不是产品截图；所有图形为纯 CSS / 内联 SVG，<b>未内嵌任何第三方素材</b>，也无外部依赖。
+    </p>
+    <div class="meta">
+      <span>定案：<b>2026-10-11</b></span>
+      <span>收口提交：<b>bea8bd3</b></span>
+      <span>权威文字：<b>docs/14-UI设计规范.md</b>「管理端外壳（2026-10-11 定案）」</span>
+      <span>范围说明：<b>docs/21-反AI味设计规范.md</b></span>
+    </div>
+    <nav class="toc">
+      <a href="#tokens">一 · 设计 token 色板</a>
+      <a href="#sidebar">二 · 侧栏分组结构</a>
+      <a href="#login">三 · 登录页布局</a>
+      <a href="#welcome">四 · 欢迎语时序</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ─────────────────────────  一、色板  ───────────────────────── -->
+  <section id="tokens">
+    <h2><span class="n">一</span>设计 token 色板（浅色为默认，深色档保留在右上角可切）</h2>
+    <p>两档共用<b>同一批 CSS 变量名</b>，由 <code>html[data-theme]</code> 整体翻转（<code>admin-web/src/styles/tokens.css</code>）；
+      主题偏好落 localStorage，<b>默认浅色</b>。侧栏在浅色档也是<b>白底</b>，用 1px 发丝线与主区分隔。</p>
+
+    <h3>浅色档（默认）</h3>
+    <div class="palette">
+      <div class="sw"><span class="chip" style="background:#F5F7FB"></span><span><span class="hex">#F5F7FB</span><br><span class="use">页面底（冷灰蓝）</span><br><span class="tok">--color-bg-page</span></span></div>
+      <div class="sw"><span class="chip" style="background:#FFFFFF"></span><span><span class="hex">#FFFFFF</span><br><span class="use">卡片 / 表面 · 侧栏</span><br><span class="tok">--color-bg-card</span></span></div>
+      <div class="sw"><span class="chip" style="background:#E5E9F2"></span><span><span class="hex">#E5E9F2</span><br><span class="use">发丝线（页面 / 侧栏）</span><br><span class="tok">--color-divider</span></span></div>
+      <div class="sw"><span class="chip" style="background:#DCE3EE"></span><span><span class="hex">#DCE3EE</span><br><span class="use">表格发丝线</span><br><span class="tok">--table-hairline</span></span></div>
+      <div class="sw"><span class="chip" style="background:#1F2937"></span><span><span class="hex">#1F2937</span><br><span class="use">正文</span><br><span class="tok">--color-text-primary</span></span></div>
+      <div class="sw"><span class="chip" style="background:#5B6B82"></span><span><span class="hex">#5B6B82</span><br><span class="use">次级文字</span><br><span class="tok">--color-text-secondary</span></span></div>
+      <div class="sw"><span class="chip" style="background:#5E7085"></span><span><span class="hex">#5E7085</span><br><span class="use">三级文字 / 面包屑</span><br><span class="tok">--color-text-tertiary</span></span></div>
+      <div class="sw"><span class="chip" style="background:#2563EB"></span><span><span class="hex">#2563EB</span><br><span class="use">主色 · 冰雪蓝</span><br><span class="tok">--color-primary</span></span></div>
+      <div class="sw"><span class="chip" style="background:#06B6D4"></span><span><span class="hex">#06B6D4</span><br><span class="use">点缀 · 青</span><br><span class="tok">--color-primary-secondary</span></span></div>
+      <div class="sw"><span class="chip" style="background:#B45309"></span><span><span class="hex">#B45309</span><br><span class="use">琥珀金（金额 / 等级）</span><br><span class="tok">--color-gold</span></span></div>
+      <div class="sw"><span class="chip" style="background:#15803D"></span><span><span class="hex">#15803D</span><br><span class="use">成功</span><br><span class="tok">--color-success</span></span></div>
+      <div class="sw"><span class="chip" style="background:#C2410C"></span><span><span class="hex">#C2410C</span><br><span class="use">警告</span><br><span class="tok">--color-warning</span></span></div>
+      <div class="sw"><span class="chip" style="background:#DC2626"></span><span><span class="hex">#DC2626</span><br><span class="use">错误</span><br><span class="tok">--color-error</span></span></div>
+      <div class="sw"><span class="chip" style="background:#0369A1"></span><span><span class="hex">#0369A1</span><br><span class="use">信息</span><br><span class="tok">--color-info</span></span></div>
+    </div>
+
+    <h3>深色档（保留：右上角明暗切换随时可切）</h3>
+    <div class="card dark-panel">
+      <div class="palette">
+        <div class="sw"><span class="chip" style="background:#0B1220"></span><span><span class="hex">#0B1220</span><br><span class="use">页面底 / 侧栏近黑</span></span></div>
+        <div class="sw"><span class="chip" style="background:#111C2E"></span><span><span class="hex">#111C2E</span><br><span class="use">卡片 / 表面</span></span></div>
+        <div class="sw"><span class="chip" style="background:#0E1728"></span><span><span class="hex">#0E1728</span><br><span class="use">下沉块</span></span></div>
+        <div class="sw"><span class="chip" style="background:#1E2C42"></span><span><span class="hex">#1E2C42</span><br><span class="use">发丝线</span></span></div>
+        <div class="sw"><span class="chip" style="background:#26364F"></span><span><span class="hex">#26364F</span><br><span class="use">表格发丝线</span></span></div>
+        <div class="sw"><span class="chip" style="background:#E8EEF7"></span><span><span class="hex">#E8EEF7</span><br><span class="use">正文</span></span></div>
+        <div class="sw"><span class="chip" style="background:#9DB0C8"></span><span><span class="hex">#9DB0C8</span><br><span class="use">次级文字</span></span></div>
+        <div class="sw"><span class="chip" style="background:#8CA3BE"></span><span><span class="hex">#8CA3BE</span><br><span class="use">三级文字</span></span></div>
+        <div class="sw"><span class="chip" style="background:#7FB0FF"></span><span><span class="hex">#7FB0FF</span><br><span class="use">主色<strong>文字态</strong>（提亮）</span></span></div>
+        <div class="sw"><span class="chip" style="background:#F0A63C"></span><span><span class="hex">#F0A63C</span><br><span class="use">琥珀金（深色档）</span></span></div>
+      </div>
+      <p class="note" style="margin:12px 0 0;color:#9DB0C8">
+        深色档把 <code>--color-primary</code> 重映射到提亮后的文字态 <code>#7FB0FF</code>（装饰色块另走恒定的 <code>--brand-primary</code>），
+        为的是"主色当文字用"（选中项 / 金额 / 链接）时对比度达标。
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────  二、侧栏  ───────────────────────── -->
+  <section id="sidebar">
+    <h2><span class="n">二</span>侧栏分组结构（8 个顶层项 · 2 个直接项 + 6 个可折叠父项）</h2>
+    <p>父项是<b>真 <code>&lt;button&gt;</code> + chevron</b>（展开旋转 90°），点击切换展开 / 收起；
+      进入某页<b>自动展开其所在组</b>（允许同时多组）；选中态 = 浅底 + 主色字 + 左侧 3px 主色条。
+      下图是外壳骨架示意（侧栏 220px + 顶栏 + 内容区的工作台），非截图。</p>
+
+    <div class="shell" role="img" aria-label="管理端外壳示意：白色侧栏 220px，工作台展开、资金与抽成组展开且余额管理选中；右侧顶栏与工作台六宫格 + 数据概览卡">
+      <div class="m-sider">
+        <div class="m-brand">
+          <svg width="18" height="21" viewBox="0 0 20 23" fill="none" aria-hidden="true">
+            <path d="M1.5 21 L7 8.5 L10.8 15 L14 5.5 L18.5 21" stroke="#2563EB" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+            <path d="M11.9 8.6 L14 5.5 L16.1 8.9" stroke="#06B6D4" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+          </svg>
+          <span><span class="nm">祁连山电竞</span><br><span class="sub">管理后台</span></span>
+        </div>
+
+        <button class="m-item" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/>
+            <rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/>
+          </svg><span class="lbl">工作台</span>
+        </button>
+
+        <button class="m-item is-open" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+            <path d="M3 4h10M3 8h10M3 12h6"/>
+          </svg><span class="lbl">订单与售后</span><span class="chev"></span>
+        </button>
+
+        <button class="m-item" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+            <circle cx="8" cy="5.5" r="2.5"/><path d="M3 13c0-2.8 2.2-4.2 5-4.2s5 1.4 5 4.2"/>
+          </svg><span class="lbl">用户与身份</span><span class="chev"></span>
+        </button>
+
+        <button class="m-item is-open" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+            <rect x="2" y="4" width="12" height="9" rx="2"/><path d="M11 8.5h2"/>
+          </svg><span class="lbl">资金与抽成</span><span class="chev"></span>
+        </button>
+        <div class="m-children">
+          <div class="m-child is-active">余额管理</div>
+          <div class="m-child">充值管理</div>
+          <div class="m-child">抽成中心</div>
+        </div>
+
+        <button class="m-item" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 2l5.5 3v6L8 14l-5.5-3V5z"/><path d="M2.5 5L8 8l5.5-3M8 8v6"/>
+          </svg><span class="lbl">商品与内容</span><span class="chev"></span>
+        </button>
+
+        <button class="m-item" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3.5h10v7H7.5L4.5 13v-2.5H3z"/>
+          </svg><span class="lbl">客服与消息</span><span class="chev"></span>
+        </button>
+
+        <button class="m-item" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+            <path d="M2.5 13V9M6 13V5.5M9.5 13V7.5M13 13V3"/>
+          </svg><span class="lbl">排行榜</span>
+        </button>
+
+        <button class="m-item" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v2M8 12.2v2M1.8 8h2M12.2 8h2M3.6 3.6l1.4 1.4M11 11l1.4 1.4M12.4 3.6L11 5M5 11l-1.4 1.4"/>
+          </svg><span class="lbl">系统管理</span><span class="chev"></span>
+        </button>
+      </div>
+
+      <div class="m-main">
+        <div class="m-top">
+          <span class="crumb">工作台 · <b>余额管理</b></span>
+          <span class="spacer"></span>
+          <span class="pill on">浅色</span><span class="pill">深色</span>
+          <span class="pill">超级管理员</span>
+        </div>
+        <div class="m-body">
+          <div class="m-h">快捷导航（按权限点取前 6）</div>
+          <div class="six">
+            <div class="cell">
+              <span class="ic" style="background:rgba(37,99,235,.10);color:#2563EB">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M3 4h10M3 8h10M3 12h6"/></svg>
+              </span>
+              <div class="t">订单管理</div><div class="d">查订单与状态流转</div>
+            </div>
+            <div class="cell">
+              <span class="ic" style="background:rgba(6,182,212,.12);color:#0E7490">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 13c0-2.8 2.2-4.2 5-4.2s5 1.4 5 4.2"/></svg>
+              </span>
+              <div class="t">用户管理</div><div class="d">账号、封禁与等级</div>
+            </div>
+            <div class="cell">
+              <span class="ic" style="background:rgba(180,83,9,.10);color:#B45309">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><rect x="2" y="4" width="12" height="9" rx="2"/><path d="M11 8.5h2"/></svg>
+              </span>
+              <div class="t">余额管理</div><div class="d">发放与流水核对</div>
+            </div>
+            <div class="cell">
+              <span class="ic" style="background:rgba(21,128,61,.10);color:#15803D">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M8 2l5.5 3v6L8 14l-5.5-3V5z"/><path d="M2.5 5L8 8l5.5-3M8 8v6"/></svg>
+              </span>
+              <div class="t">游戏与商品</div><div class="d">分类、价格与上下架</div>
+            </div>
+            <div class="cell">
+              <span class="ic" style="background:rgba(3,105,161,.10);color:#0369A1">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M3 3.5h10v7H7.5L4.5 13v-2.5H3z"/></svg>
+              </span>
+              <div class="t">聊天管理</div><div class="d">会话与客服授权</div>
+            </div>
+            <div class="cell">
+              <span class="ic" style="background:rgba(37,99,235,.10);color:#2563EB">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v2M8 12.2v2M1.8 8h2M12.2 8h2M3.6 3.6l1.4 1.4M11 11l1.4 1.4M12.4 3.6L11 5M5 11l-1.4 1.4"/></svg>
+              </span>
+              <div class="t">系统设置</div><div class="d">抽成比例与开关</div>
+            </div>
+          </div>
+
+          <div class="overview">
+            <div class="metrics">
+              <div class="m">
+                <span class="tag">累计</span>
+                <div class="num">1,284<small>单</small></div>
+                <div class="cap">平台历史完成订单</div>
+              </div>
+              <div class="m">
+                <span class="tag">今日</span>
+                <div class="num">37<small>单</small></div>
+                <div class="cap">今日 00:00 起计</div>
+              </div>
+              <div class="m">
+                <span class="tag">实时</span>
+                <div class="num">3<small>单</small></div>
+                <div class="cap">待接单 · 打开页面时拉取</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="cap">示意说明：图标位为线性图标（此处以内联 SVG 代位，实际为同一套线性图标，<b>不用 emoji</b>）；数字为拟真假数据，页面本身走现成接口。</p>
+
+    <h3>折叠态（64px 图标条）：点父项 = 先展开侧栏、再展开该组</h3>
+    <div class="collapsed-demo">
+      <div class="strip" role="img" aria-label="折叠态侧栏示意：64px 宽图标条，8 个顶层项图标，其中一项为选中态">
+        <span class="s-ic">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+        </span>
+        <span class="s-ic">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M3 4h10M3 8h10M3 12h6"/></svg>
+        </span>
+        <span class="s-ic">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 13c0-2.8 2.2-4.2 5-4.2s5 1.4 5 4.2"/></svg>
+        </span>
+        <span class="s-ic is-active">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><rect x="2" y="4" width="12" height="9" rx="2"/><path d="M11 8.5h2"/></svg>
+        </span>
+        <span class="s-ic">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M8 2l5.5 3v6L8 14l-5.5-3V5z"/><path d="M2.5 5L8 8l5.5-3M8 8v6"/></svg>
+        </span>
+        <span class="s-ic">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M3 3.5h10v7H7.5L4.5 13v-2.5H3z"/></svg>
+        </span>
+        <span class="s-ic">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M2.5 13V9M6 13V5.5M9.5 13V7.5M13 13V3"/></svg>
+        </span>
+        <span class="s-ic">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v2M8 12.2v2M1.8 8h2M12.2 8h2M3.6 3.6l1.4 1.4M11 11l1.4 1.4M12.4 3.6L11 5M5 11l-1.4 1.4"/></svg>
+        </span>
+      </div>
+      <div style="flex:1;min-width:280px">
+        <ul class="tight" style="margin-left:0;list-style:none">
+          <li><b>点父项</b>：先展开侧栏（220px），再展开该组 —— 一次点击就能看到子项，不存在"点不到的子项"。</li>
+          <li><b>刻意不做浮层弹出菜单</b>：浮层在 <code>overflow:hidden</code> 的侧栏里要 teleport、要自己管定位与"点击外部关闭"，多出一整套状态；"点一下先展开侧栏"零额外状态。</li>
+          <li><b>选中态</b>：折叠态没有 3px 主色条的空间，改用整块淡蓝底（<code>rgba(37,99,235,.10)</code>）表达当前项。</li>
+          <li><b>展开态落 sessionStorage</b>：是"这次办事要看哪几组"的过程状态，不是长期偏好；没存过时默认展开前 3 组（订单与售后 / 用户与身份 / 资金与抽成），当前路由所在组恒兜底展开。</li>
+          <li><b>权限联动</b>：父项自身不带权限点；子项按权限点过滤，<b>子项全不可见 → 父项整体隐藏</b>（不渲染空组）。</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>8 个顶层项（逐行）</h3>
+    <table>
+      <thead><tr><th>#</th><th>顶层项</th><th>类型</th><th>子项（路由名 · 权限点）</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="k">工作台</td><td>直接项</td><td><code>dashboard</code>（无权限点，恒可见）</td></tr>
+        <tr><td>2</td><td class="k">订单与售后</td><td>可折叠（5）</td><td><code>orders</code>·admin:order:read / <code>appeals</code>·admin:appeal:handle / <code>refunds</code>·admin:refund:read / <code>complaints</code>·admin:complaint:read / <code>tips</code>·admin:tip:read</td></tr>
+        <tr><td>3</td><td class="k">用户与身份</td><td>可折叠（3）</td><td><code>users</code>·admin:user:read / <code>identity-bindings</code>·admin:user:read / <code>workers</code>·admin:worker:read</td></tr>
+        <tr><td>4</td><td class="k">资金与抽成</td><td>可折叠（3）</td><td><code>wallets</code>·admin:wallet:read / <code>recharge</code>·admin:setting:read / <code>commission</code>·admin:order:read</td></tr>
+        <tr><td>5</td><td class="k">商品与内容</td><td>可折叠（7）</td><td><code>catalog</code>·admin:product:write / <code>divisions</code>·admin:division:read / <code>clubs</code>·admin:club:read / <code>order-form</code>·admin:setting:read / <code>announcements</code>·admin:home:write / <code>banners</code>·admin:home:write / <code>site-manage</code>·admin:site:edit</td></tr>
+        <tr><td>6</td><td class="k">客服与消息</td><td>可折叠（2）</td><td><code>chat</code>·admin:chat:read / <code>feedback</code>·admin:feedback:read</td></tr>
+        <tr><td>7</td><td class="k">排行榜</td><td>直接项</td><td><code>leaderboard</code>·admin:leaderboard:read</td></tr>
+        <tr><td>8</td><td class="k">系统管理</td><td>可折叠（4）</td><td><code>settings</code>·admin:setting:read / <code>admins</code>·admin:admin:read / <code>audit</code>·admin:audit:read / <code>app-update</code>·admin:app:write</td></tr>
+      </tbody>
+    </table>
+    <p class="cap">合计 <b>2 个直接项 + 6 个可折叠父项 = 8</b> 个顶层项（子项 24 + 直接项 2 = 26 条导航）。权限点与标签<b>逐条沿用改版前的 <code>menuOptions</code></b>：一个权限点没换、一个页面没漏。</p>
+  </section>
+
+  <!-- ─────────────────────────  三、登录页  ───────────────────────── -->
+  <section id="login">
+    <h2><span class="n">三</span>登录页布局：居中白卡（明确不做「左大图 + 右登录卡」）</h2>
+    <p>构成 = <b>淡灰底 + 极细网格 + 一处淡品牌色光晕 + 正中白卡</b>，纯 CSS（<b>无任何图片</b>）。下方右侧是被否掉的方案，理由写在图下。</p>
+
+    <div class="grid2">
+      <div>
+        <div class="demo">
+          <span class="badge-yes">采用</span>
+          <span class="g"></span><span class="glow"></span>
+          <div class="login-card">
+            <span class="accent"></span>
+            <div class="brand">
+              <svg width="26" height="30" viewBox="0 0 20 23" fill="none" aria-hidden="true">
+                <path d="M1.5 21 L7 8.5 L10.8 15 L14 5.5 L18.5 21" stroke="#2563EB" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+                <path d="M11.9 8.6 L14 5.5 L16.1 8.9" stroke="#06B6D4" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+              </svg>
+              <span><span class="bn">祁连山电竞</span><br><span class="bs">管理后台</span></span>
+            </div>
+            <label class="fld"><span class="fl">账号</span><span class="input">请输入管理员账号</span></label>
+            <label class="fld"><span class="fl">密码</span><span class="input">请输入密码</span></label>
+            <div class="btn-main">登录</div>
+            <div class="foot"><span class="foot-dot"></span>仅供授权管理员使用 · 登录即视为同意平台管理规范</div>
+          </div>
+        </div>
+        <p class="cap"><b>采用 · 居中白卡</b>：白卡 400px / 圆角 14 / 1px 发丝描边 + 一层极轻外投影（不铺阴影）；
+          卡顶 <b>3px 品牌色条</b>（冰雪蓝 → 青，全页唯一一处渐变且只有 3px 高）；
+          网格 40px 一格（正文色 4%），光晕只有<b>一处</b>（冰雪蓝 10% → 青 6% → 透明）。</p>
+      </div>
+
+      <div>
+        <div class="demo rejected">
+          <span class="badge-no">不采用</span>
+          <div class="split">
+            <div class="bigpic">大 图</div>
+            <div class="right">
+              <div class="login-card" style="width:200px;box-shadow:none;padding:16px 16px 12px">
+                <span class="accent" style="background:#94A3B8"></span>
+                <div class="brand" style="margin-bottom:10px">
+                  <span><span class="bn" style="font-size:12px">登录</span><br><span class="bs">管理后台</span></span>
+                </div>
+                <label class="fld"><span class="input">账号</span></label>
+                <label class="fld"><span class="input">密码</span></label>
+                <div class="btn-main" style="background:#94A3B8;margin-top:8px">登录</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="cap"><b>不采用 ·「左大图 + 右登录卡」</b>：该构图是<b>外部参考视频的标志性画面</b>——
+          负责人要求<b>避免与参考视频雷同</b>（照搬等于"一眼看着像抄"）。居中白卡同样能承载"品牌 + 两个输入 + 一个主按钮"，且不与外部素材产生联想。
+          同理：<b>不使用任何第三方插画 / 网图 / 视频截图</b>，品牌标只用本仓库自己的素材（复刻自 Flutter core 的雪山标）。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────  四、欢迎语时序  ───────────────────────── -->
+  <section id="welcome">
+    <h2><span class="n">四</span>登录成功欢迎序列：文案、时长与跳过</h2>
+    <p>登录成功后、进入工作台<b>之前</b>全屏播放一次（<b>每次登录都播</b>）。节奏逐值固定，总时长
+      <b>250 + 700 + 250 + 900 + 300 = 2400ms</b>（落在"约 2.4–2.8s"区间）。</p>
+
+    <div class="track" role="img" aria-label="欢迎序列时间轴：第 1 行淡入 250ms、停 700ms、第 2 行淡入 250ms、停 900ms、整屏淡出 300ms，合计 2400ms">
+      <div class="seg f1" style="flex:0 0 10.4167%">淡入<br>250</div>
+      <div class="seg h1" style="flex:0 0 29.1667%">停 700</div>
+      <div class="seg f1" style="flex:0 0 10.4167%">淡入<br>250</div>
+      <div class="seg h2" style="flex:0 0 37.5%">停 900</div>
+      <div class="seg out" style="flex:0 0 12.5%">淡出<br>300</div>
+    </div>
+    <div class="ruler"><span>0</span><span>250</span><span>950</span><span>1200</span><span>2100</span><span>2400 ms</span></div>
+
+    <div class="screens">
+      <div>
+        <div class="screen" role="img" aria-label="董事长欢迎序列示意：黑底两行白字「山高人为峰，客至心自明」「欢迎回来，董事长」，下方一条 64px 品牌色细线">
+          <p class="ln">山高人为峰，客至心自明</p>
+          <p class="ln">欢迎回来，董事长</p>
+          <span class="rule"></span>
+        </div>
+        <p class="screen-cap"><b><code>is_owner=1</code>（董事长 / 所有者）→ 两行</b>：<code>山高人为峰，客至心自明</code> / <code>欢迎回来，董事长</code></p>
+      </div>
+      <div>
+        <div class="screen" role="img" aria-label="其他角色欢迎序列示意：黑底一行白字「欢迎回来」，下方一条 64px 品牌色细线">
+          <p class="ln">欢迎回来</p>
+          <span class="rule"></span>
+        </div>
+        <p class="screen-cap"><b>其他角色（运营 / 客服 / 充值管理员）→ 一行</b>：<code>欢迎回来</code></p>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:16px">
+      <div class="card">
+        <h3 style="margin-top:0">排版规格（示意已按比例缩小，实际 44px）</h3>
+        <ul class="tight">
+          <li>全屏<b>纯黑底 <code>#000</code></b>（刻意不用页面近黑——要的就是"全屏纯黑"），盖住侧栏 / 顶栏 / 内容区。</li>
+          <li>居中、<b>44px / 字重 800 / 白字</b>（宽度 ≤1366 时降到 40px 防换行），两行间距 20px。</li>
+          <li>下方一条 <b>64px 宽 2px 高</b>的冰雪蓝细线（<code>#2563EB</code>，唯一点缀）。</li>
+          <li><b>没有</b>插画 / 光斑 / emoji（docs/21 反 AI 味硬规则）。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">文案与节奏的唯一出处</h3>
+        <ul class="tight">
+          <li>文案常量：<code>admin-web/src/constants/welcome.ts</code>——页面里<b>不许内联任何一句欢迎文案</b>，改字只改这一处（逐字照用，不改字、不改标点）。</li>
+          <li>节奏常量 <code>WELCOME_TIMING</code> + 总时长 <code>WELCOME_TOTAL_MS</code>（分段相加）同在<b>这一个文件</b>；全屏覆盖层在 <code>components/WelcomeSplash.vue</code>。</li>
+          <li><b>可跳过</b>：点击任意处 / 按任意键<b>立即结束</b>（避免每次登录都干等）。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    本页为<b>静态设计预览</b>（纯 CSS / 内联 SVG 示意，无外部依赖、无第三方素材、无真实数据）；
+    色值与节奏与 <code>admin-web</code> 实现一致，权威文字以
+    <code>docs/14-UI设计规范.md</code>「管理端外壳（2026-10-11 定案）」为准。
+    反 AI 味自检：无 emoji、无装饰插画、无渐变主视觉（仅卡顶 3px 一处小面积渐变）。
+  </div>
+</footer>
+
+</body>
+</html>

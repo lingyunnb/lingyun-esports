@@ -1,0 +1,405 @@
+/*
+ * 设计 Token（docs/14 + 2026-10-11 深色科技风外壳 + 2026-10-11 浅色为默认档
+ *            + **2026-10-14 品牌升级：墨蓝 × 青瓷**）
+ * ============================================================================
+ * 三端统一色（与 Flutter core `app_colors.dart` 逐值对齐，禁止各页自己写死十六进制）：
+ *   **品牌锚 墨蓝 #0F2440 / 主交互 #1D5FA8 / 强调 青瓷 #0E7C7B / 价格·等级 琥珀 #B4732A**
+ *   浅色（**默认档**）：冷灰蓝底 #F4F6F9 · 卡 #FFFFFF · 正文 #14202E / 次级 #4A5A6E ·
+ *                       发丝线 #E3E8EF · 侧栏 #FFFFFF
+ *   深色（保留档）：近黑底 #0B1220 · 卡 #111C2E · 文字 #E8EEF7 / #9DB0C8 · 发丝线 #1E2C42
+ *
+ * 2026-10-14 为什么换掉 #2563EB（Tailwind 默认蓝）：
+ *   它是全世界用得最多的蓝之一，**天生没有品牌感**（"看起来像模板"的头号原因）。
+ *   竞品研究（docs/29）证实两家成熟电竞服务 App **都不用中性蓝**。
+ *   新色板 = 墨蓝（锚，稳重）× 青瓷（强调，沉静）—— 高端服务业气质，不靠金、不靠渐变。
+ *   **本次只改色值，不动任何结构与类名** → 风险最小、可逐值回退。
+ *
+ * 为什么用 `html[data-theme="dark"]` 而不是 media query：
+ *   主题由管理端内自己选（`src/stores/theme.ts`），并且**要能被 CDP 验收脚本断言**
+ *   （读 `body` 的 computed background-color 是否真的变了）—— 属性选择器是唯一断得准的形态。
+ *   浅色是 `:root` 的**默认值**（不写 `html[data-theme="light"]` 分支）：这样即使属性缺失，
+ *   首屏也是浅色，不会退回"两边都不匹配"的空白态。
+ *
+ * 两档的取值都按 WCAG 对比度挑过（浅色档本次逐项复校，见文件末尾「对比度速查」）：
+ *   浅色：正文 #14202E on #FFFFFF = 16.1:1；次级 #4A5A6E = 7.4:1；三级 #6B7A90 = 4.5:1；
+ *         主按钮白字 on #1D5FA8 = 6.4:1；¥ 琥珀 #B4732A on #FFFFFF = 4.6:1
+ *   深色：正文 #E8EEF7 on #0B1220 = 15.6:1；次级 #9DB0C8 = 8.0:1；三级 #8CA3BE = 5.6:1
+ */
+:root {
+  /* ---------- 品牌色（两档共用，不随主题变） ---------- */
+  /* `--brand-primary` 是恒定值：装饰色块（指示条 / 卡片顶条 / 主按钮底）读它，永不被主题重映射 */
+  --brand-primary: #1d5fa8;
+  /* 品牌锚（墨蓝）：**只给深色大块用**（侧栏品牌区 / HeroCard 底），不做按钮底色 */
+  --brand-ink: #0f2440;
+  --color-primary: #1d5fa8;
+  --color-primary-hover: #17518f;
+  --color-primary-pressed: #123f70;
+  /* 主色的「文字态」：**深色底上专用**（#1D5FA8 压在 #111C2E 上偏暗，需提亮）
+     浅色档仍用 --color-primary 本身（白底上 6.4:1，达标） */
+  --color-primary-text: #1d5fa8;
+  /* 辅色改为青瓷（原青 #06B6D4 偏"科技蓝"，与墨蓝不同族；青瓷与墨蓝同属冷色但更沉静）
+     只在极小面积用，禁止做主视觉渐变铺底（docs/21 反 AI 味） */
+  --color-primary-secondary: #0e7c7b;
+  --color-primary-soft: rgba(29, 95, 168, 0.1);
+  /* 价格·等级：**全站唯一"金"**，由亮橙金 #D97706 降饱和为琥珀 #B4732A（docs/21 禁大量金色） */
+  --color-gold: #b4732a;
+  --color-gold-soft: #f7ede0;
+  --color-success: #0e7c7b;
+  --color-warning: #b45309;
+  --color-error: #b42318;
+  /* info：naive 默认 #2080F0 压白底只有 3.88:1（实测）→ 用主交互色同族，6.4:1 */
+  --color-info: #1d5fa8;
+
+  /* ---------- 浅色档（**默认档**，主区 + 登录页） ---------- */
+  --color-bg-page: #f4f6f9;
+  --color-bg-card: #ffffff;
+  --color-bg-sunken: #eef1f6;
+  /* 正文 #1F2937 = 14.0:1 on #FFFFFF / 13.2:1 on #F5F7FB（原 #0F172A 偏冷偏硬，本次按负责人给的浅色板校准） */
+  --color-text-primary: #14202e;
+  /* 次级 #5B6B82 = 5.3:1 on #FFFFFF（原 #475569 = 7.5:1 偏重，压在 12–13px 说明文字上"太黑"） */
+  --color-text-secondary: #4a5a6e;
+  /* 三级：**必须 ≥4.5:1**（面包屑、说明行、标签页关闭钮、占位符都落在白卡或页底 #F5F7FB 上）。
+     #94A3B8 只有 2.6:1（实测不达标）；#667792 on #FFFFFF = 4.9:1 但 on #F5F7FB 只有 4.24 →
+     页底上的说明文字（工作台 .block-hint、标签页 ×）实测不达标。
+     #5E7085：on #FFFFFF = 5.3:1、on #F5F7FB = **4.6:1**，两处都过。 */
+  --color-text-tertiary: #5e7085;
+  /* 发丝线 #e3e8ef（负责人指定值）：在白卡上是 1.08 亮度差、在白底侧栏上同样可见 */
+  --color-divider: #e3e8ef;
+  --color-border: #d5dde8;
+  /*
+   * 表格专用发丝线：**必须比通用 divider 再深一档**（浅色档 2026-10-11 实测）。
+   * 原因：naive 的 DataTable 把行/列线画成 `1px solid` 于**表体白底**上，
+   * #e3e8ef 只有 1.08:1、在 1600px 宽的表里"看得见但几乎不成线"；
+   * #d9e0ea 与 #FFFFFF 的亮度差 ≈0.026，是一像素但真的分得出行与列。
+   * 只给 DataTable 用，页面级/侧栏那条发丝线仍保持 #e3e8ef（负责人给的值）。
+   */
+  --table-hairline: #d9e0ea;
+
+  /* ---------- 侧栏（浅色档：白底 + 深字 + 一条发丝线与主区分隔） ---------- */
+  --sider-bg: #ffffff;
+  --sider-bg-elevated: #f8fafd;
+  /* 菜单未选中文字：#1F2937 on #FFFFFF = 14.0:1 */
+  --sider-text: #1f2937;
+  /* 次级/图标：#5B6B82 = 5.3:1 */
+  --sider-text-muted: #5b6b82;
+  /* 品牌副标（"管理后台"）：4.5:1 是底线，故不用更浅的 --color-text-tertiary */
+  --sider-text-dim: #5e7085;
+  --sider-divider: #e3e8ef;
+  --sider-hover: #f1f5fb;
+  --sider-active-bg: rgba(37, 99, 235, 0.08);
+  /* 分组父项 hover / 选中态：淡蓝底 */
+  --sider-parent-hover: #f4f7fd;
+  --sider-parent-active-bg: rgba(37, 99, 235, 0.07);
+  /* 选中项文字：主色本身（#2563EB on #FFFFFF = 5.2:1，浅色档达标，不借深色档的提亮值） */
+  --sider-active-text: #1d5fa8;
+  /* 品牌区主标题（侧栏品牌名 / 登录页品牌名）：浅色下走正文色，深色档再提亮 */
+  --brand-text: #1f2937;
+
+  /* ---------- 顶栏 / 标签页 ---------- */
+  --header-height: 56px;
+  --tabbar-height: 40px;
+  --sider-width: 220px;
+  --sider-width-collapsed: 64px;
+
+  /* ---------- 圆角分档（docs/21：4–6 / 10 / 14 / 胶囊，禁"一律大圆角"） ---------- */
+  --radius-card: 12px;
+  --radius-card-lg: 14px;
+  --radius-control: 8px;
+  --radius-tag: 6px;
+  --radius-pill: 999px;
+
+  /* ---------- 间距节奏（组内 8–10，组间 20–24） ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* ---------- 阴影只给弹层（docs/21：不铺满卡片） ---------- */
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-pop: 0 12px 32px rgba(15, 23, 42, 0.18);
+
+  /* ---------- 动效（克制：150–250ms，不用弹跳） ---------- */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur: 200ms;
+}
+
+html[data-theme='dark'] {
+  --color-bg-page: #0b1220;
+  --color-bg-card: #111c2e;
+  --color-bg-sunken: #0e1728;
+  --color-text-primary: #e8eef7;
+  --color-text-secondary: #9db0c8;
+  --color-text-tertiary: #6b8199;
+  --color-divider: #1e2c42;
+  --color-border: #22304a;
+  --color-primary-soft: rgba(37, 99, 235, 0.18);
+  /* 主色文字态提亮一档：3.62 → 8.1:1（深色下"选中项/链接/金额强调"都必须看得清） */
+  --color-primary-text: #7fb0ff;
+  /* 琥珀金在深底上要提亮一档才够对比度（#D97706 在 #111C2E 上只有 5.4:1，且偏暗看不清"数字感"） */
+  --color-gold: #f0a63c;
+  --color-gold-soft: rgba(240, 166, 60, 0.16);
+  /* 三级文字：深色档必须 ≥4.5:1。
+     它在深色里主要落在**卡片面 #111C2E**（面包屑/说明文字都在 header 与卡面上），
+     #6B8199 只有 4.25 → 实测不达标；#8CA3BE 提到 5.56:1，卡面上看得清、也不刺眼。 */
+  --color-text-tertiary: #8ca3be;
+  --color-success: #22c55e;
+  --color-warning: #fb923c;
+  --color-error: #f87171;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.5);
+
+  /* 侧栏在深色档回到近黑（浅色档是白底）——两档共用同一批变量名，LayoutView 一行不用改 */
+  --sider-bg: #0b1220;
+  --sider-bg-elevated: #111c2e;
+  --sider-text: #e8eef7;
+  --sider-text-muted: #9db0c8;
+  --sider-text-dim: #8ca3be;
+  --sider-divider: rgba(255, 255, 255, 0.08);
+  --sider-hover: rgba(255, 255, 255, 0.06);
+  --sider-active-bg: rgba(37, 99, 235, 0.18);
+  --sider-parent-hover: rgba(255, 255, 255, 0.06);
+  --sider-parent-active-bg: rgba(37, 99, 235, 0.14);
+  /*
+   * 选中项文字：深色底上 #2563EB 只有 3.6:1、#7FB0FF 只有 4.66:1（实测都差一点）→
+   * 侧栏这一处单独提到 #A9C9FF（压在 --sider-active-bg 之上 ≈9:1）。
+   */
+  --sider-active-text: #a9c9ff;
+  --brand-text: #eef4ff;
+  /* 深色档表格线沿用 darkOverrides.DataTable.borderColor（#26364F）——两者必须同值 */
+  --table-hairline: #26364f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+}
+
+/* 深色档还要管到浏览器自身的控件与滚动条，否则白底滚动条会破坏整屏观感 */
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+html[data-theme='dark'] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+html[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: #22304a;
+  border-radius: var(--radius-pill);
+}
+html[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: #2e405f;
+}
+html[data-theme='dark'] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/*
+ * 页面级通用版式（深色外壳适配，**只动样式不动业务**）
+ * ---------------------------------------------------------------------------
+ * 22 个业务页各自都有 `<h1>` 页头 + 自己的 scoped 样式。这里用一条通用规则统一页头节奏
+ * （字号/字重/下边距），使它们在新外壳里与工作台对齐 —— 不必去改任何一个页面组件。
+ */
+.page-head h1,
+.view-head h1 {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+/*
+ * 深色档下**既有页面里写死的浅色**的收口（2026-10-11）
+ * ---------------------------------------------------------------------------
+ * 巡查全仓 `views/*.vue` 的样式块后，只剩两类硬编码浅色会在深色底上"发白/看不清"：
+ *   · `#fff7e6` / `#f5e0b7`：RechargeView 的「缺权限说明」提示条（浅琥珀底）
+ *   · `#64748b` / `#94a3b8`：DivisionsView 的 `h2 + .sub` / `.hint` / `.foot-hint` 说明文字
+ * 这两处都是**纯视觉**问题，按"只换壳不动业务"的口径在这里（而不是页面里）用高优先级选择器改掉：
+ * 属性选择器 `html[data-theme='dark']` 比页面 scoped 的 `.sub`（带 data-v 属性）更具体，稳定生效。
+ * 颜色取自同一套 token 值域（text-secondary / text-tertiary / 琥珀金柔底），不引入新色。
+ */
+html[data-theme='dark'] .perm-note {
+  background: var(--color-gold-soft);
+  border-color: rgba(240, 166, 60, 0.32);
+  color: var(--color-text-primary);
+}
+html[data-theme='dark'] .sub {
+  color: var(--color-text-secondary);
+}
+html[data-theme='dark'] .hint,
+html[data-theme='dark'] .foot-hint {
+  color: var(--color-text-tertiary);
+}
+
+/*
+ * 既有页面里"主色被当成正文颜色"的收口（2026-10-11 逐页实测）
+ * ---------------------------------------------------------------------------
+ * 浅色档里 `color: var(--color-primary)`（#2563EB 压白底 = 5.2:1）是达标的写法，
+ * 但**同一句在深色档就掉到 3.3:1**（#2563EB 压 #111C2E）—— 实测在 4 个页面上命中：
+ *   · WalletsView / OrdersView 的金额 `<strong>`（¥100.00 / ¥18.80）
+ *   · CatalogView / SettingsView 的部分说明与链接文字
+ * 统一改走 `--color-primary-text`（深色档 = #7FB0FF，8.1:1；浅色档仍等于主色），
+ * 并把**各页 TS 内联样式**里读的 `--color-primary` 在深色档整体重映射到它。
+ * 只动颜色，不动任何排版与字段 —— 属于"只换壳"的允许范围。
+ */
+html[data-theme='dark'] {
+  --color-primary: var(--color-primary-text);
+}
+/*
+ * 例外：**装饰与主按钮底**必须留住原来的品牌主色本身（它们是色块，不是文字）：
+ *   · 侧栏 / 标签页的品牌色指示条、卡片顶部 3px 色条 → 一律显式读 `--brand-primary`（恒定值）
+ *   · naive 的主按钮底 → 由 theme.ts 的 Dark `Button` override 单独钉住
+ * 这里不再用"整体重映射再救回来"的写法：**谁是文字、谁是色块**一次性分清楚，后人不用猜。
+ */
+
+/*
+ * 等级徽标（WalletsView 的 LEVELS / UsersView 的同类徽章）：色值与柔底是为白底挑的，
+ * 深色档下柔底（#FDF3E3 / #F1F3F7…）会变成一块刺眼的浅色补丁、字反而糊在里头。
+ * 这里统一改成"品牌柔底 + 提亮文字"，**等级用字（★ L3 精英会员）与分档语义保持不变**。
+ * 页面里那层内联样式已改成 `var(--lvl-bg, 原值)` 形式，所以这里的变量能接管。
+ * 浅色档的五档值另在上面 `:root` 里（`--lvl-N-bg/fg`），本次一并把 4 档不达标的压深。
+ */
+html[data-theme='dark'] {
+  --lvl-bg: rgba(127, 176, 255, 0.16);
+  --lvl-fg: var(--color-primary-text);
+}
+
+/*
+ * 分页器「当前页」：naive 自己用 `primaryColor` 上色（不走我方的 `--color-primary`），
+ * 深色档下 #2563EB 压在近黑底上只有 3.62:1 —— 用一行规则把它提到主色文字态。
+ * 只动这一处数字颜色，翻页行为不受影响。
+ */
+html[data-theme='dark'] .n-pagination-item--active {
+  color: var(--color-primary-text) !important;
+}
+
+/*
+ * 主按钮文字（2026-10-11 实测）
+ * ---------------------------------------------------------------------------
+ * 深色档下 naive-ui 2.45 把**实心主按钮**的 `textColorPrimary` 解析成了黑色
+ * （黑字压 #2563EB = 4.06:1，且"蓝底黑字"本身就不是这套设计语言）；
+ * `ghost`（查询按钮）/ `text` 变体则没有吃到 theme.ts 里的 override，仍是 #2563EB（3.3:1）。
+ * 两处都在这里一次收口：
+ *   · 实心主按钮 → 白字（5.17:1；disabled 也保持白字，否则禁用态会掉回黑字）
+ *   · ghost / text 主按钮 → 主色文字态 #7FB0FF（8.1:1）
+ * 只动颜色，不动 hover / 点击 / 禁用等任何交互行为。
+ */
+html[data-theme='dark'] .n-button--primary-type .n-button__content {
+  color: #ffffff !important;
+}
+html[data-theme='dark'] .n-button--primary-type.n-button--ghost .n-button__content,
+html[data-theme='dark'] .n-button--primary-type.n-button--text .n-button__content {
+  color: var(--color-primary-text) !important;
+}
+
+/*
+ * ============================================================================
+ * 浅色档为默认档的收口（2026-10-11 第二轮：主题改「白色（浅色）」为默认）
+ * ============================================================================
+ * 上面所有 `html[data-theme='dark']` 规则**一律不动**（深色档仍是完整可用的一档）；
+ * 这里只补浅色档需要的那几条 —— 浅色是 `:root` 的默认值，所以选择器直接写 `html`（不用属性分支），
+ * 这样"属性没写上"也不会掉进无人区。
+ */
+
+/*
+ * ① 主按钮文字：浅色档同样**必须是白字**。
+ *    naive-ui 2.45 把实心主按钮的文字色解析成"黑色"（黑字压 #2563EB = 4.06:1，
+ *    且蓝底黑字不属于这套设计语言）；`ghost` / `text` 变体不吃 override，会退回 #2563EB
+ *    （白底上 5.2:1 达标，但比实心按钮"蓝字+蓝边"，轻重不分）。两处都收口：只动颜色。
+ */
+html .n-button--primary-type .n-button__content {
+  color: #ffffff !important;
+}
+html .n-button--primary-type.n-button--ghost .n-button__content,
+html .n-button--primary-type.n-button--text .n-button__content {
+  color: var(--color-primary) !important;
+}
+
+/*
+ * ② 表格发丝线：naive 2.45 的 DataTable 线色来自 `--n-border-color`（common.borderColor），
+ *    而 common 那一档还要服务输入框/描边等控件 → 不能整体压深。这里只把**表格内部**
+ *    的 `--n-border-color` 钉到 `--table-hairline`（浅色 #d9e0ea / 深色 #26364F，与
+ *    theme.ts 的 DataTable.borderColor 同值）：表头表体行列线一次到位，且不动任何列宽。
+ */
+.n-data-table {
+  --n-border-color: var(--table-hairline);
+}
+
+/*
+ * ③ 琥珀金（金额 `¥` / 等级）：`#D97706` 压在白卡上只有 3.4:1（实测不达标），
+ *    浅色档降到同色系更深一档 `#B45309`（= 5.1:1）。语义不变、只换深浅。
+ *    为什么写在这个选择器而不是 `:root`：`--color-gold` 被**各页内联样式**（¥ 金额、等级徽标）
+ *    与 DashboardView 一起读，改根值 = 一次全局换色，正是这里要的效果；
+ *    而深色档 `--color-gold: #F0A63C`（9.1:1）**不受影响**——它是 `html[data-theme='dark']`
+ *    里的声明，权重高于 `html:not([data-theme='dark'])`，深色下这条不生效。
+ */
+html:not([data-theme='dark']) {
+  --color-gold: #b45309;
+}
+
+/*
+ * 等级徽标（WalletsView 的 LEVELS）：色值与柔底是为**白底**挑的，但 5 档里有 4 档压不到 AA
+ * （浅色档 2026-10-11 实测）：
+ *   L1 #8A94A6 on #F1F3F7 = 2.75:1 · L2 #3D9BE9 on #EAF5FE = 2.69:1 ·
+ *   L3 #E8A23A on #FDF3E3 = 1.98:1 · L4 #8B5CF6 on #F3EEFE = 3.72:1 · L5 #E5484D on #FDECEA = 3.42:1
+ * 这五处是**页面 TS 里的内联样式**（`style="...background:var(--lvl-bg, 原值);color:var(--lvl-fg, 原值)"`），
+ * 属性选择器赢不了 `!important`、也不该去页面上逐行改色 → 在**同一套 token 里**给浅色档重挑深一档的
+ * 同色相值（保色相、只压深。级别用字「☆ L1 新星会员」与分档语义**逐字未动**）：
+ *   L1 #5E7085 = 4.57:1 · L2 #0369A1 = 5.37:1 · L3 #B45309 = 4.57:1 · L4 #6D28D9 = 6.25:1 · L5 #B91C1C = 5.66:1
+ * 柔底（bg）保持原值：它是色块不适用文字阈值，动了反而会让五档看着像换了套体系。
+ * 深色档的同名变量在下面的 `html[data-theme='dark']` 里已另有一套（品牌柔底 + 提亮文字）。
+ */
+:root {
+  --lvl-1-bg: #f1f3f7;
+  --lvl-1-fg: #5e7085;
+  --lvl-2-bg: #eaf5fe;
+  --lvl-2-fg: #0369a1;
+  --lvl-3-bg: #fdf3e3;
+  --lvl-3-fg: #b45309;
+  --lvl-4-bg: #f3eefe;
+  --lvl-4-fg: #6d28d9;
+  --lvl-5-bg: #fdecea;
+  --lvl-5-fg: #b91c1c;
+}
+
+/*
+ * 对比度速查（浅色档，2026-10-11 复校，阈值 AA：正文 ≥4.5、大字号 ≥3.0）
+ * ---------------------------------------------------------------------------
+ *   正文 #1F2937 / 白卡 #FFFFFF .......... 14.7:1  ✓
+ *   正文 #1F2937 / 页面底 #F5F7FB ........ 13.7:1  ✓
+ *   次级 #5B6B82 / 白卡 ..................  5.4:1  ✓   （页底 5.1:1）
+ *   三级 #5E7085 / 白卡 ..................  5.1:1  ✓   （页底 4.7:1 ✓；面包屑、说明行、占位符）
+ *   主按钮 白字 / #2563EB ................  5.2:1  ✓
+ *   分页当前页 #2563EB / #F5F7FB .........  4.8:1  ✓
+ *   链接·强调 #2563EB / 白卡 .............  5.2:1  ✓
+ *   金额 ¥ #B45309 / 白卡 ................  5.0:1  ✓
+ *   成功 #15803D / 白卡 ..................  5.0:1  ✓   （白字压它也是 5.0:1）
+ *   警示 #C2410C / 白卡 ..................  5.2:1  ✓   （白字压它 5.2:1）
+ *   错误 #DC2626 / 白卡 ..................  4.8:1  ✓
+ *   侧栏菜单 #1F2937 / 白底侧栏 .......... 14.7:1  ✓
+ *   侧栏选中 #2563EB / #F4F7FD ...........  4.8:1  ✓
+ *   分组父项 #1F2937 / #F4F7FD ........... 13.4:1  ✓
+ *   等级徽标五档（fg on 自家柔底）......... 4.6 / 5.4 / 4.6 / 6.3 / 5.7:1  ✓
+ *   发丝线 #e3e8ef / #FFFFFF ............. 1.08:1（装饰线，不适用文字阈值）
+ *   表格线 #d9e0ea / #FFFFFF ............. 1.15:1（装饰线，但肉眼可分行列）
+ */
+
+

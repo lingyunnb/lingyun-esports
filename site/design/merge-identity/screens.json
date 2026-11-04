@@ -1,0 +1,313 @@
+{
+  "generatedAt": "2026-10-06T04:59:53.447Z",
+  "screens": [
+    {
+      "set": "A",
+      "key": "a1",
+      "file": "a1-boss-mine.html",
+      "title": "A1 老板态 · 我的（含「切换身份」入口）",
+      "kind": "boss",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "set": "A",
+      "key": "a2",
+      "file": "a2-switch-sheet.html",
+      "title": "A2 切换身份 · 底部弹层",
+      "kind": "boss",
+      "states": [
+        "default",
+        "error",
+        "role",
+        "banned",
+        "conflict",
+        "noperm",
+        "bound"
+      ]
+    },
+    {
+      "set": "A",
+      "key": "a3",
+      "file": "a3-worker-hall.html",
+      "title": "A3 打手态 · 接单大厅",
+      "kind": "worker",
+      "states": [
+        "default",
+        "empty",
+        "noperm",
+        "kicked"
+      ]
+    },
+    {
+      "set": "A",
+      "key": "a4",
+      "file": "a4-worker-messages.html",
+      "title": "A4 打手态 · 消息（老板 / 客服）",
+      "kind": "worker",
+      "states": [
+        "default",
+        "cs"
+      ]
+    },
+    {
+      "set": "A",
+      "key": "a5",
+      "file": "a5-worker-mine.html",
+      "title": "A5 打手态 · 我的",
+      "kind": "worker",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "set": "A",
+      "key": "a6",
+      "file": "a6-boss-mine-bound.html",
+      "title": "A6 切回老板态 · 我的（已绑定 / 解绑）",
+      "kind": "boss",
+      "states": [
+        "default",
+        "unbind"
+      ]
+    },
+    {
+      "set": "B",
+      "key": "b1",
+      "file": "b1-boss-mine.html",
+      "title": "B1 老板态 · 我的（工作台入口条）",
+      "kind": "boss",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "set": "B",
+      "key": "b2",
+      "file": "b2-switch-sheet.html",
+      "title": "B2 切换身份 · 弹层（全屏工作区告知）",
+      "kind": "boss",
+      "states": [
+        "default",
+        "error",
+        "conflict",
+        "bound"
+      ]
+    },
+    {
+      "set": "B",
+      "key": "b3",
+      "file": "b3-worker-hall.html",
+      "title": "B3 打手工作台 · 接单大厅（高密度）",
+      "kind": "worker",
+      "states": [
+        "default",
+        "empty",
+        "noperm"
+      ]
+    },
+    {
+      "set": "B",
+      "key": "b4",
+      "file": "b4-worker-messages.html",
+      "title": "B4 打手工作台 · 消息",
+      "kind": "worker",
+      "states": [
+        "default",
+        "cs"
+      ]
+    },
+    {
+      "set": "B",
+      "key": "b5",
+      "file": "b5-worker-mine.html",
+      "title": "B5 打手工作台 · 我的",
+      "kind": "worker",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "set": "B",
+      "key": "b6",
+      "file": "b6-boss-mine-bound.html",
+      "title": "B6 切回老板态 · 我的（已绑定）",
+      "kind": "boss",
+      "states": [
+        "default",
+        "unbind"
+      ]
+    },
+    {
+      "set": "C",
+      "key": "c1",
+      "file": "c1-boss-mine.html",
+      "title": "C1 老板态 · 我的（顶部身份切换器）",
+      "kind": "boss",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "set": "C",
+      "key": "c2",
+      "file": "c2-switch-sheet.html",
+      "title": "C2 切换身份 · 弹层（两枚身份卡）",
+      "kind": "boss",
+      "states": [
+        "default",
+        "error",
+        "noperm",
+        "bound"
+      ]
+    },
+    {
+      "set": "C",
+      "key": "c3",
+      "file": "c3-worker-hall.html",
+      "title": "C3 打手态 · 接单大厅（同骨架改写）",
+      "kind": "worker",
+      "states": [
+        "default",
+        "empty"
+      ]
+    },
+    {
+      "set": "C",
+      "key": "c4",
+      "file": "c4-worker-messages.html",
+      "title": "C4 打手态 · 消息（含好友段条件显示对比）",
+      "kind": "worker",
+      "states": [
+        "default",
+        "cs",
+        "withfriend"
+      ]
+    },
+    {
+      "set": "C",
+      "key": "c5",
+      "file": "c5-worker-mine.html",
+      "title": "C5 打手态 · 我的",
+      "kind": "worker",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "set": "C",
+      "key": "c6",
+      "file": "c6-boss-mine-bound.html",
+      "title": "C6 切回老板态 · 我的（身份切换器选中老板）",
+      "kind": "boss",
+      "states": [
+        "default",
+        "unbind"
+      ]
+    }
+  ],
+  "screensAPlus": [
+    {
+      "set": "A+",
+      "key": "aplus1",
+      "file": "aplus1-boss-mine.html",
+      "title": "A+1 老板态 · 我的（当前身份：老板）",
+      "kind": "boss",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "set": "A+",
+      "key": "aplus1b",
+      "file": "aplus1b-boss-mine-bound-limit.html",
+      "title": "A+1b 老板态 · 我的（绑定上限已满）",
+      "kind": "boss",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "set": "A+",
+      "key": "aplus2",
+      "file": "aplus2-switch-transition.html",
+      "title": "A+2 切换中 · 过渡提示（Toast / 骨架就位）",
+      "kind": "worker",
+      "states": [
+        "toast",
+        "midway"
+      ]
+    },
+    {
+      "set": "A+",
+      "key": "aplus3",
+      "file": "aplus3-worker-hall.html",
+      "title": "A+3 打手态 · 接单大厅（含身份细带）",
+      "kind": "worker",
+      "states": [
+        "default",
+        "empty",
+        "noperm",
+        "kicked"
+      ]
+    },
+    {
+      "set": "A+",
+      "key": "aplus4",
+      "file": "aplus4-worker-messages.html",
+      "title": "A+4 打手态 · 消息（老板 / 客服，含身份细带）",
+      "kind": "worker",
+      "states": [
+        "default",
+        "cs"
+      ]
+    },
+    {
+      "set": "A+",
+      "key": "aplus5",
+      "file": "aplus5-worker-mine.html",
+      "title": "A+5 打手态 · 我的（工号 / 切回老板 / 解绑）",
+      "kind": "worker",
+      "states": [
+        "default",
+        "unbind"
+      ]
+    },
+    {
+      "set": "A+",
+      "key": "aplus6",
+      "file": "aplus6-boss-mine-unbound.html",
+      "title": "A+6 解绑后回到老板态 · 我的",
+      "kind": "boss",
+      "states": [
+        "done",
+        "after"
+      ]
+    }
+  ],
+  "bossOnlyWords": [
+    "下单",
+    "找陪玩",
+    "快速下单",
+    "祁小山",
+    "排行榜",
+    "玩家圈",
+    "社区",
+    "发帖",
+    "会员",
+    "VIP",
+    "积分卡",
+    "开通会员",
+    "我的积分卡",
+    "优惠券",
+    "猫粮",
+    "尊享",
+    "赛事",
+    "俱乐部招募",
+    "陪玩列表",
+    "商品",
+    "购物车",
+    "积分商城"
+  ]
+}

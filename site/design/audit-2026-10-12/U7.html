@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>U7 · pointsPerYuan 前端默认值与服务端不一致 · 设计图</title>
+<!--
+  U7 设计图 —— 自包含 HTML：纯 CSS + 内联 SVG，无外部依赖、无第三方截图。
+  逐值取证：
+    · 前端 admin-web/src/api/recharge.ts:150  export const DEFAULT_POINTS_PER_YUAN = 10;
+    · 前端 admin-web/src/api/recharge.ts:159  DEFAULT_CONFIG.pointsPerYuan = DEFAULT_POINTS_PER_YUAN
+    · 前端 admin-web/src/api/recharge.ts:177  normalizeConfig → asNum(..., DEFAULT_CONFIG.pointsPerYuan)
+    · 前端 admin-web/src/views/RechargeView.vue:1022  draft = reactive({ …, pointsPerYuan: 10, … })
+    · 前端 admin-web/src/views/RechargeView.vue:1059-1062  previewPoints(yuan) = draft.pointsPerYuan * yuan
+    · 前端 admin-web/src/views/RechargeView.vue:228  例：付款 10 元 → 到账 {{ formatYuan(previewPoints(10)) }}
+    · 服务端 server/src/modules/recharge/recharge-config.ts:99  pointsPerYuan: 1
+    · 库中现值 = 1（docs/24c-管理端.md ⑤ 与 docs/待确认事项 均记录）
+  本图只是设计示意，**未改动任何产品代码**。
+-->
+<style>
+:root{
+  --brand:#2563EB;--brand-soft:rgba(37,99,235,.10);--cyan:#06B6D4;--gold:#B45309;
+  --bg:#F5F7FB;--surface:#FFFFFF;--sunken:#F1F5F9;
+  --ink:#1F2937;--ink2:#5B6B82;--ink3:#5E7085;
+  --hair:#E5E9F2;--hair2:#DCE3EE;
+  --ok:#15803D;--warn:#C2410C;--err:#DC2626;
+  --r-sm:6px;--r-ctl:8px;--r-card:10px;--r-panel:14px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:30px 26px 64px}
+.kicker{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--r-sm);
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink2);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin:12px 0 8px}
+.lead{font-size:13.5px;color:var(--ink2);max-width:960px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:var(--ink3)}
+.meta b{color:var(--ink);font-weight:700}
+h2{font-size:16.5px;font-weight:800;letter-spacing:-.2px;padding-bottom:8px;border-bottom:1px solid var(--hair);margin:30px 0 14px}
+p{font-size:13px;color:var(--ink2)}
+code{background:#EEF2F8;border-radius:3px;padding:1px 4px;font-size:11.5px;color:#1E293B;font-family:var(--mono)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:980px){.two{grid-template-columns:1fr}}
+.stack{display:flex;flex-direction:column;gap:16px}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:16px 17px 18px;display:flex;flex-direction:column;gap:12px}
+.panel-head{display:flex;align-items:center;gap:9px}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--r-sm);font-size:11px;font-weight:800;letter-spacing:.02em}
+.chip-before{background:var(--sunken);border:1px solid var(--hair);color:var(--ink2)}
+.chip-after{background:var(--brand-soft);border:1px solid rgba(37,99,235,.22);color:var(--brand)}
+.chip-bad{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.22);color:var(--err)}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink)}
+.panel-sub{font-size:11.5px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+/* ── 数值对照 ─────────────────────────────────────────── */
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
+@media (max-width:760px){.vs{grid-template-columns:1fr}}
+.vsbox{border:1px solid var(--hair);border-radius:var(--r-card);padding:13px 14px;background:var(--surface);text-align:center}
+.vsbox.bad{border-color:rgba(220,38,38,.34);background:rgba(220,38,38,.035)}
+.vsbox.good{border-color:rgba(21,128,61,.30);background:rgba(21,128,61,.04)}
+.vsbox .k{font-size:11.5px;color:var(--ink3);font-family:var(--mono)}
+.vsbox .v{font-size:27px;font-weight:800;letter-spacing:-.5px;font-variant-numeric:tabular-nums;margin:3px 0 2px}
+.vsbox.bad .v{color:var(--err)}
+.vsbox.good .v{color:var(--ok)}
+.vsbox .n{font-size:11.5px;color:var(--ink2)}
+.vsmark{font-size:20px;font-weight:800;color:var(--ink3);text-align:center}
+/* ── 面板复刻（到账比例） ─────────────────────────────── */
+.mock{border:1px solid var(--hair2);border-radius:var(--r-ctl);background:var(--surface);padding:13px 14px;display:flex;flex-direction:column;gap:10px}
+.mock-h{display:flex;align-items:baseline;gap:8px}
+.mock-h h4{font-size:13.5px;font-weight:800}
+.mock-h span{font-size:11.5px;color:var(--ink3);line-height:1.55}
+.frow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.flabel{font-size:12.5px;color:var(--ink2)}
+.finput{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:1px solid var(--hair2);
+  border-radius:var(--r-ctl);background:var(--surface);font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;min-width:118px}
+.finput.bad{border-color:rgba(220,38,38,.45);color:var(--err)}
+.finput.good{border-color:rgba(21,128,61,.38);color:var(--ok)}
+.finput .suf{margin-left:auto;font-size:11px;font-weight:400;color:var(--ink3)}
+.fprev{font-size:12px;color:var(--ink2)}
+.fprev b{color:var(--ink);font-variant-numeric:tabular-nums}
+.fprev .wrong{color:var(--err);font-weight:800}
+.alert{border:1px solid #F5E0B7;background:#FFF7E6;border-radius:var(--r-ctl);padding:9px 11px;font-size:11.5px;line-height:1.7;color:#7C4A03}
+.alert b{color:#5A3602}
+.alert code{background:rgba(180,83,9,.12);color:#7C4A03}
+.btn{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:var(--r-ctl);
+  background:var(--brand);border:1px solid var(--brand);color:#fff;font-size:12px;font-weight:600}
+.btn.dis{background:var(--sunken);border-color:var(--hair2);color:#AEB8C6}
+/* ── 代码块 ────────────────────────────────────────────── */
+.code{background:#0B1220;border:1px solid #1E2C42;border-radius:var(--r-card);padding:11px 12px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:#CFE0FF;overflow-x:auto;white-space:pre}
+.code .c{color:#7E93B4}
+.code .k{color:#8CA3BE}
+.code .add{color:#A9E7C0}
+.code .del{color:#FFB4B4;text-decoration:line-through;text-decoration-color:rgba(255,120,120,.55)}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+.tbl th{font-size:11.5px;font-weight:800;color:var(--ink3);background:var(--sunken)}
+.tbl td{color:var(--ink2)}
+.tbl td b{color:var(--ink)}
+.tbl td.mono{font-family:var(--mono);font-size:11.5px;color:var(--ink)}
+.note{display:flex;gap:9px;border:1px solid var(--hair);border-left:3px solid var(--brand);
+  border-radius:var(--r-ctl);padding:10px 12px;background:var(--surface);font-size:12.5px;color:var(--ink2)}
+.note.warn{border-left-color:var(--warn)}
+.note.ok{border-left-color:var(--ok)}
+.note.err{border-left-color:var(--err)}
+.note b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11.5px;color:var(--ink3)}
+.legend b{color:var(--ink)}
+.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--ink3);line-height:1.8}
+.foot b{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="kicker">U7 · 真隐患（数值口径） · 建议优先级 P0</span>
+  <h1>pointsPerYuan：前端默认值 10，服务端现值 1</h1>
+  <p class="lead">
+    前端在 <code>api/recharge.ts</code> 里把「1 元到账多少余额」的<b>兜底默认值写成了 10</b>，
+    而服务端常量与库中现值都是 <b>1</b>。正常路径下前端会用接口下发值覆盖它，
+    所以<b>平时看不出来</b>；一旦配置接口没拿到值，管理端就会按 <b>10 倍</b>换算并显示。
+    <b>本图只出方案，不改代码。</b>
+  </p>
+  <div class="meta">
+    <span>前端默认：<b>10</b>（<code>api/recharge.ts:150</code>）</span>
+    <span>服务端默认：<b>1</b>（<code>recharge-config.ts:99</code>）</span>
+    <span>库中现值：<b>1</b></span>
+    <span>差额：<b>10 倍</b></span>
+  </div>
+
+  <h2>两个数字</h2>
+  <div class="vs">
+    <div class="vsbox bad">
+      <div class="k">admin-web/src/api/recharge.ts:150</div>
+      <div class="v">10</div>
+      <div class="n">前端兜底默认值<br><code>DEFAULT_POINTS_PER_YUAN = 10</code></div>
+    </div>
+    <div class="vsmark">≠</div>
+    <div class="vsbox good">
+      <div class="k">server/…/recharge-config.ts:99</div>
+      <div class="v">1</div>
+      <div class="n">服务端默认值 = 库中现值<br><code>pointsPerYuan: 1</code>（1 元 = 1 元）</div>
+    </div>
+  </div>
+
+  <h2>这个不一致会导致什么</h2>
+  <div class="stack">
+
+    <!-- ============ 触发路径 ============ -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-bad">触发条件</span>
+        <span class="panel-title">配置接口没拿到值时 → 管理端按 10 倍换算并显示</span>
+        <span class="panel-sub">RechargeView</span>
+      </div>
+      <div class="two">
+        <div style="display:flex;flex-direction:column;gap:11px">
+          <div class="note">
+            <span>①</span>
+            <span><b>正常路径（没事）</b>：进页面 → <code>loadConfig()</code> 成功 → <code>Object.assign(draft, { pointsPerYuan: cfg.pointsPerYuan })</code>
+            → 草稿被服务端的 <b>1</b> 覆盖 → 显示正确。</span>
+          </div>
+          <div class="note err">
+            <span>②</span>
+            <span><b>异常路径（出事）</b>：<code>getConfig()</code> 失败（网络抖动 / 500 / 会话中途丢权限 403）→
+            <code>catch</code> 只弹一句报错，<b><code>saved</code> 仍为 null、<code>draft</code> 保持初值</b> →
+            <code>draft.pointsPerYuan</code> 停在字面量 <b>10</b> → 页面照常渲染这块面板。</span>
+          </div>
+          <div class="note err">
+            <span>③</span>
+            <span><b>同源第二处</b>：即使请求成功，只要服务端响应里<b>缺</b> <code>pointsPerYuan</code> 键，
+            <code>normalizeConfig()</code> 也会回落到 <code>DEFAULT_CONFIG.pointsPerYuan = 10</code> —— 兜底兜的是<b>错的那个数</b>。</span>
+          </div>
+          <div class="note ok">
+            <span>✓</span>
+            <span><b>一个缓解因素（必须说清）</b>：<code>cfgDirty</code> 在 <code>saved === null</code> 时返回 <code>false</code>，
+            于是「保存设置」按钮<b>处于禁用态</b> → 这个错误数字<b>写不进库</b>。
+            所以本项是<b>显示误导</b>，不是数据损坏。（但误导的是超管，后果仍不可小看 —— 见右。）</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:11px">
+          <div class="legend"><span><b>界面实际长这样</b>（配置接口失败时）</span></div>
+          <div class="mock" style="border-color:rgba(220,38,38,.34)">
+            <div class="mock-h">
+              <h4>到账比例</h4>
+              <span>老板端每一档显示多少余额、审核列表里的「应得余额」，都由这一项算出来（口径：余额 = 元，1 元 = 1 元）。</span>
+            </div>
+            <div class="frow">
+              <span class="flabel">1 元 到账</span>
+              <span class="finput bad">10<span class="suf">余额</span></span>
+              <span class="fprev">例：付款 10 元 → 到账 <b class="wrong">¥100.00</b> · 付款 68 元 → 到账 <b class="wrong">¥680.00</b></span>
+            </div>
+            <div class="alert">
+              <b>改这里会影响全站口径</b>：老板端「充值」页显示的应得余额、各档位到账余额、审核列表的应得余额，
+              全部按「1 元 到账 <b>10</b> 余额」实时计算。改动<b>立即生效</b>，请先跟负责人确认新口径再保存。
+            </div>
+            <div class="frow">
+              <span class="btn dis">保存设置</span>
+              <span class="btn dis">重置为当前生效值</span>
+              <span class="fprev" style="font-size:11px">（禁用：草稿未加载，无"当前生效值"可比）</span>
+            </div>
+          </div>
+          <div class="note err">
+            <span>⚠</span>
+            <span><b>为什么这不是"小事"</b>：这块面板是<b>全站资金口径的唯一配置入口</b>，而它现在把
+            <b>¥10.00 说成 ¥100.00</b>（<code>previewPoints</code> 直接乘 <code>draft.pointsPerYuan</code>）。
+            超管看到"付款 10 元到账 100 元"的第一反应可能是<b>去改这个数字</b>（以为线上真的配成了 10）——
+            一旦他把 10 改成别的值并保存，<b>就真的改了全站口径</b>。</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="code"><span class="c">// ① 前端把兜底默认值写成 10（api/recharge.ts:149-163）</span>
+<span class="k">export const</span> DEFAULT_AMOUNT_OPTIONS = [6, 10, 20, 38, 68, 98, 128, 198, 328, 648];
+<span class="k">export const</span> DEFAULT_POINTS_PER_YUAN = <span class="del">10</span>;   <span class="c">// ← 服务端是 1</span>
+
+<span class="k">export const</span> DEFAULT_CONFIG: RechargeConfig = {
+  amountOptions: [...DEFAULT_AMOUNT_OPTIONS],
+  minYuan: 1, maxYuan: <span class="del">9999</span>,   <span class="c">// ← 服务端默认是 10000，也不是同一个数</span>
+  pointsPerYuan: <span class="del">DEFAULT_POINTS_PER_YUAN</span>,
+  …
+};
+
+<span class="c">// ② normalizeConfig 用它兜底（:177）</span>
+pointsPerYuan: asNum(pick(r, ['pointsPerYuan', 'points_per_yuan']),
+                     <span class="del">DEFAULT_CONFIG.pointsPerYuan</span>),   <span class="c">// ← 缺字段就变 10</span>
+
+<span class="c">// ③ 页面草稿又是一份字面量（RechargeView.vue:1017-1029）</span>
+<span class="k">const</span> draft = reactive&lt;RechargeConfig&gt;({
+  amountOptions: [], customEnabled: <span class="k">true</span>,
+  minYuan: 1, maxYuan: <span class="del">9999</span>,
+  pointsPerYuan: <span class="del">10</span>,        <span class="c">// ← 第三份字面量，与上面两处各写一遍</span>
+  pendingLimitPerUser: 3, adminLimit: 5, …
+});
+
+<span class="c">// ④ 预览直接乘它（:1059-1062 → 模板 :228）</span>
+<span class="k">function</span> previewPoints(yuan) { <span class="k">return</span> (draft.pointsPerYuan ?? 0) * yuan; }
+例：付款 10 元 → 到账 {{ formatYuan(previewPoints(10)) }}   <span class="c">// 10 × 10 = ¥100.00（真值 ¥10.00）</span></div>
+    </div>
+  </div>
+
+  <h2>两种改法</h2>
+  <div class="two">
+    <div class="panel" style="border-color:rgba(37,99,235,.38)">
+      <div class="panel-head">
+        <span class="chip chip-after">改法 A</span>
+        <span class="panel-title">前端不写默认值，一律用接口下发值</span>
+        <span class="panel-sub">推荐</span>
+      </div>
+      <div class="code"><span class="c">// ① api/recharge.ts：删掉这个常量，类型改可空</span>
+<span class="k">export const</span> DEFAULT_POINTS_PER_YUAN = <span class="del">10</span>;   <span class="c">// ← 删除</span>
+
+<span class="k">interface</span> RechargeConfig {
+  <span class="c">/** 1 元到账多少余额（**只认服务端下发值**；未取到 = null，不编造） */</span>
+  pointsPerYuan: <span class="add">number | null</span>;
+  …
+}
+
+<span class="c">// ② normalizeConfig：缺字段 → null（而不是回落到一个猜的数）</span>
+pointsPerYuan: pick(r, ['pointsPerYuan', 'points_per_yuan']) == <span class="k">null</span>
+  ? <span class="add">null</span> : asNum(pick(r, ['pointsPerYuan', 'points_per_yuan']), <span class="add">null</span>),
+
+<span class="c">// ③ 页面草稿同样不写数字</span>
+<span class="k">const</span> draft = reactive&lt;RechargeConfig&gt;({ …, pointsPerYuan: <span class="add">null</span>, … });
+
+<span class="c">// ④ 预览：没拿到值就**明说没拿到**，不显示一个假的金额</span>
+<span class="k">function</span> previewPoints(yuan: number): <span class="k">string</span> | <span class="k">null</span> {
+  <span class="k">if</span> (draft.pointsPerYuan == <span class="k">null</span>) <span class="k">return null</span>;
+  <span class="k">return</span> String(draft.pointsPerYuan * yuan);
+}
+<span class="c">// 模板</span>
+&lt;<span class="k">template</span> v-if=<span class="add">"previewPoints(10) !== null"</span>&gt;例：付款 10 元 → 到账 {{ … }}&lt;/<span class="k">template</span>&gt;
+&lt;<span class="k">template</span> v-else&gt;<span class="add">未取到服务端配置，比例以服务端下发为准</span>&lt;/<span class="k">template</span>&gt;</div>
+      <table class="tbl">
+        <tr><td style="width:74px"><b>为什么推荐</b></td><td>「1 元到账多少余额」是<b>服务端权威口径</b>（存 <code>system_setting</code>、仅超管可改、读侧实时读库）。前端<b>没有资格</b>猜一个兜底值 —— 猜对没好处，猜错就把 ¥10 说成 ¥100。</td></tr>
+        <tr><td><b>顺带收口</b></td><td>同一文件里 <code>maxYuan: 9999</code> 与服务端默认 <code>10000</code> 也不一致 → 一并按"未取到 = null"处理（不再编造上下限）。</td></tr>
+        <tr><td><b>影响面</b></td><td><b>不需要动服务端。</b>只改 <code>admin-web/src/api/recharge.ts</code> 与 <code>views/RechargeView.vue</code>；<code>vue-tsc</code> 会把所有用到该字段的地方标出来（可空类型的好处）。</td></tr>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">改法 B</span>
+        <span class="panel-title">默认与后端常量同源</span>
+        <span class="panel-sub">把 10 改成 1</span>
+      </div>
+      <div class="code"><span class="c">// admin-web/src/api/recharge.ts:150</span>
+<span class="c">// ⚠ 与 server/src/modules/recharge/recharge-config.ts:99 的
+//    RECHARGE_CONFIG_DEFAULT.pointsPerYuan 必须一致（改一处要改两处）</span>
+<span class="k">export const</span> DEFAULT_POINTS_PER_YUAN = <span class="add">1</span>;</div>
+      <table class="tbl">
+        <tr><td style="width:74px"><b>做法</b></td><td>把前端默认值从 <code>10</code> 改成 <code>1</code>，与 <code>recharge-config.ts:99</code> 对齐。</td></tr>
+        <tr><td><b>好处</b></td><td>改动最小（一个字符）；<b>今天</b>两个数就一致了。</td></tr>
+        <tr><td><b>为什么次选</b></td><td>仓库里 <code>admin-web</code> 与 <code>server</code> 是<b>两个独立 package</b>（根 <code>package.json</code> 没有 workspaces，没有共享常量包）→ 这个"同源"只能靠<b>注释与自觉</b>维持，<b>没有任何机制阻止它们再次漂移</b>。而这次漂移的根因正是"同一个业务常量在两地各写一遍"。<br>
+        另外它<b>没解决</b> <code>maxYuan: 9999</code> vs <code>10000</code> 那处同类不一致。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h2>同类不一致一并清点（同一根因）</h2>
+  <table class="tbl">
+    <tr><th style="width:150px">字段</th><th style="width:150px">前端默认</th><th style="width:170px">服务端默认 / 现值</th><th>判定</th></tr>
+    <tr><td class="mono">pointsPerYuan</td><td><b>10</b></td><td><b>1</b>（默认 = 现值）</td><td><b>❌ 不一致，10 倍</b> —— 本项主体。</td></tr>
+    <tr><td class="mono">maxYuan</td><td><code>9999</code></td><td><code>10000</code></td><td>❌ 不一致（差 1 元）。<b>影响远小于上面</b>：它只是输入框的初始上限，且服务端 <code>assertRechargeConfig</code> 会按 1–1000000 重新校验。顺手一并修。</td></tr>
+    <tr><td class="mono">minYuan</td><td><code>1</code></td><td><code>1</code></td><td>✅ 一致。</td></tr>
+    <tr><td class="mono">pendingLimitPerUser</td><td><code>3</code></td><td><code>3</code></td><td>✅ 一致。</td></tr>
+    <tr><td class="mono">adminLimit</td><td><code>5</code></td><td><code>5</code>（<code>RECHARGE_ADMIN_LIMIT_DEFAULT</code>）</td><td>✅ 一致。</td></tr>
+    <tr><td class="mono">amountOptions</td><td>10 档，与服务端逐值相同</td><td>同</td><td>✅ 一致（但同样是"两地各写一遍"）。</td></tr>
+  </table>
+
+  <div class="note ok">
+    <span>✓</span>
+    <span><b>对照组：客户端做对了</b>。老板端 core 的 <code>RechargeConfig</code> 把该字段默认成
+    <code>0</code>，并用 <code>effectivePointsPerYuan =&gt; pointsPerYuan &gt; 0 ? pointsPerYuan : 1</code> 兜底；
+    且 <code>recharge_page.dart</code> 明确<b>不</b>拿它做换算。也就是说"不编造数字"这个口径，
+    客户端已经这么做了 —— <b>管理端是唯一还在猜的地方</b>。</span>
+  </div>
+
+  <h2>逐项口径</h2>
+  <table class="tbl">
+    <tr><th style="width:132px">项</th><th>内容</th></tr>
+    <tr><td><b>现状</b></td><td>前端 <code>api/recharge.ts:150</code> 的 <code>DEFAULT_POINTS_PER_YUAN = 10</code> 与 <code>RechargeView.vue:1022</code> 的草稿字面量 <code>10</code>，都与服务端 <code>recharge-config.ts:99</code> 的默认值 <b>1</b>（= 库中现值）不一致，<b>差 10 倍</b>。正常路径下 <code>loadConfig()</code> 会用接口值覆盖草稿，<b>所以平时不显形</b>；一旦 <code>getConfig()</code> 失败（网络 / 500 / 中途丢权限 403），草稿就停在 10，管理端「到账比例」面板会显示 <code>1 元 到账 10 余额</code>，并把 <code>付款 10 元 → 到账 ¥100.00</code>（真值 ¥10.00）算给超管看。<br>
+      <b>缓解因素</b>：<code>cfgDirty</code> 在 <code>saved===null</code> 时为 false → 保存按钮禁用 → 错误值<b>写不进库</b>，属<b>显示误导</b>而非数据损坏。<br>
+      <b>同类第二处</b>：<code>maxYuan</code> 前端 <code>9999</code> vs 服务端 <code>10000</code>。</td></tr>
+    <tr><td><b>建议</b></td><td><b>改法 A（推荐）</b>：① <code>api/recharge.ts</code> 删除 <code>DEFAULT_POINTS_PER_YUAN</code>，把 <code>pointsPerYuan</code>（以及 <code>maxYuan</code>）类型改为 <code>number | null</code>；② <code>normalizeConfig()</code> 对缺失字段返回 <code>null</code> 而<b>不是</b>回落到一个猜的默认值；③ <code>RechargeView.vue</code> 草稿初值同步改 <code>null</code>；④ <code>previewPoints()</code> 在 <code>null</code> 时返回 <code>null</code>，模板改为显示「<b>未取到服务端配置，比例以服务端下发为准</b>」而<b>不是</b>一个假金额；⑤ 输入框在 <code>null</code> 时显示占位符而非数字。<br>
+      <b>改法 B（次选）</b>：仅把前端默认值改成 <code>1</code> —— 改动最小，但"两地各写一遍"的结构没变，没有机制阻止再次漂移。</td></tr>
+    <tr><td><b>影响面</b></td><td><b>改法 A：不需要动服务端</b>（只改 <code>admin-web</code> 两个文件）。<br>
+      <b>改法 B：也不需要动服务端</b>（改 1 个字符）。<br>
+      两种改法都<b>不改接口、不改数据结构、不改数据库</b>。若将来想让"同源"真正有机制保障，可考虑建一个共享常量包 —— 那是<b>架构级改动</b>，不在本方案范围，仅作备注。</td></tr>
+    <tr><td><b>红线</b></td><td><code>docs/14</code>：<b>否</b>。不改任何视觉决策；唯一可见变化是"配置没取到时显示一句说明"而不是一个错误数字 —— 属<b>内容正确性</b>。<br>
+      <code>docs/21</code>：<b>否</b>，且<b>正向合规</b>。§三「内容层」明文禁止"<b>编造的装饰数据</b>"、"只展示系统真实产生的数据；<b>没有就留空态</b>" —— 前端凭空把 1 说成 10、把 ¥10.00 说成 ¥100.00，正是这条禁止的"编造数据"。</td></tr>
+    <tr><td><b>工时</b></td><td><b>半天</b>（改法 A：两个文件 + <code>vue-tsc</code> 兜住所有引用点 + 一个"接口失败时显示说明句"的断言）。</td></tr>
+    <tr><td><b>设计图</b></td><td><code>site/design/audit-2026-10-12/U7.html</code>（本页）· 截图 <code>U7.png</code></td></tr>
+  </table>
+
+  <div class="foot">
+    <b>本图为设计示意</b>：全部图形为纯 CSS 与内联 SVG 绘制，不是产品截图，也未使用任何第三方素材。<br>
+    <b>本方案未实施任何代码改动</b> —— 等负责人审批后才做。制图日期 2026-10-12。
+  </div>
+</div>
+</body>
+</html>

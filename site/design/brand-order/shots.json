@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-10-14T00:54:39.305Z",
+  "viewportWidth": 1900,
+  "manifest": [
+    {
+      "file": "list.png",
+      "sheet": "list",
+      "bytes": 783834,
+      "width": 1900,
+      "height": 4194
+    },
+    {
+      "file": "detail.png",
+      "sheet": "detail",
+      "bytes": 1228689,
+      "width": 1900,
+      "height": 6053
+    }
+  ]
+}

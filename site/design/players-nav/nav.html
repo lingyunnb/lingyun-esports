@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>陪玩入口改造 · 顶部导航（改前 / 改后）· 祁连山电竞</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#EDF1F6}
+body{font-family:"MiSans","Microsoft YaHei","PingFang SC",Helvetica,Arial,sans-serif;color:#14202E;
+     padding:24px;display:flex;flex-direction:column;gap:20px}
+h1{font-size:22px;font-weight:800;letter-spacing:.2px}
+h2{font-size:18px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+.lead{font-size:13px;line-height:1.75;color:#4A5A6E;max-width:1258px}
+.lead b{color:#1D5FA8;font-weight:700}
+.lead .sep{color:#CDD6E2;padding:0 8px}
+.panel{background:#fff;border:1px solid #CDD6E2;border-radius:14px;padding:16px 20px}
+.row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.col{display:flex;flex-direction:column;gap:8px;width:390px}
+.cap{font-size:12px;line-height:1.7;color:#4A5A6E}
+.cap b{display:block;font-size:13px;font-weight:700;color:#14202E;margin-bottom:4px}
+.cap i{font-style:normal;color:#1D5FA8;font-weight:700}
+.cap u{text-decoration:none;color:#B4732A;font-weight:700}
+.warn{font-size:11px;line-height:1.7;color:#4A5A6E;background:#fff;border:1px solid #E3E8EF;border-radius:10px;padding:8px 12px}
+.warn b{color:#14202E}
+
+/* ---------- 手机壳（outline 做评审外框：不占布局） ---------- */
+.phone{width:390px;flex:0 0 auto;position:relative;overflow:hidden;background:#F4F6F9;
+       border-radius:14px;outline:1px solid #CDD6E2;outline-offset:-1px}
+.phone.fixed{height:844px}
+.phone .page{position:absolute;left:0;right:0;top:44px;bottom:86px;overflow:hidden}
+.phone.nonav .page{bottom:0}
+
+/* ---------- 系统状态栏 ---------- */
+.sb{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.sb .t{font-size:12px;font-weight:600}
+.sb .r{display:flex;align-items:center;gap:4px;color:#14202E}
+
+/* ---------- 顶部导航（结构规则 1：只放底部没有的入口） ---------- */
+.nav{height:40px;display:flex;align-items:center;padding:0 16px}
+.nav .h{font-size:22px;font-weight:800}
+.nav .links{margin-left:16px;display:flex;align-items:center;gap:16px}
+.nav .link{display:flex;align-items:center;gap:4px;font-size:13px;color:#4A5A6E}
+/* 改后 · 推荐：选择陪玩用「主色 + 字重加粗」（docs/32 §五 选中态只一种） */
+.nav .link.lead1{color:#1D5FA8;font-weight:700}
+/* 改后 · 备选：主色实色小胶囊（小面积，白底为主方案允许） */
+.nav .pill{height:26px;padding:0 12px;border-radius:999px;background:#1D5FA8;color:#fff;
+  display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700}
+
+/* ---------- 充值入口条（自身紧贴导航：0 底距） ---------- */
+.rech{padding:0 16px}
+.rech .rch{height:44px;background:#fff;border:1px solid #E3E8EF;border-radius:4px;
+  display:flex;align-items:center;padding:0 12px}
+.rech .ib{width:28px;height:28px;border-radius:4px;background:#E8EEF7;display:flex;align-items:center;justify-content:center;color:#1D5FA8}
+.rech .tx{margin-left:12px;flex:1;min-width:0}
+.rech .n{font-size:13px;font-weight:600;line-height:1.1}
+.rech .s{margin-top:4px;font-size:11px;line-height:1.25;color:#8A99AB;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- 投诉 / 打赏 / 退款（白卡 + 发丝线 + 圆角 6） ---------- */
+.sup{margin:8px 16px 0;height:40px;background:#fff;border:1px solid #E3E8EF;border-radius:6px;display:flex;align-items:center}
+.sup .cell{flex:1;height:40px;display:flex;align-items:center;justify-content:center;gap:4px;color:#1D5FA8}
+.sup .cell span{font-size:13px;font-weight:600;color:#14202E}
+.sup .vsep{width:1px;height:20px;background:#E3E8EF}
+
+/* ---------- 欢迎文案 ---------- */
+.head{margin-top:8px;padding:0 16px;display:flex;align-items:flex-start;gap:8px}
+.head .htx{flex:1;font-size:11px;line-height:1.7;color:#4A5A6E}
+.head .hon{font-size:11px;color:#8A99AB;white-space:nowrap}
+
+/* ---------- 区块标题 ---------- */
+.sh{height:40px;display:flex;align-items:baseline;padding:0 16px}
+.sh .tt{font-size:18px;font-weight:700}
+.sh .sub{margin-left:8px;font-size:11px;color:#8A99AB}
+
+/* ---------- 分部卡（通栏 · ContentCard 白卡 14 + 发丝线） ---------- */
+.dcard{margin:0 16px;background:#fff;border:1px solid #E3E8EF;border-radius:14px;padding:16px}
+.dc-top{display:flex;align-items:center}
+.dc-ic{width:36px;height:36px;border-radius:10px;background:#E8EEF7;display:flex;align-items:center;justify-content:center;color:#0E7C7B}
+.dc-nm{margin-left:12px;flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+.dc-nm span.n{font-size:15px;font-weight:800}
+.tagp{height:20px;padding:0 8px;border-radius:4px;background:#E3F0EF;color:#0E7C7B;font-size:11px;font-weight:600;display:flex;align-items:center}
+.dc-div{height:1px;background:#E3E8EF;margin:12px 0}
+.dc-bot{display:flex;align-items:center;gap:4px}
+.dot-on{width:6px;height:6px;border-radius:999px;background:#0E7C7B}
+.dc-bot .t{font-size:11px;color:#4A5A6E}
+.dc-bot .go{margin-left:auto;font-size:11px;font-weight:600;color:#1D5FA8}
+
+/* ---------- 首页「选择陪玩」按钮（改前才有；本次要挪走的那一块） ---------- */
+.fbtn{margin:16px 16px 0;height:48px;border-radius:10px;background:#1D5FA8;color:#fff;display:flex;align-items:center;padding:0 16px;gap:8px}
+.fbtn .lb{font-size:15px;font-weight:700}
+.fbtn .rt{margin-left:auto;font-size:11px;color:rgba(255,255,255,.82)}
+.fgone{margin:16px 16px 0;height:48px;border-radius:10px;border:1px dashed #CDD6E2;color:#8A99AB;
+  display:flex;align-items:center;justify-content:center;font-size:11px;background:#fff}
+
+/* ---------- 官方馆卡 ---------- */
+.club{margin:0 16px;background:#fff;border:1px solid #E3E8EF;border-radius:14px;padding:16px}
+.club .k{display:flex;align-items:center;gap:8px}
+.club .mkb{height:20px;padding:0 8px;border-radius:4px;background:#E8EEF7;color:#1D5FA8;font-size:11px;font-weight:600;display:flex;align-items:center}
+.club .nm{margin-top:8px;font-size:15px;font-weight:700}
+.club .ds{margin-top:8px;font-size:12px;line-height:1.6;color:#4A5A6E}
+.guar{margin-top:16px;padding:0 16px;font-size:11px;line-height:1.8;color:#8A99AB}
+
+/* ---------- 快速下单浮标（现状保留） ---------- */
+.fab{position:absolute;right:16px;bottom:102px;height:44px;padding:0 16px;border-radius:999px;background:#fff;
+  border:1px solid #CDD6E2;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#1D5FA8}
+
+/* ---------- 底部导航（服务 · 订单 · 祁小山 · 消息 · 我的） ---------- */
+.tabwrap{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E3E8EF}
+.tabbar{height:62px;display:flex;align-items:center}
+.tb{flex:1;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#8A99AB}
+.tb-label{font-size:11px}
+.tb-sp{display:block;width:24px;height:24px}
+.tb.on{color:#1D5FA8}
+.tb.on .tb-label{font-weight:700}
+.tb-c{position:relative}
+.tb-c.raised{position:absolute;left:0;right:0;top:-16px;display:flex;justify-content:center;height:54px}
+.tb-c.raised .cir{width:54px;height:54px;border-radius:999px;background:#fff;border:1px solid #E3E8EF;
+  display:flex;align-items:center;justify-content:center;color:#14202E}
+.home{height:24px;display:flex;align-items:center;justify-content:center}
+.home i{width:96px;height:4px;border-radius:999px;background:#CDD6E2}
+
+/* ---------- 说明面板 ---------- */
+.two{display:flex;gap:20px;align-items:flex-start}
+.two .bx{flex:1;min-width:0}
+.bx .bt{font-size:15px;font-weight:700;margin-bottom:8px}
+.bx .bd{font-size:12px;line-height:1.8;color:#4A5A6E}
+.bx .bd b{color:#14202E}
+.bx .bd code{font-family:"Cascadia Mono",Consolas,monospace;font-size:12px;color:#1D5FA8}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #CDD6E2;border-radius:14px;overflow:hidden}
+th,td{border-bottom:1px solid #E3E8EF;padding:8px 12px;text-align:left;vertical-align:top;font-size:12px;line-height:1.7}
+th{background:#F4F6F9;font-weight:700}
+td.p{color:#1D5FA8;font-weight:700}
+td.y{color:#0E7C7B;font-weight:700}
+tr:last-child td{border-bottom:0}
+</style>
+</head>
+<body>
+
+<h1>陪玩入口改造 · 顶部导航（改前 / 改后）</h1>
+
+<div class="lead">
+  <b>任务</b>：负责人「选择陪玩不要放在首页，放在上方导航栏页面」。
+  <span class="sep">|</span>
+  <b>现状</b>：上一轮把「选择陪玩」做成首页上一枚<b>实色主色按钮</b>（<code>services_page.dart:371</code> → 组件 <code>:488</code>）；
+  顶部导航只有 <b>排行榜 · 公告</b>（<code>:453</code> / <code>:455</code>，项间距 14，左对齐）。
+  <span class="sep">|</span>
+  <b>本轮</b>：把首页那枚按钮<b>整块删掉</b>，改由顶部导航承载 → 顶部变成 <b>选择陪玩 · 排行榜 · 公告</b>。
+  <span class="sep">|</span>
+  <b>三屏</b>：① 改前（现状）② 改后 · <b>推荐</b>（主色文字链接 + 字重加粗）③ 改后 · 备选（主色实色小胶囊，<b>不推荐</b>）。
+</div>
+
+<div class="row">
+
+  <!-- ============ ① 改前 ============ -->
+  <div class="col">
+    <div class="cap"><b>① 改前 · 现状</b>
+      顶部导航 = <i>服务 / 排行榜 / 公告</i>；「选择陪玩」是页面里的一枚 48dp 实色主色按钮，
+      夹在「选择分部」与「祁连山官方」之间。
+    </div>
+    <div class="phone fixed">
+      <div class="sb">
+        <div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="nav">
+          <div class="h">服务</div>
+          <div class="links">
+            <div class="link">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V12M10 20V5M16 20v-5M22 20V9"/></svg>
+              排行榜</div>
+            <div class="link">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 15a4 4 0 0 0-4-4H6a3 3 0 0 0 0 6h8a2 2 0 0 0 0-4H8"/></svg>
+              公告</div>
+          </div>
+        </div>
+        <div class="rech">
+          <div class="rch">
+            <div class="ib"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 9l3 3 3-3M12 12v4M10 14h4"/></svg></div>
+            <div class="tx"><div class="n">充值余额</div><div class="s">线下扫码付款 · 管理员人工核对后到账</div></div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A99AB" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+        <div class="sup">
+          <div class="cell"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4v10M8 8h8M6 20h12"/></svg><span>投诉</span></div>
+          <div class="vsep"></div>
+          <div class="cell"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 7v13M12 7S9 3 7 4.5 8 7 12 7s5-1 5-2.5S12 7 12 7z"/></svg><span>打赏</span></div>
+          <div class="vsep"></div>
+          <div class="cell"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10a9 9 0 1 1 18 0M12 10l4-3"/></svg><span>退款</span></div>
+        </div>
+        <div class="head">
+          <div class="htx">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+          <div class="hon">14 位在线</div>
+        </div>
+        <div class="sh"><div class="tt">选择分部</div></div>
+        <div class="dcard">
+          <div class="dc-top">
+            <div class="dc-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v14H4zM4 10h16M9 10v9"/></svg></div>
+            <div class="dc-nm"><span class="n">和平精英</span><span class="tagp">手游</span></div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A99AB" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg>
+          </div>
+          <div class="dc-div"></div>
+          <div class="dc-bot"><div class="dot-on"></div><div class="t">14 位打手在线 · 打手全天在线</div><div class="go">进入分部</div></div>
+        </div>
+        <div class="fbtn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><path d="M3 19a6 6 0 0 1 12 0M16 5.5a3.2 3.2 0 0 1 0 5M18 19a6 6 0 0 0-3-5.2"/></svg>
+          <div class="lb">选择陪玩</div>
+          <div class="rt">14 人在线</div>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg>
+        </div>
+        <div class="sh"><div class="tt">祁连山官方</div><div class="sub">平台直营 · 无第三方</div></div>
+        <div class="club">
+          <div class="k"><span class="mkb">官方</span></div>
+          <div class="nm">祁连山电竞 · 和平精英分部</div>
+          <div class="ds">和平精英地铁护航上架 欢迎各位板板来体验 后期还会上线更多的单来给板板们体验</div>
+        </div>
+        <div class="guar">先服务后结算 · 不满意可申诉 · 余额由平台发放</div>
+      </div>
+      <div class="fab">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l6-9 4 5 3-4 5 8z"/></svg>
+        快速下单
+      </div>
+      <div class="tabwrap">
+        <div class="tabbar">
+          <div class="tb on"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10l8-6 8 6v10H4z"/></svg><span class="tb-label">服务</span></div>
+          <div class="tb"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h14v16H5zM8 9h8M8 13h5"/></svg><span class="tb-label">订单</span></div>
+          <div class="tb"><span class="tb-sp"></span><span class="tb-label">祁小山</span></div>
+          <div class="tb"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v10H9l-5 4z"/></svg><span class="tb-label">消息</span></div>
+          <div class="tb"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="9" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span class="tb-label">我的</span></div>
+          <div class="tb-c raised"><div class="cir">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" data-deco><path d="M3 18l5-11 4 6 3-4 6 9z"/></svg>
+          </div></div>
+        </div>
+        <div class="home"><i></i></div>
+      </div>
+    </div>
+    <div class="warn"><b>宣传图位</b>：线上 <code>/public/banners</code> 实测返回 <b>[]</b> → 按结构规则 2「不存在的东西不出现」<b>本块不渲染</b>，所以图里没有它。<b>内容量</b>：分部 1 个 / 官方馆 1 个 → 下半屏留白是<b>线上真实状态</b>，不是画漏。</div>
+  </div>
+
+  <!-- ============ ② 改后 · 推荐 ============ -->
+  <div class="col">
+    <div class="cap"><b>② 改后 · 推荐（主色文字链接）</b>
+      顶部导航 = <i>服务 /</i> <i>选择陪玩</i> / 排行榜 / 公告；首页那枚实色按钮<b>整块删除</b>（虚线框标出「这里空了」）。
+      三项都是同一枚组件（图标 16 + 文字 13），只有<b>选择陪玩</b>用主色 + w700 区分。
+    </div>
+    <div class="phone fixed">
+      <div class="sb">
+        <div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="nav">
+          <div class="h">服务</div>
+          <div class="links">
+            <div class="link lead1">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><path d="M3 19a6 6 0 0 1 12 0M16 5.5a3.2 3.2 0 0 1 0 5M18 19a6 6 0 0 0-3-5.2"/></svg>
+              选择陪玩</div>
+            <div class="link">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V12M10 20V5M16 20v-5M22 20V9"/></svg>
+              排行榜</div>
+            <div class="link">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 15a4 4 0 0 0-4-4H6a3 3 0 0 0 0 6h8a2 2 0 0 0 0-4H8"/></svg>
+              公告</div>
+          </div>
+        </div>
+        <div class="rech">
+          <div class="rch">
+            <div class="ib"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 9l3 3 3-3M12 12v4M10 14h4"/></svg></div>
+            <div class="tx"><div class="n">充值余额</div><div class="s">线下扫码付款 · 管理员人工核对后到账</div></div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A99AB" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+        <div class="sup">
+          <div class="cell"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4v10M8 8h8M6 20h12"/></svg><span>投诉</span></div>
+          <div class="vsep"></div>
+          <div class="cell"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 7v13M12 7S9 3 7 4.5 8 7 12 7s5-1 5-2.5S12 7 12 7z"/></svg><span>打赏</span></div>
+          <div class="vsep"></div>
+          <div class="cell"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10a9 9 0 1 1 18 0M12 10l4-3"/></svg><span>退款</span></div>
+        </div>
+        <div class="head">
+          <div class="htx">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+          <div class="hon">14 位在线</div>
+        </div>
+        <div class="sh"><div class="tt">选择分部</div></div>
+        <div class="dcard">
+          <div class="dc-top">
+            <div class="dc-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v14H4zM4 10h16M9 10v9"/></svg></div>
+            <div class="dc-nm"><span class="n">和平精英</span><span class="tagp">手游</span></div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A99AB" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg>
+          </div>
+          <div class="dc-div"></div>
+          <div class="dc-bot"><div class="dot-on"></div><div class="t">14 位打手在线 · 打手全天在线</div><div class="go">进入分部</div></div>
+        </div>
+        <div class="fgone">这一块已删除 —— 入口移到顶部导航第一项</div>
+        <div class="sh"><div class="tt">祁连山官方</div><div class="sub">平台直营 · 无第三方</div></div>
+        <div class="club">
+          <div class="k"><span class="mkb">官方</span></div>
+          <div class="nm">祁连山电竞 · 和平精英分部</div>
+          <div class="ds">和平精英地铁护航上架 欢迎各位板板来体验 后期还会上线更多的单来给板板们体验</div>
+        </div>
+        <div class="guar">先服务后结算 · 不满意可申诉 · 余额由平台发放</div>
+      </div>
+      <div class="fab">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l6-9 4 5 3-4 5 8z"/></svg>
+        快速下单
+      </div>
+      <div class="tabwrap">
+        <div class="tabbar">
+          <div class="tb on"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10l8-6 8 6v10H4z"/></svg><span class="tb-label">服务</span></div>
+          <div class="tb"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h14v16H5zM8 9h8M8 13h5"/></svg><span class="tb-label">订单</span></div>
+          <div class="tb"><span class="tb-sp"></span><span class="tb-label">祁小山</span></div>
+          <div class="tb"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v10H9l-5 4z"/></svg><span class="tb-label">消息</span></div>
+          <div class="tb"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="9" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span class="tb-label">我的</span></div>
+          <div class="tb-c raised"><div class="cir">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" data-deco><path d="M3 18l5-11 4 6 3-4 6 9z"/></svg>
+          </div></div>
+        </div>
+        <div class="home"><i></i></div>
+      </div>
+    </div>
+    <div class="warn"><b>推荐理由</b>：顶部导航的职责是「换个页面」，不是「按个按钮」。用它承载<b>极简一档</b>的做法（同款文字链接 + 主色加粗）—— 零新增组件、零新增色值、导航行不被压垮；且与底栏凸起「祁小山」不抢焦点。</div>
+  </div>
+
+  <!-- ============ ③ 改后 · 备选 ============ -->
+  <div class="col">
+    <div class="cap"><b>③ 改后 · 备选（主色实色小胶囊）</b>
+      同样是三项，但「选择陪玩」做成胶囊。<u>不推荐</u>：它会成为屏幕顶部<b>唯一</b>的实色块，
+      视觉上与「服务」页头、底部凸起按钮三处争焦点，且「导航里混一枚按钮」会让另外两项看起来像次要信息。
+    </div>
+    <div class="phone fixed">
+      <div class="sb">
+        <div class="t">09:41</div>
+        <div class="r">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18v-5M9 18V8M14 18v-3M19 18V5"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8.5 8.5 0 0 1 11 0M10 16a4 4 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="8" width="16" height="9" rx="2"/><path d="M21 11v3"/></svg>
+        </div>
+      </div>
+      <div class="page">
+        <div class="nav">
+          <div class="h">服务</div>
+          <div class="links">
+            <div class="pill">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><path d="M3 19a6 6 0 0 1 12 0M16 5.5a3.2 3.2 0 0 1 0 5M18 19a6 6 0 0 0-3-5.2"/></svg>
+              选择陪玩</div>
+            <div class="link">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V12M10 20V5M16 20v-5M22 20V9"/></svg>
+              排行榜</div>
+            <div class="link">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 15a4 4 0 0 0-4-4H6a3 3 0 0 0 0 6h8a2 2 0 0 0 0-4H8"/></svg>
+              公告</div>
+          </div>
+        </div>
+        <div class="rech">
+          <div class="rch">
+            <div class="ib"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 9l3 3 3-3M12 12v4M10 14h4"/></svg></div>
+            <div class="tx"><div class="n">充值余额</div><div class="s">线下扫码付款 · 管理员人工核对后到账</div></div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A99AB" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+        <div class="sup">
+          <div class="cell"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4v10M8 8h8M6 20h12"/></svg><span>投诉</span></div>
+          <div class="vsep"></div>
+          <div class="cell"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 7v13M12 7S9 3 7 4.5 8 7 12 7s5-1 5-2.5S12 7 12 7z"/></svg><span>打赏</span></div>
+          <div class="vsep"></div>
+          <div class="cell"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10a9 9 0 1 1 18 0M12 10l4-3"/></svg><span>退款</span></div>
+        </div>
+        <div class="head">
+          <div class="htx">欢迎各位板板来到祁连山电竞 祝各位板板玩的快乐 玩的开心 ——祁连山电竞董事长 凌云</div>
+          <div class="hon">14 位在线</div>
+        </div>
+        <div class="sh"><div class="tt">选择分部</div></div>
+        <div class="dcard">
+          <div class="dc-top">
+            <div class="dc-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v14H4zM4 10h16M9 10v9"/></svg></div>
+            <div class="dc-nm"><span class="n">和平精英</span><span class="tagp">手游</span></div>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A99AB" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg>
+          </div>
+          <div class="dc-div"></div>
+          <div class="dc-bot"><div class="dot-on"></div><div class="t">14 位打手在线 · 打手全天在线</div><div class="go">进入分部</div></div>
+        </div>
+        <div class="fgone">这一块已删除 —— 入口移到顶部导航第一项</div>
+        <div class="sh"><div class="tt">祁连山官方</div><div class="sub">平台直营 · 无第三方</div></div>
+        <div class="club">
+          <div class="k"><span class="mkb">官方</span></div>
+          <div class="nm">祁连山电竞 · 和平精英分部</div>
+          <div class="ds">和平精英地铁护航上架 欢迎各位板板来体验 后期还会上线更多的单来给板板们体验</div>
+        </div>
+        <div class="guar">先服务后结算 · 不满意可申诉 · 余额由平台发放</div>
+      </div>
+      <div class="fab">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l6-9 4 5 3-4 5 8z"/></svg>
+        快速下单
+      </div>
+      <div class="tabwrap">
+        <div class="tabbar">
+          <div class="tb on"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10l8-6 8 6v10H4z"/></svg><span class="tb-label">服务</span></div>
+          <div class="tb"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h14v16H5zM8 9h8M8 13h5"/></svg><span class="tb-label">订单</span></div>
+          <div class="tb"><span class="tb-sp"></span><span class="tb-label">祁小山</span></div>
+          <div class="tb"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16v10H9l-5 4z"/></svg><span class="tb-label">消息</span></div>
+          <div class="tb"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="9" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span class="tb-label">我的</span></div>
+          <div class="tb-c raised"><div class="cir">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" data-deco><path d="M3 18l5-11 4 6 3-4 6 9z"/></svg>
+          </div></div>
+        </div>
+        <div class="home"><i></i></div>
+      </div>
+    </div>
+    <div class="warn"><b>实色面积核算</b>：胶囊 96×26 = 2,496 px²，占壳内面积（390×844 = 329,160 px²）的 <b>0.76%</b> —— 不违反「白底为主」，违反的是<b>层级</b>：同一行里出现两种控件语义。</div>
+  </div>
+
+</div>
+
+<!-- ============ 顺序与规则核对 ============ -->
+<div class="panel">
+  <div class="two">
+    <div class="bx">
+      <div class="bt">为什么是「选择陪玩 · 排行榜 · 公告」这个顺序</div>
+      <div class="bd">
+        1. <b>「选择陪玩」排第一</b> —— 它是导航里<b>唯一的转化动作</b>（选人 → 下单）；排行榜是发现/信任，公告是低频告知。按「动作 &gt; 发现 &gt; 告知」降序排，用户第一眼落在能开始消费的那一项上。<br>
+        2. <b>也顺手修掉一个可达性缺口</b>：现在「选择分部」在页面中段、分部卡下方紧跟着就是原来的按钮块，而挪到顶部后它<b>不用滚动就在第一屏</b>。<br>
+        3. <b>排行榜维持第二</b>：与它现在的相对位置（紧跟页头）不变，不引入第二种「顺手改」的变量。<br>
+        4. <b>公告排最后</b>：全 App 最低频的入口（<code>services_page.dart:455</code>），留在最右。<br>
+        5. <b>用文字链接而不是胶囊</b>：见 ② 与 ③ 的对照 —— 顶部导航行高 40dp 内塞一枚 26dp 实色胶囊，会把这一行的视觉重心整体抬起来。
+      </div>
+    </div>
+    <div class="bx">
+      <div class="bt">结构规则 1 核对：「同一入口只出现一次」</div>
+      <div class="bd">
+        <b>规则原文</b>（<code>CLAUDE.md:99</code>）：底部导航已有「服务 / 订单 / 消息 / 我的」→ 顶部导航<b>不再出现这几个名字</b>；顶部只放底部没有的。<br>
+        <b>底栏实际五项</b>（<code>app_nav.dart:153-159</code>）：服务 · 订单 · <b>祁小山</b>（中间凸起，<code>:154-158</code> 与 <code>:192</code> 的标签）· 消息 · 我的 —— <b>没有「选择陪玩」，也没有「找陪玩」</b>。<br>
+        <b>结论</b>：把「选择陪玩」放进顶部导航，<b>不在</b>规则 1 的四项之内 → <b>不违反</b>。<br>
+        <b>但必须同时处理第二条路径</b>：底栏中间凸起按钮的<b>长按</b>会弹出 <code>AppQuickActionsSheet</code>，里面第一项就是「找陪玩」→ <code>_openPlayers</code>（<code>home_shell.dart:234-239</code>、<code>app_nav.dart:922-928</code>）。这是<b>不显形的第二条入口</b>。按规则 1 的立意（同一入口只出现一次），<b>建议二选一</b>：<br>
+        <b>甲（推荐）</b>：快捷面板里的「找陪玩」<b>移除</b>，面板只留「聊天记录 / 联系客服 / 直接去下单」—— 入口由顶部导航唯一承载。<br>
+        <b>乙</b>：保留面板项，把它<b>明确降级为「快捷方式」</b>（文案改「去选陪玩 ›」），并在 <code>docs/14</code> 记一条：「快捷面板是快捷方式，不计入入口唯一性」。
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="bt" style="font-size:15px;font-weight:700;margin-bottom:8px">落点（实施时只动这两处，行号为 2026-10-15 21:xx 工作区版本）</div>
+  <table>
+    <tr><th style="width:64px">#</th><th style="width:300px">改什么</th><th style="width:220px">位置（现状）</th><th>怎么改</th></tr>
+    <tr><td class="p">1</td><td>顶部导航加第一项</td><td><code>services_page.dart:453</code> 之前</td><td>插入 <code>_navItem('选择陪玩', AppIcon.players, widget.onFindPlayers)</code> + <code>SizedBox(width:16)</code>；<b>保留</b> <code>onFindPlayers == null → 整项不渲染</code>（规则 2：不留死按钮）</td></tr>
+    <tr><td class="p">2</td><td>项间距 14 → 16</td><td><code>services_page.dart:452 / 454</code></td><td>14 不在 4dp 网格（<code>docs/38 §4.1</code>）→ 改 16；同时把 <code>:452</code> 页头「服务」右侧的间距一起从 14 提到 16</td></tr>
+    <tr><td class="p">3</td><td>导航图标 14 → 16</td><td><code>services_page.dart:465</code> 的 <code>Icon(icon, size: 14)</code></td><td>14 不在规范四档 <code>{16,20,24,28}</code>（<code>docs/32 §五</code>）→ 改 16</td></tr>
+    <tr><td class="p">4</td><td><b>删除首页按钮整块</b></td><td><code>services_page.dart:371</code>（调用）· <code>:488-524</code>（<code>_findPlayersEntry</code> 组件）</td><td>删调用行 + 删组件（含其上 <code>:476-487</code> 的注释块）；<code>widget.onFindPlayers</code> 字段<b>保留</b>（顶部导航要用）</td></tr>
+    <tr><td class="p">5</td><td>单测同步</td><td><code>apps/boss-app/test/services_find_players_entry_test.dart</code></td><td>该套件现在断言首页按钮（<code>:83-132</code>）→ 改为断言顶部导航第一项；并补一条「<code>onFindPlayers == null</code> 时导航不出这一项」</td></tr>
+    <tr><td class="y">6</td><td>移除快捷面板里的「找陪玩」<br><b>（负责人已采纳「甲」）</b></td><td><code>home_shell.dart:234-239</code> · <code>app_nav.dart:922-928</code></td><td>面板只留「聊天记录 / 联系客服 / 直接去下单」；并在 <code>docs/14</code> 记一条「快捷面板是快捷方式，不计入入口唯一性」</td></tr>
+    <tr><td class="no">※</td><td><b>实施耦合（不可拆）</b></td><td>第 1、4、6 项</td><td><b>「加顶部导航项」+「删首页按钮整块」+「移快捷面板里的『找陪玩』」必须在一次提交内同时落地</b>：先移除面板项 → 用户彻底没有入口 = <b>功能倒退</b>；先加导航项不删首页按钮 → <b>同一入口出现两次</b>（规则 1）。另加 4dp/图标四档收口与单测同步</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

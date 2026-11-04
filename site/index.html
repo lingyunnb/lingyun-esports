@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>祁连山电竞俱乐部</title>
+<meta name="description" content="祁连山电竞俱乐部 —— 和平精英 · 三角洲行动 专业陪玩 · 代练 · 玩家社区" />
+<style>
+  :root {
+    --primary: #5B6CFF;
+    --primary-2: #9B6EFF;
+    --gold: #E8C27A;
+    --bg-0: #0A0E1E;
+    --bg-1: #11162B;
+    --bg-2: #1A2140;
+    --text: #F2F4FB;
+    --text-2: #A6AEC8;
+    --card: rgba(255,255,255,0.055);
+    --card-border: rgba(255,255,255,0.14);
+    --radius: 22px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, "MiSans", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-0);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  /* 全局氛围背景（固定光斑） */
+  .ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(900px 500px at 12% -8%, rgba(91,108,255,.32), transparent 60%),
+      radial-gradient(800px 520px at 88% 8%, rgba(155,110,255,.26), transparent 60%),
+      radial-gradient(700px 600px at 50% 115%, rgba(63,191,217,.16), transparent 60%),
+      linear-gradient(180deg, var(--bg-0), var(--bg-1) 55%, var(--bg-0));
+  }
+  .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* 导航 */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    background: rgba(10,14,30,.55); border-bottom: 1px solid rgba(255,255,255,.08); }
+  .nav-in { max-width: 1080px; margin: 0 auto; padding: 14px 20px;
+    display: flex; align-items: center; gap: 14px; }
+  .logo { font-weight: 800; font-size: 18px; letter-spacing: .5px;
+    background: linear-gradient(90deg, #8FA5FF, #C3A6FF); -webkit-background-clip: text;
+    background-clip: text; color: transparent; }
+  .nav-links { margin-left: auto; display: flex; gap: 6px; }
+  .nav-links a { color: var(--text-2); text-decoration: none; font-size: 14px;
+    padding: 7px 14px; border-radius: 999px; transition: .25s; }
+  .nav-links a:hover { color: var(--text); background: rgba(255,255,255,.08); }
+
+  /* 区块通用 */
+  section { padding: 84px 0; }
+  .sec-title { text-align: center; font-size: 30px; font-weight: 800; letter-spacing: 1px; margin-bottom: 10px; }
+  .sec-sub { text-align: center; color: var(--text-2); font-size: 15px; margin-bottom: 44px; }
+
+  /* Hero */
+  .hero { min-height: 92vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 70px; }
+  .hero h1 { font-size: clamp(34px, 6vw, 60px); font-weight: 900; letter-spacing: 2px; line-height: 1.25;
+    background: linear-gradient(120deg, #FFFFFF 20%, #AFC1FF 55%, #C3A6FF 85%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 60px rgba(91,108,255,.35); }
+  .hero p { margin: 22px auto 0; max-width: 640px; color: var(--text-2); font-size: 17px; }
+  .hero-btns { margin-top: 38px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 13px 34px; border-radius: 999px; font-size: 15px; font-weight: 700;
+    text-decoration: none; transition: .25s; cursor: pointer; border: none; }
+  .btn-primary { color: #fff; background: linear-gradient(120deg, var(--primary), var(--primary-2));
+    box-shadow: 0 8px 28px rgba(91,108,255,.4); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(91,108,255,.55); }
+  .btn-ghost { color: var(--text); border: 1px solid rgba(255,255,255,.22);
+    background: rgba(255,255,255,.05); backdrop-filter: blur(8px); }
+  .btn-ghost:hover { background: rgba(255,255,255,.12); }
+
+  /* 玻璃卡 */
+  .glass { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 14px 44px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08); }
+
+  /* 关于 */
+  .about-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 28px; align-items: center; }
+  .about-grid .glass { padding: 34px; }
+  .about-grid h3 { font-size: 22px; margin-bottom: 14px; }
+  .about-grid p { color: var(--text-2); font-size: 15px; margin-bottom: 12px; }
+  .about-img { border-radius: var(--radius); overflow: hidden; min-height: 260px;
+    background: linear-gradient(135deg, rgba(91,108,255,.25), rgba(155,110,255,.2)); }
+  .about-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* 视频 */
+  .video-shell { border-radius: var(--radius); overflow: hidden; position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.1); }
+  .video-shell video { width: 100%; display: block; aspect-ratio: 16/9; background: #000; }
+
+  /* 图片展示 */
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+  .g-item { border-radius: var(--radius); overflow: hidden; position: relative;
+    border: 1px solid var(--card-border); background: var(--card);
+    transition: transform .3s ease, box-shadow .3s ease; }
+  .g-item:hover { transform: translateY(-6px); box-shadow: 0 18px 48px rgba(0,0,0,.5); }
+  .g-item img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+  .g-item .cap { padding: 12px 16px; font-size: 14px; color: var(--text-2); }
+
+  /* 下载 */
+  .dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .dl-card { padding: 36px 28px; text-align: center; }
+  .dl-card h3 { font-size: 20px; margin-bottom: 6px; }
+  .dl-card .ver { color: var(--text-2); font-size: 13px; margin-bottom: 22px; }
+  .qr-box { width: 168px; height: 168px; margin: 0 auto 18px; border-radius: 16px; padding: 10px;
+    background: #fff; display: flex; align-items: center; justify-content: center; }
+  .qr-box img, .qr-box canvas { width: 148px; height: 148px; }
+  .dl-note { text-align: center; color: var(--text-2); font-size: 14px; margin-top: 34px; max-width: 640px; margin-left: auto; margin-right: auto; }
+
+  /* 页脚 */
+  footer { padding: 46px 0 60px; text-align: center; color: var(--text-2); font-size: 14px;
+    border-top: 1px solid rgba(255,255,255,.06); }
+  footer .contact { margin-bottom: 10px; }
+
+  @media (max-width: 760px) {
+    .about-grid, .dl-grid { grid-template-columns: 1fr; }
+    section { padding: 60px 0; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<nav>
+  <div class="nav-in">
+    <div class="logo" id="logoText">祁连山电竞</div>
+    <div class="nav-links">
+      <a href="#about">关于我们</a>
+      <a href="#video">宣传片</a>
+      <a href="#gallery">精彩瞬间</a>
+      <a href="#download">下载</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="wrap">
+    <h1 id="heroTitle">祁连山电竞俱乐部</h1>
+    <p id="heroSubtitle"></p>
+    <div class="hero-btns">
+      <a class="btn btn-primary" href="#download">下载客户端</a>
+      <a class="btn btn-ghost" href="#about">了解俱乐部</a>
+    </div>
+  </div>
+</header>
+
+<!-- 关于俱乐部 -->
+<section id="about">
+  <div class="wrap">
+    <h2 class="sec-title" id="clubTitle">关于俱乐部</h2>
+    <div class="about-grid">
+      <div class="glass" id="clubText"></div>
+      <div class="about-img" id="clubImage"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 宣传视频 -->
+<section id="video">
+  <div class="wrap">
+    <h2 class="sec-title" id="videoTitle">俱乐部宣传片</h2>
+    <div class="video-shell">
+      <video id="promoVideo" controls preload="metadata" playsinline></video>
+    </div>
+  </div>
+</section>
+
+<!-- 精彩瞬间 -->
+<section id="gallery">
+  <div class="wrap">
+    <h2 class="sec-title" id="galleryTitle">精彩瞬间</h2>
+    <div class="gallery" id="galleryGrid"></div>
+  </div>
+</section>
+
+<!-- 下载客户端（App 带过） -->
+<section id="download">
+  <div class="wrap">
+    <h2 class="sec-title" id="downloadTitle">下载客户端</h2>
+    <div class="dl-grid">
+      <div class="glass dl-card">
+        <h3>老板端</h3>
+        <div class="ver" id="bossVer">获取中…</div>
+        <div class="qr-box" id="bossQr"></div>
+        <a class="btn btn-primary" id="bossBtn" href="#" target="_blank">下载老板端</a>
+      </div>
+      <div class="glass dl-card">
+        <h3>工作端</h3>
+        <div class="ver" id="workerVer">获取中…</div>
+        <div class="qr-box" id="workerQr"></div>
+        <a class="btn btn-primary" id="workerBtn" href="#" target="_blank">下载工作端</a>
+      </div>
+    </div>
+    <div class="dl-note" id="downloadNote"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="contact" id="contactText"></div>
+  <div id="footerText"></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+const API = '/api/v1/public';
+const $ = (id) => document.getElementById(id);
+const set = (id, v) => { if (v !== undefined && v !== null) $(id).innerHTML = v; };
+
+async function main() {
+  // 官网内容（全部来自后端，管理端可改）
+  let site = {};
+  try {
+    const r = await fetch(API + '/site');
+    site = (await r.json()).data || {};
+  } catch (_) { /* 使用页面内默认占位 */ }
+
+  document.title = site.siteTitle || '祁连山电竞俱乐部';
+  set('logoText', site.logoText || '祁连山电竞');
+  set('heroTitle', site.heroTitle || '祁连山电竞俱乐部');
+  set('heroSubtitle', site.heroSubtitle || '');
+  set('clubTitle', site.clubTitle || '关于俱乐部');
+  set('videoTitle', site.videoTitle || '俱乐部宣传片');
+  set('galleryTitle', site.galleryTitle || '精彩瞬间');
+  set('downloadTitle', site.downloadTitle || '下载客户端');
+  set('downloadNote', site.downloadNote || '');
+  set('footerText', site.footerText || '');
+  set('contactText', site.contactText || '');
+
+  // 关于：段落
+  const paras = Array.isArray(site.clubParagraphs) ? site.clubParagraphs : [];
+  $('clubText').innerHTML = paras.map((p) => '<p>' + escapeHtml(p) + '</p>').join('');
+
+  // 关于：配图
+  if (site.clubImageUrl) {
+    $('clubImage').innerHTML = '<img src="' + escapeHtml(site.clubImageUrl) + '" alt="俱乐部" loading="lazy" />';
+  }
+
+  // 视频
+  if (site.videoUrl) {
+    const v = $('promoVideo');
+    v.src = site.videoUrl;
+    if (site.videoPosterUrl) v.poster = site.videoPosterUrl;
+  }
+
+  // 图片展示区
+  const items = Array.isArray(site.galleryItems) ? site.galleryItems : [];
+  $('galleryGrid').innerHTML = items.map((g) =>
+    '<div class="g-item"><img src="' + escapeHtml(g.url || '') + '" alt="' + escapeHtml(g.title || '') + '" loading="lazy" />' +
+    (g.title ? '<div class="cap">' + escapeHtml(g.title) + '</div>' : '') + '</div>'
+  ).join('');
+
+  // 下载区：双端最新版本（App 顺手带过）
+  for (const t of ['boss', 'worker']) {
+    try {
+      const r = await fetch(API + '/app-versions/latest?appType=' + t + '&currentVersionCode=1');
+      const latest = ((await r.json()).data || {}).latest;
+      if (latest) {
+        const url = location.origin + (latest.downloadUrl || '');
+        $(t + 'Ver').textContent = 'v' + latest.versionName;
+        $(t + 'Btn').href = url;
+        try {
+          if (window.QRCode) new QRCode($(t + 'Qr'), { text: url, width: 148, height: 148, correctLevel: QRCode.CorrectLevel.M });
+        } catch (_) {}
+      }
+    } catch (_) { /* 静默 */ }
+  }
+}
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+main();
+</script>
+</body>
+</html>

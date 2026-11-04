@@ -1,0 +1,27 @@
+﻿{
+  "name": "fish-admin-web",
+  "version": "0.1.0",
+  "private": true,
+  "author": "lingyunnb",
+  "license": "SEE LICENSE IN LICENSE",
+  "description": "管理后台（Vue3 + TypeScript + Vite + Naive UI）",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "echarts": "^6.1.0",
+    "naive-ui": "^2.40.1",
+    "pinia": "^2.2.4",
+    "vue": "^3.5.12",
+    "vue-echarts": "^8.3.1",
+    "vue-router": "^4.4.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10",
+    "vue-tsc": "^2.1.10"
+  }
+}

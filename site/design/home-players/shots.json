@@ -1,0 +1,2086 @@
+﻿{
+  "generatedAt": "2026-10-15T13:40:01.762Z",
+  "viewportCssWidth": 1760,
+  "metrics": {
+    "main": {
+      "手机壳数": 6,
+      "壳高": [
+        844,
+        2434,
+        844,
+        1458,
+        2434,
+        2434
+      ],
+      "屏序": [
+        "first",
+        "full",
+        "skeleton",
+        "empty",
+        "emptyintros",
+        "filled"
+      ],
+      "渐变面积": 0,
+      "阴影处数": 0,
+      "emoji数": 0,
+      "字号": [
+        11,
+        12,
+        13,
+        15,
+        18,
+        22
+      ],
+      "字号种类": 6,
+      "图标尺寸": [
+        16,
+        20,
+        24,
+        28
+      ],
+      "圆角集合": [
+        "10px",
+        "14px",
+        "4px",
+        "999px"
+      ],
+      "HeroCard数": 5,
+      "ContentCard数": 10,
+      "ListCard数": 57,
+      "间距样本": 1087,
+      "间距落格率": 100,
+      "间距违规": [],
+      "金额": [],
+      "金额违规": [],
+      "金额符号次数": 0,
+      "积分次数": 0,
+      "图片数": 0,
+      "外链http": 0,
+      "衔接": [
+        {
+          "screen": "first",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        },
+        {
+          "screen": "full",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        },
+        {
+          "screen": "empty",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        },
+        {
+          "screen": "emptyintros",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        },
+        {
+          "screen": "filled",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        }
+      ],
+      "陪玩卡": [
+        {
+          "screen": "first",
+          "list": [
+            {
+              "screen": "first",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "167",
+              "h": 124,
+              "name": "小云",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "374",
+              "h": 124,
+              "name": "反悔",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "375",
+              "h": 124,
+              "name": "清水",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "376",
+              "h": 124,
+              "name": "NCD",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        },
+        {
+          "screen": "full",
+          "list": [
+            {
+              "screen": "full",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "167",
+              "h": 124,
+              "name": "小云",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "374",
+              "h": 124,
+              "name": "反悔",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "375",
+              "h": 124,
+              "name": "清水",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "376",
+              "h": 124,
+              "name": "NCD",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        },
+        {
+          "screen": "skeleton",
+          "list": [
+            {
+              "screen": "skeleton",
+              "item": "",
+              "h": 124,
+              "name": "",
+              "descText": "",
+              "descMuted": null,
+              "clamp": null,
+              "descH": null,
+              "hasAvatarText": false,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "skeleton",
+              "item": "",
+              "h": 124,
+              "name": "",
+              "descText": "",
+              "descMuted": null,
+              "clamp": null,
+              "descH": null,
+              "hasAvatarText": false,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "skeleton",
+              "item": "",
+              "h": 124,
+              "name": "",
+              "descText": "",
+              "descMuted": null,
+              "clamp": null,
+              "descH": null,
+              "hasAvatarText": false,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        },
+        {
+          "screen": "empty",
+          "list": []
+        },
+        {
+          "screen": "emptyintros",
+          "list": [
+            {
+              "screen": "emptyintros",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "167",
+              "h": 124,
+              "name": "小云",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "374",
+              "h": 124,
+              "name": "反悔",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "375",
+              "h": 124,
+              "name": "清水",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "376",
+              "h": 124,
+              "name": "NCD",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        },
+        {
+          "screen": "filled",
+          "list": [
+            {
+              "screen": "filled",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "专做三角洲行动端游护航，随时能开；不出保的单不接，急单先聊时间。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "接和平精英手游地铁护航与上分，主玩鹰雕单与宝冠单；出保按单面写，不出不算。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "167",
+              "h": 124,
+              "name": "小云",
+              "descText": "和平精英手游地铁护航，出金装与保底都接；老板全程录屏，按单面规则结算。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "374",
+              "h": 124,
+              "name": "反悔",
+              "descText": "只接和平精英手游的护航单，晚上 20:00 后为多；不接急单，开打前先对清单面。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "375",
+              "h": 124,
+              "name": "清水",
+              "descText": "三角洲行动手游上分与护航都接，擅长中远距离对枪；单局时长按实际进度结算。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "376",
+              "h": 124,
+              "name": "NCD",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "接和平精英手游地铁护航与上分，主玩鹰雕单与宝冠单；出保按单面写，不出不算。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "专做三角洲行动端游护航，随时能开；不出保的单不接，急单先聊时间。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        }
+      ],
+      "空态货架": [
+        {
+          "key": "recommend",
+          "title": "为您推荐",
+          "more": 0,
+          "emptyRow": 1,
+          "items": 0
+        },
+        {
+          "key": "newest",
+          "title": "最近上新",
+          "more": 0,
+          "emptyRow": 1,
+          "items": 0
+        },
+        {
+          "key": "hot",
+          "title": "热门点单",
+          "more": 0,
+          "emptyRow": 1,
+          "items": 0
+        }
+      ],
+      "有数据货架": [
+        {
+          "screen": "first",
+          "key": "recommend",
+          "title": "为您推荐",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "first",
+          "key": "newest",
+          "title": "最近上新",
+          "plate": false,
+          "more": 1,
+          "items": 4
+        },
+        {
+          "screen": "first",
+          "key": "hot",
+          "title": "热门点单",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "full",
+          "key": "recommend",
+          "title": "为您推荐",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "full",
+          "key": "newest",
+          "title": "最近上新",
+          "plate": false,
+          "more": 1,
+          "items": 4
+        },
+        {
+          "screen": "full",
+          "key": "hot",
+          "title": "热门点单",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "emptyintros",
+          "key": "recommend",
+          "title": "为您推荐",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "emptyintros",
+          "key": "newest",
+          "title": "最近上新",
+          "plate": false,
+          "more": 1,
+          "items": 4
+        },
+        {
+          "screen": "emptyintros",
+          "key": "hot",
+          "title": "热门点单",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "filled",
+          "key": "recommend",
+          "title": "为您推荐",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "filled",
+          "key": "newest",
+          "title": "最近上新",
+          "plate": false,
+          "more": 1,
+          "items": 4
+        },
+        {
+          "screen": "filled",
+          "key": "hot",
+          "title": "热门点单",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        }
+      ],
+      "Hero每屏": [
+        [
+          "first",
+          1
+        ],
+        [
+          "full",
+          1
+        ],
+        [
+          "skeleton",
+          0
+        ],
+        [
+          "empty",
+          1
+        ],
+        [
+          "emptyintros",
+          1
+        ],
+        [
+          "filled",
+          1
+        ]
+      ]
+    },
+    "alt-title": {
+      "手机壳数": 6,
+      "壳高": [
+        844,
+        2434,
+        844,
+        1458,
+        2434,
+        2434
+      ],
+      "屏序": [
+        "first",
+        "full",
+        "skeleton",
+        "empty",
+        "emptyintros",
+        "filled"
+      ],
+      "渐变面积": 0,
+      "阴影处数": 0,
+      "emoji数": 0,
+      "字号": [
+        11,
+        12,
+        13,
+        15,
+        18,
+        22
+      ],
+      "字号种类": 6,
+      "图标尺寸": [
+        16,
+        20,
+        24,
+        28
+      ],
+      "圆角集合": [
+        "10px",
+        "14px",
+        "4px",
+        "999px"
+      ],
+      "HeroCard数": 5,
+      "ContentCard数": 10,
+      "ListCard数": 57,
+      "间距样本": 1042,
+      "间距落格率": 100,
+      "间距违规": [],
+      "金额": [],
+      "金额违规": [],
+      "金额符号次数": 0,
+      "积分次数": 0,
+      "图片数": 0,
+      "外链http": 0,
+      "衔接": [
+        {
+          "screen": "first",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        },
+        {
+          "screen": "full",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        },
+        {
+          "screen": "empty",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        },
+        {
+          "screen": "emptyintros",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        },
+        {
+          "screen": "filled",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        }
+      ],
+      "陪玩卡": [
+        {
+          "screen": "first",
+          "list": [
+            {
+              "screen": "first",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "167",
+              "h": 124,
+              "name": "小云",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "374",
+              "h": 124,
+              "name": "反悔",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "375",
+              "h": 124,
+              "name": "清水",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "376",
+              "h": 124,
+              "name": "NCD",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "first",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        },
+        {
+          "screen": "full",
+          "list": [
+            {
+              "screen": "full",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "167",
+              "h": 124,
+              "name": "小云",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "374",
+              "h": 124,
+              "name": "反悔",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "375",
+              "h": 124,
+              "name": "清水",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "376",
+              "h": 124,
+              "name": "NCD",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        },
+        {
+          "screen": "skeleton",
+          "list": [
+            {
+              "screen": "skeleton",
+              "item": "",
+              "h": 124,
+              "name": "",
+              "descText": "",
+              "descMuted": null,
+              "clamp": null,
+              "descH": null,
+              "hasAvatarText": false,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "skeleton",
+              "item": "",
+              "h": 124,
+              "name": "",
+              "descText": "",
+              "descMuted": null,
+              "clamp": null,
+              "descH": null,
+              "hasAvatarText": false,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "skeleton",
+              "item": "",
+              "h": 124,
+              "name": "",
+              "descText": "",
+              "descMuted": null,
+              "clamp": null,
+              "descH": null,
+              "hasAvatarText": false,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        },
+        {
+          "screen": "empty",
+          "list": []
+        },
+        {
+          "screen": "emptyintros",
+          "list": [
+            {
+              "screen": "emptyintros",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "167",
+              "h": 124,
+              "name": "小云",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "374",
+              "h": 124,
+              "name": "反悔",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "375",
+              "h": 124,
+              "name": "清水",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "376",
+              "h": 124,
+              "name": "NCD",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "emptyintros",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        },
+        {
+          "screen": "filled",
+          "list": [
+            {
+              "screen": "filled",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "专做三角洲行动端游护航，随时能开；不出保的单不接，急单先聊时间。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "接和平精英手游地铁护航与上分，主玩鹰雕单与宝冠单；出保按单面写，不出不算。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "167",
+              "h": 124,
+              "name": "小云",
+              "descText": "和平精英手游地铁护航，出金装与保底都接；老板全程录屏，按单面规则结算。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "374",
+              "h": 124,
+              "name": "反悔",
+              "descText": "只接和平精英手游的护航单，晚上 20:00 后为多；不接急单，开打前先对清单面。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "375",
+              "h": 124,
+              "name": "清水",
+              "descText": "三角洲行动手游上分与护航都接，擅长中远距离对枪；单局时长按实际进度结算。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "376",
+              "h": 124,
+              "name": "NCD",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "接和平精英手游地铁护航与上分，主玩鹰雕单与宝冠单；出保按单面写，不出不算。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "专做三角洲行动端游护航，随时能开；不出保的单不接，急单先聊时间。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "filled",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        }
+      ],
+      "空态货架": [
+        {
+          "key": "recommend",
+          "title": "为您推荐",
+          "more": 0,
+          "emptyRow": 1,
+          "items": 0
+        },
+        {
+          "key": "newest",
+          "title": "最近上新",
+          "more": 0,
+          "emptyRow": 1,
+          "items": 0
+        },
+        {
+          "key": "hot",
+          "title": "热门点单",
+          "more": 0,
+          "emptyRow": 1,
+          "items": 0
+        }
+      ],
+      "有数据货架": [
+        {
+          "screen": "first",
+          "key": "recommend",
+          "title": "为您推荐",
+          "plate": true,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "first",
+          "key": "newest",
+          "title": "最近上新",
+          "plate": true,
+          "more": 1,
+          "items": 4
+        },
+        {
+          "screen": "first",
+          "key": "hot",
+          "title": "热门点单",
+          "plate": true,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "full",
+          "key": "recommend",
+          "title": "为您推荐",
+          "plate": true,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "full",
+          "key": "newest",
+          "title": "最近上新",
+          "plate": true,
+          "more": 1,
+          "items": 4
+        },
+        {
+          "screen": "full",
+          "key": "hot",
+          "title": "热门点单",
+          "plate": true,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "emptyintros",
+          "key": "recommend",
+          "title": "为您推荐",
+          "plate": true,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "emptyintros",
+          "key": "newest",
+          "title": "最近上新",
+          "plate": true,
+          "more": 1,
+          "items": 4
+        },
+        {
+          "screen": "emptyintros",
+          "key": "hot",
+          "title": "热门点单",
+          "plate": true,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "filled",
+          "key": "recommend",
+          "title": "为您推荐",
+          "plate": true,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "filled",
+          "key": "newest",
+          "title": "最近上新",
+          "plate": true,
+          "more": 1,
+          "items": 4
+        },
+        {
+          "screen": "filled",
+          "key": "hot",
+          "title": "热门点单",
+          "plate": true,
+          "more": 1,
+          "items": 3
+        }
+      ],
+      "Hero每屏": [
+        [
+          "first",
+          1
+        ],
+        [
+          "full",
+          1
+        ],
+        [
+          "skeleton",
+          0
+        ],
+        [
+          "empty",
+          1
+        ],
+        [
+          "emptyintros",
+          1
+        ],
+        [
+          "filled",
+          1
+        ]
+      ]
+    },
+    "compare": {
+      "手机壳数": 1,
+      "壳高": [
+        2434
+      ],
+      "屏序": [
+        "full"
+      ],
+      "渐变面积": 0,
+      "阴影处数": 0,
+      "emoji数": 0,
+      "字号": [
+        11,
+        12,
+        13,
+        15,
+        18,
+        22
+      ],
+      "字号种类": 6,
+      "图标尺寸": [
+        16,
+        24,
+        28
+      ],
+      "圆角集合": [
+        "10px",
+        "14px",
+        "4px",
+        "999px"
+      ],
+      "HeroCard数": 1,
+      "ContentCard数": 2,
+      "ListCard数": 11,
+      "间距样本": 221,
+      "间距落格率": 100,
+      "间距违规": [],
+      "金额": [],
+      "金额违规": [],
+      "金额符号次数": 0,
+      "积分次数": 0,
+      "图片数": 0,
+      "外链http": 0,
+      "衔接": [
+        {
+          "screen": "full",
+          "navToRecharge": 0,
+          "rechargeToBanner": 8,
+          "navToBanner": 52,
+          "bannerW": 390,
+          "bannerLeft": 0,
+          "bannerRadius": "0px",
+          "bannerRadiusTR": "0px",
+          "bannerRadiusBL": "0px",
+          "bannerRadiusBR": "0px"
+        }
+      ],
+      "陪玩卡": [
+        {
+          "screen": "full",
+          "list": [
+            {
+              "screen": "full",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "167",
+              "h": 124,
+              "name": "小云",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "374",
+              "h": 124,
+              "name": "反悔",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "375",
+              "h": 124,
+              "name": "清水",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "376",
+              "h": 124,
+              "name": "NCD",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "413",
+              "h": 124,
+              "name": "E2E打手",
+              "descText": "E2E 测试账号：和平精英手游，只跑验收流程。",
+              "descMuted": false,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "380",
+              "h": 124,
+              "name": "演示工作端",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            },
+            {
+              "screen": "full",
+              "item": "381",
+              "h": 124,
+              "name": "测试工作端2",
+              "descText": "介绍待补充",
+              "descMuted": true,
+              "clamp": "2",
+              "descH": 34,
+              "hasAvatarText": true,
+              "forbidNodes": [],
+              "forbidWords": [],
+              "hasPriceTag": false
+            }
+          ]
+        }
+      ],
+      "空态货架": [],
+      "有数据货架": [
+        {
+          "screen": "full",
+          "key": "recommend",
+          "title": "为您推荐",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        },
+        {
+          "screen": "full",
+          "key": "newest",
+          "title": "最近上新",
+          "plate": false,
+          "more": 1,
+          "items": 4
+        },
+        {
+          "screen": "full",
+          "key": "hot",
+          "title": "热门点单",
+          "plate": false,
+          "more": 1,
+          "items": 3
+        }
+      ],
+      "Hero每屏": [
+        [
+          "full",
+          1
+        ]
+      ]
+    }
+  },
+  "manifest": [
+    {
+      "file": "main.png",
+      "bytes": 2034220,
+      "cssWidth": 1760,
+      "cssHeight": 5545,
+      "dsf": 2,
+      "pxWidth": 3520,
+      "pxHeight": 11090,
+      "screens": [
+        "① 首屏（不滚动）",
+        "② 滚动后完整页",
+        "③ 加载骨架态",
+        "④ 空态",
+        "⑤ 介绍为空对照（左）",
+        "⑥ 介绍已填（右）"
+      ]
+    },
+    {
+      "file": "alt-title.png",
+      "bytes": 2022582,
+      "cssWidth": 1760,
+      "cssHeight": 5545,
+      "dsf": 2,
+      "pxWidth": 3520,
+      "pxHeight": 11090,
+      "screens": [
+        "① 首屏（不滚动）",
+        "② 滚动后完整页",
+        "③ 加载骨架态",
+        "④ 空态",
+        "⑤ 介绍为空对照（左）",
+        "⑥ 介绍已填（右）"
+      ]
+    },
+    {
+      "file": "compare.png",
+      "bytes": 1191305,
+      "cssWidth": 1760,
+      "cssHeight": 4490,
+      "dsf": 1.5,
+      "pxWidth": 2640,
+      "pxHeight": 6735,
+      "screens": [
+        "竞品陪玩卡结构还原 vs 我们的设计"
+      ]
+    }
+  ]
+}

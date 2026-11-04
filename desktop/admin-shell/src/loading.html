@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>正在连接服务端…</title>
+    <link rel="stylesheet" href="./shell.css" />
+  </head>
+  <body>
+    <div class="card">
+      <div class="brand">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+          <path d="M1.5 20.5 L8.4 7.6 L12.3 14.2 L15.4 9.4 L24.5 20.5 Z" fill="#2563EB" />
+          <path d="M8.4 7.6 L11.2 12.6 L9.9 13.6 L8.1 11.2 Z" fill="#FFFFFF" opacity="0.92" />
+        </svg>
+        <span class="brand-name">祁连山电竞</span>
+        <span class="brand-sub">管理端 桌面版</span>
+      </div>
+
+      <h1>正在连接服务端<span class="dots"><i></i><i></i><i></i></span></h1>
+      <p class="lead" id="status">正在解析服务端地址…</p>
+
+      <div class="diag">
+        <div class="diag-title">按顺序探活（每一处都必须 <code>/api/v1/health</code> 返回 200）</div>
+        <ol class="steps">
+          <li>本机 <code id="local">http://127.0.0.1:3100</code></li>
+          <li>Gitee 引导 <code>client-config.json</code></li>
+          <li>内置候选（ngrok 固定域名 / 上次隧道域名）</li>
+        </ol>
+      </div>
+    </div>
+    <script src="./loading.js"></script>
+  </body>
+</html>

@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1820,initial-scale=1">
+<title>方案 C · 我的页 UI 重构（数据前置）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+:root{
+  /* —— 颜色：apps/packages/core/lib/src/theme/app_colors.dart 逐值对齐 —— */
+  --primary:#2563EB; --primary-strong:#1D4ED8; --primary-soft:#E7EEFE; --ice:#EFF6FF;
+  --cyan:#06B6D4; --gold:#D97706; --gold-soft:#FEF3C7;
+  --bg-page:#F5F7FB; --surface:#FFFFFF; --surface-2:#FAFBFD;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8; --muted:#5B6B80;
+  --hair:#E5E9F0; --hair-2:#EEF1F6; --line-field:#CFD8E6;
+  --error:#DC2626; --error-soft:#FDECEC; --error-hair:#F3C4C4;
+  --warn:#EA580C; --warn-soft:#FFF4EC; --warn-hair:#F6D3B8;
+  --success:#16A34A; --success-soft:#DCFCE7;
+  /* —— 圆角分档：小控件 4–6 / 卡片 10–14 / 弹层 14 / 胶囊全圆（docs/21） —— */
+  --r-xs:4px; --r-sm:6px; --r-ctl:10px; --r-card:14px;
+  --pad:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+  /* —— 深色档：docs/14「管理端外壳」深色列，三端同色系 —— */
+  --d-bg:#0B1220; --d-surface:#111C2E; --d-surface-2:#0F1A2B; --d-hair:#1E2C42; --d-hair-2:#182539;
+  --d-ink:#E8EEF7; --d-ink-2:#9DB0C8; --d-ink-3:#8CA3BE;
+  --d-primary:#7FB0FF; --d-primary-soft:#16263F; --d-ice:#152238; --d-gold:#F0A63C; --d-gold-soft:#3A2C12;
+}
+body{font-family:var(--font);color:var(--ink);background:#DDE3EC;font-size:14px;line-height:1.4}
+.ic{display:block}
+
+/* ---------------- 设计图外框（不是设计的一部分） ---------------- */
+.sheet-head{max-width:1820px;margin:0 auto;padding:34px 32px 4px}
+.badge{display:inline-block;background:#E7EEFE;color:#1D4ED8;border:1px solid #C7D8FB;border-radius:999px;
+  padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:12px}
+.badge.gray{background:#F1F5F9;color:#475569;border-color:#CFD8E6}
+.sheet-head h1{margin:0 0 10px;font-size:29px;font-weight:800;letter-spacing:-.4px}
+.sheet-head .sub{color:#475569;font-size:13.5px;line-height:1.85;max-width:1240px}
+.sheet-head .sub b{color:#0F172A}
+.metarow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.metarow span{font-size:12px;color:#475569;background:#fff;border:1px solid #D7DEE9;border-radius:8px;padding:5px 10px}
+.metarow span b{color:#0F172A}
+main{max-width:1820px;margin:0 auto;padding:18px 32px 6px;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+figure.shot{width:390px;flex:0 0 390px}
+figure.shot figcaption{font-size:12.5px;font-weight:700;color:#0F172A;margin-bottom:8px;display:flex;gap:7px;align-items:center}
+figure.shot figcaption em{font-style:normal;font-weight:600;color:#5B6B80;font-size:11.5px}
+figure.shot .ph-cap{font-size:11.5px;color:#5B6B80;line-height:1.6;margin-top:9px}
+.panel{width:390px;flex:0 0 390px;background:#fff;border:1px solid #D7DEE9;border-radius:14px;padding:14px}
+.panel h3{font-size:13.5px;font-weight:800;margin-bottom:4px}
+.panel .ph-cap{font-size:11.5px;color:#5B6B80;line-height:1.6;margin-bottom:12px}
+.panel .blk + .blk{margin-top:16px;padding-top:14px;border-top:1px solid #EEF1F6}
+.panel .blk .bt{font-size:11.5px;font-weight:700;color:#5B6B80;margin-bottom:8px}
+
+/* ---------------- 手机壳 390×844（与 merge-identity A+ 稿同基线） ---------------- */
+.phone{width:390px;height:844px;background:var(--bg-page);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;outline:1px solid #C9D2E0}
+.phone.dark{--bg-page:var(--d-bg);--surface:var(--d-surface);--surface-2:var(--d-surface-2);
+  --hair:var(--d-hair);--hair-2:var(--d-hair-2);--line-field:#26364F;
+  --ink:var(--d-ink);--ink-2:var(--d-ink-2);--ink-3:var(--d-ink-3);--muted:var(--d-ink-2);
+  --primary:var(--d-primary);--primary-soft:var(--d-primary-soft);--ice:var(--d-ice);
+  --gold:var(--d-gold);--gold-soft:var(--d-gold-soft);
+  --error-soft:#3A1B1B;--error-hair:#5A2A2A;--error:#F08A8A;
+  --success:#4ADE80;--success-soft:#12301F;--warn:#F0A63C;--warn-soft:#3A2C12;--warn-hair:#5A4520}
+.phone.dark{outline-color:#26364F}
+.statusbar{height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px 0 var(--pad);font-size:12.5px;font-weight:600;letter-spacing:.2px;color:var(--ink);
+  background:var(--surface)}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:11px}
+.sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6.5px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:11px}
+.sb-batt{width:20px;height:10.5px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;opacity:.85}
+.sb-batt::after{content:"";position:absolute;right:-3.2px;top:3px;width:1.8px;height:4px;background:currentColor;border-radius:0 1px 1px 0}
+.sb-batt i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:62%;background:currentColor;border-radius:1px}
+.scroll{flex:1 1 auto;overflow:hidden;position:relative}
+.inner{display:flex;flex-direction:column}
+/* 完整页手机壳：高度随内容增长 + 首屏折线（折线以上 = 390×844 首屏所见） */
+.phone.full{height:auto}
+.phone.full .scroll{overflow:visible}
+.fold{position:absolute;left:0;right:0;top:782px;height:0;border-top:1px dashed #94A3B8;z-index:4}
+.fold span{position:absolute;right:8px;top:-16px;background:#fff;border:1px solid #CFD8E6;border-radius:4px;
+  padding:1px 6px;font-size:9.5px;font-weight:700;color:#5B6B80;letter-spacing:.2px}
+.phone.full.dark .fold{border-top-color:#3A4C68}
+.phone.full.dark .fold span{background:#111C2E;border-color:#26364F;color:#8CA3BE}
+.phone.full .tabbar{margin-top:auto}
+.wrap{padding:0 var(--pad)}
+.hair{height:1px;background:var(--hair-2);border:0}
+.hair.full{background:var(--hair)}
+
+/* ---------------- 排版 ---------------- */
+.ttl{font-size:19px;font-weight:800;letter-spacing:-.2px}
+.h2{font-size:14px;font-weight:800;letter-spacing:-.1px}
+.h3{font-size:13.5px;font-weight:700}
+.num{font-variant-numeric:tabular-nums}
+.tiny{font-size:10.5px;line-height:1.45;color:var(--ink-3)}
+.sub{font-size:11.5px;line-height:1.5;color:var(--muted)}
+.note{font-size:12px;line-height:1.55;color:var(--ink-2)}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------------- 页头（白底 + 发丝线；A+ 定案形态） ---------------- */
+.phead{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--hair);padding:6px var(--pad) 11px;
+  display:flex;align-items:center;justify-content:space-between}
+.phead .lt{font-size:19px;font-weight:800;letter-spacing:-.2px}
+
+/* ---------------- 实色页头（方案 A；无渐变） ---------------- */
+.hero{background:var(--primary);color:#fff;padding:6px var(--pad) 16px}
+.phone.dark .hero{background:var(--primary-strong)}
+.hero .ht{font-size:19px;font-weight:800;letter-spacing:-.2px}
+.hero .hrow{display:flex;align-items:center;gap:13px;margin-top:14px}
+.hero .hava{width:60px;height:60px;flex:0 0 60px;border-radius:50%;background:rgba(255,255,255,.20);
+  border:1.5px solid rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center}
+.hero .hname{font-size:20px;font-weight:800;letter-spacing:.1px}
+.hero .hid{font-size:12px;color:rgba(255,255,255,.84);margin-top:5px;letter-spacing:.2px}
+.hero .hbtn{flex:0 0 auto;height:30px;padding:0 12px;display:flex;align-items:center;gap:5px;
+  border:1px solid rgba(255,255,255,.34);background:rgba(255,255,255,.16);border-radius:var(--r-ctl);
+  font-size:12px;font-weight:600;color:#fff}
+.tag-cur{display:inline-flex;align-items:center;height:17px;padding:0 6px;border-radius:var(--r-xs);
+  font-size:10.5px;font-weight:700;letter-spacing:.2px;background:#F1F5F9;color:var(--ink-2);
+  border:1px solid var(--line-field)}
+.tag-cur.onhero{background:rgba(255,255,255,.94);color:#1D4ED8;border-color:rgba(255,255,255,.94)}
+
+/* ---------------- 卡片（AppCard：白底 + 发丝线描边；阴影只给弹层） ---------------- */
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card)}
+.card.pad{padding:14px}
+.card.flat{overflow:hidden}
+.lrow{display:flex;align-items:center;gap:11px;padding:13px 14px;background:var(--surface)}
+.lrow + .lrow{border-top:1px solid var(--hair-2)}
+.lrow .lt{font-size:14px;font-weight:600;color:var(--ink)}
+.lrow .ls{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+.lrow .gi{width:30px;height:30px;flex:0 0 30px;border-radius:var(--r-sm);display:flex;align-items:center;
+  justify-content:center;background:var(--ice);color:var(--primary)}
+.lrow .gi.mono{background:transparent;color:var(--ink-2);width:22px;flex:0 0 22px}
+
+/* ---------------- 资料行 ---------------- */
+.ava{width:52px;height:52px;flex:0 0 52px;border-radius:var(--r-card);background:var(--primary-soft);
+  color:var(--primary);display:flex;align-items:center;justify-content:center;border:1px solid #CFDCFA}
+.phone.dark .ava{border-color:#22375A}
+.ava.sm{width:42px;height:42px;flex:0 0 42px;border-radius:var(--r-ctl)}
+.editbtn{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--primary)}
+
+/* ---------------- 余额 / 订单 / 会员 ---------------- */
+.balrow{display:flex;align-items:baseline;gap:8px}
+.big{font-size:30px;font-weight:800;color:var(--gold);letter-spacing:-.8px;line-height:1.05}
+.big.xl{font-size:34px;letter-spacing:-1px}
+.grid3{display:flex;align-items:stretch}
+.grid3 .cell{flex:1 1 0;display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:2px 0}
+.grid3 .cell .cv{display:flex;align-items:baseline;gap:5px}
+.grid3 .cell .cn{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.4px;line-height:1}
+.grid3 .cell .cl{font-size:11.5px;color:var(--muted)}
+.grid3 .sep{width:1px;background:var(--hair-2);margin:2px 12px;flex:0 0 1px}
+.bar{height:6px;border-radius:3px;background:var(--primary-soft);overflow:hidden}
+.bar > i{display:block;height:100%;background:var(--primary);border-radius:3px}
+.bar > i.gold{background:var(--gold)}
+
+/* ---------------- 宫格（常用：3 列 × 2 行，发丝线分行） ---------------- */
+.gcell{display:flex;flex-direction:column;gap:5px;padding:13px 2px;min-width:0}
+.gcell .gt{font-size:12.5px;font-weight:600;color:var(--ink);line-height:1.2}
+.gcell .gs{font-size:10.5px;color:var(--muted);line-height:1.35}
+.gcell.on .gt{color:var(--primary)}
+.gcell.on .gs{color:var(--primary)}
+.gwrap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:10px}
+
+/* ---------------- 骨架（数据未加载态） ---------------- */
+.sk{background:#E9EDF4;border-radius:4px}
+.phone.dark .sk{background:#1B2940}
+.sk.l{height:11px}.sk.m{height:14px}.sk.xl{height:28px}
+.sk.w40{width:40%}.sk.w55{width:55%}.sk.w70{width:70%}.sk.w90{width:90%}
+.sknum{width:44px;height:20px}
+.notice{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--warn-soft);border:1px solid var(--warn-hair);color:var(--warn);font-size:11.5px;
+  font-weight:600;line-height:1.45}
+.notice.err{background:var(--error-soft);border-color:var(--error-hair);color:var(--error)}
+.notice .ic{flex:0 0 auto}
+.retry{flex:0 0 auto;margin-left:auto;height:26px;padding:0 11px;display:flex;align-items:center;
+  border-radius:var(--r-sm);border:1px solid currentColor;font-size:11.5px;font-weight:700}
+
+/* ---------------- 底部导航（服务·订单·＋下单·消息·我的） ---------------- */
+.tabbar{flex:0 0 62px;display:flex;align-items:flex-start;background:var(--surface);border-top:1px solid var(--hair);
+  padding:7px 0 0;position:relative}
+.tb-item{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-3);padding-top:2px}
+.tb-item.on{color:var(--primary)}
+.tb-label{font-size:10.5px;font-weight:600;letter-spacing:.1px}
+.tb-c{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tb-cbtn{width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;
+  align-items:center;justify-content:center;margin-top:-15px;border:3px solid var(--surface)}
+
+/* ---------------- 审批说明（设计图外） ---------------- */
+.specwrap{max-width:1820px;margin:26px auto 0;padding:0 32px 60px}
+.specgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.spec{background:#fff;border:1px solid #D7DEE9;border-radius:14px;padding:16px 18px}
+.spec h3{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.spec h3 .n{display:inline-flex;width:19px;height:19px;border-radius:5px;background:#E7EEFE;color:#1D4ED8;
+  font-size:11.5px;font-weight:800;align-items:center;justify-content:center}
+.spec ul{margin:0 0 0 17px}
+.spec li{font-size:12.5px;line-height:1.75;color:#334155;margin-bottom:5px}
+.spec li b{color:#0F172A}
+.spec li code{background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px;
+  font-family:Consolas,Monaco,monospace;color:#1D4ED8}
+.spec p{font-size:12.5px;line-height:1.75;color:#334155}
+.spec .ok{color:#15803D;font-weight:800}
+.spec .no{color:#DC2626;font-weight:800}
+.spec table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+.spec th,.spec td{text-align:left;padding:7px 9px;border-bottom:1px solid #EEF1F6;color:#334155;vertical-align:top}
+.spec th{color:#5B6B80;font-weight:700;background:#FAFBFD;font-size:11.5px}
+.spec td b{color:#0F172A}
+.footnote{max-width:1820px;margin:0 auto;padding:0 32px 70px}
+.footnote div{background:#0F172A;color:#D7DEEA;border-radius:12px;padding:14px 18px;font-size:12.5px;line-height:1.8}
+.footnote b{color:#93C5FD}
+@media (max-width:1100px){ .specgrid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="sheet-head">
+  <div class="badge">方案 C · 数据前置</div>
+  <h1>「我的」页重构 · 方案 C：余额与订单三状态前置为视觉重心</h1>
+  <p class="sub">现状问题：<b>老板最关心的两件事（还剩多少钱、我的单到哪一步）排在资料头之后</b>，首屏第一眼看到的是昵称与背景图，不是钱与单。<br>方案 C 的做法：<b>资产卡置顶</b>——余额放大到 34sp 琥珀金、订单三状态放大到 22sp，直接放在页头下方；资料压缩成一行紧随其后；会员成长、身份分组、常用宫格全部下沉。<br><b>克制之处</b>：三状态保持"数字 + 中文名称"的纵向结构、留在卡片内、每格是可点动作入口，<b>不做页头横幅式并排大数字</b>（docs/21 明确禁止 hero-metric 模板）。</p>
+  <div class="metarow"><span><b>屏</b> 390×844 逻辑像素 × 3（首屏 / 滚动后 / 数据未加载）</span><span><b>红线</b> docs/14 通过 · docs/21 通过（三状态一处需说明）· 服务端改动 <b>0</b></span><span><b>沿用组件</b> AppCard / AppHairline / AppSectionHeader / AppIcon / AppIdentityTag</span><span><b>状态</b> 待审批，未实施任何代码改动</span></div>
+</div>
+<main><figure class="shot"><figcaption>C-1 · 首屏（不滚动） <em>钱与单在第一块</em></figcaption><div class="phone"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+<div class="scroll"><div class="inner"><div class="phead"><span class="lt">我的</span>
+  <span style="display:flex;gap:10px;color:var(--ink-3)"><svg class="ic" style="width:19px;height:19px;flex:0 0 19px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 10.2a5.4 5.4 0 0 1 10.8 0c0 3.9 1.4 5.2 1.4 5.2H5.2s1.4-1.3 1.4-5.2z"/><path d="M10.1 18.4a2.1 2.1 0 0 0 3.8 0"/></svg><svg class="ic" style="width:19px;height:19px;flex:0 0 19px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.4v2.2M12 18.4v2.2M4.6 12H6.8M17.2 12h2.2M6.8 6.8l1.6 1.6M15.6 15.6l1.6 1.6M6.8 17.2l1.6-1.6M15.6 8.4l1.6-1.6"/></svg></span></div>
+<div class="wrap" style="padding-top:14px"><div class="card pad">
+  <div style="display:flex;align-items:baseline;gap:8px">
+    <span class="h3">余额</span><span style="flex:1 1 auto"></span>
+    <span class="tiny">由平台发放 · 不可提现、不可转让</span></div>
+  <div style="margin-top:10px"><div class="balrow">
+  <span class="big xl num">¥248.60</span>
+  <span class="sub" style="font-weight:600">余额</span></div></div>
+  <div class="hair" style="margin:14px 0 13px"></div>
+  <div class="grid3">
+  <div class="cell"><span class="cv"><svg class="ic" style="width:14px;height:14px;flex:0 0 14px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 1.9"/></svg><span class="cn num">2</span></span><span class="cl">待接单</span></div>
+  <div class="sep"></div>
+  <div class="cell"><span class="cv"><svg class="ic" style="width:14px;height:14px;flex:0 0 14px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.4 3.6L6 13.2h5.2l-.6 7.2L18 10.8h-5.2z"/></svg><span class="cn num">1</span></span><span class="cl">进行中</span></div>
+  <div class="sep"></div>
+  <div class="cell"><span class="cv"><svg class="ic" style="width:14px;height:14px;flex:0 0 14px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.2l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/></svg><span class="cn num">3</span></span><span class="cl">待评价</span></div>
+</div>
+  <div class="tiny" style="margin-top:13px">订单数字来自 <span class="num">/user/orders</span> · 全部订单 17 单</div>
+</div></div>
+<div class="wrap" style="padding-top:22px"><div class="card pad" style="display:flex;align-items:center;gap:12px">
+  <div class="ava sm"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg></div>
+  <div style="flex:1 1 auto;min-width:0">
+    <div style="display:flex;align-items:center;gap:7px"><span style="font-size:15px;font-weight:700" class="ell">阿远</span><span class="tag-cur">当前身份：老板</span></div>
+    <div class="tiny num" style="margin-top:4px">ID: U 8471209365</div></div>
+  <span class="editbtn"><svg class="ic" style="width:13px;height:13px;flex:0 0 13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20.2h3.9L18.3 9.8a2.35 2.35 0 0 0-3.3-3.3L4.6 16.9z"/><path d="M13.9 7.6l2.6 2.6"/></svg>编辑资料</span></div></div>
+<div class="wrap" style="padding-top:22px">
+  <div style="display:flex;align-items:baseline;gap:8px;padding:0 2px 9px"><span class="h2">会员成长</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">点击进会员中心</span></div>
+  <div class="card pad"><div style="display:flex;align-items:baseline;gap:8px">
+  <span class="h3">进阶会员</span><span class="tiny">L2</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">累计消费 ¥1,286.50</span></div>
+<div class="bar" style="margin-top:9px"><i class="" style="width:64%"></i></div>
+<div class="tiny" style="margin-top:7px">距精英会员还差 ¥713.50 · 升级阈值由后台配置（<span class="num">/public/levels</span>）</div></div></div>
+<div class="wrap" style="padding-top:22px">
+  <div style="display:flex;align-items:baseline;gap:8px;padding:0 2px 9px"><span class="h2">身份</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">绑定后才有切换入口</span></div>
+  <div class="card flat">
+  <div class="lrow"><span class="gi"><svg class="ic" style="width:16px;height:16px;flex:0 0 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.4h13M14.4 5.6L17.6 8.4l-3.2 2.8"/><path d="M20 15.6H7M9.6 12.8L6.4 15.6l3.2 2.8"/></svg></span>
+  <span style="flex:1 1 auto;min-width:0"><span class="lt">切换身份</span>
+  <span class="ls" style="display:block">已绑定 · 王野 W20260118</span></span>
+  <span class="tag-cur">当前身份：老板</span><span style="color:var(--ink-3);display:flex"><svg class="ic" style="width:16px;height:16px;flex:0 0 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.4 5.4l6.6 6.6-6.6 6.6"/></svg></span></div>
+  <div class="hair" style="margin-left:55px"></div>
+  <div class="lrow"><span class="gi mono"><svg class="ic" style="width:17px;height:17px;flex:0 0 17px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.4 14.6l-1.6 1.6a3.5 3.5 0 0 1-5-5l1.6-1.6"/><path d="M14.6 9.4l1.6-1.6a3.5 3.5 0 0 1 5 5l-1.6 1.6"/><path d="M4.4 4.4l15.2 15.2"/></svg></span>
+  <span style="flex:1 1 auto;min-width:0"><span class="lt">解除绑定</span>
+  <span class="ls" style="display:block">本机忘记这个打手账号，不影响工作端 App</span></span></div>
+</div></div>
+<div class="wrap" style="padding-top:22px">
+  <div style="display:flex;align-items:baseline;gap:8px;padding:0 2px 9px"><span class="h2">常用</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">每项都有中文说明</span></div>
+  <div class="card pad" style="padding:4px 14px 10px"><div class="gwrap"><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.6h13.2A2.8 2.8 0 0 1 20 10.4v7A2.8 2.8 0 0 1 17.2 20H6.8A2.8 2.8 0 0 1 4 17.2z"/><path d="M4 7.6V6.4A1.6 1.6 0 0 1 5.6 4.8h10"/><circle cx="16.2" cy="13.9" r="1.2"/></svg><span class="gt">余额明细</span><span class="gs ell">余额与流水记录</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 10.2a5.4 5.4 0 0 1 10.8 0c0 3.9 1.4 5.2 1.4 5.2H5.2s1.4-1.3 1.4-5.2z"/><path d="M10.1 18.4a2.1 2.1 0 0 0 3.8 0"/></svg><span class="gt">系统通知</span><span class="gs ell">好友申请与账号提醒</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4"/><rect x="3.4" y="13.2" width="3.6" height="5.2" rx="1.6"/><rect x="17" y="13.2" width="3.6" height="5.2" rx="1.6"/><path d="M19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg><span class="gt">联系客服</span><span class="gs ell">客服 9:00-次日 2:00 在线</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.4" width="14" height="9.4" rx="2"/><path d="M8.4 10.4V7.8a3.6 3.6 0 0 1 7.2 0v2.6"/><path d="M12 14.2v2"/></svg><span class="gt">账号安全</span><span class="gs ell">修改密码、登录保护</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.4v2.2M12 18.4v2.2M4.6 12H6.8M17.2 12h2.2M6.8 6.8l1.6 1.6M15.6 15.6l1.6 1.6M6.8 17.2l1.6-1.6M15.6 8.4l1.6-1.6"/></svg><span class="gt">设置</span><span class="gs ell">通知、隐私与清理缓存</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 11.2v5.2M12 7.9h.01"/></svg><span class="gt">关于祁连山电竞</span><span class="gs ell">版本、协议与反馈</span></div></div></div></div>
+<div style="height:24px"></div></div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px;flex:0 0 22px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+<div class="tb-item on"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div><div class="ph-cap">首屏可见：页头 + 资产卡（余额 + 三状态）+ 一行资料 + 会员成长卡。</div></figure><figure class="shot"><figcaption>C-2 · 滚动后（完整页 · 整页展开） <em>虚线 = 首屏折线，以下需滚动</em></figcaption><div class="phone full"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+<div class="fold"><span>首屏折线 · 以下需滚动</span></div>
+<div class="scroll"><div class="inner"><div class="phead"><span class="lt">我的</span>
+  <span style="display:flex;gap:10px;color:var(--ink-3)"><svg class="ic" style="width:19px;height:19px;flex:0 0 19px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 10.2a5.4 5.4 0 0 1 10.8 0c0 3.9 1.4 5.2 1.4 5.2H5.2s1.4-1.3 1.4-5.2z"/><path d="M10.1 18.4a2.1 2.1 0 0 0 3.8 0"/></svg><svg class="ic" style="width:19px;height:19px;flex:0 0 19px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.4v2.2M12 18.4v2.2M4.6 12H6.8M17.2 12h2.2M6.8 6.8l1.6 1.6M15.6 15.6l1.6 1.6M6.8 17.2l1.6-1.6M15.6 8.4l1.6-1.6"/></svg></span></div>
+<div class="wrap" style="padding-top:14px"><div class="card pad">
+  <div style="display:flex;align-items:baseline;gap:8px">
+    <span class="h3">余额</span><span style="flex:1 1 auto"></span>
+    <span class="tiny">由平台发放 · 不可提现、不可转让</span></div>
+  <div style="margin-top:10px"><div class="balrow">
+  <span class="big xl num">¥248.60</span>
+  <span class="sub" style="font-weight:600">余额</span></div></div>
+  <div class="hair" style="margin:14px 0 13px"></div>
+  <div class="grid3">
+  <div class="cell"><span class="cv"><svg class="ic" style="width:14px;height:14px;flex:0 0 14px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 1.9"/></svg><span class="cn num">2</span></span><span class="cl">待接单</span></div>
+  <div class="sep"></div>
+  <div class="cell"><span class="cv"><svg class="ic" style="width:14px;height:14px;flex:0 0 14px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.4 3.6L6 13.2h5.2l-.6 7.2L18 10.8h-5.2z"/></svg><span class="cn num">1</span></span><span class="cl">进行中</span></div>
+  <div class="sep"></div>
+  <div class="cell"><span class="cv"><svg class="ic" style="width:14px;height:14px;flex:0 0 14px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.2l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/></svg><span class="cn num">3</span></span><span class="cl">待评价</span></div>
+</div>
+  <div class="tiny" style="margin-top:13px">订单数字来自 <span class="num">/user/orders</span> · 全部订单 17 单</div>
+</div></div>
+<div class="wrap" style="padding-top:22px"><div class="card pad" style="display:flex;align-items:center;gap:12px">
+  <div class="ava sm"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg></div>
+  <div style="flex:1 1 auto;min-width:0">
+    <div style="display:flex;align-items:center;gap:7px"><span style="font-size:15px;font-weight:700" class="ell">阿远</span><span class="tag-cur">当前身份：老板</span></div>
+    <div class="tiny num" style="margin-top:4px">ID: U 8471209365</div></div>
+  <span class="editbtn"><svg class="ic" style="width:13px;height:13px;flex:0 0 13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20.2h3.9L18.3 9.8a2.35 2.35 0 0 0-3.3-3.3L4.6 16.9z"/><path d="M13.9 7.6l2.6 2.6"/></svg>编辑资料</span></div></div>
+<div class="wrap" style="padding-top:22px">
+  <div style="display:flex;align-items:baseline;gap:8px;padding:0 2px 9px"><span class="h2">会员成长</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">点击进会员中心</span></div>
+  <div class="card pad"><div style="display:flex;align-items:baseline;gap:8px">
+  <span class="h3">进阶会员</span><span class="tiny">L2</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">累计消费 ¥1,286.50</span></div>
+<div class="bar" style="margin-top:9px"><i class="" style="width:64%"></i></div>
+<div class="tiny" style="margin-top:7px">距精英会员还差 ¥713.50 · 升级阈值由后台配置（<span class="num">/public/levels</span>）</div></div></div>
+<div class="wrap" style="padding-top:22px">
+  <div style="display:flex;align-items:baseline;gap:8px;padding:0 2px 9px"><span class="h2">身份</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">绑定后才有切换入口</span></div>
+  <div class="card flat">
+  <div class="lrow"><span class="gi"><svg class="ic" style="width:16px;height:16px;flex:0 0 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.4h13M14.4 5.6L17.6 8.4l-3.2 2.8"/><path d="M20 15.6H7M9.6 12.8L6.4 15.6l3.2 2.8"/></svg></span>
+  <span style="flex:1 1 auto;min-width:0"><span class="lt">切换身份</span>
+  <span class="ls" style="display:block">已绑定 · 王野 W20260118</span></span>
+  <span class="tag-cur">当前身份：老板</span><span style="color:var(--ink-3);display:flex"><svg class="ic" style="width:16px;height:16px;flex:0 0 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.4 5.4l6.6 6.6-6.6 6.6"/></svg></span></div>
+  <div class="hair" style="margin-left:55px"></div>
+  <div class="lrow"><span class="gi mono"><svg class="ic" style="width:17px;height:17px;flex:0 0 17px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.4 14.6l-1.6 1.6a3.5 3.5 0 0 1-5-5l1.6-1.6"/><path d="M14.6 9.4l1.6-1.6a3.5 3.5 0 0 1 5 5l-1.6 1.6"/><path d="M4.4 4.4l15.2 15.2"/></svg></span>
+  <span style="flex:1 1 auto;min-width:0"><span class="lt">解除绑定</span>
+  <span class="ls" style="display:block">本机忘记这个打手账号，不影响工作端 App</span></span></div>
+</div></div>
+<div class="wrap" style="padding-top:22px">
+  <div style="display:flex;align-items:baseline;gap:8px;padding:0 2px 9px"><span class="h2">常用</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">每项都有中文说明</span></div>
+  <div class="card pad" style="padding:4px 14px 10px"><div class="gwrap"><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.6h13.2A2.8 2.8 0 0 1 20 10.4v7A2.8 2.8 0 0 1 17.2 20H6.8A2.8 2.8 0 0 1 4 17.2z"/><path d="M4 7.6V6.4A1.6 1.6 0 0 1 5.6 4.8h10"/><circle cx="16.2" cy="13.9" r="1.2"/></svg><span class="gt">余额明细</span><span class="gs ell">余额与流水记录</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 10.2a5.4 5.4 0 0 1 10.8 0c0 3.9 1.4 5.2 1.4 5.2H5.2s1.4-1.3 1.4-5.2z"/><path d="M10.1 18.4a2.1 2.1 0 0 0 3.8 0"/></svg><span class="gt">系统通知</span><span class="gs ell">好友申请与账号提醒</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4"/><rect x="3.4" y="13.2" width="3.6" height="5.2" rx="1.6"/><rect x="17" y="13.2" width="3.6" height="5.2" rx="1.6"/><path d="M19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg><span class="gt">联系客服</span><span class="gs ell">客服 9:00-次日 2:00 在线</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.4" width="14" height="9.4" rx="2"/><path d="M8.4 10.4V7.8a3.6 3.6 0 0 1 7.2 0v2.6"/><path d="M12 14.2v2"/></svg><span class="gt">账号安全</span><span class="gs ell">修改密码、登录保护</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.4v2.2M12 18.4v2.2M4.6 12H6.8M17.2 12h2.2M6.8 6.8l1.6 1.6M15.6 15.6l1.6 1.6M6.8 17.2l1.6-1.6M15.6 8.4l1.6-1.6"/></svg><span class="gt">设置</span><span class="gs ell">通知、隐私与清理缓存</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 11.2v5.2M12 7.9h.01"/></svg><span class="gt">关于祁连山电竞</span><span class="gs ell">版本、协议与反馈</span></div></div></div></div>
+<div style="height:24px"></div></div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px;flex:0 0 22px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+<div class="tb-item on"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div><div class="ph-cap">折线以上 = C-1 首屏所见；折线以下依次为：会员成长 → 身份（切换身份 / 解除绑定）→ 常用宫格（6 项）。</div></figure><figure class="shot"><figcaption>C-3 · 数据未加载 <em>占位不留白</em></figcaption><div class="phone"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+<div class="scroll"><div class="inner"><div class="phead"><span class="lt">我的</span>
+  <span style="display:flex;gap:10px;color:var(--ink-3)"><svg class="ic" style="width:19px;height:19px;flex:0 0 19px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 10.2a5.4 5.4 0 0 1 10.8 0c0 3.9 1.4 5.2 1.4 5.2H5.2s1.4-1.3 1.4-5.2z"/><path d="M10.1 18.4a2.1 2.1 0 0 0 3.8 0"/></svg><svg class="ic" style="width:19px;height:19px;flex:0 0 19px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.4v2.2M12 18.4v2.2M4.6 12H6.8M17.2 12h2.2M6.8 6.8l1.6 1.6M15.6 15.6l1.6 1.6M6.8 17.2l1.6-1.6M15.6 8.4l1.6-1.6"/></svg></span></div>
+<div class="wrap" style="padding-top:14px"><div class="card pad">
+  <div style="display:flex;align-items:baseline;gap:8px"><span class="sk m" style="width:44px"></span>
+  <span style="flex:1 1 auto"></span><span class="sk l" style="width:132px"></span></div>
+  <div style="margin-top:12px"><div class="balrow"><span class="sk xl" style="width:150px"></span></div>
+<div class="grid3" style="margin-top:12px">
+  <div class="cell"><span class="sk sknum"></span><span class="sk l w70" style="width:34px"></span></div>
+  <div class="sep"></div>
+  <div class="cell"><span class="sk sknum"></span><span class="sk l w70" style="width:34px"></span></div>
+  <div class="sep"></div>
+  <div class="cell"><span class="sk sknum"></span><span class="sk l w70" style="width:34px"></span></div>
+</div></div>
+  <div class="hair" style="margin:14px 0 13px"></div>
+  <div class="notice">
+  <svg class="ic" style="width:14px;height:14px;flex:0 0 14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.6A8 8 0 0 0 6.3 6.3L4 8.4"/><path d="M4 4.4v4h4"/><path d="M4 12.4A8 8 0 0 0 17.7 17.7L20 15.6"/><path d="M20 19.6v-4h-4"/></svg>
+  <span>余额与订单加载中…</span>
+  </div>
+</div></div>
+<div class="wrap" style="padding-top:22px"><div class="card pad" style="display:flex;align-items:center;gap:12px">
+  <div class="ava sm"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg></div>
+  <div style="flex:1 1 auto;min-width:0"><div style="font-size:15px;font-weight:700">阿远</div>
+  <div class="tiny num" style="margin-top:4px">ID: U 8471209365</div></div>
+  <span class="editbtn"><svg class="ic" style="width:13px;height:13px;flex:0 0 13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20.2h3.9L18.3 9.8a2.35 2.35 0 0 0-3.3-3.3L4.6 16.9z"/><path d="M13.9 7.6l2.6 2.6"/></svg>编辑资料</span></div></div>
+<div class="wrap" style="padding-top:22px">
+  <div style="display:flex;align-items:baseline;gap:8px;padding:0 2px 9px"><span class="h2">会员成长</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">点击进会员中心</span></div>
+  <div class="card pad">
+    <div style="display:flex;align-items:baseline;gap:8px"><span class="sk m" style="width:74px"></span>
+    <span style="flex:1 1 auto"></span><span class="sk l" style="width:96px"></span></div>
+    <div class="sk" style="height:6px;border-radius:3px;margin-top:11px"></div>
+    <div class="sk l" style="width:58%;margin-top:9px"></div>
+  </div></div>
+<div class="wrap" style="padding-top:22px">
+  <div style="display:flex;align-items:baseline;gap:8px;padding:0 2px 9px"><span class="h2">常用</span>
+  <span style="flex:1 1 auto"></span><span class="tiny">每项都有中文说明</span></div>
+  <div class="card pad" style="padding:4px 14px 10px"><div class="gwrap"><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.6h13.2A2.8 2.8 0 0 1 20 10.4v7A2.8 2.8 0 0 1 17.2 20H6.8A2.8 2.8 0 0 1 4 17.2z"/><path d="M4 7.6V6.4A1.6 1.6 0 0 1 5.6 4.8h10"/><circle cx="16.2" cy="13.9" r="1.2"/></svg><span class="gt">余额明细</span><span class="gs ell">余额与流水记录</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 10.2a5.4 5.4 0 0 1 10.8 0c0 3.9 1.4 5.2 1.4 5.2H5.2s1.4-1.3 1.4-5.2z"/><path d="M10.1 18.4a2.1 2.1 0 0 0 3.8 0"/></svg><span class="gt">系统通知</span><span class="gs ell">好友申请与账号提醒</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4"/><rect x="3.4" y="13.2" width="3.6" height="5.2" rx="1.6"/><rect x="17" y="13.2" width="3.6" height="5.2" rx="1.6"/><path d="M19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg><span class="gt">联系客服</span><span class="gs ell">客服 9:00-次日 2:00 在线</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.4" width="14" height="9.4" rx="2"/><path d="M8.4 10.4V7.8a3.6 3.6 0 0 1 7.2 0v2.6"/><path d="M12 14.2v2"/></svg><span class="gt">账号安全</span><span class="gs ell">修改密码、登录保护</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.4v2.2M12 18.4v2.2M4.6 12H6.8M17.2 12h2.2M6.8 6.8l1.6 1.6M15.6 15.6l1.6 1.6M6.8 17.2l1.6-1.6M15.6 8.4l1.6-1.6"/></svg><span class="gt">设置</span><span class="gs ell">通知、隐私与清理缓存</span></div><div class="gcell"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 11.2v5.2M12 7.9h.01"/></svg><span class="gt">关于祁连山电竞</span><span class="gs ell">版本、协议与反馈</span></div></div></div></div>
+<div style="height:24px"></div></div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px;flex:0 0 22px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+<div class="tb-item on"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div><div class="ph-cap">资产骨架 + 「余额与订单加载中…」提示条（失败时同位置换红条 + 重新加载）。</div></figure><div class="panel"><h3>与现状的差异点</h3><p class="ph-cap">共 5 处；核心是"资产卡从第 3 块提到第 1 块"。</p><div class="blk"><div class="bt">① 资产卡置顶</div><p class="ph-cap" style="margin:0">现状第一块是资料头（<code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px">:107</code>），余额卡在 <code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px">:115</code>。</p></div><div class="blk"><div class="bt">② 金额字号 26 → 34sp</div><p class="ph-cap" style="margin:0">三状态数字 15 → 22sp；<b>结构不变</b>（数字在上、名称在下、纵向排列）。</p></div><div class="blk"><div class="bt">③ 资料压缩为一行</div><p class="ph-cap" style="margin:0">头像 62 → 42dp；去掉背景图、26sp 大标题与玻璃等级徽章（<code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px">:534-641</code>）。</p></div><div class="blk"><div class="bt">④ 会员成长下沉</div><p class="ph-cap" style="margin:0">从 <code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px">:194</code> 移到滚动区第二组。</p></div><div class="blk"><div class="bt">⑤ 页头形态</div><p class="ph-cap" style="margin:0">白底 + 发丝线 + 19sp 标题 + 通知 / 设置两个线性图标。</p></div></div><div class="panel"><h3>红线核对</h3><p class="ph-cap"><b>违反 0 条</b>；「并排三个大数字」一条需按下述口径理解。</p><div class="blk"><div class="bt">docs/14</div><p class="ph-cap" style="margin:0"><span style="color:#15803D;font-weight:800">通过</span> 色板 / 圆角分档 / 间距 / 字号层级 全部一致</p></div><div class="blk"><div class="bt">docs/21 禁止项</div><p class="ph-cap" style="margin:0"><span style="color:#15803D;font-weight:800">通过</span> 渐变 0 · 左彩条 0 · 阴影 0 · emoji 0 · 装饰插画 0</p></div><div class="blk"><div class="bt">「并排三个大数字」</div><p class="ph-cap" style="margin:0"><span style="color:#15803D;font-weight:800">通过 不构成违反</span>：该条禁的是把「用户数 / 好评率 / 在线」这类<b>未经验证的填充指标</b>并排当 hero-metric。本方案三状态是<b>真实订单统计 + 可点动作入口</b>（点击进订单页对应筛选），且纵向结构、位于卡片内。仍建议负责人按此口径确认。</p></div><div class="blk"><div class="bt">结构规则</div><p class="ph-cap" style="margin:0"><span style="color:#15803D;font-weight:800">通过</span> 底部导航不变 · 玩家圈不出现 · 同一入口只出现一次</p></div></div></main>
+<div class="specwrap"><div class="specgrid"><div class="spec"><h3><span class="n">1</span>这一版改了什么（与现状的差异点 · 共 5 处）</h3><ul><li>① <b>资产卡置顶</b>：余额 + 订单三状态成为<b>页面第一屏第一块</b>，直接位于页头下方（现状第一块是资料头，余额卡排在第 3 块，<code>profile_page.dart:115</code>）。理由：老板端最高频的两个动作是"看还剩多少钱"和"看我的单到哪一步了"。</li><li>② <b>余额字号放大到 34sp</b>（现状 26sp，<code>:138</code>）；三状态数字放大到 22sp，并**保持"数字 + 名称"的纵向结构**——不做顶部并排三个大数字（docs/21 明确禁止 hero-metric）。</li><li>③ <b>资料压缩成一行</b>：头像 42×42 + 昵称 + 当前身份标签 + ID + 编辑资料（现状是 26sp 大标题 + 62dp 头像 + 等级徽章 + 背景图，<code>:534-641</code>）。资料不再是首屏主角。</li><li>④ <b>会员成长下沉</b>：从第 4 块（<code>:194-232</code>）移到滚动区，与身份分组同层。</li><li>⑤ <b>页头去图去渐变</b>：白底 + 19sp 标题 + 通知 / 设置两个线性图标。</li></ul></div><div class="spec"><h3><span class="n">2</span>红线核对（docs/14 + docs/21）</h3><ul><li><b>docs/14</b>：色板 / 圆角 / 间距 <span class="ok">全部一致</span>。</li><li><b>docs/21「顶部并排三个大数字」</b>：<span class="ok">未违反</span>。本方案的三状态不是 hero-metric —— 每格是<b>可点动作入口</b>（点进订单页对应筛选），数字下方有中文名称，且纵向排列在卡片内而非页头横幅。</li><li><b>docs/21 其余禁项</b>：渐变 0 · 左彩条 0 · 阴影 0 · emoji 0 · 装饰插画 0 <span class="ok">全部通过</span>。</li><li><b>金额口径</b>：<code>¥248.60</code> 由 <code>fmtMoney()</code> 产出（<code>¥</code> + 千分位 + 两位小数）；<b>全页不出现「积分」二字</b>，余额是唯一叫法。</li><li><b>结构规则</b>：底部导航仍为 服务·订单·＋下单·消息·我的；玩家圈不出现；同一入口只出现一次。</li></ul></div><div class="spec"><h3><span class="n">3</span>首屏能看到什么（不滚动）</h3><ul><li>① <b>我的</b> 页头；</li><li>② <b>资产卡</b>（页面第一块）：余额 <code>¥248.60</code> 34sp 琥珀金 + 全部订单 17 单 + 待接单 2 / 进行中 1 / 待评价 3 + 口径说明「数字来自 /user/orders」；</li><li>③ <b>一行资料</b>：头像、昵称、<b>当前身份：老板</b>、ID、编辑资料；</li><li>④ <b>常用操作</b>前两行（我的订单 / 余额明细）。</li><li><b>看不到</b>：会员成长、身份分组、常用宫格 —— 全部下沉。首屏的信息密度最高，代价是"我是谁"退居其次。</li></ul></div><div class="spec"><h3><span class="n">4</span>与方案 A / B 的取舍差别（为什么可能不选它）</h3><ul><li>优点：<b>老板最关心的"钱"与"单"零滚动可见</b>，且余额字号最大（34sp），一眼能看清。</li><li>风险 1：<b>资料被压到第二块且只有一行</b>，用户进「我的」时"确认我是谁、ID 是多少"要往下找；而编辑资料、等级徽章这类账号级操作被进一步弱化。</li><li>风险 2：<b>首屏信息密度过高</b>——余额、四组数字、资料行、两个操作行全挤在 844 里，留白最少（docs/14「艺术感来自比例、留白」）。</li><li>风险 3：三状态数字放大后，<b>与 docs/21「禁顶部并排三个大数字」只差一步</b>；虽不违规，但把"数字当装饰"的风险最高，需要克制。</li><li>结论：适合"重度下单用户"画像；作为默认方案风险偏高，故不作为推荐稿（推荐 B）。</li></ul></div></div></div>
+<div class="footnote"><div><b>本方案未实施任何代码改动，等负责人审批。</b> 全部数值取自 core 设计 token；本方案在三个方案中首屏信息密度最高，取舍风险见说明卡 4。</div></div>
+</body>
+</html>

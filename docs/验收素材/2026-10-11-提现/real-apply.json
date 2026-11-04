@@ -1,0 +1,55 @@
+{
+  "companion": {
+    "jti": "88c424dd-9aaf-40fe-856c-44aa8230f61c",
+    "kind": "companion",
+    "bindingId": "341"
+  },
+  "qrLocalCopy": "D:\\fish\\docs\\验收素材\\2026-10-11-提现\\收款码-阿岩不熬夜-W-20429.png",
+  "qrMediaId": "273",
+  "generatedAt": "2026-10-11T06:53:44.872Z",
+  "adminUser": "opsadmin",
+  "worker": {
+    "username": "wd_demo_worker",
+    "userId": "1244",
+    "workerId": "403",
+    "workerNo": "W-20429",
+    "nickname": "阿岩不熬夜"
+  },
+  "boss": {
+    "username": "wd_demo_boss",
+    "userId": "1245"
+  },
+  "payee": {
+    "realName": "陈岩",
+    "phone": "13907315528",
+    "wechatId": "ayan_chen_0917",
+    "masked": {
+      "realName": "陈*",
+      "phone": "139****5528",
+      "wechatId": "ay****17"
+    }
+  },
+  "requestId": "45",
+  "status": "pending",
+  "amount": 10,
+  "amountLabel": "¥10.00",
+  "balanceBefore": 100,
+  "balanceAfter": 90,
+  "appliedAt": "2026-10-10T22:51:48.915Z",
+  "walletTransaction": {
+    "id": "2776",
+    "transactionNo": "TMV3GTG6TBBDB6139",
+    "changeType": "withdraw",
+    "amount": -10,
+    "balanceBefore": 100,
+    "balanceAfter": 90
+  },
+  "operationLog": {
+    "applyLogId": "3884",
+    "bindLogId": "3885",
+    "bindAction": "withdraw:account:rebind"
+  },
+  "reusedExistingPending": true,
+  "pass": 18,
+  "fail": 0
+}

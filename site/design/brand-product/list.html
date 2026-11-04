@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1740,initial-scale=1">
+<title>商品列表页 · 品牌化重设计（docs/32 基准）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+:root{
+  --ink:#0F2440; --primary:#1D5FA8; --celadon:#0E7C7B; --gold:#B4732A;
+  --page:#F4F6F9; --surface:#FFFFFF; --hair:#E3E8EF;
+  --tx:#14202E; --tx2:#4A5A6E; --tx3:#8A99AB;
+  --primary-soft:#E8EEF7; --celadon-soft:#E3F0EF; --amber-soft:#F7EDE0;
+  --success:#0E7C7B; --warn:#B45309; --error:#B42318; --warn-soft:#FBF1E4;
+  --r-xs:4px; --r-sm:6px; --r-ctl:10px; --r-card:14px;
+  --font:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,"Segoe UI",sans-serif;
+}
+body{font-family:var(--font);color:var(--tx);background:#E4E8EE;font-size:13px;line-height:1.5}
+.ic{display:block}
+.num{font-variant-numeric:tabular-nums}
+.mark{display:block}
+.sheethead{max-width:1740px;margin:0 auto;padding:30px 30px 2px}
+.sheethead h1{margin:0 0 9px;font-size:24px;font-weight:800;letter-spacing:-.3px}
+.sheethead .sub{color:var(--tx2);font-size:13px;line-height:1.85;max-width:1420px}
+.sheethead .sub b{color:var(--tx)}
+.sheethead .brandline{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.sheethead .bnote{font-size:11px;color:#8A99AB;line-height:1.6;margin-top:6px}
+.brandbox{width:34px;height:34px;background:var(--ink);display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px)}
+.brandname{font-size:14px;font-weight:800;letter-spacing:.4px}
+.brandtag{font-size:10.5px;color:var(--tx3);border:1px solid var(--hair);border-radius:var(--r-xs);padding:2px 6px}
+.chips{display:flex;gap:8px;margin:12px 0 20px;flex-wrap:wrap}
+.chip{font-size:11px;padding:4px 9px;border-radius:6px;background:#fff;border:1px solid #D7DEE9;color:var(--tx2)}
+.chip.ok{border-color:#CBE3E2;background:#F1F8F8;color:#0B605F}
+.chip.warn{border-color:#E8D6BC;background:#FBF5EC;color:#B45309}
+main{max-width:1740px;margin:0 auto;padding:12px 30px 8px}
+.rows{display:flex;flex-direction:column;gap:26px}
+.frames{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.frame{width:392px;flex:0 0 392px;margin:0}
+.frame .cap{display:flex;align-items:baseline;gap:7px;margin-bottom:8px;min-height:19px}
+.frame .cap .n{font-size:12px;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
+.frame .cap .t{font-size:13px;font-weight:700;white-space:nowrap}
+.frame .cap .d{font-size:10.5px;color:var(--tx3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frame .fnote{font-size:10.5px;color:#5B6B80;line-height:1.65;margin-top:8px}
+.notes{max-width:1740px;margin:0 auto;padding:20px 30px 40px;display:flex;gap:18px;flex-wrap:wrap}
+.panel{flex:1 1 336px;min-width:318px;background:#fff;border:1px solid #D7DEE9;border-radius:14px;padding:14px 15px}
+.panel h3{font-size:13px;font-weight:800;margin-bottom:6px}
+.panel p,.panel li{font-size:12px;color:#5B6B80;line-height:1.8}
+.panel ul{margin:0;padding-left:16px}
+.panel .kv{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#5B6B80;padding:5px 0;border-top:1px solid #EEF1F6}
+.panel .kv:first-of-type{border-top:0}
+.panel .kv b{color:var(--tx);font-weight:700}
+.sheetfoot{max-width:1740px;margin:0 auto;padding:0 30px 40px;font-size:11px;color:#8A99AB;line-height:1.8}
+
+.phone{position:relative;width:392px;height:844px;background:var(--page);overflow:hidden;
+  border:1px solid #D2DAE5;display:flex;flex-direction:column}
+.phone.full{height:auto}
+.statusbar{height:26px;flex:0 0 26px;background:var(--surface);display:flex;align-items:center;
+  justify-content:space-between;padding:0 14px 0 16px;font-size:10px;font-weight:700;color:var(--tx)}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:11px}
+.sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px}
+.sb-net{font-size:9.5px;font-weight:700}
+.sb-batt{width:20px;height:10.5px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;opacity:.85}
+.sb-batt::after{content:"";position:absolute;right:-3.2px;top:3px;width:1.8px;height:4px;background:currentColor;border-radius:0 1px 1px 0}
+.sb-batt i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:62%;background:currentColor;border-radius:1px}
+.scroll{flex:1 1 auto;overflow:hidden;position:relative}
+.phone.full .scroll{overflow:visible}
+.inner{display:flex;flex-direction:column}
+.fold{position:absolute;left:0;right:0;height:0;border-top:1px dashed #93A1B4;z-index:8}
+.fold span{position:absolute;right:7px;top:-15px;background:#fff;border:1px solid #CFD8E6;border-radius:4px;
+  padding:1px 6px;font-size:9.5px;font-weight:700;color:#5B6B80}
+
+.phead58{flex:0 0 58px;height:58px;background:var(--surface);border-bottom:1px solid var(--hair);
+  display:flex;align-items:center;gap:2px;padding:0 6px}
+.phead56{flex:0 0 56px;height:56px;background:var(--surface);border-bottom:1px solid var(--hair);
+  display:flex;align-items:center;gap:4px;padding:0 8px}
+.phead58 .ttl,.phead56 .ttl{font-size:20px;font-weight:800;letter-spacing:-.2px;margin-left:2px}
+.iconbtn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex:none;border-radius:10px}
+.sp{flex:1 1 0}
+
+.ruler{display:flex;align-items:center;height:3px}
+.ruler i{width:3px;height:3px;flex:none;border-radius:.5px}
+.ruler span{flex:1 1 0;height:1px;background:var(--hair)}
+.hair{height:1px;background:var(--hair)}
+
+.divisionrow{background:var(--surface);flex:none}
+.divisions{display:flex;gap:16px;padding:12px 16px 0;overflow:hidden}
+.dv{width:60px;flex:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+.dv .dvtile{width:54px;height:54px;border-radius:50%;background:var(--primary-soft);color:var(--primary);
+  display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;position:relative;
+  border:1.5px solid transparent}
+.dv .dvtile .plat{position:absolute;right:0;bottom:0;background:var(--ink);color:#fff;font-size:9.5px;font-weight:700;
+  padding:1px 4px;border-radius:4px}
+.dv.on .dvtile{border-color:var(--primary);background:#fff;color:var(--primary)}
+.dv .dvl{font-size:11px;color:var(--tx2);white-space:nowrap}
+.dv.on .dvl{color:var(--primary);font-weight:800}
+.divlabel{display:flex;align-items:center;gap:6px;padding:8px 16px 0;background:var(--surface)}
+.divlabel .dl{font-size:12px;font-weight:700;color:var(--tx)}
+.divlabel .dm{font-size:11px;color:var(--tx3)}
+
+.sortrow{display:flex;align-items:center;gap:8px;padding:10px 16px 8px;background:var(--page);flex:none}
+.sortchip{height:28px;padding:0 12px;display:flex;align-items:center;border-radius:999px;
+  border:1px solid var(--hair);background:var(--surface);font-size:12px;color:var(--tx2)}
+.sortchip.on{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:700}
+.listbody{flex:1 1 auto;display:flex;min-height:0}
+.catside{width:96px;flex:0 0 96px;background:var(--surface);border-right:1px solid var(--hair);padding:2px 0;
+  display:flex;flex-direction:column}
+.cat{padding:12px 9px;font-size:12px;color:var(--tx2);line-height:1.35}
+.cat.on{background:var(--page);color:var(--primary);font-weight:800}
+.cat .catmk{display:block;width:3px;height:3px;background:var(--primary);margin-bottom:4px;border-radius:.5px}
+.cat:not(.on) .catmk{visibility:hidden}
+.cardcol{flex:1 1 auto;min-width:0;background:var(--page);padding:4px 12px 16px;display:flex;flex-direction:column;gap:10px}
+.secmark{display:flex;align-items:center;gap:8px;padding:2px 1px 4px}
+.secmark .sm-t{font-size:12px;font-weight:800;color:var(--tx2);letter-spacing:.2px;flex:none}
+.secmark .ruler{flex:1 1 0}
+
+.hero{position:relative;background:var(--ink);overflow:hidden;color:#fff;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+.hero-in{position:relative;padding:13px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.hero-top{display:flex;align-items:flex-start;gap:11px}
+.hero-mid{flex:1 1 0;min-width:0}
+.hero-badge{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:4px;
+  background:var(--gold);color:#fff;font-size:10px;font-weight:800}
+.hero h3{font-size:15px;font-weight:800;line-height:1.4;color:#fff;margin-top:7px}
+.hero .svc{margin-top:7px;display:flex;flex-direction:column;gap:4px}
+.hero .svc div{font-size:11px;line-height:1.5;color:rgba(255,255,255,.82)}
+.hero .svc b{color:#fff;font-weight:700}
+.hero-foot{display:flex;align-items:flex-end;gap:10px;border-top:1px solid rgba(255,255,255,.16);padding-top:10px}
+.hero-price{flex:1 1 0;min-width:0}
+.hero-price .pv{font-size:22px;font-weight:700;color:#E8BC72;line-height:1;font-variant-numeric:tabular-nums}
+.hero-price .pu{font-size:10.5px;color:rgba(255,255,255,.62);margin-left:4px}
+.hero-price .pm{font-size:10.5px;color:rgba(255,255,255,.62);margin-top:6px}
+.hero-buy{flex:none;height:36px;padding:0 16px;display:flex;align-items:center;gap:5px;background:var(--gold);color:#fff;
+  font-size:13px;font-weight:800;border-radius:10px}
+.hero-tag{position:absolute;right:0;top:0;font-size:9.5px;font-weight:700;color:rgba(255,255,255,.72);
+  border-left:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22);padding:3px 7px}
+
+.ccard{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:11px 12px 12px;
+  display:flex;gap:11px}
+.ccard.gold{border-color:#E0C79E}
+.ccard-main{flex:1 1 0;min-width:0;display:flex;flex-direction:column}
+.ccard .cdiv{font-size:10px;color:var(--tx3)}
+.ccard h4{font-size:13px;font-weight:700;line-height:1.42;color:var(--tx);margin-top:4px}
+.ccard .facts{margin-top:7px;display:flex;flex-direction:column;gap:3px;border-top:1px solid #EEF1F6;padding-top:6px}
+.ccard .facts div{display:flex;gap:6px;font-size:11px;color:var(--tx2);line-height:1.45}
+.ccard .facts em{font-style:normal;color:var(--tx3);flex:none;width:48px}
+.ccard-foot{display:flex;align-items:flex-end;gap:8px;margin-top:9px}
+.ccard-foot .pv{font-size:18px;font-weight:700;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+.ccard-foot .pu{font-size:10.5px;color:var(--tx3);margin-left:3px}
+.minibuy{flex:none;height:36px;padding:0 14px;display:flex;align-items:center;background:var(--primary);color:#fff;
+  font-size:13px;font-weight:700;border-radius:10px;margin-left:auto}
+
+.lcard{background:var(--surface);border:1px solid var(--hair);border-radius:0;overflow:hidden}
+.lcard-hd{display:flex;align-items:center;gap:6px;padding:10px 12px 8px}
+.lcard-hd .t{font-size:12px;font-weight:800;color:var(--tx)}
+.lcard-hd .s{font-size:10.5px;color:var(--tx3);margin-left:auto}
+.lrow{display:flex;align-items:center;gap:9px;min-height:54px;padding:0 12px;border-top:1px solid #EEF1F6}
+.lrow .lk{font-size:12px;color:var(--tx2);flex:none;width:72px}
+.lrow .lv{font-size:12px;color:var(--tx);font-weight:700;flex:1 1 0;min-width:0;line-height:1.45}
+.lrow .ls{font-size:10.5px;color:var(--tx3);flex:none}
+
+.sk{background:#EDF1F6;border-radius:6px}
+.sk.tile{width:74px;height:74px;border-radius:14px;flex:none}
+.sk.tile.sm{width:64px;height:64px}
+.sk.line{height:9px;border-radius:4px}
+.sk.line.lg{height:13px}
+.sk.card{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:11px 12px 12px;
+  display:flex;gap:11px}
+.sk.hero{background:var(--ink);border:none;border-radius:0;padding:13px 14px 14px;display:flex;flex-direction:column;gap:10px;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+.sk.hero .hrow{display:flex;gap:11px}
+.sk-h{background:rgba(255,255,255,.14)}
+.sk-h.light{background:rgba(255,255,255,.24)}
+.sknote{display:flex;align-items:center;gap:6px;padding:9px 16px;background:var(--amber-soft);
+  border-bottom:1px solid #EBDCC6;font-size:10.5px;color:#7A4E15;line-height:1.5}
+
+.emptywrap{background:var(--surface);padding:30px 26px 26px;display:flex;flex-direction:column;align-items:center}
+.emptywrap.tinted{position:relative;overflow:hidden}
+.empty-in{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.empty-in .et{font-size:13px;font-weight:700;color:var(--tx2)}
+.empty-in .es{font-size:12px;color:var(--tx3);line-height:1.65;max-width:250px}
+.empty-in .ea{margin-top:10px;height:34px;padding:0 16px;display:flex;align-items:center;gap:5px;
+  border:1px solid var(--primary);color:var(--primary);border-radius:10px;font-size:13px;font-weight:700}
+.reco{margin-top:22px;width:100%;background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:12px}
+.reco .rt{font-size:12px;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:6px;margin-bottom:9px}
+.reco .rr{display:flex;align-items:center;gap:10px;min-height:44px}
+.reco .rr + .rr{border-top:1px solid #EEF1F6;margin-top:9px;padding-top:9px}
+.reco .rn{flex:1 1 0;min-width:0;font-size:12px;color:var(--tx);line-height:1.45}
+.reco .rp{font-size:12px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;flex:none}
+
+.hintbar{flex:0 0 auto;background:var(--surface);border-top:1px solid var(--hair);padding:9px 16px 14px}
+.hintbar .htx{font-size:11px;line-height:1.5;color:var(--tx2)}
+
+.detailhero{background:var(--surface);padding:0 0 12px}
+.heroimg{position:relative;overflow:hidden;background:var(--ink);color:#fff}
+.heroimg .hi-in{position:relative;display:flex;align-items:center;gap:14px;padding:0 18px;height:100%}
+.heroimg .hi-tx{flex:1 1 0;min-width:0}
+.heroimg .hi-tx b{display:block;font-size:15px;font-weight:800;color:#fff;line-height:1.4}
+.heroimg .hi-tx i{display:block;font-style:normal;font-size:11px;color:rgba(255,255,255,.76);line-height:1.55;margin-top:5px}
+.heroimg .hi-tag{position:absolute;right:16px;bottom:9px;font-size:9.5px;color:rgba(255,255,255,.6)}
+.dhero-title{font-size:18px;font-weight:800;line-height:1.42;color:var(--tx);padding:12px 16px 0}
+.dhero-price{display:flex;align-items:flex-end;gap:5px;padding:9px 16px 0}
+.dhero-price .pv{font-size:26px;font-weight:700;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+.dhero-price .pu{font-size:11px;color:var(--tx3);padding-bottom:4px}
+.dhero-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:9px 16px 0}
+.badge-gold{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:4px;
+  background:var(--gold);color:#fff;font-size:10px;font-weight:800}
+.limitnote{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx2)}
+.noticebar{margin:11px 16px 0;background:var(--primary-soft);border:1px solid #D6E2F1;border-radius:6px;
+  padding:9px 10px;display:flex;gap:7px;align-items:flex-start}
+.noticebar .tx{font-size:12px;line-height:1.6;color:#17457C}
+.blockgap{height:8px;background:var(--page)}
+.dsection{background:var(--surface)}
+.dsec-hd{display:flex;align-items:center;gap:8px;padding:13px 16px 8px}
+.dsec-hd .h{font-size:15px;font-weight:800}
+.dsec-hd .s{font-size:10.5px;color:var(--tx3)}
+.dsec-hd .a{margin-left:auto;font-size:12px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:3px}
+.datacols{display:flex;border-top:1px solid var(--hair)}
+.datacols .c{flex:1 1 0;min-width:0;padding:10px 12px 12px}
+.datacols .c:first-child{padding-left:16px}
+.datacols .c:last-child{padding-right:16px}
+.datacols .c + .c{border-left:1px solid var(--hair)}
+.datacols .k{font-size:10.5px;color:var(--tx3)}
+.datacols .v{font-size:13px;font-weight:700;color:var(--tx);margin-top:3px;line-height:1.4}
+.datacols .v small{font-size:10.5px;font-weight:400;color:var(--tx2)}
+.dterms{padding:0 16px 15px}
+.dterms .li{display:flex;gap:7px;font-size:12px;line-height:1.8;color:var(--tx2)}
+.dterms .li + .li{margin-top:6px}
+.dterms .li .n{flex:none;color:var(--tx3);font-weight:700;min-width:13px}
+.dterms .li b{color:var(--tx)}
+.foldrow{display:flex;align-items:center;gap:8px;min-height:54px;padding:0 16px;border-top:1px solid var(--hair)}
+.foldrow .h{font-size:13px;font-weight:800;flex:none}
+.foldrow .one{font-size:11px;color:var(--tx3);flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.foldrow .go{font-size:12px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:3px;flex:none}
+.guard{display:flex;gap:8px;align-items:flex-start;padding:0 16px 14px}
+.gt{flex:1 1 0;min-width:0;font-size:12px;color:var(--tx2);line-height:1.75}
+.gt b{color:var(--tx);font-weight:700;font-size:13px}
+.gt .ic{display:inline-block;vertical-align:-3px;margin-right:5px}
+.flowsteps{padding:0 16px 15px;display:flex;flex-direction:column;gap:9px}
+.fstep{display:flex;gap:9px;align-items:flex-start}
+.fstep .sn{flex:none;width:20px;height:20px;border-radius:4px;background:var(--primary-soft);color:var(--primary);
+  font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.fstep .st{flex:1 1 0;min-width:0}
+.fstep .st b{display:block;font-size:13px;font-weight:700;color:var(--tx);line-height:1.45}
+.fstep .st i{display:block;font-style:normal;font-size:12px;color:var(--tx2);line-height:1.6;margin-top:2px}
+.faq{padding:0 16px 15px;display:flex;flex-direction:column;gap:11px}
+.faqi{border-top:1px solid #EEF1F6;padding-top:10px}
+.faqi:first-child{border-top:0;padding-top:0}
+.faqi .q{display:flex;gap:8px;align-items:flex-start;font-size:13px;font-weight:700;color:var(--tx);line-height:1.5}
+.faqi .a{font-size:12px;color:var(--tx2);line-height:1.75;margin:6px 0 0 20px}
+.dfoot{display:flex;align-items:center;justify-content:center;gap:6px;padding:14px 16px 18px;font-size:11px;color:var(--tx3)}
+.bar{flex:0 0 72px;background:var(--surface);border-top:1px solid var(--hair);
+  display:flex;align-items:flex-start;gap:3px;padding:8px 12px 0}
+.bar .icw{width:50px;flex:none;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bar .icw .lb{font-size:9.5px;color:var(--tx2);line-height:1.2}
+.bar .buy{flex:1 1 0;min-width:0;height:44px;margin-left:8px;border-radius:10px;background:var(--primary);
+  display:flex;align-items:center;justify-content:center}
+.bar .buy .lb{font-size:15px;font-weight:800;color:#fff;letter-spacing:.6px}
+</style>
+</head>
+<body>
+<div class="sheethead">
+  <div class="brandline"><span class="brandbox"><svg class="mark" viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" style="flex:none">
+<g fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="square" stroke-linejoin="miter">
+<path d="M4.4,5.6 L7.6,8.8"/><path d="M6,4.2 L6,19.6"/><path d="M3.6,16.9 L8.4,12.1"/>
+<path d="M11.2,5.6 L17.2,5.6 L17.2,9.6 L13.4,9.6 L13.4,14.4 L17.2,14.4 L17.2,18.4 L11.2,18.4 Z"/>
+</g><rect x="19.1" y="8.2" width="2.2" height="2.2" fill="#E8BC72"/></svg></span>
+    <span class="brandname">祁连山电竞 · 品牌化重设计</span>
+    <span class="brandtag">docs/32 基准 · 待审批</span></div>
+  <h1>商品列表页（选择服务）· 品牌化重设计</h1>
+  <div class="sub">商品列表页（<b>选择服务</b>）品牌化重设计。结构沿用现有信息架构（<b>页头 → 专区胶囊行 → 分部标识 → 排序行 → 左侧分类栏 + 右侧商品列 → 底部购买提示</b>），
+把「一张张一模一样的白圆角卡」换成 <b>docs/32 §六 的三档卡片</b>：主推商品用 <b>HeroCard</b>（墨蓝实色 + 45° 斜切角 + 4% 细网格，每屏仅 1 个），
+常规商品用 <b>ContentCard</b>（白卡 · 圆角 14 · 1px 发丝线 · 无阴影），规格/规则用 <b>ListCard</b>（无圆角分组 + 发丝线行）。
+每张卡都把 <b>服务内容</b>（真实规则口径）与 <b>价格</b>（¥ + 两位小数 + 千分位）放在同一视觉层级里，用户不必点进去才知道买的是什么。</div>
+  <div class="bnote">生成日期 2026-10-13 · 状态：待负责人审批 · 本稿只出图，不改任何产品代码</div>
+  <div class="chips"><span class="chip ">390×844 · 与真实页面同框</span><span class="chip ok">卡片三档：HeroCard ×1 + ContentCard ×3 + ListCard ×1</span><span class="chip ok">商品图位 = 占位色块 + 首字（0 张真实图片）</span><span class="chip ok">金额 ¥ + 千分位 + 两位小数</span><span class="chip ok">渐变 0 · 阴影 0 · emoji 0</span><span class="chip ok">商品名/分部照真实目录口径</span></div>
+</div>
+<main><div class="rows"><div class="frames"><figure class="frame"><figcaption class="cap"><span class="n">①</span><span class="t">首屏（不滚动）</span><span class="d">390×844 · HeroCard + 第 1 张卡</span></figcaption><div class="phone  " data-mode="first" data-scroll="0" data-notes="list-first" style="height:844px"><div class="statusbar" style="background:#FFFFFF;color:#14202E"><span class="num">9:41</span><span class="sb-r"><span class="sb-bars"><i style="height:4px"></i><i style="height:6.5px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="sb-net">5G</span><span class="sb-batt"><i></i></span></span></div><div class="phead58"><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#14202E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></span><span class="ttl">选择服务</span><span class="sp"></span><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.6" cy="10.6" r="6.1"/><path d="M15.2,15.2 L20,20"/></g></svg></span><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg></span></div><div class="scroll"><div class="inner" style="transform:translateY(0px)"><div class="sortrow"><span class="sortchip on">综合</span><span class="sortchip ">销量</span><span class="sortchip ">价格 ↑</span><span class="sortchip"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg><span style="margin-left:5px">筛选</span></span></div><div class="divisionrow"><div class="divisions"><div class="dv on"><span class="dvtile">和</span><span class="dvl">和平精英</span></div><div class="dv "><span class="dvtile">三<span class="plat">手</span></span><span class="dvl">三角洲行动</span></div><div class="dv "><span class="dvtile">三<span class="plat">端</span></span><span class="dvl">三角洲行动</span></div></div><div class="divlabel"><span class="dl">和平精英 · 手游</span><span class="dm">共 4 件在售</span></div></div><div class="listbody"><div class="catside"><div class="cat on"><i class="catmk"></i>体验单</div><div class="cat "><i class="catmk"></i>护航单</div><div class="cat "><i class="catmk"></i>上分单</div><div class="cat "><i class="catmk"></i>陪练单</div><div class="cat "><i class="catmk"></i>组队开黑</div><div class="cat "><i class="catmk"></i>代练单</div></div><div class="cardcol"><div class="secmark"><span class="sm-t">官方自营</span><div class="ruler"><i style="background:#C3CCDA"></i><span style="background:#E3E8EF"></span><i style="background:#C3CCDA"></i></div></div><div class="hero" data-card="hero"><svg class="gtex" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"><defs><pattern id="gp7ch9k8" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M11,0 L0,0 L0,11" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#gp7ch9k8)"/></svg><div class="hero-in"><div class="hero-top"><div class="ctile" data-cover="placeholder" data-note="商品图占位 · 色块 + 首字" style="width:64px;height:64px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.26);border-radius:14px;color:#FFFFFF"><span class="ctile-ch" style="font-size:27px">9</span><svg viewBox="0 0 40 40" width="29" height="29" aria-hidden="true"><rect x="10" y="10" width="20" height="20" transform="rotate(45 20 20)" fill="none" stroke="rgba(255,255,255,.26)" stroke-width="1.6"/></svg></div><div class="hero-mid"><span class="hero-badge">店长推荐</span><h3>9.9新人体验单保200w不卡保底</h3><div class="svc"><div>体验单保 200w，不卡保底；未达标按局数补打</div><div>服务方式：手游 · 人工陪同（护航员全程语音带）</div></div></div></div><div class="hero-foot"><div class="hero-price"><span class="pv">¥9.90</span><span class="pu">/单</span><div class="pm">每周限购 2 单 · 本周还可下 2 单</div></div><span class="hero-buy"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L14,3.5 L18.5,8 L18.5,20.5 L6,20.5 Z"/><path d="M14,3.5 L14,8 L18.5,8"/><path d="M9,12.5 L15.5,12.5"/><path d="M9,16 L15.5,16"/></g></svg><span style="margin-left:5px">下单</span></span></div></div><span class="hero-tag">和平精英 · 手游</span></div><div class="ccard" data-card="content"><div class="ctile" data-cover="placeholder" data-note="商品图占位 · 色块 + 首字" style="width:74px;height:74px;background:#E8EEF7;border:1px solid #D3DEEC;border-radius:0px;color:#1D5FA8;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 100%,7px 100%)"><span class="ctile-ch" style="font-size:31px">三</span></div><div class="ccard-main"><span class="cdiv">三角洲行动 · 手游</span><h4>三角洲行动·护航单（手游）</h4><div class="facts"><div><span>护航带打出指定物资，按局结算</span></div><div><em>服务方式</em><span>手游 · 人工陪同</span></div><div><em>已售</em><span class="num">863 单</span></div><div><em>预计时长</em><span>45 分钟</span></div></div><div class="ccard-foot"><span class="pv">¥28.88</span><span class="pu">/单</span><span class="minibuy">下单</span></div></div></div><div class="ccard" data-card="content"><div class="ctile" data-cover="placeholder" data-note="商品图占位 · 色块 + 首字" style="width:74px;height:74px;background:#E8EEF7;border:1px solid #D3DEEC;border-radius:0px;color:#1D5FA8;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 100%,7px 100%)"><span class="ctile-ch" style="font-size:31px">三</span></div><div class="ccard-main"><span class="cdiv">三角洲行动 · 端游</span><h4>三角洲行动·护航单（端游）</h4><div class="facts"><div><span>端游高价值区护航，进出点位提前规划</span></div><div><em>服务方式</em><span>端游 · 人工陪同</span></div><div><em>已售</em><span class="num">412 单</span></div><div><em>预计时长</em><span>60 分钟</span></div></div><div class="ccard-foot"><span class="pv">¥115.52</span><span class="pu">/单</span><span class="minibuy">下单</span></div></div></div><div class="ccard" data-card="content"><div class="ctile" data-cover="placeholder" data-note="商品图占位 · 色块 + 首字" style="width:74px;height:74px;background:#E8EEF7;border:1px solid #D3DEEC;border-radius:0px;color:#1D5FA8;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 100%,7px 100%)"><span class="ctile-ch" style="font-size:31px">和</span></div><div class="ccard-main"><span class="cdiv">和平精英 · 手游</span><h4>和平精英·上分单（王牌→战神）</h4><div class="facts"><div><span>段位差结算，按当前段位核定局数</span></div><div><em>服务方式</em><span>手游 · 人工陪同</span></div><div><em>已售</em><span class="num">1526 单</span></div><div><em>预计时长</em><span>90 分钟</span></div></div><div class="ccard-foot"><span class="pv">¥4,286.50</span><span class="pu">/段位差</span><span class="minibuy">下单</span></div></div></div></div></div></div></div><div class="hintbar" data-bar="hint"><div class="htx">下单均使用余额，余额不足请联系客服充值；每周限购按订单条数计算，跨周一日 0 点重置。</div></div><div class="fold" style="top:783px"><span>首屏折线 · 390×844 以下内容需滚动</span></div></div><p class="fnote">折线 = 首屏可视为止；下方内容需滚动。</p></figure><figure class="frame"><figcaption class="cap"><span class="n">②</span><span class="t">滚动后完整页</span><span class="d">5 张商品卡 + 限购 ListCard</span></figcaption><div class="phone full " data-mode="full" data-scroll="0" data-notes="list-full" style=""><div class="statusbar" style="background:#FFFFFF;color:#14202E"><span class="num">9:41</span><span class="sb-r"><span class="sb-bars"><i style="height:4px"></i><i style="height:6.5px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="sb-net">5G</span><span class="sb-batt"><i></i></span></span></div><div class="phead58"><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#14202E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></span><span class="ttl">选择服务</span><span class="sp"></span><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.6" cy="10.6" r="6.1"/><path d="M15.2,15.2 L20,20"/></g></svg></span><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg></span></div><div class="scroll"><div class="inner" style="transform:translateY(0px)"><div class="sortrow"><span class="sortchip on">综合</span><span class="sortchip ">销量</span><span class="sortchip ">价格 ↑</span><span class="sortchip"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg><span style="margin-left:5px">筛选</span></span></div><div class="divisionrow"><div class="divisions"><div class="dv on"><span class="dvtile">和</span><span class="dvl">和平精英</span></div><div class="dv "><span class="dvtile">三<span class="plat">手</span></span><span class="dvl">三角洲行动</span></div><div class="dv "><span class="dvtile">三<span class="plat">端</span></span><span class="dvl">三角洲行动</span></div></div><div class="divlabel"><span class="dl">和平精英 · 手游</span><span class="dm">共 4 件在售</span></div></div><div class="listbody"><div class="catside"><div class="cat on"><i class="catmk"></i>体验单</div><div class="cat "><i class="catmk"></i>护航单</div><div class="cat "><i class="catmk"></i>上分单</div><div class="cat "><i class="catmk"></i>陪练单</div><div class="cat "><i class="catmk"></i>组队开黑</div><div class="cat "><i class="catmk"></i>代练单</div></div><div class="cardcol"><div class="secmark"><span class="sm-t">官方自营</span><div class="ruler"><i style="background:#C3CCDA"></i><span style="background:#E3E8EF"></span><i style="background:#C3CCDA"></i></div></div><div class="hero" data-card="hero"><svg class="gtex" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"><defs><pattern id="gpmyz8xg" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M11,0 L0,0 L0,11" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#gpmyz8xg)"/></svg><div class="hero-in"><div class="hero-top"><div class="ctile" data-cover="placeholder" data-note="商品图占位 · 色块 + 首字" style="width:64px;height:64px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.26);border-radius:14px;color:#FFFFFF"><span class="ctile-ch" style="font-size:27px">9</span><svg viewBox="0 0 40 40" width="29" height="29" aria-hidden="true"><rect x="10" y="10" width="20" height="20" transform="rotate(45 20 20)" fill="none" stroke="rgba(255,255,255,.26)" stroke-width="1.6"/></svg></div><div class="hero-mid"><span class="hero-badge">店长推荐</span><h3>9.9新人体验单保200w不卡保底</h3><div class="svc"><div>体验单保 200w，不卡保底；未达标按局数补打</div><div>服务方式：手游 · 人工陪同（护航员全程语音带）</div></div></div></div><div class="hero-foot"><div class="hero-price"><span class="pv">¥9.90</span><span class="pu">/单</span><div class="pm">每周限购 2 单 · 本周还可下 2 单</div></div><span class="hero-buy"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6,3.5 L14,3.5 L18.5,8 L18.5,20.5 L6,20.5 Z"/><path d="M14,3.5 L14,8 L18.5,8"/><path d="M9,12.5 L15.5,12.5"/><path d="M9,16 L15.5,16"/></g></svg><span style="margin-left:5px">下单</span></span></div></div><span class="hero-tag">和平精英 · 手游</span></div><div class="ccard" data-card="content"><div class="ctile" data-cover="placeholder" data-note="商品图占位 · 色块 + 首字" style="width:74px;height:74px;background:#E8EEF7;border:1px solid #D3DEEC;border-radius:0px;color:#1D5FA8;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 100%,7px 100%)"><span class="ctile-ch" style="font-size:31px">三</span></div><div class="ccard-main"><span class="cdiv">三角洲行动 · 手游</span><h4>三角洲行动·护航单（手游）</h4><div class="facts"><div><span>护航带打出指定物资，按局结算</span></div><div><em>服务方式</em><span>手游 · 人工陪同</span></div><div><em>已售</em><span class="num">863 单</span></div><div><em>预计时长</em><span>45 分钟</span></div></div><div class="ccard-foot"><span class="pv">¥28.88</span><span class="pu">/单</span><span class="minibuy">下单</span></div></div></div><div class="ccard" data-card="content"><div class="ctile" data-cover="placeholder" data-note="商品图占位 · 色块 + 首字" style="width:74px;height:74px;background:#E8EEF7;border:1px solid #D3DEEC;border-radius:0px;color:#1D5FA8;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 100%,7px 100%)"><span class="ctile-ch" style="font-size:31px">三</span></div><div class="ccard-main"><span class="cdiv">三角洲行动 · 端游</span><h4>三角洲行动·护航单（端游）</h4><div class="facts"><div><span>端游高价值区护航，进出点位提前规划</span></div><div><em>服务方式</em><span>端游 · 人工陪同</span></div><div><em>已售</em><span class="num">412 单</span></div><div><em>预计时长</em><span>60 分钟</span></div></div><div class="ccard-foot"><span class="pv">¥115.52</span><span class="pu">/单</span><span class="minibuy">下单</span></div></div></div><div class="ccard" data-card="content"><div class="ctile" data-cover="placeholder" data-note="商品图占位 · 色块 + 首字" style="width:74px;height:74px;background:#E8EEF7;border:1px solid #D3DEEC;border-radius:0px;color:#1D5FA8;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 100%,7px 100%)"><span class="ctile-ch" style="font-size:31px">和</span></div><div class="ccard-main"><span class="cdiv">和平精英 · 手游</span><h4>和平精英·上分单（王牌→战神）</h4><div class="facts"><div><span>段位差结算，按当前段位核定局数</span></div><div><em>服务方式</em><span>手游 · 人工陪同</span></div><div><em>已售</em><span class="num">1526 单</span></div><div><em>预计时长</em><span>90 分钟</span></div></div><div class="ccard-foot"><span class="pv">¥4,286.50</span><span class="pu">/段位差</span><span class="minibuy">下单</span></div></div></div><div class="ccard" data-card="content"><div class="ctile" data-cover="placeholder" data-note="商品图占位 · 色块 + 首字" style="width:74px;height:74px;background:#E3F0EF;border:1px solid #CFE4E2;border-radius:14px;color:#0E7C7B"><span class="ctile-ch" style="font-size:31px">4</span><svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><rect x="7" y="12" width="26" height="3.5" rx="1" fill="#CFE4E2"/><rect x="7" y="20" width="17" height="3.5" rx="1" fill="#CFE4E2"/><rect x="7" y="28" width="22" height="3.5" rx="1" fill="#CFE4E2"/></svg></div><div class="ccard-main"><span class="cdiv">三角洲行动 · 端游</span><h4>44.6博弈鹰雕单·保底不卡局（鹰雕档）</h4><div class="facts"><div><span>按局结算，保底不卡局</span></div><div><em>服务方式</em><span>端游 · 人工陪同</span></div><div><em>已售</em><span class="num">298 单</span></div><div><em>预计时长</em><span>120 分钟</span></div></div><div class="ccard-foot"><span class="pv">¥1,286.00</span><span class="pu">/单</span><span class="minibuy">下单</span></div></div></div><div class="lcard" data-card="list"><div class="lcard-hd"><span class="t">限购规则</span><span class="s">服务端下发文案</span></div><div class="lrow"><span class="lk">限购口径</span><span class="lv">每周限购 2 单</span><span class="ls">按订单条数</span></div><div class="lrow"><span class="lk">本周剩余</span><span class="lv">2 单</span><span class="ls">周一 0 点重置</span></div><div class="lrow"><span class="lk">适用分部</span><span class="lv">和平精英 · 手游</span></div></div><div class="dfoot"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#8A99AB" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5,12.6 L9.8,17.4 L19,6.6"/></g></svg><span>祁连山电竞 · 官方自营</span></div></div></div></div></div><div class="hintbar" data-bar="hint"><div class="htx">下单均使用余额，余额不足请联系客服充值；每周限购按订单条数计算，跨周一日 0 点重置。</div></div></div><p class="fnote">完整页高度随内容增长，底部购买提示条常驻。</p></figure><figure class="frame"><figcaption class="cap"><span class="n">③</span><span class="t">加载骨架态</span><span class="d">筛选可用 · 卡片位骨架块</span></figcaption><div class="phone  " data-mode="first" data-scroll="0" data-notes="list-skeleton" style="height:844px"><div class="statusbar" style="background:#FFFFFF;color:#14202E"><span class="num">9:41</span><span class="sb-r"><span class="sb-bars"><i style="height:4px"></i><i style="height:6.5px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="sb-net">5G</span><span class="sb-batt"><i></i></span></span></div><div class="phead58"><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#14202E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></span><span class="ttl">选择服务</span><span class="sp"></span><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.6" cy="10.6" r="6.1"/><path d="M15.2,15.2 L20,20"/></g></svg></span><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg></span></div><div class="scroll"><div class="inner" style="transform:translateY(0px)"><div class="sortrow"><span class="sortchip on">综合</span><span class="sortchip ">销量</span><span class="sortchip ">价格 ↑</span><span class="sortchip"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg><span style="margin-left:5px">筛选</span></span></div><div class="divisionrow"><div class="divisions"><div class="dv on"><span class="dvtile">和</span><span class="dvl">和平精英</span></div><div class="dv "><span class="dvtile">三<span class="plat">手</span></span><span class="dvl">三角洲行动</span></div><div class="dv "><span class="dvtile">三<span class="plat">端</span></span><span class="dvl">三角洲行动</span></div></div><div class="divlabel"><span class="dl">和平精英 · 手游</span><span class="dm">共 4 件在售</span></div></div><div class="sknote"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#7A4E15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12,11 L12,16.4"/><path d="M12,7.9 L12,8.6"/></g></svg><span>正在加载商品 · 商品名、金额、服务说明均来自服务端目录</span></div><div class="listbody"><div class="catside"><div class="cat on"><i class="catmk"></i>体验单</div><div class="cat "><i class="catmk"></i>护航单</div><div class="cat "><i class="catmk"></i>上分单</div><div class="cat "><i class="catmk"></i>陪练单</div><div class="cat "><i class="catmk"></i>组队开黑</div><div class="cat "><i class="catmk"></i>代练单</div></div><div class="cardcol"><div class="sk hero"><div class="hrow"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="flex:none"><g fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5,17 L10,12.4 L14,16 L16.6,13.6 L19.5,16.4"/></g></svg><div style="flex:1"><span class="sk line lg sk-h light" style="width:88%"></span><span class="sk line sk-h" style="width:70%;margin-top:7px"></span><span class="sk line sk-h" style="width:52%;margin-top:7px"></span></div></div><span class="sk line sk-h" style="width:38%;height:14px;margin-top:4px"></span><div style="display:flex;gap:10px;border-top:1px solid rgba(255,255,255,.16);padding-top:10px;align-items:center"><span class="sk line sk-h light" style="width:84px;height:18px"></span><span class="sk sk-h light" style="width:96px;height:34px;margin-left:auto;border-radius:10px"></span></div></div><div class="sk card"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#C7CFDB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5,17 L10,12.4 L14,16 L16.6,13.6 L19.5,16.4"/></g></svg><span class="sk tile" style="position:absolute;opacity:0"></span><div class="ccard-main"><span class="sk line" style="width:64px"></span><span class="sk line lg" style="width:82%;margin-top:6px"></span><span class="sk line" style="width:58%;margin-top:6px"></span><div style="display:flex;gap:8px;margin-top:12px;align-items:center"><span class="sk line" style="width:64px;height:14px"></span><span class="sk" style="width:64px;height:32px;margin-left:auto;border-radius:10px"></span></div></div></div><div class="sk card"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#C7CFDB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5,17 L10,12.4 L14,16 L16.6,13.6 L19.5,16.4"/></g></svg><span class="sk tile" style="position:absolute;opacity:0"></span><div class="ccard-main"><span class="sk line" style="width:64px"></span><span class="sk line lg" style="width:82%;margin-top:6px"></span><span class="sk line" style="width:58%;margin-top:6px"></span><div style="display:flex;gap:8px;margin-top:12px;align-items:center"><span class="sk line" style="width:64px;height:14px"></span><span class="sk" style="width:64px;height:32px;margin-left:auto;border-radius:10px"></span></div></div></div><div class="sk card"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#C7CFDB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5,17 L10,12.4 L14,16 L16.6,13.6 L19.5,16.4"/></g></svg><span class="sk tile" style="position:absolute;opacity:0"></span><div class="ccard-main"><span class="sk line" style="width:64px"></span><span class="sk line lg" style="width:82%;margin-top:6px"></span><span class="sk line" style="width:58%;margin-top:6px"></span><div style="display:flex;gap:8px;margin-top:12px;align-items:center"><span class="sk line" style="width:64px;height:14px"></span><span class="sk" style="width:64px;height:32px;margin-left:auto;border-radius:10px"></span></div></div></div></div></div></div></div><div class="hintbar" data-bar="hint"><div class="htx">下单均使用余额，余额不足请联系客服充值；每周限购按订单条数计算，跨周一日 0 点重置。</div></div><div class="fold" style="top:783px"><span>首屏折线 · 390×844 以下内容需滚动</span></div></div><p class="fnote">骨架里不出现任何编造的商品名与金额。</p></figure><figure class="frame"><figcaption class="cap"><span class="n">④</span><span class="t">空态</span><span class="d">真实空货架 + 下一步动作</span></figcaption><div class="phone  " data-mode="first" data-scroll="0" data-notes="list-empty" style="height:844px"><div class="statusbar" style="background:#FFFFFF;color:#14202E"><span class="num">9:41</span><span class="sb-r"><span class="sb-bars"><i style="height:4px"></i><i style="height:6.5px"></i><i style="height:9px"></i><i style="height:11px"></i></span><span class="sb-net">5G</span><span class="sb-batt"><i></i></span></span></div><div class="phead58"><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#14202E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15,5 L8,12 L15,19"/></g></svg></span><span class="ttl">选择服务</span><span class="sp"></span><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.6" cy="10.6" r="6.1"/><path d="M15.2,15.2 L20,20"/></g></svg></span><span class="iconbtn"><svg class="ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg></span></div><div class="scroll"><div class="inner" style="transform:translateY(0px)"><div class="sortrow"><span class="sortchip ">综合</span><span class="sortchip ">销量</span><span class="sortchip on">价格 ↑</span><span class="sortchip"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg><span style="margin-left:5px">筛选</span></span></div><div class="divisionrow"><div class="divisions"><div class="dv on"><span class="dvtile">和</span><span class="dvl">和平精英</span></div><div class="dv "><span class="dvtile">三<span class="plat">手</span></span><span class="dvl">三角洲行动</span></div><div class="dv "><span class="dvtile">三<span class="plat">端</span></span><span class="dvl">三角洲行动</span></div></div><div class="divlabel"><span class="dl">和平精英 · 手游</span><span class="dm">共 4 件在售</span></div></div><div class="listbody"><div class="catside"><div class="cat "><i class="catmk"></i>体验单</div><div class="cat "><i class="catmk"></i>护航单</div><div class="cat on"><i class="catmk"></i>上分单</div><div class="cat "><i class="catmk"></i>陪练单</div><div class="cat "><i class="catmk"></i>组队开黑</div><div class="cat "><i class="catmk"></i>代练单</div></div><div class="cardcol" style="padding-top:0"><div class="emptywrap tinted"><svg class="gtex" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"><defs><pattern id="gp6p5bfq" width="11" height="11" patternUnits="userSpaceOnUse"><path d="M11,0 L0,0 L0,11" fill="none" stroke="rgba(15,36,64,0.035)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#gp6p5bfq)"/></svg><div class="empty-in"><svg class="ic" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" style="flex:none"><g fill="none" stroke="#8A99AB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="13.5" rx="2.5"/><path d="M3.5,10.5 L20.5,10.5"/><path d="M8,3.5 L8,6"/><path d="M16,3.5 L16,6"/></g></svg><span class="et">该分类暂无商品</span><span class="es">该分类目前没有上架商品；可以换一个分类，或直接联系客服登记需求。</span><span class="ea">换个分类看看<svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#1D5FA8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5,6 L15.5,12 L9.5,18"/></g></svg></span></div><div class="reco"><div class="rt"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#4A5A6E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></g></svg><span>旁边分类还有这些</span></div><div class="rr"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4,6.4 A2.4,2.4 0 0 1 6.4,4 L14.6,4 L20,9.4 L20,12.6 L12.6,20 L6.4,20 A2.4,2.4 0 0 1 4,17.6 Z"/><circle cx="8.4" cy="8.4" r="1.4"/></g></svg><span class="rn">和平精英·上分单（王牌→战神）</span><span class="rp num">¥4,286.50</span><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5,6 L15.5,12 L9.5,18"/></g></svg></div><div class="rr"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4,6.4 A2.4,2.4 0 0 1 6.4,4 L14.6,4 L20,9.4 L20,12.6 L12.6,20 L6.4,20 A2.4,2.4 0 0 1 4,17.6 Z"/><circle cx="8.4" cy="8.4" r="1.4"/></g></svg><span class="rn">三角洲行动·护航单（手游）</span><span class="rp num">¥28.88</span><svg class="ic" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="flex:none"><g fill="none" stroke="#8A99AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5,6 L15.5,12 L9.5,18"/></g></svg></div></div></div></div></div></div></div><div class="hintbar" data-bar="hint"><div class="htx">下单均使用余额，余额不足请联系客服充值；每周限购按订单条数计算，跨周一日 0 点重置。</div></div><div class="fold" style="top:783px"><span>首屏折线 · 390×844 以下内容需滚动</span></div></div><p class="fnote">空态给动作与真实候选商品，不用插画填空白。</p></figure></div></div></main>
+<div class="notes"><section class="panel"><h3>卡片档位怎么分的（HeroCard 给了谁）</h3><ul>
+    <li><b>HeroCard ×1</b>：<b>9.9新人体验单保200w不卡保底</b>（服务端 <code>badgeText=店长推荐</code> 的商品）。选它的三条理由：①它是目录里唯一的体验单（新用户第一单）；②价格最低档但限量（每周限购 2 单），是真正的转化入口；③它是列表接口里唯一带 <code>badgeText</code> 的商品 —— 服务端已经在数据上把它标成主推，设计只是把这件事画出来。</li>
+    <li><b>ContentCard ×3</b>：三角洲行动护航单（手游）/（端游）、和平精英上分单。白卡 + 发丝线 + 服务内容两行 + 已售/时长，价格 18 号。</li>
+    <li><b>ListCard ×1</b>：限购规则（限购口径 / 本周剩余 / 适用分部）——这三条是"规则说明"，不是商品，用无圆角分组 + 54 行高，形态上跟商品卡区分开。</li>
+    <li>每屏 HeroCard 有且只有 1 个：HeroCard 之上只有品牌区（页头/专区行），HeroCard 之下全是 ContentCard。</li>
+    <li><b>不夸大承诺</b>：HeroCard 里写的是「保 200w，不卡保底；未达标按局数补打」——可验证、可结算的规则，不写"必赢/百分百"。</li></ul></section><section class="panel"><h3>首屏（不滚动）能看到什么</h3><ul>
+    <li>① 页头「选择服务」+ 返回 + 刷新/搜索（58dp，与现网 <code>product_list_page.dart:256</code> 一致）</li>
+    <li>② 专区胶囊行（3 个真实分部，故显示「手/端」平台角标）</li>
+    <li>③ 分部标识「和平精英 · 手游」+ 在售件数</li>
+    <li>④ 排序行：综合 / 销量 / 价格 ↑</li>
+    <li>⑤ 左侧分类栏（6 类，体验单选中）+ 品牌分隔标尺线「官方自营」</li>
+    <li>⑥ <b>HeroCard 整卡</b>（含金额 ¥9.90 + 下单按钮 + 限购提示）</li>
+    <li>⑦ <b>第 1 张 ContentCard 整卡 + 第 2 张 2/3</b> —— 首屏折线落在第 2 张卡上，滚动意图明确</li></ul></section><section class="panel"><h3>骨架态与空态</h3><ul>
+    <li><b>骨架态</b>：保留真实筛选（专区行 / 排序行 / 分类栏）—— 加载中筛选仍可用，不整页白屏；卡片位置用 <b>骨架块</b>（灰块 + 墨蓝 HeroCard 骨架），并明确写「正在加载商品 · 商品名、金额、服务说明均来自服务端目录」——<b>骨架里不填假商品名</b>。</li>
+    <li><b>空态</b>：写实描述「该分类暂无商品」+ 下一步动作「换个分类看看」+ <b>同分部其它分类的真实商品</b>两条（含真实金额），不是一张插画占位。</li>
+    <li>细网格纹理只出现在 HeroCard 与空态（docs/32 §二②）。</li></ul></section><section class="panel"><h3>自检数字（docs/32 §十）</h3><div class="kv"><span>渐变面积</span><b>0 px²</b></div>
+    <div class="kv"><span>阴影处数</span><b>0</b></div>
+    <div class="kv"><span>emoji 数</span><b>0</b></div>
+    <div class="kv"><span>字号种类数</span><b>10</b>（7 级 + 金额档 26 + 系统色条 10/9.5）</div>
+    <div class="kv"><span>金额格式违规数</span><b>0</b></div>
+    <div class="kv"><span>「积分」出现次数</span><b>0</b></div>
+    <div class="kv"><span>卡片档位</span><b>HeroCard 1 / ContentCard 3 / ListCard 1</b></div>
+    <div class="kv"><span>斜切角处数</span><b>≤4/屏</b>（HeroCard 1 + 商品图位占位切角 ≤3）</div></section><section class="panel"><h3>红线核对</h3><ul>
+    <li>docs/21：无渐变主视觉 · 无卡片阴影 · 无 emoji · 无左侧彩色竖条 · 圆角只用 4/6/10/14/胶囊 · 标签只给必须区分项</li>
+    <li>docs/32：墨蓝/主交互/青瓷/价格金四色分工；价格只用 #B4732A 一个金；深色块只在品牌区与 1 个 HeroCard</li>
+    <li>CLAUDE.md：不出现玩家圈 / 语聊房 / 积分；金额用 ¥；不写夸大承诺</li>
+    <li>本次不动任何产品代码（apps/** / admin-web/src/** / server/** 一行未改）</li></ul></section></div>
+</body>
+</html>

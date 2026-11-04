@@ -1,0 +1,130 @@
+﻿# Node
+node_modules/
+dist/
+*.tsbuildinfo
+*.log
+
+# env（.env.example 会被提交）
+.env
+.env.local
+.env.*.local
+
+# FISH 数据目录（D 盘持久化：数据库/Redis/上传/备份/日志，一律不入库）
+data/
+
+# 旧备份目录（迁移前遗留，保留忽略规则）
+infra/backup/
+
+# OS
+.DS_Store
+Thumbs.db
+.gradle-home/
+scripts/tmp/admin-shots/
+
+# 抽帧工具生成的 Edge 无头浏览器缓存
+scripts/tmp/.montage-profile/
+scripts/tmp/ref-frames-*/
+scripts/tmp/edge-*/
+
+# 临时演示/参考项目（flutter create 生成的工程，不入库）
+scripts/tmp/miuix_demo/
+scripts/tmp/miuix-ref/
+scripts/tmp/miuix-readme.md
+scripts/tmp/miuix.zip
+
+# 本机运行时缓存（隧道地址等，不入库）
+scripts/tmp/.tunnel-url
+
+# Flutter 发版符号表（release-app.js 的 --split-debug-info 产物）。
+# 各端 apps/*/.gitignore 已用 `/build/` 覆盖，这里再显式写一条：
+# 符号表是**必须留档但绝不入库**的运维产物（体积大且含符号名）。
+build/symbols/
+apps/*/build/symbols/
+
+# 发版联调用的临时运行目录（内含真实 .env 副本：数据库口令/SMTP 授权码，绝不入库）
+.tmp-e2e-run/
+
+# 一次性探针脚本（scripts/tmp/_*probe*.js）：内含测试账号口令/Toke 字面量，
+# 属本机调试残留，一律不入库（磁盘文件保留，不影响继续调试）。
+# 已被提交过的 scripts/tmp/_settle_probe.js 见 commit 2b5e27c（历史仍可查到，
+# 彻底清除需重写历史，等负责人决定）。
+scripts/tmp/_*probe*.js
+
+# 桌面薄壳（desktop/admin-shell，Electron 管理端）+ 打包产物
+# 只提交**源码与配置**：node_modules 与 dist-desktop 一律不入库
+# （node_modules/ 与 dist/ 上面已有通用规则，这里再显式写一遍，避免有人放宽上面的规则时连带放开）
+dist-desktop/
+desktop/admin-shell/node_modules/
+desktop/admin-shell/dist/
+desktop/admin-shell/release/
+desktop/admin-shell/*.log
+desktop/admin-shell/build/*.blockmap
+
+# AI 跑测试留下的临时输出（`.fulltest-out.txt` 这类；内容是一次性日志，不是源码）
+apps/*/.*-out.txt
+
+# ─────────────────────────────────────────────────────────────
+# 开源仓库排除规则（2026-10-24：只要源码，不要媒体与大件）
+# ─────────────────────────────────────────────────────────────
+
+# 视频/音频素材（原 1050MB / 11030 文件，不进仓库）
+video/
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.raw
+*.wav
+*.mp3
+*.aac
+
+# 站点里的演示媒体
+site/assets/*.mp4
+site/assets/*.wav
+
+# 二进制工具（按需自行下载，不入库）
+infra/tunnel/cloudflared.exe
+infra/tunnel/cloudflared
+*.exe
+!scripts/**/*.ps1
+
+# 临时脚本与一次性产物（原 717 个跟踪文件）
+scripts/tmp/
+.tmp-e2e-run/
+test-results/
+playwright-report/
+
+# 打包产物
+*.apk
+*.aab
+*.ipa
+*.zip
+*.7z
+build/
+.dart_tool/
+.packages
+
+# 编辑器与系统
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 内部开发日志（含服务器操作记录，不属于开源内容）
+开发日志/
+
+# 旧仓库备份（601MB，绝不入库）
+.git.old-*
+
+# 临时探测目录
+tmp_video_probe/
+tmp_*/
+*.tmp
+
+# 临时 scratch 文件（不入库）
+_*
+*.diff
+*.bak
+*.log
+!docs/**/*.md

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>02 商品列表 + 详情 · 用户端白底为主</title>
+<style>
+:root{
+  /* 品牌（点缀） */
+  --brand:#1D5FA8;          /* 主交互：按钮 / 选中 / 链接 */
+  --brand-ink:#0F2440;      /* 品牌锚墨蓝：只给极小面积（字标底 / 徽章边） */
+  --brand-tint:#E8EEF7;     /* 主色浅底（选中态 / 图标底） */
+  --celadon:#0E7C7B;        /* 强调青瓷 */
+  --celadon-tint:#E3F0EF;
+  --amber:#B4732A;          /* 价格 / 等级：全站唯一金 */
+  --amber-tint:#F7EDE0;
+  --warn:#B45309;
+  --danger:#B42318;
+  --danger-tint:#FBECEA;
+  /* 6 档灰阶（docs/38 §1.2 结论 3） */
+  --g1:#14202E;             /* 1 正文 */
+  --g2:#4A5A6E;             /* 2 次要 */
+  --g3:#8A99AB;             /* 3 弱化 */
+  --g4:#CDD6E2;             /* 4 描边 */
+  --g5:#E3E8EF;             /* 5 分割 */
+  --g6:#F4F6F9;             /* 6 页底 */
+  --card:#FFFFFF;
+  --hair:#E3E8EF;
+  --sk:#EAEEF4;
+  --r-chip:6px;             /* 小片 */
+  --r-ctl:10px;             /* 控件 */
+  --r-card:14px;            /* 卡片 */
+  --font:"Microsoft YaHei","PingFang SC",-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--g1);background:#FFFFFF;-webkit-font-smoothing:antialiased}
+svg.ic{display:block;flex:0 0 auto}
+.num{font-variant-numeric:tabular-nums}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- 手机壳（390×844 逻辑像素，docs/32 §十） ---------- */
+.phone{width:390px;height:844px;background:var(--g6);position:relative;overflow:hidden;
+  border:1px solid var(--g4);border-radius:18px;display:flex;flex-direction:column;
+  color:var(--g1);flex:0 0 auto}
+.phone.r0{border-radius:0}
+.statusbar{flex:0 0 48px;height:48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;font-size:12px;font-weight:600;color:var(--g1);background:var(--card)}
+.sb-r{display:flex;align-items:center;gap:8px}
+.sb-bars{display:flex;align-items:flex-end;gap:4px;height:12px}
+.sb-bars i{display:block;width:4px;background:var(--g1);border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:12px}
+.sb-batt{width:24px;height:12px;border:1px solid var(--g4);border-radius:3px;position:relative}
+.sb-batt i{position:absolute;left:2px;top:2px;bottom:2px;width:14px;background:var(--g1);border-radius:1px}
+.scroll{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.inner{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+
+/* ---------- 页头 56dp ---------- */
+.h56{flex:0 0 56px;height:56px;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--card);
+  border-bottom:1px solid var(--g5)}
+.h56 .tt{font-size:18px;font-weight:700;letter-spacing:.2px}
+.h56 .sp{flex:1 1 auto}
+.h56 .act{display:flex;align-items:center;gap:16px;color:var(--g2)}
+.navpills{display:flex;align-items:center;gap:16px}
+.navpill{font-size:13px;font-weight:600;color:var(--g2);color:var(--g2)}
+.navpill.on{color:var(--brand)}
+.sbtn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--g2)}
+
+/* ---------- 品牌区（白卡 + 发丝线 + 小面积品牌色，无深色块） ---------- */
+.brandrow{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--card);
+  border-bottom:1px solid var(--g5)}
+.logo-mark{width:40px;height:40px;flex:0 0 40px;border-radius:var(--r-chip);background:var(--brand-ink);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;
+  letter-spacing:0;position:relative}
+.logo-mark i{position:absolute;right:0;top:0;width:8px;height:8px;background:var(--brand);border-radius:0 var(--r-chip) 0 6px}
+.brandname{font-size:15px;font-weight:700;letter-spacing:.4px}
+.brandsub{font-size:12px;color:var(--g2);margin-top:4px}
+.brandstamp{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--brand);
+  border:1px solid var(--brand-tint);background:var(--brand-tint);border-radius:var(--r-chip);padding:4px}
+/* 事实条：真实业务数字，非"并排三个大数字" */
+.factrow{display:flex;align-items:center;background:var(--card);border-bottom:1px solid var(--g5);padding:8px 16px}
+.fact{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:0}
+.fact .fv{font-size:13px;font-weight:700;color:var(--g1)}
+.fact .fk{font-size:11px;color:var(--g3);margin-top:4px}
+.fact+.fact{border-left:1px solid var(--g5);padding-left:12px}
+.fact:first-child{padding-right:12px}.gridtex{position:absolute;inset:0;pointer-events:none;opacity:1}
+
+/* ---------- 宣传图：通栏直角 + 紧贴上一块（0 间距） ---------- */
+.banner{flex:0 0 152px;height:152px;width:390px;border-radius:0;background:#EEF2F7;position:relative;
+  overflow:hidden;padding:20px 16px;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;background-image:
+   repeating-linear-gradient(90deg,#DCE3EC 0 1px,rgba(0,0,0,0) 1px 32px);}
+/* 通栏体的左侧标识条：绝对定位 + inset-block 0，不占布局宽度（保证宽=390、左=0） */
+.banner::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--brand)}
+.banner .bn-t{font-size:18px;font-weight:700;color:var(--g1)}
+.banner .bn-s{font-size:12px;color:var(--g2);line-height:1.6}
+.banner .bn-a{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:4px;
+  font-size:13px;font-weight:600;color:var(--brand)}
+.banner .bn-dots{position:absolute;right:16px;bottom:12px;display:flex;gap:4px}.banner .bn-dots i{width:6px;height:6px;border-radius:999px;background:var(--g4)}
+.banner .bn-dots i.on{background:var(--brand);width:12px}
+
+/* ---------- 2 宫格快捷入口（4dp 网格：16 页边距 / 12 组间距） ---------- */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px 0}
+.gcard{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-card);height:64px;
+  display:flex;align-items:center;gap:12px;padding:12px;overflow:hidden}
+.gcard .gi{width:32px;height:32px;flex:0 0 32px;border-radius:var(--r-ctl);display:flex;align-items:center;
+  justify-content:center;background:var(--brand-tint);color:var(--brand)}
+.gcard .gi.cel{background:var(--celadon-tint);color:var(--celadon)}
+.gt{font-size:13px;font-weight:700;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs{font-size:11px;color:var(--g3);margin-top:4px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- 区块头 ---------- */
+.sec{padding:20px 16px 0}
+.sech{display:flex;align-items:baseline;gap:8px;padding:0 0 8px}
+.sech .st{font-size:15px;font-weight:700}
+.sech .ss{font-size:11px;color:var(--g3)}
+.sech .sp{flex:1 1 auto}
+.sech .sa{font-size:12px;font-weight:600;color:var(--brand)}
+
+/* ---------- 游戏分类磁贴（占位方块 + 游戏名） ---------- */
+.tiles{display:flex;gap:12px;padding:0 16px}
+.tile{width:84px;flex:0 0 84px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.tile .lg{width:56px;height:56px;border-radius:var(--r-ctl);display:flex;align-items:center;
+  justify-content:center;font-size:15px;font-weight:800;letter-spacing:1px;position:relative;overflow:hidden}
+.tile .tn{font-size:12px;font-weight:600;color:var(--g2);text-align:center;line-height:1.35}
+.tile.on .tn{color:var(--brand);font-weight:700}
+.tile.on .lg{box-shadow:none;outline:2px solid var(--brand);outline-offset:2px}
+.lg-a{background:var(--brand-tint);color:var(--brand)}
+.lg-b{background:var(--celadon-tint);color:var(--celadon)}
+.lg-c{background:var(--amber-tint);color:var(--amber)}
+
+/* ---------- 卡片（三档；深色 HeroCard 本次全面取消） ---------- */
+.card{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-card)}
+.cardpad{padding:16px}
+.pad0{padding:0}
+.ch{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--g5)}
+.ch .ct{font-size:15px;font-weight:700}
+.ch .cs{font-size:11px;color:var(--g3)}
+.ch .sp{flex:1 1 auto}
+.ch .ca{font-size:12px;font-weight:600;color:var(--brand)}
+.cb{padding:16px}
+.cf{border-top:1px solid var(--g5);padding:12px 16px;display:flex;align-items:center;gap:8px}
+
+/* 主推商品：白底 + 品牌色描边（不定深色块） */
+.cardfeat{border:2px solid var(--brand);border-radius:var(--r-card);background:var(--card);position:relative}
+.badge-feat{position:absolute;right:0;top:0;height:24px;display:flex;align-items:center;
+  padding:0 12px;background:var(--brand);color:#fff;font-size:11px;font-weight:700;
+  border-radius:0 var(--r-card) 0 10px}
+
+/* ---------- 列表行（高度档 48 / 56 / 64） ---------- */
+.lrow{display:flex;align-items:center;gap:12px;min-height:48px;height:48px;padding:0 16px}
+.lrow.r56{min-height:56px;height:56px}
+.lrow.r64{min-height:64px;height:64px}
+.lk{font-size:13px;color:var(--g2);flex:0 0 80px}
+.lv{font-size:13px;font-weight:600;flex:1 1 auto;min-width:0;width:100%;text-align:left}
+.lv.r{text-align:right}
+.hair{height:1px;background:var(--g5)}
+.hl{margin-left:16px}
+.lead{width:32px;height:32px;flex:0 0 32px;border-radius:var(--r-ctl);background:var(--brand-tint);
+  color:var(--brand);display:flex;align-items:center;justify-content:center}
+.lead.plain{background:transparent;color:var(--g2)}
+
+/* ---------- 按钮（高度档 44 / 32 / 28） ---------- */
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;
+  border-radius:var(--r-ctl);font-size:15px;font-weight:700;border:1px solid transparent}
+.btn-pri{background:var(--brand);color:#fff}
+.btn-gho{background:var(--card);color:var(--brand);border-color:var(--brand)}
+.btn-quiet{background:var(--card);color:var(--g2);border-color:var(--g4)}
+.btn-s{height:32px;padding:0 12px;font-size:13px;font-weight:600;border-radius:var(--r-ctl)}
+.btn-m{height:28px;padding:0 12px;font-size:12px;font-weight:600;border-radius:var(--r-ctl)}
+.btn-block{display:flex;width:100%}
+.bbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);
+  border-top:1px solid var(--g5)}
+.bbar .bt{display:flex;flex-direction:column;gap:4px}
+.bbar .bk{font-size:11px;color:var(--g3)}
+.bbar .bv{font-size:18px;font-weight:700;color:var(--amber)}
+.bbar .sp{flex:1 1 auto}
+
+/* ---------- 价格 / 标签 ---------- */
+.price{font-size:18px;font-weight:700;color:var(--amber)}
+.price.sml{font-size:15px}
+.price.lg{font-size:22px}
+.price .cur{font-size:12px;font-weight:600;margin-right:4px}
+.tag{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:var(--r-chip);
+  font-size:11px;font-weight:600;border:1px solid transparent}
+.tag-soft{background:var(--brand-tint);color:var(--brand);border-color:var(--brand-tint)}
+.tag-cel{background:var(--celadon-tint);color:var(--celadon);border-color:var(--celadon-tint)}
+.tag-amb{background:var(--amber-tint);color:var(--warn);border-color:var(--amber-tint)}
+.tag-line{background:var(--card);color:var(--g2);border-color:var(--g4)}
+.tag-brandline{background:var(--card);color:var(--brand);border-color:var(--brand)}
+/* 选中态（品牌色只做点缀：选中/按钮/链接/少量标签） */
+.chip{height:32px;display:inline-flex;align-items:center;gap:4px;padding:0 12px;border-radius:999px;
+  border:1px solid var(--g4);background:var(--card);font-size:13px;color:var(--g2);font-weight:600}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip-line.on{background:var(--brand-tint);border-color:var(--brand);color:var(--brand)}
+.chips{display:flex;gap:8px;padding:12px 16px;overflow:hidden}
+
+/* ---------- 商品卡 ---------- */
+.plist{padding:12px 16px 0;display:flex;flex-direction:column;gap:12px}
+.pcard{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-card);padding:0 16px;
+  display:flex;align-items:center;gap:12px;height:64px;overflow:hidden}
+.pcard .pcol{flex:1 1 auto;min-width:0}
+.pcard .pnm{font-size:13px;font-weight:700;line-height:1.35;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcard .pmeta{font-size:11px;color:var(--g3);margin-top:4px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcard .sp{flex:1 1 auto}
+
+/* ---------- 订单卡 ---------- */
+.ocard{background:var(--card);border:1px solid var(--hair);border-radius:var(--r-card);padding:16px}
+.ohead{display:flex;align-items:center;gap:8px}
+.ohead .on{font-size:11px;color:var(--g3)}
+.otitle{font-size:15px;font-weight:700;line-height:1.35;margin-top:8px}
+.ometa{font-size:12px;color:var(--g2);margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dotsep{width:3px;height:3px;border-radius:999px;background:var(--g4)}
+.ofoot{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--g5)}
+.ofoot .sp{flex:1 1 auto}
+.ava{width:24px;height:24px;flex:0 0 24px;border-radius:999px;background:var(--brand-tint);color:var(--brand);
+  display:flex;align-items:center;justify-content:center}
+
+/* ---------- 状态标签（形状 + 字重 + 图标；去色也能分辨，见 docs/35 §四） ---------- */
+.stag{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;font-size:11px;font-weight:600;
+  border-radius:var(--r-chip);border:1px solid transparent;position:relative;overflow:hidden;white-space:nowrap;flex:0 0 auto}
+.stag .notch{position:absolute;right:0;top:0;width:6px;height:6px;background:var(--card);border-left:1px solid var(--g4);border-bottom:1px solid var(--g4)}
+.s-wait{background:var(--amber-tint);border-color:#E6CFAE;color:var(--warn);font-weight:700}
+.s-live{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
+.s-ok{background:var(--celadon-tint);border-color:#BCD9D7;color:var(--celadon);font-weight:700}
+.s-off{background:#F0F2F5;border-color:#D8DEE6;color:var(--g2);font-weight:600}
+.s-bad{background:var(--danger-tint);border-color:#E7C6C2;color:var(--danger);font-weight:700}
+.s-bad.hi{border-width:2px;border-color:#D8A9A3;font-weight:800}
+
+/* ---------- 状态时间线 ---------- */
+.tline{padding:4px 16px 8px}
+.tli{display:flex;gap:12px;min-height:48px;position:relative}
+.tli .knobcol{width:24px;flex:0 0 24px;display:flex;flex-direction:column;align-items:center}
+.tli .knob{width:20px;height:20px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+  background:var(--brand-tint);color:var(--brand);border:1px solid var(--brand-tint)}
+.tli.done .knob{background:var(--celadon);color:#fff;border-color:var(--celadon)}
+.tli.now .knob{background:var(--celadon);color:#fff;border-color:var(--celadon);box-shadow:0 0 0 3px var(--celadon-tint)}
+.tli .line{flex:1 1 auto;width:1px;background:var(--g5);margin:4px 0}
+.tli:last-child .line{background:transparent}
+.tli .body{padding-bottom:16px;flex:1 1 auto;min-width:0}
+.tli .tt{font-size:13px;font-weight:600;color:var(--g2)}
+.tli.done .tt{font-weight:700;color:var(--g1)}
+.tli.now .tt{font-weight:800;color:var(--g1)}
+.tli .tm{font-size:11px;color:var(--g3);margin-top:4px}
+.tli .tnote{font-size:11px;color:var(--g2);margin-top:4px;line-height:1.5}
+.tli.todo .tt{color:var(--g3)}
+
+/* ---------- 我的页 ---------- */
+.uname{font-size:18px;font-weight:800}
+.uid{font-size:12px;color:var(--g3);margin-top:4px}
+.taga{display:inline-flex;align-items:center;height:20px;padding:0 4px;border-radius:var(--r-chip);
+  background:var(--card);border:1px solid var(--brand-ink);color:var(--brand-ink);font-size:11px;font-weight:600}
+.bal{font-size:22px;font-weight:700;color:var(--amber)}
+.grid3{display:flex;align-items:stretch}
+.cell{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0}
+.csep{width:1px;background:var(--g5);margin:8px 0}
+.cn{font-size:15px;font-weight:700}
+.cl{font-size:11px;color:var(--g3)}
+.bar{height:6px;border-radius:999px;background:var(--g5);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--celadon)}
+.gi32{width:32px;height:32px;flex:0 0 32px;border-radius:var(--r-ctl);background:var(--g6);color:var(--g2);
+  display:flex;align-items:center;justify-content:center}
+.ls{font-size:11px;color:var(--g3);display:block;margin-top:4px;white-space:nowrap;align-self:flex-start;min-width:0}
+.lt2{font-size:13px;font-weight:600}
+
+/* ---------- 底部导航（服务·订单·＋下单·消息·我的） ---------- */
+.tabbar{flex:0 0 56px;height:56px;display:flex;align-items:flex-start;background:var(--card);
+  border-top:1px solid var(--g5);padding:4px 0 0}
+.tb-c{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--g3);position:relative}
+.tb-c.on{color:var(--brand)}
+.tb-label{font-size:11px;font-weight:600;line-height:16px}
+/* 中间凸起位：实心 + 1px 品牌色圆环（非发光 / 非渐变），靠负边距收进 56dp 底栏 */
+.tb-c.raised{color:var(--brand)}
+.tb-c.raised svg{position:relative;width:32px;height:32px;padding:4px;border-radius:999px;background:var(--card)}
+.tb-c.raised svg::after{content:"";position:absolute;inset:0;border-radius:999px;border:1px solid var(--brand)}
+.tb-c.raised .tb-label{margin-top:-4px}
+
+/* ---------- 加载骨架 ---------- */
+.sk{background:var(--sk)!important;border-color:var(--sk)!important;color:transparent!important;position:relative}
+.sk svg{opacity:0}
+.sk .notch,.sk .lg i{background:transparent!important}
+.sk-bar{height:12px;border-radius:4px;background:var(--sk)}
+.sk-legend{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--card);
+  border-bottom:1px solid var(--g5);font-size:11px;color:var(--g3)}
+
+/* ---------- 评审页外壳 ---------- */
+.wrapdoc{max-width:1560px;margin:0 auto;padding:32px 24px 64px}
+.doch{display:flex;align-items:flex-start;gap:24px;padding-bottom:16px;border-bottom:1px solid #E3E8EF}
+.doch h1{font-size:22px;font-weight:800;letter-spacing:.2px}
+.doch .sub{font-size:13px;color:#4A5A6E;margin-top:8px;line-height:1.8;max-width:1180px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:#4A5A6E;margin-top:16px}
+.metarow b{color:#14202E}
+.shot{margin-top:32px}
+.shot h2{font-size:18px;font-weight:700;display:flex;align-items:baseline;gap:12px}
+.shot h2 em{font-style:normal;font-size:12px;font-weight:400;color:#8A99AB}
+.shot .cap{font-size:12px;color:#4A5A6E;margin:8px 0 16px;line-height:1.8}
+.screens{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.fig{display:flex;flex-direction:column;gap:8px}
+.figcap{font-size:12px;font-weight:600;color:#14202E}
+.figcap em{font-style:normal;font-weight:400;color:#8A99AB}
+.figcap2{font-size:11px;color:#8A99AB}
+.notes{margin-top:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px}
+.note{background:#FFFFFF;border:1px solid #E3E8EF;border-radius:14px;padding:16px}
+.note h3{font-size:13px;font-weight:700;margin-bottom:8px}
+.note p{font-size:12px;color:#4A5A6E;line-height:1.8}
+.note ul{margin:0;padding-left:16px}
+.note li{font-size:12px;color:#4A5A6E;line-height:1.9}
+table.tb{width:100%;border-collapse:collapse;font-size:12px;color:#14202E;margin-top:8px}
+table.tb th,table.tb td{border:1px solid #E3E8EF;padding:8px 12px;text-align:left;vertical-align:top;line-height:1.7;font-size:12px}
+table.tb th{background:#F4F6F9;font-weight:700}
+table.tb td.num{font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+.lg-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#4A5A6E}
+.lg-swatch{width:28px;height:28px;border-radius:6px;border:1px solid #CDD6E2}.scale{display:flex;flex-wrap:wrap;gap:16px;margin-top:8px}
+.scale-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.scale-box{background:#E8EEF7;border:1px solid #CDD6E2;height:24px;border-radius:2px}
+.scale-cap{font-size:11px;color:#4A5A6E;font-variant-numeric:tabular-nums}
+.grid-demo{padding:16px;background:#FFFFFF;border:1px solid #E3E8EF;border-radius:14px}
+.grid-demo .gline{display:flex;gap:4px}
+.grid-demo .u{width:4px;height:24px;background:#E8EEF7;border-radius:1px}
+.strip{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.strip .st{display:flex;align-items:center;gap:12px;font-size:12px;color:#4A5A6E}
+code{font-family:ui-monospace,Consolas,monospace;font-size:11px;background:#F4F6F9;padding:2px 4px;border-radius:4px}
+.worker-note{font-size:12px;color:#4A5A6E;line-height:1.9}
+</style></head>
+<body><div class="wrapdoc">
+<div class="doch"><div>
+  <h1>02 · 商品列表 + 商品详情 —— 白底为主</h1>
+  <p class="sub">列表：筛选胶囊行（选中=品牌实色）+ 同一张商品卡组件（卡高 64）。<b>主推商品不再是深色大块</b>，改为 <b>白底 + 2dp 品牌色描边 + 右上主推标</b>——白卡体系里靠"描边 + 角标"抬权重，靠形状而不是色块面积。
+  详情：价格卡（22sp 铜牌金）→ 服务规格（列表卡 48dp 行）→ 费用明细（<b>单价 × 数量 = 合计 同卡可核</b>）→ 下单须知；底部常驻操作条 44dp 按钮。</p>
+  <div class="metarow"><span><b>尺寸</b> 390×844 × 3 屏</span><span><b>行高</b> 列表行 48 / 商品卡 64（主推 72）</span><span><b>按钮</b> 44</span><span><b>状态</b> 待审批 · 未改任何产品代码</span></div>
+</div></div>
+<div class="shot"><h2>P-1 商品列表<em>首屏 / 完整页 / 骨架</em></h2>
+<div class="screens">
+  <div class="fig"><span class="figcap">P-1 商品列表 · 首屏</span><div class="phone"><div class="statusbar"><span class="num">21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="h56"><span class="sbtn"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.6 5.4L8 12l6.6 6.6"/></svg></span><span class="tt">段位上分</span><span class="sp"></span>
+      <span class="act"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.2 4.4a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6zM16.2 16.2L20 20"/></svg><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 6.4h14.8M7 12h10M9.6 17.6h4.8"/></svg></span></div>
+    <div class="scroll"><div class="inner"><div class="chips">
+    <span class="chip on">全部</span><span class="chip">段位上分</span><span class="chip">娱乐陪玩</span><span class="chip">护航带打</span><span class="chip">新人体验</span>
+  </div><div class="plist"><div class="pcard cardfeat"><span class="badge-feat">主推</span>
+        <span class="pcol"><span class="pnm">30 保 1000w 不卡保底 · 段位上分单</span><span class="pmeta">三角洲行动 · 端游 · 微信区 · 已接 1,286 单</span></span>
+        <span style="flex:0 0 auto;display:flex;align-items:center;gap:8px">
+          <span class="price num"><span class="cur">¥</span>30.00</span></span></div><div class="pcard"><span class="pcol"><span class="pnm">36.6 博弈宝冠单 · 保底可查</span><span class="pmeta">三角洲行动 · 手游 · QQ区 · 已接 642 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>36.60</span></div><div class="pcard"><span class="pcol"><span class="pnm">9.9 新人体验单保 200w 不卡保底</span><span class="pmeta">和平精英 · 手游 · 微信区 · 已接 918 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>9.90</span></div><div class="pcard"><span class="pcol"><span class="pnm">基础保底 700w · 端游护航单</span><span class="pmeta">三角洲行动 · 端游 · QQ区 · 已接 357 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>86.64</span></div><div class="pcard"><span class="pcol"><span class="pnm">娱乐陪玩 3 小时 · 语音开黑</span><span class="pmeta">和平精英 · 手游 · 微信区 · 已接 204 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>28.88</span></div><div class="pcard"><span class="pcol"><span class="pnm">护航带打 · 战绩护航 5 局</span><span class="pmeta">三角洲行动 · 手游 · 微信区 · 已接 476 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>115.52</span></div></div><div class="sec" style="padding-bottom:20px"><div class="sech"><span class="st">列表说明</span><span class="ss">同一张卡组件，主推那一张只换描边与主推标</span></div>
+   <div class="card pad0">
+     <div class="lrow r48"><span class="lv">商品名 15sp 粗 · 元信息 11sp 弱化</span></div>
+     <div class="hair hl"></div>
+     <div class="lrow r48"><span class="lv">价格统一 15sp 铜牌金 + 等宽数字</span></div>
+     <div class="hair hl"></div>
+     <div class="lrow r48"><span class="lv">卡高 64（主推同高，靠白底 + 2dp 品牌色描边抬权重）</span></div>
+   </div></div></div></div><div class="tabbar"><div class="tb-c on"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.4h6.4v6.4H4zM13.6 4.4H20v6.4h-6.4zM4 13.6h6.4V20H4zM13.6 13.6H20V20h-6.4z"/></svg><span class="tb-label">服务</span></div><div class="tb-c "><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.4h14v15.2H5zM9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div><div class="tb-c raised"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="tb-label">下单</span></div><div class="tb-c "><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div><div class="tb-c "><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8a3.6 3.6 0 1 0 0 .01M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div></div></div><span class="figcap2">页头 56 + 筛选胶囊 32 + 首张主推卡（白底 + 品牌描边）</span></div>
+  <div class="fig"><span class="figcap">P-2 商品列表 · 滚动后完整页</span><div class="phone"><div class="statusbar"><span class="num">21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="h56"><span class="sbtn"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.6 5.4L8 12l6.6 6.6"/></svg></span><span class="tt">段位上分</span><span class="sp"></span>
+      <span class="act"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.2 4.4a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6zM16.2 16.2L20 20"/></svg><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 6.4h14.8M7 12h10M9.6 17.6h4.8"/></svg></span></div>
+    <div class="scroll"><div class="inner"><div class="chips">
+    <span class="chip on">全部</span><span class="chip">段位上分</span><span class="chip">娱乐陪玩</span><span class="chip">护航带打</span><span class="chip">新人体验</span>
+  </div><div class="plist"><div class="pcard cardfeat"><span class="badge-feat">主推</span>
+        <span class="pcol"><span class="pnm">30 保 1000w 不卡保底 · 段位上分单</span><span class="pmeta">三角洲行动 · 端游 · 微信区 · 已接 1,286 单</span></span>
+        <span style="flex:0 0 auto;display:flex;align-items:center;gap:8px">
+          <span class="price num"><span class="cur">¥</span>30.00</span></span></div><div class="pcard"><span class="pcol"><span class="pnm">36.6 博弈宝冠单 · 保底可查</span><span class="pmeta">三角洲行动 · 手游 · QQ区 · 已接 642 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>36.60</span></div><div class="pcard"><span class="pcol"><span class="pnm">9.9 新人体验单保 200w 不卡保底</span><span class="pmeta">和平精英 · 手游 · 微信区 · 已接 918 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>9.90</span></div><div class="pcard"><span class="pcol"><span class="pnm">基础保底 700w · 端游护航单</span><span class="pmeta">三角洲行动 · 端游 · QQ区 · 已接 357 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>86.64</span></div><div class="pcard"><span class="pcol"><span class="pnm">娱乐陪玩 3 小时 · 语音开黑</span><span class="pmeta">和平精英 · 手游 · 微信区 · 已接 204 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>28.88</span></div><div class="pcard"><span class="pcol"><span class="pnm">护航带打 · 战绩护航 5 局</span><span class="pmeta">三角洲行动 · 手游 · 微信区 · 已接 476 单</span></span>
+        <span class="price sml num" style="flex:0 0 auto"><span class="cur">¥</span>115.52</span></div></div><div class="sec" style="padding-bottom:20px"><div class="sech"><span class="st">列表说明</span><span class="ss">同一张卡组件，主推那一张只换描边与主推标</span></div>
+   <div class="card pad0">
+     <div class="lrow r48"><span class="lv">商品名 15sp 粗 · 元信息 11sp 弱化</span></div>
+     <div class="hair hl"></div>
+     <div class="lrow r48"><span class="lv">价格统一 15sp 铜牌金 + 等宽数字</span></div>
+     <div class="hair hl"></div>
+     <div class="lrow r48"><span class="lv">卡高 64（主推同高，靠白底 + 2dp 品牌色描边抬权重）</span></div>
+   </div></div></div></div><div class="tabbar"><div class="tb-c on"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.4h6.4v6.4H4zM13.6 4.4H20v6.4h-6.4zM4 13.6h6.4V20H4zM13.6 13.6H20V20h-6.4z"/></svg><span class="tb-label">服务</span></div><div class="tb-c "><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.4h14v15.2H5zM9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div><div class="tb-c raised"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="tb-label">下单</span></div><div class="tb-c "><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div><div class="tb-c "><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8a3.6 3.6 0 1 0 0 .01M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div></div></div><span class="figcap2">6 张商品卡 + 列表说明卡</span></div>
+  <div class="fig"><span class="figcap">P-3 商品列表 · 加载骨架态</span><div class="phone"><div class="statusbar"><span class="num sk">21:34</span><span class="sb-r sk"><span class="sb-bars sk"><i></i><i></i><i></i><i></i></span><span class="sb-batt sk"><i></i></span></span></div>
+    <div class="h56"><span class="sbtn"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.6 5.4L8 12l6.6 6.6"/></svg></span><span class="tt sk">段位上分</span><span class="sp sk"></span>
+      <span class="act sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.2 4.4a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6zM16.2 16.2L20 20"/></svg><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.6 6.4h14.8M7 12h10M9.6 17.6h4.8"/></svg></span></div>
+    <div class="scroll sk"><div class="inner sk"><div class="chips sk">
+    <span class="chip on sk">全部</span><span class="chip sk">段位上分</span><span class="chip sk">娱乐陪玩</span><span class="chip sk">护航带打</span><span class="chip sk">新人体验</span>
+  </div><div class="plist sk"><div class="pcard cardfeat sk"><span class="badge-feat sk">主推</span>
+        <span class="pcol sk"><span class="pnm sk">30 保 1000w 不卡保底 · 段位上分单</span><span class="pmeta sk">三角洲行动 · 端游 · 微信区 · 已接 1,286 单</span></span>
+        <span style="flex:0 0 auto;display:flex;align-items:center;gap:8px">
+          <span class="price num sk"><span class="cur sk">¥</span>30.00</span></span></div><div class="pcard sk"><span class="pcol sk"><span class="pnm sk">36.6 博弈宝冠单 · 保底可查</span><span class="pmeta sk">三角洲行动 · 手游 · QQ区 · 已接 642 单</span></span>
+        <span class="price sml num sk" style="flex:0 0 auto"><span class="cur sk">¥</span>36.60</span></div><div class="pcard sk"><span class="pcol sk"><span class="pnm sk">9.9 新人体验单保 200w 不卡保底</span><span class="pmeta sk">和平精英 · 手游 · 微信区 · 已接 918 单</span></span>
+        <span class="price sml num sk" style="flex:0 0 auto"><span class="cur sk">¥</span>9.90</span></div><div class="pcard sk"><span class="pcol sk"><span class="pnm sk">基础保底 700w · 端游护航单</span><span class="pmeta sk">三角洲行动 · 端游 · QQ区 · 已接 357 单</span></span>
+        <span class="price sml num sk" style="flex:0 0 auto"><span class="cur sk">¥</span>86.64</span></div><div class="pcard sk"><span class="pcol sk"><span class="pnm sk">娱乐陪玩 3 小时 · 语音开黑</span><span class="pmeta sk">和平精英 · 手游 · 微信区 · 已接 204 单</span></span>
+        <span class="price sml num sk" style="flex:0 0 auto"><span class="cur sk">¥</span>28.88</span></div><div class="pcard sk"><span class="pcol sk"><span class="pnm sk">护航带打 · 战绩护航 5 局</span><span class="pmeta sk">三角洲行动 · 手游 · 微信区 · 已接 476 单</span></span>
+        <span class="price sml num sk" style="flex:0 0 auto"><span class="cur sk">¥</span>115.52</span></div></div><div class="sec sk" style="padding-bottom:20px"><div class="sech sk"><span class="st sk">列表说明</span><span class="ss sk">同一张卡组件，主推那一张只换描边与主推标</span></div>
+   <div class="card pad0 sk">
+     <div class="lrow r48 sk"><span class="lv sk">商品名 15sp 粗 · 元信息 11sp 弱化</span></div>
+     <div class="hair hl sk"></div>
+     <div class="lrow r48 sk"><span class="lv sk">价格统一 15sp 铜牌金 + 等宽数字</span></div>
+     <div class="hair hl sk"></div>
+     <div class="lrow r48 sk"><span class="lv sk">卡高 64（主推同高，靠白底 + 2dp 品牌色描边抬权重）</span></div>
+   </div></div></div></div><div class="tabbar"><div class="tb-c on sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.4h6.4v6.4H4zM13.6 4.4H20v6.4h-6.4zM4 13.6h6.4V20H4zM13.6 13.6H20V20h-6.4z"/></svg><span class="tb-label sk">服务</span></div><div class="tb-c  sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.4h14v15.2H5zM9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label sk">订单</span></div><div class="tb-c raised sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="tb-label sk">下单</span></div><div class="tb-c  sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label sk">消息</span></div><div class="tb-c  sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8a3.6 3.6 0 1 0 0 .01M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label sk">我的</span></div></div></div><span class="figcap2">灰阶占位（#EAEEF4），无深色块</span></div>
+</div></div>
+<div class="shot"><h2>P-4 商品详情<em>首屏 / 完整页 / 骨架</em></h2>
+<div class="screens">
+  <div class="fig"><span class="figcap">P-4 商品详情 · 首屏</span><div class="phone"><div class="statusbar"><span class="num">21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="h56"><span class="sbtn"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.6 5.4L8 12l6.6 6.6"/></svg></span><span class="tt ell">商品详情</span><span class="sp"></span>
+      <span class="act"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4M3.4 13.2h3.6v5.2H3.4zM17 13.2h3.6v5.2H17zM19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span></div>
+    <div class="scroll"><div class="inner"><div style="padding:16px 16px 0">
+    <div class="cardfeat" style="padding:16px">
+      <span class="badge-feat">主推</span>
+      <div class="lt2" style="font-size:15px;line-height:1.4;padding-right:48px">30 保 1000w 不卡保底 · 段位上分单</div>
+      <div style="display:flex;align-items:flex-end;gap:12px;margin-top:12px">
+        <span class="price lg num"><span class="cur">¥</span>30.00</span>
+        <span class="ls" style="margin:0 0 4px">/ 单 · 已接 1,286 单 · 好评 98.6%</span>
+      </div>
+      <div class="hair" style="margin:12px 0"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag tag-brandline">保底可查</span><span class="tag tag-cel">先服务后结算</span><span class="tag tag-line">支持指定护航员</span></div>
+    </div>
+  </div><div class="sec"><div class="sech"><span class="st">服务规格</span><span class="ss">下单前必须确认三项</span></div>
+   <div class="card pad0">
+     <div class="lrow r48"><span class="lk">分部</span><span class="lv">三角洲行动 · 端游</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">区服</span><span class="lv">微信区 / QQ区 可选</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">服务方式</span><span class="lv">护航带打 · 10 分钟内进房</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">保底口径</span><span class="lv">未达 1000w 按差额补单</span></div>
+   </div></div><div class="sec"><div class="sech"><span class="st">费用明细</span><span class="ss">单价 × 数量 = 合计，一屏可核</span></div>
+   <div class="card pad0">
+     <div class="lrow r48"><span class="lk">单价</span><span class="lv r num">¥30.00</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">数量</span><span class="lv r num">1 单</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">合计</span><span class="lv r price sml num"><span class="cur">¥</span>30.00</span></div>
+   </div>
+   <div class="note" style="margin-top:12px"><p>结算比例由管理端下发（当前平台抽成 <b>25%</b>），客户端不写死；下单成功后可在订单详情核对分账。</p></div>
+   </div><div class="sec" style="padding-bottom:20px"><div class="sech"><span class="st">下单须知</span></div>
+   <div class="card pad0">
+     <div class="lrow r48"><span class="lead plain"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.4a7.6 7.6 0 1 0 0 15.2 7.6 7.6 0 0 0 0-15.2zM12 11.2v4.8M12 8.2h.01"/></svg></span><span class="lv">需填写游戏昵称与 ID，护航员凭此进房</span></div>
+     <div class="hair hl"></div>
+     <div class="lrow r48"><span class="lead plain"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.4a7.6 7.6 0 1 0 0 15.2 7.6 7.6 0 0 0 0-15.2zM12 8v4.2l3 1.8"/></svg></span><span class="lv">接单后 10 分钟内未进房可无责取消</span></div>
+     <div class="hair hl"></div>
+     <div class="lrow r48"><span class="lead plain"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4M3.4 13.2h3.6v5.2H3.4zM17 13.2h3.6v5.2H17zM19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span><span class="lv">售后走订单详情 → 申请售后</span></div>
+   </div></div></div></div>
+    <div class="bbar"><div class="bt"><span class="bk">合计</span><span class="bv num">¥30.00</span></div><span class="sp"></span>
+      <button class="btn btn-quiet" type="button">联系客服</button><button class="btn btn-pri" type="button">立即下单</button></div></div><span class="figcap2">页头 56 + 主推描边卡 + 服务规格前半 + 吸底操作条 44</span></div>
+  <div class="fig"><span class="figcap">P-5 商品详情 · 滚动后完整页</span><div class="phone"><div class="statusbar"><span class="num">21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+    <div class="h56"><span class="sbtn"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.6 5.4L8 12l6.6 6.6"/></svg></span><span class="tt ell">商品详情</span><span class="sp"></span>
+      <span class="act"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4M3.4 13.2h3.6v5.2H3.4zM17 13.2h3.6v5.2H17zM19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span></div>
+    <div class="scroll"><div class="inner"><div style="padding:16px 16px 0">
+    <div class="cardfeat" style="padding:16px">
+      <span class="badge-feat">主推</span>
+      <div class="lt2" style="font-size:15px;line-height:1.4;padding-right:48px">30 保 1000w 不卡保底 · 段位上分单</div>
+      <div style="display:flex;align-items:flex-end;gap:12px;margin-top:12px">
+        <span class="price lg num"><span class="cur">¥</span>30.00</span>
+        <span class="ls" style="margin:0 0 4px">/ 单 · 已接 1,286 单 · 好评 98.6%</span>
+      </div>
+      <div class="hair" style="margin:12px 0"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag tag-brandline">保底可查</span><span class="tag tag-cel">先服务后结算</span><span class="tag tag-line">支持指定护航员</span></div>
+    </div>
+  </div><div class="sec"><div class="sech"><span class="st">服务规格</span><span class="ss">下单前必须确认三项</span></div>
+   <div class="card pad0">
+     <div class="lrow r48"><span class="lk">分部</span><span class="lv">三角洲行动 · 端游</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">区服</span><span class="lv">微信区 / QQ区 可选</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">服务方式</span><span class="lv">护航带打 · 10 分钟内进房</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">保底口径</span><span class="lv">未达 1000w 按差额补单</span></div>
+   </div></div><div class="sec"><div class="sech"><span class="st">费用明细</span><span class="ss">单价 × 数量 = 合计，一屏可核</span></div>
+   <div class="card pad0">
+     <div class="lrow r48"><span class="lk">单价</span><span class="lv r num">¥30.00</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">数量</span><span class="lv r num">1 单</span></div><div class="hair hl"></div>
+     <div class="lrow r48"><span class="lk">合计</span><span class="lv r price sml num"><span class="cur">¥</span>30.00</span></div>
+   </div>
+   <div class="note" style="margin-top:12px"><p>结算比例由管理端下发（当前平台抽成 <b>25%</b>），客户端不写死；下单成功后可在订单详情核对分账。</p></div>
+   </div><div class="sec" style="padding-bottom:20px"><div class="sech"><span class="st">下单须知</span></div>
+   <div class="card pad0">
+     <div class="lrow r48"><span class="lead plain"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.4a7.6 7.6 0 1 0 0 15.2 7.6 7.6 0 0 0 0-15.2zM12 11.2v4.8M12 8.2h.01"/></svg></span><span class="lv">需填写游戏昵称与 ID，护航员凭此进房</span></div>
+     <div class="hair hl"></div>
+     <div class="lrow r48"><span class="lead plain"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.4a7.6 7.6 0 1 0 0 15.2 7.6 7.6 0 0 0 0-15.2zM12 8v4.2l3 1.8"/></svg></span><span class="lv">接单后 10 分钟内未进房可无责取消</span></div>
+     <div class="hair hl"></div>
+     <div class="lrow r48"><span class="lead plain"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4M3.4 13.2h3.6v5.2H3.4zM17 13.2h3.6v5.2H17zM19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span><span class="lv">售后走订单详情 → 申请售后</span></div>
+   </div></div></div></div>
+    <div class="bbar"><div class="bt"><span class="bk">合计</span><span class="bv num">¥30.00</span></div><span class="sp"></span>
+      <button class="btn btn-quiet" type="button">联系客服</button><button class="btn btn-pri" type="button">立即下单</button></div></div><span class="figcap2">服务规格 → 费用明细 → 下单须知</span></div>
+  <div class="fig"><span class="figcap">P-6 商品详情 · 加载骨架态</span><div class="phone"><div class="statusbar"><span class="num sk">21:34</span><span class="sb-r sk"><span class="sb-bars sk"><i></i><i></i><i></i><i></i></span><span class="sb-batt sk"><i></i></span></span></div>
+    <div class="h56"><span class="sbtn"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.6 5.4L8 12l6.6 6.6"/></svg></span><span class="tt ell sk">商品详情</span><span class="sp sk"></span>
+      <span class="act sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4M3.4 13.2h3.6v5.2H3.4zM17 13.2h3.6v5.2H17zM19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span></div>
+    <div class="scroll sk"><div class="inner sk"><div style="padding:16px 16px 0">
+    <div class="cardfeat sk" style="padding:16px">
+      <span class="badge-feat sk">主推</span>
+      <div class="lt2 sk" style="font-size:15px;line-height:1.4;padding-right:48px">30 保 1000w 不卡保底 · 段位上分单</div>
+      <div style="display:flex;align-items:flex-end;gap:12px;margin-top:12px">
+        <span class="price lg num sk"><span class="cur sk">¥</span>30.00</span>
+        <span class="ls sk" style="margin:0 0 4px">/ 单 · 已接 1,286 单 · 好评 98.6%</span>
+      </div>
+      <div class="hair sk" style="margin:12px 0"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag tag-brandline sk">保底可查</span><span class="tag tag-cel sk">先服务后结算</span><span class="tag tag-line sk">支持指定护航员</span></div>
+    </div>
+  </div><div class="sec sk"><div class="sech sk"><span class="st sk">服务规格</span><span class="ss sk">下单前必须确认三项</span></div>
+   <div class="card pad0 sk">
+     <div class="lrow r48 sk"><span class="lk sk">分部</span><span class="lv sk">三角洲行动 · 端游</span></div><div class="hair hl sk"></div>
+     <div class="lrow r48 sk"><span class="lk sk">区服</span><span class="lv sk">微信区 / QQ区 可选</span></div><div class="hair hl sk"></div>
+     <div class="lrow r48 sk"><span class="lk sk">服务方式</span><span class="lv sk">护航带打 · 10 分钟内进房</span></div><div class="hair hl sk"></div>
+     <div class="lrow r48 sk"><span class="lk sk">保底口径</span><span class="lv sk">未达 1000w 按差额补单</span></div>
+   </div></div><div class="sec sk"><div class="sech sk"><span class="st sk">费用明细</span><span class="ss sk">单价 × 数量 = 合计，一屏可核</span></div>
+   <div class="card pad0 sk">
+     <div class="lrow r48 sk"><span class="lk sk">单价</span><span class="lv r num sk">¥30.00</span></div><div class="hair hl sk"></div>
+     <div class="lrow r48 sk"><span class="lk sk">数量</span><span class="lv r num sk">1 单</span></div><div class="hair hl sk"></div>
+     <div class="lrow r48 sk"><span class="lk sk">合计</span><span class="lv r price sml num sk"><span class="cur sk">¥</span>30.00</span></div>
+   </div>
+   <div class="note sk" style="margin-top:12px"><p>结算比例由管理端下发（当前平台抽成 <b>25%</b>），客户端不写死；下单成功后可在订单详情核对分账。</p></div>
+   </div><div class="sec sk" style="padding-bottom:20px"><div class="sech sk"><span class="st sk">下单须知</span></div>
+   <div class="card pad0 sk">
+     <div class="lrow r48 sk"><span class="lead plain sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.4a7.6 7.6 0 1 0 0 15.2 7.6 7.6 0 0 0 0-15.2zM12 11.2v4.8M12 8.2h.01"/></svg></span><span class="lv sk">需填写游戏昵称与 ID，护航员凭此进房</span></div>
+     <div class="hair hl sk"></div>
+     <div class="lrow r48 sk"><span class="lead plain sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.4a7.6 7.6 0 1 0 0 15.2 7.6 7.6 0 0 0 0-15.2zM12 8v4.2l3 1.8"/></svg></span><span class="lv sk">接单后 10 分钟内未进房可无责取消</span></div>
+     <div class="hair hl sk"></div>
+     <div class="lrow r48 sk"><span class="lead plain sk"><svg class="ic sk" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13.6v-1.4a7 7 0 0 1 14 0v1.4M3.4 13.2h3.6v5.2H3.4zM17 13.2h3.6v5.2H17zM19 18.4v.6a2.4 2.4 0 0 1-2.4 2.4H13"/></svg></span><span class="lv sk">售后走订单详情 → 申请售后</span></div>
+   </div></div></div></div>
+    <div class="bbar"><div class="bt sk"><span class="bk sk">合计</span><span class="bv num sk">¥30.00</span></div><span class="sp sk"></span>
+      <button class="btn btn-quiet" type="button">联系客服</button><button class="btn btn-pri" type="button">立即下单</button></div></div><span class="figcap2">按钮与操作条保持实色（可点）</span></div>
+</div></div>
+</div></body></html>

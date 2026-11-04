@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1820,initial-scale=1">
+<title>推荐稿 · 排行榜重设计（方案 C 细化 + 深色版）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+:root{
+  /* —— 颜色：app_colors.dart 逐值对齐 —— */
+  --primary:#2563EB; --primary-strong:#1D4ED8; --primary-soft:#E7EEFE; --ice:#EFF6FF;
+  --cyan:#06B6D4; --gold:#D97706; --gold-soft:#FEF3C7;
+  --bg-page:#F5F7FB; --surface:#FFFFFF; --surface-2:#FAFBFD;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8; --muted:#5B6B80;
+  --hair:#E2E8F0; --hair-2:#EEF1F6; --line-field:#CFD8E6;
+  --error:#DC2626; --error-soft:#FDECEC; --error-hair:#F3C4C4;
+  --warn:#EA580C; --warn-soft:#FFF4EC; --warn-hair:#F6D3B8;
+  --success:#16A34A;
+  /* —— 圆角分档：小控件 4–6 / 卡片 10–14 / 弹层 14 / 胶囊全圆（docs/21） —— */
+  --r-xs:4px; --r-sm:6px; --r-ctl:10px; --r-card:14px;
+  --pad:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+  /* —— 深色档：docs/14「管理端外壳」深色列，三端同色系 —— */
+  --d-bg:#0B1220; --d-surface:#111C2E; --d-surface-2:#0F1A2B; --d-hair:#1E2C42; --d-hair-2:#182539;
+  --d-ink:#E8EEF7; --d-ink-2:#9DB0C8; --d-ink-3:#8CA3BE;
+  --d-primary:#7FB0FF; --d-primary-soft:#16263F; --d-ice:#152238; --d-gold:#F0A63C; --d-gold-soft:#3A2C12;
+}
+body{font-family:var(--font);color:var(--ink);background:#DDE3EC;font-size:14px;line-height:1.4}
+.ic{display:block}
+
+/* ---------------- 设计图外框（不是设计的一部分） ---------------- */
+.sheet-head{max-width:1820px;margin:0 auto;padding:34px 32px 4px}
+.badge{display:inline-block;background:#E7EEFE;color:#1D4ED8;border:1px solid #C7D8FB;border-radius:999px;
+  padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:12px}
+.badge.gray{background:#F1F5F9;color:#475569;border-color:#CFD8E6}
+.sheet-head h1{margin:0 0 10px;font-size:29px;font-weight:800;letter-spacing:-.4px}
+.sheet-head .sub{color:#475569;font-size:13.5px;line-height:1.85;max-width:1240px}
+.sheet-head .sub b{color:#0F172A}
+.metarow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.metarow span{font-size:12px;color:#475569;background:#fff;border:1px solid #D7DEE9;border-radius:8px;padding:5px 10px}
+.metarow span b{color:#0F172A}
+main{max-width:1820px;margin:0 auto;padding:18px 32px 6px;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+figure.shot{width:390px;flex:0 0 390px}
+figure.shot figcaption{font-size:12.5px;font-weight:700;color:#0F172A;margin-bottom:8px;display:flex;gap:7px;align-items:center}
+figure.shot figcaption em{font-style:normal;font-weight:600;color:#5B6B80;font-size:11.5px}
+figure.shot .ph-cap{font-size:11.5px;color:#5B6B80;line-height:1.6;margin-top:9px}
+.panel{width:390px;flex:0 0 390px;background:#fff;border:1px solid #D7DEE9;border-radius:14px;padding:14px}
+.panel h3{font-size:13.5px;font-weight:800;margin-bottom:4px}
+.panel .ph-cap{font-size:11.5px;color:#5B6B80;line-height:1.6;margin-bottom:12px}
+.panel .blk + .blk{margin-top:16px;padding-top:14px;border-top:1px solid #EEF1F6}
+.panel .blk .bt{font-size:11.5px;font-weight:700;color:#5B6B80;margin-bottom:8px}
+
+/* ---------------- 手机壳 390×844（与 profile-redesign B 稿同基线） ---------------- */
+.phone{width:390px;height:844px;background:var(--bg-page);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;outline:1px solid #C9D2E0}
+.phone.dark{--bg-page:var(--d-bg);--surface:var(--d-surface);--surface-2:var(--d-surface-2);
+  --hair:var(--d-hair);--hair-2:var(--d-hair-2);--line-field:#26364F;
+  --ink:var(--d-ink);--ink-2:var(--d-ink-2);--ink-3:var(--d-ink-3);--muted:var(--d-ink-2);
+  --primary:var(--d-primary);--primary-strong:#5E97E8;--primary-soft:var(--d-primary-soft);--ice:var(--d-ice);
+  --gold:var(--d-gold);--gold-soft:var(--d-gold-soft);
+  --error-soft:#3A1B1B;--error-hair:#5A2A2A;--error:#F08A8A;
+  --warn-soft:#3A2C12;--warn-hair:#5A4520}
+.phone.dark{outline-color:#26364F}
+.statusbar{height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px 0 var(--pad);font-size:12.5px;font-weight:600;letter-spacing:.2px;color:var(--ink);
+  background:var(--surface)}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-bars{display:flex;align-items:flex-end;gap:2px;height:11px}
+.sb-bars i{display:block;width:2.5px;background:currentColor;border-radius:1px}
+.sb-bars i:nth-child(1){height:4px}.sb-bars i:nth-child(2){height:6.5px}
+.sb-bars i:nth-child(3){height:9px}.sb-bars i:nth-child(4){height:11px}
+.sb-batt{width:20px;height:10.5px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;opacity:.85}
+.sb-batt::after{content:"";position:absolute;right:-3.2px;top:3px;width:1.8px;height:4px;background:currentColor;border-radius:0 1px 1px 0}
+.sb-batt i{position:absolute;left:1.4px;top:1.4px;bottom:1.4px;width:62%;background:currentColor;border-radius:1px}
+.scroll{flex:1 1 auto;overflow:hidden;position:relative}
+.scroll.hasbottom{flex:0 0 684px}
+.inner{display:flex;flex-direction:column}
+.bottomwrap{flex:0 0 auto}
+.phone.full{height:auto}
+.phone.full .scroll{overflow:visible}
+.fold{position:absolute;left:0;right:0;top:782px;height:0;border-top:1px dashed #94A3B8;z-index:4}
+.fold span{position:absolute;right:8px;top:-16px;background:#fff;border:1px solid #CFD8E6;border-radius:4px;
+  padding:1px 6px;font-size:9.5px;font-weight:700;color:#5B6B80;letter-spacing:.2px}
+.phone.full.dark .fold{border-top-color:#3A4C68}
+.phone.full.dark .fold span{background:#111C2E;border-color:#26364F;color:#8CA3BE}
+.phone.full .tabbar{margin-top:auto}
+.wrap{padding:0 var(--pad)}
+.hair{height:1px;background:var(--hair-2);border:0}
+.hair.full{background:var(--hair)}
+
+/* ---------------- 排版 ---------------- */
+.h2{font-size:14px;font-weight:800;letter-spacing:-.1px}
+.h3{font-size:13.5px;font-weight:700}
+.num{font-variant-numeric:tabular-nums}
+.tiny{font-size:10.5px;line-height:1.45;color:var(--ink-3)}
+.note{font-size:11.5px;line-height:1.5;color:var(--muted)}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------------- 页头（白底 + 发丝线；AppPageHeader 形态；19sp 标题 + 10.5sp 副标题） ---------------- */
+.phead{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--hair);
+  padding:8px var(--pad) 12px;display:flex;align-items:center;gap:10px}
+.phead .lt{font-size:19px;font-weight:800;letter-spacing:-.2px}
+.phead .lsub{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.3}
+
+/* ---------------- 周期分段控件（AppSegmented：实色主色选中 / 外 6 内 5 / 发丝线描边） ---------------- */
+.segrow{display:flex;align-items:center;gap:10px;padding:12px var(--pad) 0}
+.seg{flex:1 1 auto;height:34px;padding:2px;display:flex;background:var(--surface);
+  border:1px solid var(--hair);border-radius:var(--r-sm)}
+.seg .sg{flex:1 1 0;display:flex;align-items:center;justify-content:center;border-radius:5px;
+  font-size:12.5px;color:var(--ink-2)}
+.seg .sg.on{background:var(--primary);color:#fff;font-weight:700}
+.seg-note{flex:0 0 auto;font-size:10.5px;color:var(--muted);letter-spacing:.1px}
+
+/* ---------------- 分部胶囊（语义 = 看什么榜；与周期控件分排） ---------------- */
+.chiprow{display:flex;gap:8px;padding:10px var(--pad) 0;overflow:hidden}
+.chip{flex:0 0 auto;height:26px;padding:0 11px;display:flex;align-items:center;border-radius:999px;
+  font-size:11.5px;background:var(--surface);border:1px solid var(--hair);color:var(--ink-2)}
+.chip.on{background:var(--primary-soft);border-color:var(--primary);color:var(--primary-strong);font-weight:700}
+.phone.dark .chip.on{color:var(--primary)}
+
+/* ---------------- 列表（docs/21：列表用发丝线，不用卡片阵） ---------------- */
+.thead{display:flex;align-items:center;gap:12px;padding:14px var(--pad) 0;font-size:10.5px;color:var(--muted)}
+.list{margin-top:6px;background:var(--surface);border-top:1px solid var(--hair)}
+.row{display:flex;align-items:center;gap:12px;padding:0 var(--pad);height:56px;background:var(--surface)}
+.row + .row{border-top:1px solid var(--hair-2)}
+/* 行内分区 = 用一条发丝线（不是每卡左侧彩色竖条，docs/21 禁项 2） */
+.list.zoned .row + .row{border-top-color:var(--hair)}
+.cellrank{flex:0 0 26px;display:flex;justify-content:center}
+.bdg{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums}
+.bdg.g1{background:var(--gold);color:#fff}
+.bdg.g2{background:#94A3B8;color:#fff}
+.bdg.g3{background:#EA580C;color:#fff}
+.bdg.rest{background:#F1F5F9;color:var(--muted);font-weight:700}
+.phone.dark .bdg.rest{background:#182539;color:var(--d-ink-2)}
+.ava{width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:13.5px;font-weight:800;background:var(--primary-soft);color:var(--primary-strong)}
+.phone.dark .ava{color:var(--primary)}
+.ava.empty{background:#F1F5F9;color:var(--ink-3)}
+.phone.dark .ava.empty{background:#182539}
+.row .nm{flex:1 1 auto;min-width:0;font-size:14px;font-weight:700;color:var(--ink)}
+.amt{flex:0 0 auto;font-variant-numeric:tabular-nums;font-size:16px;font-weight:800;color:var(--gold);letter-spacing:-.3px}
+
+/* ---------------- 方案 B：榜首卡（第 1 名单独一张白卡；不做插画、不并排大数字） ---------------- */
+.podium{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-card);padding:15px 16px;
+  display:flex;align-items:center;gap:13px}
+.podium .pava{width:52px;height:52px;flex:0 0 52px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:21px;font-weight:800;background:var(--gold-soft);color:#B45309}
+.podium .meta{flex:1 1 auto;min-width:0}
+.podium .nm{font-size:18px;font-weight:800;color:var(--gold);letter-spacing:-.2px}
+.ptag{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:var(--r-xs);font-size:10.5px;
+  font-weight:700;background:var(--gold-soft);color:#B45309;border:1px solid #F3D79B;margin-left:7px}
+.phone.dark .ptag{border-color:#5A4520;color:var(--d-gold)}
+.podium .pr{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.podium .pa{flex:0 0 auto;text-align:right}
+.podium .pa .v{font-size:23px;font-weight:800;color:var(--gold);letter-spacing:-.8px;font-variant-numeric:tabular-nums;line-height:1.05}
+.podium .pa .l{font-size:10.5px;color:var(--muted);margin-top:5px}
+
+/* ---------------- 骨架 / 提示条（加载态、错误态） ---------------- */
+.sk{background:#E9EDF4;border-radius:4px}
+.phone.dark .sk{background:#1B2940}
+.sk.l{height:11px}.sk.m{height:14px}
+.notice{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--warn-soft);border:1px solid var(--warn-hair);color:var(--warn);font-size:11.5px;
+  font-weight:600;line-height:1.45}
+.notice.err{background:var(--error-soft);border-color:var(--error-hair);color:var(--error)}
+.notice .ic{flex:0 0 auto}
+.retry{flex:0 0 auto;margin-left:auto;height:26px;padding:0 11px;display:flex;align-items:center;
+  border-radius:var(--r-sm);border:1px solid currentColor;font-size:11.5px;font-weight:700}
+.empty{padding:34px 16px 28px;display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--surface)}
+.empty .et{font-size:13px;color:var(--ink-3)}
+.empty .eb{height:32px;padding:0 14px;display:flex;align-items:center;border-radius:var(--r-sm);
+  border:1px solid var(--primary);color:var(--primary);font-size:12.5px;font-weight:700}
+.endnote{display:flex;align-items:center;gap:9px;padding:13px var(--pad);background:var(--surface);
+  border-top:1px solid var(--hair-2);color:var(--muted);font-size:11.5px;line-height:1.5}
+
+/* ---------------- 吸底规则条（替代原「去下单」说明条；老板端无个人名次） ---------------- */
+.bottom{background:var(--surface);border-top:1px solid var(--hair);padding:10px var(--pad);
+  display:flex;align-items:center;gap:7px}
+.bottom .bt{flex:1 1 auto;min-width:0;font-size:11px;color:var(--muted);line-height:1.45}
+.bottom .go{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--primary)}
+
+/* ---------------- 底部导航（服务·订单·＋下单·消息·我的） ---------------- */
+.tabbar{flex:0 0 62px;display:flex;align-items:flex-start;background:var(--surface);border-top:1px solid var(--hair);
+  padding:7px 0 0;position:relative}
+.tb-item{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-3);padding-top:2px}
+.tb-item.on{color:var(--primary)}
+.tb-label{font-size:10.5px;font-weight:600;letter-spacing:.1px}
+.tb-c{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tb-cbtn{width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;
+  align-items:center;justify-content:center;margin-top:-15px;border:3px solid var(--surface)}
+
+/* ---------------- 审批说明（设计图外） ---------------- */
+.specwrap{max-width:1820px;margin:26px auto 0;padding:0 32px 40px}
+.specgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.spec{background:#fff;border:1px solid #D7DEE9;border-radius:14px;padding:16px 18px}
+.spec h3{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.spec h3 .n{display:inline-flex;width:19px;height:19px;border-radius:5px;background:#E7EEFE;color:#1D4ED8;
+  font-size:11.5px;font-weight:800;align-items:center;justify-content:center}
+.spec ul{margin:0 0 0 17px}
+.spec li{font-size:12.5px;line-height:1.75;color:#334155;margin-bottom:5px}
+.spec li b{color:#0F172A}
+.spec li code{background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px;
+  font-family:Consolas,Monaco,monospace;color:#1D4ED8}
+.spec p{font-size:12.5px;line-height:1.75;color:#334155}
+.spec .ok{color:#15803D;font-weight:800}
+.spec .no{color:#DC2626;font-weight:800}
+.spec table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+.spec th,.spec td{text-align:left;padding:7px 9px;border-bottom:1px solid #EEF1F6;color:#334155;vertical-align:top}
+.spec th{color:#5B6B80;font-weight:700;background:#FAFBFD;font-size:11.5px}
+.spec td b{color:#0F172A}
+.footnote{max-width:1820px;margin:0 auto;padding:0 32px 70px}
+.footnote div{background:#0F172A;color:#D7DEEA;border-radius:12px;padding:14px 18px;font-size:12.5px;line-height:1.8}
+.footnote b{color:#93C5FD}
+@media (max-width:1100px){ .specgrid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="sheet-head">
+  <div class="badge">推荐稿 · 方案 C 细化稿</div>
+  <h1>排行榜重设计 · 推荐稿：方案 C（前三名强化行）+ 深色版预览</h1>
+  <p class="sub">从三套里选 <b>方案 C</b>：<b>压掉全部 5 个缺陷、改动 9 处、0 新组件、0 服务端改动、0 阴影争议</b>，且比 A 多解决"榜首感"、比 B 少一层结构风险（B 要把第 1 名拆成卡片，还要额外决定卡片投影是否算违反 docs/21「阴影只给弹层」）。<br>本页给出<b>细化后的浅色完整态</b>（首屏 / 滚动后 / 加载 / 错误 / 空态）+ <b>深色版首屏预览</b>。深色版仅供预览：<b>老板端当前没有深色 token 与主题开关</b>，取色按 <code>docs/14</code> 深色列，<b>需独立一轮才能上线</b>。</p>
+  <div class="metarow"><span><b>屏</b> 390×844 逻辑像素 × 6（浅色首屏 / 完整页 / 加载 / 错误 / 空态 + 深色首屏）</span><span><b>红线</b> docs/14 通过 · docs/21 通过 · 服务端改动 <b>0</b> · 触碰红线 <b>0 条</b></span><span><b>实施面</b> 1 个文件 9 处 · 0 个新组件 · 0 个接口改动</span><span><b>状态</b> 待审批，未实施任何代码改动</span></div>
+</div>
+<main><figure class="shot"><figcaption>R-1 · 首屏（浅色 · 不滚动） <em>推荐形态</em></figcaption><div class="phone"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+<div class="scroll hasbottom"><div class="inner"><div class="phead"><div style="flex:1 1 auto;min-width:0">
+    <div class="lt">接单榜</div>
+    <div class="lsub">按已完成订单金额 · 每日 03:00 更新</div>
+  </div><span style="color:var(--ink-3);display:flex"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4.4h8v4.2a4 4 0 0 1-8 0z"/><path d="M8 5.6H5.4v1.6A3.4 3.4 0 0 0 8 10.4"/><path d="M16 5.6h2.6v1.6A3.4 3.4 0 0 1 16 10.4"/><path d="M12 12.6v3.4M8.6 19.6h6.8l-.7-3H9.3z"/></svg></span></div><div class="segrow"><div class="seg">
+    <div class="sg on">周榜</div><div class="sg">月榜</div></div>
+  <span class="seg-note num">10-07 至 10-13</span></div><div class="chiprow"><span class="chip on">全站</span><span class="chip">三角洲行动·手游</span><span class="chip">三角洲行动·端游</span><span class="chip">和平精英·手游</span></div><div class="thead"><span style="flex:0 0 26px;text-align:center">名次</span><span style="flex:1 1 auto">陪玩</span><span>接单金额（¥）</span></div><div class="list zoned"><div class="row top" style="height:68px">
+  <span class="cellrank"><span class="bdg g1">1</span></span>
+  <span class="ava">林</span>
+  <span class="nm ell" style="font-size:15.5px">林岸</span>
+  <span class="amt num" style="font-size:18px">¥4,286.50</span></div><div class="row top" style="height:62px">
+  <span class="cellrank"><span class="bdg g2">2</span></span>
+  <span class="ava">周</span>
+  <span class="nm ell" style="font-size:15px">周慕白</span>
+  <span class="amt num" style="font-size:16.5px">¥3,914.00</span></div><div class="row top" style="height:62px">
+  <span class="cellrank"><span class="bdg g3">3</span></span>
+  <span class="ava">陈</span>
+  <span class="nm ell" style="font-size:15px">陈屿</span>
+  <span class="amt num" style="font-size:16.5px">¥3,207.40</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">4</span></span>
+  <span class="ava">苏</span>
+  <span class="nm ell">苏挽</span>
+  <span class="amt num">¥2,686.00</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">5</span></span>
+  <span class="ava">许</span>
+  <span class="nm ell">许砚清</span>
+  <span class="amt num">¥2,143.50</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">6</span></span>
+  <span class="ava">沈</span>
+  <span class="nm ell">沈澈</span>
+  <span class="amt num">¥1,872.00</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">7</span></span>
+  <span class="ava">叶</span>
+  <span class="nm ell">叶知秋</span>
+  <span class="amt num">¥1,506.80</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">8</span></span>
+  <span class="ava">程</span>
+  <span class="nm ell">程野</span>
+  <span class="amt num">¥1,268.50</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">9</span></span>
+  <span class="ava">汪</span>
+  <span class="nm ell">汪一鸣</span>
+  <span class="amt num">¥986.00</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">10</span></span>
+  <span class="ava">罗</span>
+  <span class="nm ell">罗砚</span>
+  <span class="amt num">¥744.20</span></div></div></div></div><div class="bottomwrap"><div class="bottom"><svg class="ic" style="width:15px;height:15px;flex:0 0 15px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 1.9"/></svg>
+  <span class="bt">每周一 03:00 重新统计 · 已完成订单计入 · 只展示前 50 名</span><span class="go">去下单 ›</span></div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px;flex:0 0 22px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div><div class="ph-cap">首屏可见：页头（榜单标题 + 统计口径与更新时刻）→ 周期分段（周榜 / 月榜 + 真实日期范围）→ 分部胶囊行 → 表头 → 前三名加高行（金/灰/橙实色徽章、金额 18/16.5）+ 第 4 名常规行。</div></figure><figure class="shot"><figcaption>R-2 · 滚动后（浅色 · 完整页 · 整页展开） <em>虚线 = 首屏折线</em></figcaption><div class="phone full"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+<div class="fold"><span>首屏折线 · 以下需滚动</span></div>
+<div class="scroll"><div class="inner"><div class="phead"><div style="flex:1 1 auto;min-width:0">
+    <div class="lt">接单榜</div>
+    <div class="lsub">按已完成订单金额 · 每日 03:00 更新</div>
+  </div><span style="color:var(--ink-3);display:flex"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4.4h8v4.2a4 4 0 0 1-8 0z"/><path d="M8 5.6H5.4v1.6A3.4 3.4 0 0 0 8 10.4"/><path d="M16 5.6h2.6v1.6A3.4 3.4 0 0 1 16 10.4"/><path d="M12 12.6v3.4M8.6 19.6h6.8l-.7-3H9.3z"/></svg></span></div><div class="segrow"><div class="seg">
+    <div class="sg on">周榜</div><div class="sg">月榜</div></div>
+  <span class="seg-note num">10-07 至 10-13</span></div><div class="chiprow"><span class="chip on">全站</span><span class="chip">三角洲行动·手游</span><span class="chip">三角洲行动·端游</span><span class="chip">和平精英·手游</span></div><div class="thead"><span style="flex:0 0 26px;text-align:center">名次</span><span style="flex:1 1 auto">陪玩</span><span>接单金额（¥）</span></div><div class="list zoned"><div class="row top" style="height:68px">
+  <span class="cellrank"><span class="bdg g1">1</span></span>
+  <span class="ava">林</span>
+  <span class="nm ell" style="font-size:15.5px">林岸</span>
+  <span class="amt num" style="font-size:18px">¥4,286.50</span></div><div class="row top" style="height:62px">
+  <span class="cellrank"><span class="bdg g2">2</span></span>
+  <span class="ava">周</span>
+  <span class="nm ell" style="font-size:15px">周慕白</span>
+  <span class="amt num" style="font-size:16.5px">¥3,914.00</span></div><div class="row top" style="height:62px">
+  <span class="cellrank"><span class="bdg g3">3</span></span>
+  <span class="ava">陈</span>
+  <span class="nm ell" style="font-size:15px">陈屿</span>
+  <span class="amt num" style="font-size:16.5px">¥3,207.40</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">4</span></span>
+  <span class="ava">苏</span>
+  <span class="nm ell">苏挽</span>
+  <span class="amt num">¥2,686.00</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">5</span></span>
+  <span class="ava">许</span>
+  <span class="nm ell">许砚清</span>
+  <span class="amt num">¥2,143.50</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">6</span></span>
+  <span class="ava">沈</span>
+  <span class="nm ell">沈澈</span>
+  <span class="amt num">¥1,872.00</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">7</span></span>
+  <span class="ava">叶</span>
+  <span class="nm ell">叶知秋</span>
+  <span class="amt num">¥1,506.80</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">8</span></span>
+  <span class="ava">程</span>
+  <span class="nm ell">程野</span>
+  <span class="amt num">¥1,268.50</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">9</span></span>
+  <span class="ava">汪</span>
+  <span class="nm ell">汪一鸣</span>
+  <span class="amt num">¥986.00</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">10</span></span>
+  <span class="ava">罗</span>
+  <span class="nm ell">罗砚</span>
+  <span class="amt num">¥744.20</span></div></div></div></div><div class="bottomwrap"><div class="bottom"><svg class="ic" style="width:15px;height:15px;flex:0 0 15px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 1.9"/></svg>
+  <span class="bt">每周一 03:00 重新统计 · 已完成订单计入 · 只展示前 50 名</span><span class="go">去下单 ›</span></div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px;flex:0 0 22px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div><div class="ph-cap">折线以上 = R-1；折线以下为第 4–10 名（常规 56 行）+ 列表收尾说明 + 固定吸底规则条（每周一 03:00 重新统计 · 去下单 ›）。</div></figure><figure class="shot"><figcaption>R-3 · 加载态（浅色） <em>骨架 + 一行文案</em></figcaption><div class="phone"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+<div class="scroll hasbottom"><div class="inner"><div class="phead"><div style="flex:1 1 auto;min-width:0">
+    <div class="lt">接单榜</div>
+    <div class="lsub">按已完成订单金额 · 每日 03:00 更新</div>
+  </div><span style="color:var(--ink-3);display:flex"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4.4h8v4.2a4 4 0 0 1-8 0z"/><path d="M8 5.6H5.4v1.6A3.4 3.4 0 0 0 8 10.4"/><path d="M16 5.6h2.6v1.6A3.4 3.4 0 0 1 16 10.4"/><path d="M12 12.6v3.4M8.6 19.6h6.8l-.7-3H9.3z"/></svg></span></div><div class="segrow"><div class="seg">
+    <div class="sg on">周榜</div><div class="sg">月榜</div></div>
+  <span class="seg-note num">10-07 至 10-13</span></div><div class="chiprow"><span class="chip on">全站</span><span class="chip">三角洲行动·手游</span><span class="chip">三角洲行动·端游</span><span class="chip">和平精英·手游</span></div><div class="thead"><span style="flex:0 0 26px;text-align:center">名次</span><span style="flex:1 1 auto">陪玩</span><span>接单金额（¥）</span></div><div class="list"><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div></div><div class="notice" style="margin:11px var(--pad) 0">
+  <svg class="ic" style="width:14px;height:14px;flex:0 0 14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.6A8 8 0 0 0 6.3 6.3L4 8.4"/><path d="M4 4.4v4h4"/><path d="M4 12.4A8 8 0 0 0 17.7 17.7L20 15.6"/><path d="M20 19.6v-4h-4"/></svg>
+  <span>榜单加载中…</span>
+  </div></div></div><div class="bottomwrap"><div class="bottom"><svg class="ic" style="width:15px;height:15px;flex:0 0 15px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 1.9"/></svg>
+  <span class="bt">每周一 03:00 重新统计 · 已完成订单计入 · 只展示前 50 名</span><span class="go">去下单 ›</span></div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px;flex:0 0 22px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div><div class="ph-cap">骨架行与真实行高一致（前三略高），加载完成不跳动；提示条「榜单加载中…」。</div></figure><figure class="shot"><figcaption>R-4 · 错误态（浅色） <em>可读中文 + 重试</em></figcaption><div class="phone"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+<div class="scroll hasbottom"><div class="inner"><div class="phead"><div style="flex:1 1 auto;min-width:0">
+    <div class="lt">接单榜</div>
+    <div class="lsub">按已完成订单金额 · 每日 03:00 更新</div>
+  </div><span style="color:var(--ink-3);display:flex"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4.4h8v4.2a4 4 0 0 1-8 0z"/><path d="M8 5.6H5.4v1.6A3.4 3.4 0 0 0 8 10.4"/><path d="M16 5.6h2.6v1.6A3.4 3.4 0 0 1 16 10.4"/><path d="M12 12.6v3.4M8.6 19.6h6.8l-.7-3H9.3z"/></svg></span></div><div class="segrow"><div class="seg">
+    <div class="sg on">周榜</div><div class="sg">月榜</div></div>
+  <span class="seg-note num">10-07 至 10-13</span></div><div class="chiprow"><span class="chip on">全站</span><span class="chip">三角洲行动·手游</span><span class="chip">三角洲行动·端游</span><span class="chip">和平精英·手游</span></div><div class="thead"><span style="flex:0 0 26px;text-align:center">名次</span><span style="flex:1 1 auto">陪玩</span><span>接单金额（¥）</span></div><div class="list"><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div><div class="row"><span class="cellrank"><span class="sk" style="width:26px;height:26px;border-radius:50%"></span></span>
+  <span class="ava sk" style="border-radius:50%"></span>
+  <span class="nm"><span class="sk m" style="display:block;width:72px"></span></span>
+  <span class="amt"><span class="sk m" style="display:block;width:64px"></span></span></div></div><div class="notice err" style="margin:11px var(--pad) 0">
+  <svg class="ic" style="width:14px;height:14px;flex:0 0 14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.6l8.6 15.2H3.4z"/><path d="M12 10v4.2M12 17.2h.01"/></svg>
+  <span>榜单未能加载，请检查网络后重试</span>
+  <span class="retry">重新加载</span></div></div></div><div class="bottomwrap"><div class="bottom"><svg class="ic" style="width:15px;height:15px;flex:0 0 15px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 1.9"/></svg>
+  <span class="bt">每周一 03:00 重新统计 · 已完成订单计入 · 只展示前 50 名</span><span class="go">去下单 ›</span></div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px;flex:0 0 22px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div><div class="ph-cap">「榜单未能加载，请检查网络后重试」+ 「重新加载」；骨架保留，页面不留白。</div></figure><figure class="shot"><figcaption>R-5 · 空态（浅色） <em>给下一步动作</em></figcaption><div class="phone"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+<div class="scroll hasbottom"><div class="inner"><div class="phead"><div style="flex:1 1 auto;min-width:0">
+    <div class="lt">接单榜</div>
+    <div class="lsub">按已完成订单金额 · 每日 03:00 更新</div>
+  </div><span style="color:var(--ink-3);display:flex"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4.4h8v4.2a4 4 0 0 1-8 0z"/><path d="M8 5.6H5.4v1.6A3.4 3.4 0 0 0 8 10.4"/><path d="M16 5.6h2.6v1.6A3.4 3.4 0 0 1 16 10.4"/><path d="M12 12.6v3.4M8.6 19.6h6.8l-.7-3H9.3z"/></svg></span></div><div class="segrow"><div class="seg">
+    <div class="sg on">周榜</div><div class="sg">月榜</div></div>
+  <span class="seg-note num">10-07 至 10-13</span></div><div class="chiprow"><span class="chip on">全站</span><span class="chip">三角洲行动·手游</span><span class="chip">三角洲行动·端游</span><span class="chip">和平精英·手游</span></div><div class="thead"><span style="flex:0 0 26px;text-align:center">名次</span><span style="flex:1 1 auto">陪玩</span><span>接单金额（¥）</span></div><div class="list"></div><div class="empty"><svg class="ic" style="width:34px;height:34px;flex:0 0 34px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13.4l1.9-7.2A2 2 0 0 1 7.8 4.7h8.4a2 2 0 0 1 1.9 1.5l1.9 7.2"/><path d="M4 13.4h4l1.2 2.4h5.6l1.2-2.4h4v3.9a2.2 2.2 0 0 1-2.2 2.2H6.2A2.2 2.2 0 0 1 4 17.3z"/></svg>
+  <span class="et">该分部本周还没有接单记录</span><span class="eb">去下一个单</span></div></div></div><div class="bottomwrap"><div class="bottom"><svg class="ic" style="width:15px;height:15px;flex:0 0 15px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 1.9"/></svg>
+  <span class="bt">每周一 03:00 重新统计 · 已完成订单计入 · 只展示前 50 名</span><span class="go">去下单 ›</span></div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px;flex:0 0 22px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div><div class="ph-cap">「该分部本周还没有接单记录」+ 「去下一个单」。</div></figure><figure class="shot"><figcaption>R-6 · 首屏（深色版 · 仅预览） <em>需独立一轮才能上线</em></figcaption><div class="phone dark" data-pane="dark"><div class="statusbar"><span>21:34</span><span class="sb-r"><span class="sb-bars"><i></i><i></i><i></i><i></i></span><span class="sb-batt"><i></i></span></span></div>
+<div class="scroll hasbottom"><div class="inner"><div class="phead"><div style="flex:1 1 auto;min-width:0">
+    <div class="lt">接单榜</div>
+    <div class="lsub">按已完成订单金额 · 每日 03:00 更新</div>
+  </div><span style="color:var(--ink-3);display:flex"><svg class="ic" style="width:20px;height:20px;flex:0 0 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4.4h8v4.2a4 4 0 0 1-8 0z"/><path d="M8 5.6H5.4v1.6A3.4 3.4 0 0 0 8 10.4"/><path d="M16 5.6h2.6v1.6A3.4 3.4 0 0 1 16 10.4"/><path d="M12 12.6v3.4M8.6 19.6h6.8l-.7-3H9.3z"/></svg></span></div><div class="segrow"><div class="seg">
+    <div class="sg on">周榜</div><div class="sg">月榜</div></div>
+  <span class="seg-note num">10-07 至 10-13</span></div><div class="chiprow"><span class="chip on">全站</span><span class="chip">三角洲行动·手游</span><span class="chip">三角洲行动·端游</span><span class="chip">和平精英·手游</span></div><div class="thead"><span style="flex:0 0 26px;text-align:center">名次</span><span style="flex:1 1 auto">陪玩</span><span>接单金额（¥）</span></div><div class="list zoned"><div class="row top" style="height:68px">
+  <span class="cellrank"><span class="bdg g1">1</span></span>
+  <span class="ava">林</span>
+  <span class="nm ell" style="font-size:15.5px">林岸</span>
+  <span class="amt num" style="font-size:18px">¥4,286.50</span></div><div class="row top" style="height:62px">
+  <span class="cellrank"><span class="bdg g2">2</span></span>
+  <span class="ava">周</span>
+  <span class="nm ell" style="font-size:15px">周慕白</span>
+  <span class="amt num" style="font-size:16.5px">¥3,914.00</span></div><div class="row top" style="height:62px">
+  <span class="cellrank"><span class="bdg g3">3</span></span>
+  <span class="ava">陈</span>
+  <span class="nm ell" style="font-size:15px">陈屿</span>
+  <span class="amt num" style="font-size:16.5px">¥3,207.40</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">4</span></span>
+  <span class="ava">苏</span>
+  <span class="nm ell">苏挽</span>
+  <span class="amt num">¥2,686.00</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">5</span></span>
+  <span class="ava">许</span>
+  <span class="nm ell">许砚清</span>
+  <span class="amt num">¥2,143.50</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">6</span></span>
+  <span class="ava">沈</span>
+  <span class="nm ell">沈澈</span>
+  <span class="amt num">¥1,872.00</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">7</span></span>
+  <span class="ava">叶</span>
+  <span class="nm ell">叶知秋</span>
+  <span class="amt num">¥1,506.80</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">8</span></span>
+  <span class="ava">程</span>
+  <span class="nm ell">程野</span>
+  <span class="amt num">¥1,268.50</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">9</span></span>
+  <span class="ava">汪</span>
+  <span class="nm ell">汪一鸣</span>
+  <span class="amt num">¥986.00</span></div><div class="row">
+  <span class="cellrank"><span class="bdg rest">10</span></span>
+  <span class="ava">罗</span>
+  <span class="nm ell">罗砚</span>
+  <span class="amt num">¥744.20</span></div></div></div></div><div class="bottomwrap"><div class="bottom"><svg class="ic" style="width:15px;height:15px;flex:0 0 15px;color:var(--ink-3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3 1.9"/></svg>
+  <span class="bt">每周一 03:00 重新统计 · 已完成订单计入 · 只展示前 50 名</span><span class="go">去下单 ›</span></div></div>
+<div class="tabbar">
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg><span class="tb-label">服务</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.4" width="14" height="15.2" rx="2"/><path d="M9 9h6M9 12.6h6M9 16.2h3.4"/></svg><span class="tb-label">订单</span></div>
+<div class="tb-c"><div class="tb-cbtn"><svg class="ic" style="width:22px;height:22px;flex:0 0 22px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><span class="tb-label" style="color:var(--ink-3)"></span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4 20.6l1.3-3.6C4.1 15.8 3.4 14.2 3.4 12.4c0-3.9 3.6-7 8-7s8.6 3.1 8.6 7z"/></svg><span class="tb-label">消息</span></div>
+<div class="tb-item"><svg class="ic" style="width:21px;height:21px;flex:0 0 21px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4S18.3 16.4 19.5 20"/></svg><span class="tb-label">我的</span></div>
+</div></div><div class="ph-cap">取色按 <code>docs/14</code> 深色列：底 <code>#0B1220</code> · 表面 <code>#111C2E</code> · 正文 <code>#E8EEF7</code> · 主色文字态 <code>#7FB0FF</code> · 琥珀金 <code>#F0A63C</code>。老板端<b>当前没有深色 token 与主题开关</b>，此屏只用于评审观感。</div></figure><div class="panel"><h3>为什么推荐 C（一句话对比）</h3><p class="ph-cap">三套都在压同一批缺陷，差别只在"第五个缺陷（榜首感）怎么解"。</p><div class="blk"><div class="bt">A · 结构不动、只归位</div><p class="note" style="margin:0">删横幅 + 归位信息 + 徽章实色。榜首感<b>只解决一半</b>（前三名与其余同高）。</p></div><div class="blk"><div class="bt">B · 把榜首拆出去</div><p class="note" style="margin:0">层级最强、首屏名次密度最低（4.5 → 2 行），且要额外决定卡片投影的口径。</p></div><div class="blk"><div class="bt">C · 行内层级（推荐）</div><p class="note" style="margin:0">前三行加高 + 实色徽章 + 金额分层 + 一条分档发丝线。<b>列表保持连续</b>，0 新组件、0 卡片、0 阴影争议。</p></div></div><div class="panel"><h3>审批前请特别确认这三点</h3><p class="ph-cap">只有这三点需要负责人拍板，其余都是合规收口。</p><div class="blk"><div class="bt">① 前三名的"重"到什么程度</div><p class="note" style="margin:0">本稿：行高 68/62（其余 56）、金额 18/16.5（其余 16）。若嫌差异过大 → 退回方案 A（全行同高）；若嫌不够 → 看方案 B。</p></div><div class="blk"><div class="bt">② 顶部是否彻底不要"品牌色块"</div><p class="note" style="margin:0">本稿页头是白底 + 一行副标题（与「我的」页方案 B 同族）。若负责人希望保留一点品牌色，<b>唯一可接受的做法</b>是页头下方 1px 主色细线（3px 以内、非渐变），但那样就有了两处"品牌色块"，本稿按"彻底不要"画。</p></div><div class="blk"><div class="bt">③ 底部条要不要保留</div><p class="note" style="margin:0">保留现状文案与「去下单 ›」（<code>:176-200</code>）。老板端没有个人名次，本稿<b>不造个人名次卡</b>。</p></div></div></main>
+<div class="specwrap"><div class="specgrid"><div class="spec"><h3><span class="n">1</span>推荐结论与理由（为什么是 C）</h3><ul><li><b>逐条压掉 5 个缺陷</b>，且不引入新的设计决定：渐变横幅删除（缺陷 1/4）、榜名 3 次 → 1 次（缺陷 2）、周期与分部拆两排（缺陷 3）、前三行加高 + 实色徽章 + 金额分层（缺陷 5）。</li><li><b>比 A 多解决"榜首感"</b>：A 的前三名与第 10 名仍同高同字号，只差徽章色 —— 负责人点出的"层级扁平"只解决一半。</li><li><b>比 B 的风险低</b>：B 把第 1 名拆成卡片，榜单被切成"卡 + 列表"两种形态，且要额外决定"卡片要不要投影"（触碰 docs/21 的阴影条款）；C 仍在<b>同一条列表</b>里，0 新组件、0 新卡片、0 阴影争议。</li><li><b>与「我的」页方案 B 同族</b>：白底页头 + 发丝线 + 冷灰蓝底 + 琥珀金只用于金额与榜首 —— 同一 App 内视觉一致（<code>site/design/profile-redesign/B.html</code>）。</li><li><b>改动最小可回退</b>：改的是同一个文件的 9 处，删掉其中任何一处都能退回上一形态，没有数据结构与接口牵连。</li></ul></div><div class="spec"><h3><span class="n">2</span>实施清单（改哪个文件、加/改哪些组件、是否动服务端）</h3><ul><li><b>① 唯一要改的页面</b>：<code>apps/boss-app/lib/pages/leaderboard_page.dart</code>（356 行）。</li><li><b>② 要改的 core 组件：0 个</b>。<code>AppSegmented</code>（<code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px;font-family:Consolas,Monaco,monospace;color:#1D4ED8">app_ui.dart:332-388</code>）、<code>AppAvatar</code>、<code>AppPrice</code>、<code>AppEmpty</code>、<code>AppIcon</code>、<code>AppHairline</code> 全部按现状直接调用；<code>AppSegmented</code> 默认 <code>padding</code> 可直接用，若要与分部胶囊行统一 16 边距，传自定义 <code>padding</code> 即可（参数已存在）。</li><li><b>③ 具体改法（9 处，逐条可核对）</b>：<br>· 删 <code>:120-149</code>（渐变横幅整块）<br>· 删 <code>:106</code>（静态榜名胶囊）<br>· <code>:104-118</code> 整排替换为 <code>AppSegmented(['周榜','月榜'])</code> + 右侧周期小字（复用 <code>_periodLabel()</code>）<br>· <code>:90</code> 页头标题保留，<code>:92</code> 副标题文案改为「按已完成订单金额 · 每日 03:00 更新」<br>· <code>:222-226</code> 分部胶囊选中态改浅底主色 + 主色字（<code>T.primarySoft</code> / <code>T.primary</code>）<br>· <code>:296-306</code> 徽章：去 <code>gradient</code> → <code>color: rankColor</code>，24×24 r7 → 26 圆形；补 4 名起的浅灰实色圆片<br>· <code>:314</code> 头像：<code>gradient: top3</code> → <code>false</code>，颜色统一浅底 + 主色首字<br>· <code>:279-328</code> 行高与字号分档（68/62/56；名字 15.5/15/14；金额 18/16.5/16）<br>· <code>:289</code> 第 3 名之后那条 <code>Divider</code> 换 <code>#EEF1F6</code>；<code>:249-270</code> 加载态加一行「榜单加载中…」，错误态文案改可读中文 + 重试按钮</li><li><b>④ 服务端改动：0</b>。<code>GET /public/leaderboard</code>（<code>server/src/modules/leaderboard/public-leaderboard.controller.ts</code>）返回的字段与查询参数（<code>kind=week|month</code>、<code>divisionId</code>）<b>一个字都不用改</b>；本方案没有新增字段、没有新增接口、没有改统计口径。</li><li><b>⑤ 数据字段：不新增</b>。页面仍只用 <code>_Row</code>（<code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px;font-family:Consolas,Monaco,monospace;color:#1D4ED8">:340-356</code>）的 名次 / 头像 / 名字 / 金额；头像为空继续走 <code>AppAvatar</code> 兜底。</li><li><b>⑥ 测试与回归</b>：老板端已有 widget 测试需随行高/字号断言同步（若有）；<code>flutter analyze</code> 必须 0 issue；发布走 <code>node scripts/release-boss.js</code>（发布铁律）。</li></ul></div><div class="spec"><h3><span class="n">3</span>红线核对表（逐条判 docs/14 与 docs/21）</h3><ul><li><b>docs/14 · 色板</b>：primary <code>#2563EB</code> ✓ · gold <code>#D97706</code>（金额）✓ · bgPage <code>#F5F7FB</code> ✓ · bgCard <code>#FFFFFF</code> ✓ · divider <code>#E2E8F0</code> ✓ · textPrimary <code>#0F172A</code> / textSecondary <code>#475569</code> / mutedText <code>#5B6B80</code> ✓ —— <span class="ok">全部命中真值</span>；<b>青 #06B6D4 0 处使用</b>。</li><li><b>docs/14 · 字号层级</b>：19 页头标题 ✓ · 14/15 名字 ✓ · 10.5–12 说明字 ✓ · 16–18 金额（价格档）✓ —— <span class="ok">未超出既有层级</span>。</li><li><b>docs/14 · 圆角</b>：徽章/头像 = 圆形 ✓ · 分段控件外 6 / 内 5 ✓ · 提示条 6 ✓ · 头像方标 4 ✓ —— <span class="ok">无 ≥16 的大圆角</span>。</li><li><b>docs/14 · 间距</b>：全部 4 的倍数（10/12/14/16/20/22）✓，页面边距 16 ✓。</li><li><b>docs/21 · 禁「渐变主视觉」</b>：<span class="ok">通过</span> 全页渐变 <b>0 处</b>（现状 2 处：横幅 <code>:126</code>、徽章 <code>:301</code>）。</li><li><b>docs/21 · 禁「每卡左侧彩色竖条」</b>：<span class="ok">通过</span> 0 处；分组靠行高与发丝线。</li><li><b>docs/21 · 禁「全大圆角 ≥16」</b>：<span class="ok">通过</span>；最大圆角是圆形头像与胶囊。</li><li><b>docs/21 · 禁「阴影铺满卡片」</b>：<span class="ok">通过</span> 本页 <b>0 张卡片、0 处阴影</b>（列表是发丝线容器，不是卡片）。</li><li><b>docs/21 · 禁「每条信息配彩色小标签」</b>：<span class="ok">通过</span> 每行只有名次/头像/名字/金额，<b>0 枚标签</b>。</li><li><b>docs/21 · 禁 emoji 当图标</b>：<span class="ok">通过</span> 图标 3 枚（固定图标：奖项、时钟、信息），全部单色线性 SVG（Material outlined 近似）。</li><li><b>docs/21 · 禁「顶部并排三个大数字」</b>：<span class="ok">通过</span> 本页无任何并排指标的 hero 区。</li><li><b>docs/21 · 禁「纯黑配纯白」/ 装饰插画</b>：<span class="ok">通过</span> 正文 <code>#0F172A</code>；0 插画。</li><li><b>docs/21 · 要「发丝线 / 左对齐 / 组内紧 8–10 组间松 20–24 / 文案具体」</b>：<span class="ok">通过</span> 行间 0（发丝线）、控件内 10、控件组间 20–22；文案写「每日 03:00 更新」「每周一 03:00 重新统计」「只展示前 50 名」。</li><li><b>CLAUDE.md 结构规则 6</b>：<span class="ok">通过</span> 每行 = 名次 + 头像 + 名字 + 金额；无分部、无标签、无奖杯插画、无并排大数字。</li><li><b>金额口径</b>：<span class="ok">通过</span> 全部 <code>¥</code> + 千分位 + 两位小数（<code>fmtMoney()</code>），例如 <code>¥4,286.50</code>；<b>全页不出现「积&nbsp;分」二字</b>。</li><li><b>两条已知事实</b>：<span class="ok">通过</span> ① 底部保留规则说明 + 「去下单 ›」（<code>:176-200</code>），<b>没有个人名次卡</b>；② 只渲染四个字段。</li></ul></div><div class="spec"><h3><span class="n">4</span>深色版（需独立一轮才能上线）</h3><ul><li><b>老板端当前没有深色 token，也没有主题开关</b>：<code>AppColors</code> 只有一套浅色真值，<code>ThemeController</code> 的两套主题是「初始 / 液态玻璃」，都不是深色档；<code>docs/14</code> 里成文的深色列只属于<b>管理端外壳</b>（<code>html[data-theme]</code>）。</li><li><b>本稿深色版取色全部来自 docs/14「管理端外壳」深色列</b>（三端同色系）：底 <code>#0B1220</code> · 表面 <code>#111C2E</code> · 发丝线 <code>#1E2C42</code> · 行间线 <code>#182539</code> · 正文 <code>#E8EEF7</code> · 次级 <code>#9DB0C8</code> · 三级 <code>#8CA3BE</code> · 主色（文字态提亮）<code>#7FB0FF</code> · 琥珀金 <code>#F0A63C</code>。</li><li><b>为什么只是"预览"而不是"实施方案"</b>：要真正上线深色，需要先在 core 新增一整套深色 token（<code>AppColors</code> 现在没有 <code>dark*</code> 系列）→ 再给 <code>ThemeController</code> 加第三档主题 → 再逐页回归（不是排行榜一页的事）。<b>这一步要独立一轮</b>，不能夹在本次排行榜改动里做。</li><li><b>深色下本页的口径</b>：徽章实色不变（金/灰/橙在白字下对比度足够）；选中胶囊由浅底改 <code>#16263F</code> + 提亮主色 <code>#7FB0FF</code>（因为深色底上 <code>#2563EB</code> 当文字用对比度不足）；金额提亮为 <code>#F0A63C</code>。</li></ul></div><div class="spec"><h3><span class="n">5</span>工时估计（不含审批等待）</h3><ul><li><b>设计（已完成）</b>：设计图 4 份 + 方案文档 = 本轮的产出，<b>0.5 天</b>。</li><li><b>实施（推荐稿 C）</b>：改 1 个文件 9 处 + 自测 = <b>2.5 小时</b>（其中：删横幅与周期分段 1h、徽章/头像/行高分档 1h、加载与错误态文案 0.5h）。</li><li><b>回归</b>：<code>flutter analyze</code> + 老板端测试 + 真机走查排行榜（周榜/月榜 × 全站/分部）= <b>0.5 小时</b>。</li><li><b>发布</b>：<code>node scripts/release-boss.js</code> 出包与云更新 = <b>0.5 小时</b>（若同时要发其它改动可合并）。</li><li><b>合计：约 4 小时（半个工作日）</b>；若选 B，另加榜首卡与列表拆分约 +1 小时；深色版另算（见说明卡 4，预估 1–2 天，且要跨页回归）。</li></ul></div></div></div>
+<div class="footnote"><div><b>本方案未实施任何代码改动，等负责人审批。</b> 全部颜色/圆角/间距取自 core 真值（<code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px;font-family:Consolas,Monaco,monospace;color:#1D4ED8">app_colors.dart</code>），全部组件为 core 既有组件（<code style="background:#EFF6FF;border-radius:4px;padding:1px 5px;font-size:11.5px;font-family:Consolas,Monaco,monospace;color:#1D4ED8">app_ui.dart</code>）；服务端 0 改动；深色版仅预览、需独立一轮。审批打勾表见 <code>docs/27-排行榜UI重设计方案.md</code>。</div></div>
+</body>
+</html>

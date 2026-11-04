@@ -1,0 +1,18 @@
+﻿{
+  "name": "fish-platform",
+  "version": "0.1.0",
+  "private": true,
+  "author": "lingyunnb",
+  "license": "SEE LICENSE IN LICENSE",
+  "description": "CODM 陪玩/代练平台（第一阶段）— 三端 + 后端 monorepo",
+  "scripts": {
+    "infra:start": "powershell -NoProfile -File infra/scripts/start.ps1",
+    "infra:stop": "powershell -NoProfile -File infra/scripts/stop.ps1",
+    "infra:status": "powershell -NoProfile -File infra/scripts/status.ps1",
+    "db:backup": "powershell -NoProfile -File infra/scripts/backup-db.ps1",
+    "db:restore": "powershell -NoProfile -File infra/scripts/restore-db.ps1",
+    "db:init": "powershell -NoProfile -File infra/scripts/init-db.ps1",
+    "dev:server": "cd server && npm run start:dev",
+    "dev:admin": "cd admin-web && npm run dev"
+  }
+}

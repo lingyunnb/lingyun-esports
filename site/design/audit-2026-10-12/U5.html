@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>U5 · 列宽靠注释维持 · 设计图</title>
+<!--
+  U5 设计图 —— 自包含 HTML：纯 CSS + 内联 SVG，无外部依赖、无第三方截图。
+  现状口径逐条取自真实源码：
+    · 34 处 `// 列宽和 = … → 模板 :scroll-x = …` 注释，分布在 24 个页面；
+    · 64 处 :scroll-x 属性；
+    · 唯一雏形：UsersView.vue:276 `const USER_COLUMNS_WIDTH = 1465;` + 模板 :scroll-x="USER_COLUMNS_WIDTH"；
+    · 风险先例：负责人 2026-10-08 反馈"删除/封号被挤没了"（注释没跟上列宽改动）。
+  本图只是设计示意，**未改动任何产品代码**。
+-->
+<style>
+:root{
+  --brand:#2563EB;--brand-soft:rgba(37,99,235,.10);--cyan:#06B6D4;--gold:#B45309;
+  --bg:#F5F7FB;--surface:#FFFFFF;--sunken:#F1F5F9;
+  --ink:#1F2937;--ink2:#5B6B82;--ink3:#5E7085;
+  --hair:#E5E9F2;--hair2:#DCE3EE;
+  --ok:#15803D;--warn:#C2410C;--err:#DC2626;
+  --r-sm:6px;--r-ctl:8px;--r-card:10px;--r-panel:14px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:30px 26px 64px}
+.kicker{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--r-sm);
+  background:var(--sunken);border:1px solid var(--hair);color:var(--ink2);font-size:11.5px;font-weight:700;letter-spacing:.02em}
+h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin:12px 0 8px}
+.lead{font-size:13.5px;color:var(--ink2);max-width:960px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:var(--ink3)}
+.meta b{color:var(--ink);font-weight:700}
+h2{font-size:16.5px;font-weight:800;letter-spacing:-.2px;padding-bottom:8px;border-bottom:1px solid var(--hair);margin:30px 0 14px}
+p{font-size:13px;color:var(--ink2)}
+code{background:#EEF2F8;border-radius:3px;padding:1px 4px;font-size:11.5px;color:#1E293B;font-family:var(--mono)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:980px){.two{grid-template-columns:1fr}}
+.stack{display:flex;flex-direction:column;gap:16px}
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-panel);padding:16px 17px 18px;display:flex;flex-direction:column;gap:12px}
+.panel-head{display:flex;align-items:center;gap:9px}
+.chip{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:var(--r-sm);font-size:11px;font-weight:800;letter-spacing:.02em}
+.chip-before{background:var(--sunken);border:1px solid var(--hair);color:var(--ink2)}
+.chip-after{background:var(--brand-soft);border:1px solid rgba(37,99,235,.22);color:var(--brand)}
+.chip-bad{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.22);color:var(--err)}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink)}
+.panel-sub{font-size:11.5px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+/* ── 迷你表格（展示裁切） ─────────────────────────────── */
+.mini{border:1px solid var(--hair2);border-radius:var(--r-ctl);overflow:hidden;background:var(--surface)}
+.scrollwrap{overflow:hidden;position:relative}
+.mini-inner{display:flex;min-width:max-content}
+.mini-hd{display:flex;background:var(--sunken);border-bottom:1px solid var(--hair2);min-width:max-content}
+.mini-hd span,.mini-row span{font-size:11px;padding:6px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none}
+.mini-hd span{font-weight:800;color:var(--ink3)}
+.mini-row{display:flex;border-bottom:1px solid var(--hair);min-width:max-content}
+.mini-row:last-child{border-bottom:none}
+.mini-row span{color:var(--ink2)}
+.op{position:sticky;right:0;background:var(--surface);border-left:1px solid var(--hair2);display:flex;gap:6px;align-items:center}
+.mini-hd .op{background:var(--sunken);color:var(--ink3)}
+.btn{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;
+  border:1px solid var(--hair2);background:var(--surface);color:var(--ink);font-size:11px;font-weight:600;white-space:nowrap}
+.btn.danger{color:var(--err);border-color:rgba(220,38,38,.32)}
+.clip{position:relative}
+.clip::after{content:'';position:absolute;top:0;right:0;bottom:0;width:44px;
+  background:linear-gradient(90deg,transparent,rgba(245,247,251,.96));pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11.5px;color:var(--ink3)}
+.legend b{color:var(--ink)}
+/* ── 代码块 ────────────────────────────────────────────── */
+.code{background:#0B1220;border:1px solid #1E2C42;border-radius:var(--r-card);padding:11px 12px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:#CFE0FF;overflow-x:auto;white-space:pre}
+.code .c{color:#7E93B4}
+.code .k{color:#8CA3BE}
+.code .add{color:#A9E7C0}
+.code .del{color:#FFB4B4;text-decoration:line-through;text-decoration-color:rgba(255,120,120,.55)}
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+.tbl th{font-size:11.5px;font-weight:800;color:var(--ink3);background:var(--sunken)}
+.tbl td{color:var(--ink2)}
+.tbl td b{color:var(--ink)}
+.tbl td.mono{font-family:var(--mono);font-size:11.5px;color:var(--ink)}
+.note{display:flex;gap:9px;border:1px solid var(--hair);border-left:3px solid var(--brand);
+  border-radius:var(--r-ctl);padding:10px 12px;background:var(--surface);font-size:12.5px;color:var(--ink2)}
+.note.warn{border-left-color:var(--warn)}
+.note.ok{border-left-color:var(--ok)}
+.note b{color:var(--ink)}
+.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--hair);font-size:11.5px;color:var(--ink3);line-height:1.8}
+.foot b{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="kicker">U5 · 可维护性 · 建议优先级 P3</span>
+  <h1>列宽靠注释维持，容易被后人改坏</h1>
+  <p class="lead">
+    "操作列固定 178px"「列宽和 = 984 → <code>:scroll-x</code> = 984」这类约定，全仓靠 <b>34 处注释</b>维护，
+    分布在 24 个页面。注释不会报错、不会被 <code>vue-tsc</code> 检查 —— 改了列宽忘改注释，
+    直到运行期才发现表格被裁。<b>本图只出方案，不改代码。</b>
+  </p>
+  <div class="meta">
+    <span>列宽和注释：<b>34 处 / 24 个页面</b></span>
+    <span><code>:scroll-x</code>：<b>64 处</b></span>
+    <span>唯一雏形：<b>UsersView.vue:276</b></span>
+    <span>先例：<b>2026-10-08 操作列被挤没</b></span>
+  </div>
+
+  <h2>现状 vs 建议</h2>
+  <div class="stack">
+
+    <!-- ================= 现状 ================= -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">现状 · 上</span>
+        <span class="panel-title">约定写在注释里（人读，机器不读）</span>
+        <span class="panel-sub">WithdrawView.vue:438</span>
+      </div>
+
+      <div class="two">
+        <div>
+          <div class="legend" style="margin-bottom:7px"><span>表格实际渲染（<code>:scroll-x="984"</code>，列宽和 = 984 → 正好放下）</span></div>
+          <div class="mini">
+            <div class="mini-hd">
+              <span style="width:96px">申请单号</span><span style="width:86px">打手</span><span style="width:150px">金额</span><span style="width:70px">状态</span><span style="width:120px">申请时间</span>
+              <span class="op" style="width:118px">操作</span>
+            </div>
+            <div class="mini-row">
+              <span style="width:96px">WD20261012001</span><span style="width:86px">阿岩不熬夜</span><span style="width:150px">¥288.50</span><span style="width:70px">待打款</span><span style="width:120px">2026-10-12 14:30</span>
+              <span class="op" style="width:118px"><span class="btn">处理</span><span class="btn danger">驳回</span></span>
+            </div>
+            <div class="mini-row">
+              <span style="width:96px">WD20261012002</span><span style="width:86px">不接急单</span><span style="width:150px">¥1,240.00</span><span style="width:70px">已打款</span><span style="width:120px">2026-10-11 09:05</span>
+              <span class="op" style="width:118px"><span class="btn" style="color:#B9C2D0">已打款</span></span>
+            </div>
+          </div>
+          <div class="legend" style="margin-top:7px"><span>✓ 注释与代码<b>此刻一致</b> —— 问题不在"现在错了"，而在"<b>只能靠人盯</b>"</span></div>
+        </div>
+
+        <div>
+          <div class="legend" style="margin-bottom:7px"><span>后人改了列宽、<b>忘改注释与 scroll-x</b> → 操作列被裁</span></div>
+          <div class="mini">
+            <div class="mini-hd">
+              <span style="width:110px">申请单号</span><span style="width:96px">打手</span><span style="width:170px">金额</span><span style="width:80px">状态</span><span style="width:140px">申请时间</span>
+              <span class="op" style="width:118px">操作</span>
+            </div>
+            <div class="mini-row">
+              <span style="width:110px">WD20261012001</span><span style="width:96px">阿岩不熬夜</span><span style="width:170px">¥288.50</span><span style="width:80px">待打款</span><span style="width:140px">2026-10-12 14:30</span>
+              <span class="op" style="width:118px"><span class="btn">处理</span><span class="btn danger">驳回</span></span>
+            </div>
+            <div class="mini-row">
+              <span style="width:110px">WD20261012002</span><span style="width:96px">不接急单</span><span style="width:170px">¥1,240.00</span><span style="width:80px">已打款</span><span style="width:140px">2026-10-11 09:05</span>
+              <span class="op" style="width:118px"><span class="btn" style="color:#B9C2D0">已打款</span></span>
+            </div>
+          </div>
+          <div class="legend" style="margin-top:7px"><span>✗ 列宽和变成 <b>1080 &gt; scroll-x 984</b> → 右侧多出的部分只能横向滚动才看得到</span></div>
+        </div>
+      </div>
+
+      <div class="code"><span class="c">// WithdrawView.vue:431-443（现状：注释 + 字面量，两处各写一遍）</span>
+{
+  <span class="del">// 列宽和（按最小宽）= 150+110+300+96+150+178 = 984 → 模板 :scroll-x = 984</span>
+  <span class="del">// fixed:'right'：横向滚动时「处理」始终完整可见（这条链路点错就是资金损失）</span>
+  title: <span class="add">'操作'</span>,
+  key: <span class="add">'actions'</span>,
+  width: <span class="add">178</span>,          <span class="c">// ← 字面量：没人检查它与 scroll-x 是否还匹配</span>
+  fixed: <span class="add">'right'</span>,
+  …
+}
+
+<span class="c">// 模板另一处（WithdrawView.vue:82）</span>
+&lt;n-data-table :scroll-x=<span class="add">"984"</span> … /&gt;   <span class="c">// ← 第二个字面量：与上面的注释是"君子协定"</span></div>
+
+      <div class="note warn">
+        <span>⚠</span>
+        <span><b>为什么注释不管用</b>：<code>vue-tsc</code> 不看注释、<code>build</code> 不看注释、单元测试也没有表格宽度断言 ——
+        唯一的检查是<b>运行期</b>的 <code>verify-admin-table-actions.mjs</code>（真浏览器量越界/折行）。
+        也就是说：<b>错了要等到跑套件才发现</b>，而套件不在提交钩子上。历史上已经因此出过
+        "删除 / 封号按钮被挤没了"（负责人 2026-10-08 反馈）。</span>
+      </div>
+    </div>
+
+    <!-- ================= 建议 ================= -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-after">建议 · 下</span>
+        <span class="panel-title">抽成常量，单点定义（列宽和自动算出来）</span>
+        <span class="panel-sub">utils/table.ts</span>
+      </div>
+
+      <div class="code"><span class="c">// admin-web/src/utils/table.ts（新增：与 format.ts 同思路，口径单点）</span>
+<span class="c">/**
+ * 表格列宽口径（管理端唯一实现）
+ * 目的：把"列宽和"从注释里搬进代码 —— 改了列宽，scroll-x 自动跟着变，
+ * 不再依赖"记得同步改注释"。
+ */</span>
+
+<span class="c">/** 操作列宽度：按按钮数量分档（docs/14 的定宽列，写死一处） */</span>
+<span class="k">export const</span> OP_COL_WIDTH = {
+  <span class="add">one</span>: 110,    <span class="c">// 单个按钮（详情 / 处理）</span>
+  <span class="add">two</span>: 178,    <span class="c">// 两个按钮（处理 + 驳回）—— WithdrawView 用的就是这档</span>
+  <span class="add">three</span>: 250,  <span class="c">// 三个按钮（编辑 + 下架 + 删除）</span>
+} <span class="k">as const</span>;
+
+<span class="c">/** 列宽和：从列定义里把 width 求和（minWidth 的弹性列不计入） */</span>
+<span class="k">export function</span> sumColumnWidth(cols: Array&lt;{ width?: number }&gt;): <span class="k">number</span> {
+  <span class="k">return</span> cols.reduce((s, c) => s + (c.width ?? 0), 0);
+}
+
+<span class="c">/** 建列时统一用它包一层：自动带 fixed:'right' + 统一宽度 + 统一渲染容器 */</span>
+<span class="k">export function</span> opColumn&lt;T&gt;(opts: {
+  width: <span class="k">number</span>;              <span class="c">// 用 OP_COL_WIDTH.two 这类常量，不写字面量</span>
+  render: (row: T) => VNodeChild;
+}): TableColumn&lt;T&gt; { … }</div>
+
+      <div class="code" style="margin-top:-2px"><span class="c">// WithdrawView.vue（改后：列宽和由 sumColumnWidth 算出来，不再手写数字）</span>
+<span class="k">const</span> columns = [
+  …,
+  <span class="k">const</span> op = <span class="add">opColumn</span>({
+    width: <span class="add">OP_COL_WIDTH.two</span>,   <span class="c">// 178 —— 单点定义</span>
+    render: (r) => …,
+  });
+  <span class="c">// 列宽和 = sumColumnWidth(columns) 自动得出，不写注释</span>
+];
+
+<span class="c">// 模板</span>
+&lt;n-data-table :scroll-x=<span class="add">"sumColumnWidth(columns)"</span> … /&gt;
+<span class="c">// 或者更省事：组件里直接不传 scroll-x，由 columns 推导（见"实现选项 B"）</span></div>
+
+      <div class="note ok">
+        <span>✓</span>
+        <span><b>关键变化</b>：<code>984</code> 这个数字<b>从两个地方消失</b>（注释里一个、模板里一个），
+        变成<b>从列定义算出来</b>。改任一列宽，<code>scroll-x</code> 自动跟随 —— 不再有"忘了同步"这个失败模式。</span>
+      </div>
+
+      <div class="legend">
+        <span>已有雏形可直接升级：<code>UsersView.vue:276</code> 的 <code>const USER_COLUMNS_WIDTH = 1465</code>（但它仍是<b>手写字面量</b>，不是算出来的）</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>两种实现强度（建议先做 A）</h2>
+  <div class="two">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-after">选项 A</span>
+        <span class="panel-title">抽常量 + 求和函数（推荐先做）</span>
+      </div>
+      <table class="tbl">
+        <tr><td style="width:88px"><b>做法</b></td><td>新增 <code>utils/table.ts</code>：<code>OP_COL_WIDTH</code> 三档常量 + <code>sumColumnWidth(cols)</code>；逐页把 <code>width: 178</code> 改成 <code>OP_COL_WIDTH.two</code>、把 <code>:scroll-x="984"</code> 改成 <code>:scroll-x="sumColumnWidth(columns)"</code>。</td></tr>
+        <tr><td><b>收益</b></td><td>操作列宽度<b>全站一致</b>；列宽和<b>自动</b>得出；新增页面照抄即可。</td></tr>
+        <tr><td><b>代价</b></td><td>要动 24 个页面的列定义（机械替换，但面广）。</td></tr>
+        <tr><td><b>工时</b></td><td>3–4 小时（含 <code>table-actions</code> 复跑）。</td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="chip chip-before">选项 B</span>
+        <span class="panel-title">再加静态检查（后续增强）</span>
+      </div>
+      <table class="tbl">
+        <tr><td style="width:88px"><b>做法</b></td><td>写一个脚本扫全部 <code>views/*.vue</code>：把列定义里的 <code>width:</code> 求和，与模板 <code>:scroll-x</code> 的值比对，不等即 FAIL；纳入提交前检查。</td></tr>
+        <tr><td><b>收益</b></td><td>即使有人不按 A 的写法（仍手写字面量），也能在<b>提交前</b>发现不一致 —— 把"运行期才发现"提前到"静态检查就红"。</td></tr>
+        <tr><td><b>代价</b></td><td>脚本要解析 <code>.vue</code> 里的 TS 对象字面量，有一定误报风险（条件列、<code>minWidth</code>、<code>v-if</code> 列）。</td></tr>
+        <tr><td><b>工时</b></td><td>1–2 小时（<b>可独立于 A 先做</b>，作为 A 的过渡保护）。</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h2>逐项口径</h2>
+  <table class="tbl">
+    <tr><th style="width:132px">项</th><th>内容</th></tr>
+    <tr><td><b>现状</b></td><td>「列宽和 = … → <code>:scroll-x</code> = …」全靠 <b>34 处注释</b>维护（24 个页面）；<code>:scroll-x</code> 共 64 处，值全是<b>手写字面量</b>；操作列宽度也是字面量（<code>110 / 130 / 140 / 150 / 160 / 178 / 180 / 190 / 220 / 250 / 281</code> 等十余种）。唯一例外是 <code>UsersView.vue:276</code> 的 <code>USER_COLUMNS_WIDTH</code> —— 但它同样是人手写的数字，只是从模板挪到了常量。</td></tr>
+    <tr><td><b>建议</b></td><td>① 新增 <code>admin-web/src/utils/table.ts</code>，导出 <code>OP_COL_WIDTH</code>（操作列三档：<code>one:110</code> / <code>two:178</code> / <code>three:250</code>）与 <code>sumColumnWidth(cols)</code>；<br>
+      ② 逐页把操作列 <code>width: &lt;字面量&gt;</code> 换成对应档位常量，把 <code>:scroll-x="&lt;字面量&gt;"</code> 换成 <code>:scroll-x="sumColumnWidth(columns)"</code>；<br>
+      ③ 删掉那 34 处"列宽和"注释（信息已由代码表达，注释会过期）；<br>
+      ④ <b>可选增强</b>：写静态检查脚本（扫 <code>width:</code> 求和 vs <code>:scroll-x</code>）纳入提交前检查。</td></tr>
+    <tr><td><b>影响面</b></td><td><b>不需要动服务端。</b>纯前端结构重构；不动接口、不动数据结构、不动列字段与渲染逻辑。<br>
+      <b>风险中等</b>：列宽正是验收靶子（<code>verify-admin-table-actions.mjs</code> 量的是越界与折行）→ 改完<b>必须复跑</b>该套件（1280px 9 条记录应仍为 0 问题）。<br>
+      <b>建议分两步</b>：先做选项 B 的静态检查（1–2h，零风险、立刻有保护），再做选项 A 的替换（3–4h）。</td></tr>
+    <tr><td><b>红线</b></td><td><code>docs/14</code>：<b>否</b>。§「管理后台」要求"表格为主、操作留痕提示"；本项不改任何视觉呈现（<b>列宽数值一个不变</b>，只是把数字挪到一处），也不改操作列 <code>fixed:'right'</code> 的既有口径。<br>
+      <code>docs/21</code>：<b>否</b>。纯代码组织方式，不涉及颜色/圆角/阴影/间距任何视觉决策。</td></tr>
+    <tr><td><b>工时</b></td><td><b>1 天</b>（选项 B 静态检查 1–2h + 选项 A 24 页替换 3–4h + 复跑）。</td></tr>
+    <tr><td><b>设计图</b></td><td><code>site/design/audit-2026-10-12/U5.html</code>（本页）· 截图 <code>U5.png</code></td></tr>
+  </table>
+
+  <div class="foot">
+    <b>本图为设计示意</b>：全部图形为纯 CSS 与内联 SVG 绘制，不是产品截图，也未使用任何第三方素材。<br>
+    <b>本方案未实施任何代码改动</b> —— 等负责人审批后才做。制图日期 2026-10-12。
+  </div>
+</div>
+</body>
+</html>
